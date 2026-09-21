@@ -55,8 +55,12 @@ create policy applications_update_own on public.applications
 --   ★★★退会の 消し込みも `service_role` です（`purgeAccount(admin, …)`）。
 --     ★★DELETE を 外しても 退会は 通ります。
 --   ★★読むのは そのまま です。★画面も 書き出しも SELECT だけ です。
-revoke insert, update, delete on table public.character_inventory
-  from public, anon, authenticated;
+--   ★★★`revoke all` に します（★`insert, update, delete` では 足りません）。
+--     ★★試しの 台帳には TRUNCATE・TRIGGER・REFERENCES も 付いて いました
+--       （2026-09-22 に 見ました）。★TRUNCATE は 表を まるごと 空に します。
+--     ★★本番には 付いて いません。★けれど 同じ SQL を 両方に 流します。
+revoke all on table public.character_inventory from public, anon, authenticated;
+grant select on table public.character_inventory to authenticated;
 
 -- ────────────────────────────────────────────────
 -- FX2 ── monka_read_log ── 直に 書けない

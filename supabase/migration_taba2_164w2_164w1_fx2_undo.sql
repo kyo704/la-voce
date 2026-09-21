@@ -14,7 +14,7 @@ create policy applications_update_own on public.applications
   for update using (auth.uid() = applicant_user_id) with check (auth.uid() = applicant_user_id);
 
 -- A1 を 戻す
-grant insert, update, delete on table public.character_inventory to authenticated;
+grant select, insert, update, delete on table public.character_inventory to authenticated;
 
 -- FX2 を 戻す
 grant insert on table public.monka_read_log to authenticated;

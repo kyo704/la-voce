@@ -14,6 +14,7 @@
 //   ⑥W1 決まり … 応募した 人が 'chosen' に できない（★通らない）
 //   ⑦FX2 直書き … `monka_read` を 持つ 人でも log に 直に 入れられない
 //   ⑧FX2 道 ……… `open_monka_thread` は いままで どおり 1行 増やす
+//   ⑫W1 道 ……… `choose_applicant` なら 'chosen' に できる（★較正）
 //   ⑨A1 直書き … 持ち物に 自分で 品を 足せない（★裁定167 A1）
 //   ⑩A1 書換え … 持って いる 品の `item_key` を 書き換えられない
 //   ⑪A1 読み …… 持ち物は いままで どおり 読める（★較正・1行以上）
@@ -49,6 +50,23 @@ const みる = (名, ok, 註) => { 数 += 1; if (!ok) 落 += 1;
   const { error: e0 } = await sb.auth.signInWithPassword({
     email: e2e.E2E_LOCAL_EMAIL, password: e2e.E2E_LOCAL_PASSWORD });
   if (e0) { console.error("入れません --", e0.message); process.exit(1); }
+  // ★★★走る たびに、★前の 走りの 跡を 片づけます。
+  //   ★★片づけないと、★2度目から「一意の 決まりに 当たった」だけ で
+  //     ★★「断られた」と 読めて しまいます。★偽の PASS に なります。
+  //   ★★★1度目に そう なりました（2026-09-22）。★だから ここに 置きます。
+  //   ★★試しの 台帳 だけ です。★本番には 触れません。
+  const 片づけ = (sql) => execFileSync("python3",
+    [path.join(ROOT, "tools/ask_ledger.py"), "--test", "--write", "--ok", sql], { encoding: "utf8" });
+  片づけ("update public.postings set status = 'open' where id = 'aaaaaaaa-0000-4000-8000-000000000001'");
+  片づけ("update public.applications set status = 'sent'");
+  片づけ("update public.org_messages set withdrawn_at = null");
+  片づけ("delete from public.monka_read_log where viewer_user_id = "
+    + "'eafa63c2-4592-4996-8c7c-18ecbec5a34f'");
+  片づけ("delete from public.character_inventory where user_id = "
+    + "'eafa63c2-4592-4996-8c7c-18ecbec5a34f' and item_key <> 'hat_straw'");
+  片づけ("insert into public.character_inventory (user_id, item_key) values "
+    + "('eafa63c2-4592-4996-8c7c-18ecbec5a34f', 'hat_straw') on conflict do nothing");
+
   const { data: 私 } = await sb.auth.getUser();
   const 私のid = 私 && 私.user && 私.user.id;
   console.log("★入った 人 ……", e2e.E2E_LOCAL_EMAIL, 私のid);
@@ -109,16 +127,42 @@ const みる = (名, ok, 註) => { 数 += 1; if (!ok) 落 += 1;
   // ⑦ FX2 ── 直に 入れられない
   const 前 = 数える("select count(*) from monka_read_log");
   const { error: e7 } = await sb.from("monka_read_log").insert({
-    org_id: ORG, viewer_user_id: 私のid, teacher_id: 先生役, reason_kind: "jiko" });
+    org_id: ORG, viewer_user_id: 私のid, target_monka_id: 先生役,
+    reason: "★ためし", reason_kind: "jiko" });
   みる("⑦log に 直に 入れられない", !!e7, e7 ? String(e7.message).slice(0, 48) : "入って しまいました");
   みる("⑦-2 1行も 増えて いない", 数える("select count(*) from monka_read_log") === 前);
 
   // ⑧ 道は いままで どおり
+  //   ★★★直前に 数え直します。★⑦が 通って しまった 走りでは、
+  //     ★★⑦の ぶん も 混ざります。★混ざると ⑧が 落ちて 見えます（★2026-09-22）。
+  const 前8 = 数える("select count(*) from monka_read_log");
   const { error: e8 } = await sb.rpc("open_monka_thread",
     { p_org_id: ORG, p_teacher_id: 先生役, p_reason_kind: "jiko", p_reason_note: null });
   const 後 = 数える("select count(*) from monka_read_log");
-  みる("⑧open_monka_thread は 1行 増やす（較正）", !e8 && 後 === 前 + 1,
-    e8 ? String(e8.message).slice(0, 48) : `${前} → ${後}`);
+  みる("⑧open_monka_thread は 1行 増やす（較正）", !e8 && 後 === 前8 + 1,
+    e8 ? String(e8.message).slice(0, 48) : `${前8} → ${後}`);
+
+  // ⑫ W1 ── 道（`choose_applicant`）なら 決められる
+  //   ★★この 人（local2）は 募集 aaaa…0001 の 持ち主 です。
+  //   ★★★応募の 一覧は 決まりで「応募した ご本人 だけ」です。
+  //     ★★だから 募集の 持ち主は 画面から 引けません。★試験の 段取りとして、
+  //       ★台帳から id を 借ります（★読むだけ）。★証しは 道の 返り値と 行数 です。
+  const 相手 = (() => {
+    const out = execFileSync("python3", [path.join(ROOT, "tools/ask_ledger.py"), "--test",
+      "select a.id from applications a join postings p on p.id = a.posting_id "
+      + `where p.owner_user_id = '${私のid}' and a.applicant_user_id <> '${私のid}' `
+      + "and a.status = 'sent' limit 1"], { encoding: "utf8" });
+    const m = /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/.exec(out);
+    return m ? m[1] : null;
+  })();
+  if (!相手) {
+    みる("⑫choose_applicant で 'chosen' に できる（較正）", false, "★試しの 応募が ありません");
+  } else {
+    const { data: 決, error: e12 } = await sb.rpc("choose_applicant", { p_application_id: 相手 });
+    const 後 = 数える(`select count(*) from applications where id = '${相手}' and status = 'chosen'`);
+    みる("⑫choose_applicant で 'chosen' に できる（較正）", !e12 && 決 === true && 後 === 1,
+      e12 ? String(e12.message).slice(0, 48) : `返り ${決} ／ chosen ${後}行`);
+  }
 
   // ⑨⑩⑪ A1 ── 持ち物
   const { data: 持ち, error: e11 } = await sb.from("character_inventory")
