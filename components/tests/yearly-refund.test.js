@@ -32,17 +32,36 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.strictEqual(R.refundYen("student", 5), 200 * 7);
   });
 
-  見る("②払った額より 多く 返さない", () => {
+  見る("②返す額は 支払額 − 244点の ぶん を 越えない", () => {
+    // ★★★裁定155 C1 ── ★未経過月は いちばん 多くて 11（★終えた月を 含めない）。
+    //   ★★はじめ 12 と して いました。★12 だと 切り上げの ぶん 年額を 越え、
+    //     ★★出た 額の ほうを 削って いました。★裁定の 額を 変える 形 です。
+    //   ★★わけは「12」に ありました。★11 に すると、★削らずに 収まります。
+    const 上限 = (k) => R.YEARLY_PRICE[k] - R.GOODS_YEN[k];
     for (const k of Object.keys(R.MONTHLY_REFUND)) {
-      const 全 = R.refundYen(k, 0);
-      assert.ok(全 <= R.YEARLY_PRICE[k],
-        `${k} が 年額を 越えました（${全} > ${R.YEARLY_PRICE[k]}）`);
+      for (let u = 0; u <= 11; u += 1) {
+        const 額 = R.refundYen(k, u);
+        assert.ok(額 <= 上限(k),
+          `${k} 未経過${R.monthsLeft(u)}か月 ${額}円 が ${上限(k)}円 を 越えました`);
+      }
     }
-    // ★越えるのは この2つ だけ です。★上限が 効いて いる ことを 名ざしで 見ます。
-    //   ★★効いて いなければ 5,880 と 29,880 に なります。
-    assert.strictEqual(R.refundYen("yosooi", 0), 5800);
-    assert.strictEqual(R.refundYen("classroom", 0), 29800);
-    assert.strictEqual(R.MONTHLY_REFUND.yosooi * 12, 5880, "★較正 ── 切り上げは 残って います");
+    // ★★較正 ── ★12か月ぶん だと 越える ことを、★ここで 見せます。
+    //   ★★「たまたま 収まって いる」のか「11 だから 収まる」のかを 分けます。
+    // ★★「ぜんぶ」は 12か月ぶんで ちょうど 上限（4,800）です。★越えません。
+    //   ★★越えるのは 切り上げの ある 2つ です。★そちらで 較正します。
+    assert.ok(R.MONTHLY_REFUND.yosooi * 12 > 上限("yosooi"),
+      "★較正 ── よそおいは 12か月ぶんなら 越える はず です");
+    assert.ok(R.MONTHLY_REFUND.classroom * 12 > 上限("classroom"),
+      "★較正 ── 教室は 12か月ぶんなら 越える はず です");
+    assert.strictEqual(R.MAX_MONTHS_LEFT, 11);
+  });
+
+  見る("②-2 裁定の 額を 削って いない", () => {
+    // ★★頭を 抑えると、★特商法の 表示と ちがう 額に なります。
+    for (const k of Object.keys(R.MONTHLY_REFUND)) {
+      assert.strictEqual(R.refundYen(k, 0), R.MONTHLY_REFUND[k] * 11,
+        k + " の 満額が 裁定の 式と ちがいます");
+    }
   });
 
   見る("③244点は 返さない", () => {
@@ -64,8 +83,8 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
 
   見る("⑤日割りに しない", () => {
     // 1日でも 使えば その月は「使った」。
-    assert.strictEqual(R.monthsLeft(0), 12);
-    assert.strictEqual(R.monthsLeft(0.9), 12, "★半端な 月を 削って います");
+    assert.strictEqual(R.monthsLeft(0), 11, "★やめる その月は 終えた 月 です");
+    assert.strictEqual(R.monthsLeft(0.9), 11, "★半端な 月を 削って います");
     assert.strictEqual(R.monthsLeft(1), 11);
     assert.strictEqual(R.monthsLeft(1.5), 11);
     assert.strictEqual(R.monthsLeft(12), 0);
@@ -77,7 +96,7 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.strictEqual(R.monthsLeft(undefined), 0);
     assert.strictEqual(R.monthsLeft(""), 0);
     // ★★0 は 答えです。★「1か月も 使って いない」── ★満額 です。
-    assert.strictEqual(R.monthsLeft(0), 12);
+    assert.strictEqual(R.monthsLeft(0), 11, "★やめる その月は 終えた 月 です");
   });
 
   見る("⑥規約に 置く 字が ある", () => {
