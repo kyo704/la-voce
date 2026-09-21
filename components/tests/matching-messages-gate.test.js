@@ -24,7 +24,11 @@ function 自由文の列(表) {
 }
 function 直に引く(src) {
   const code = stripComments(src);
-  return /from\(\s*["'`]application_messages["'`]\s*\)/.test(code);
+  // ★★★裁定 その122 が 言うのは「**引かない**」です（★2026-09-21）。
+  //   ★★出す（insert）のは 別 です。★門（RLS）が 3つ 見ます ──
+  //     ★募集の 持ち主か／たずねられて いるか／切れて いないか。
+  //   ★★`postings`・`applications` の 見張りでも 同じ 直しを しました。
+  return /from\(\s*["'`]application_messages["'`]\s*\)\s*\n?\s*\.select\(/.test(code);
 }
 
 function main() {
@@ -125,6 +129,8 @@ function main() {
   t(!自由文の列("  pieces text[],\n"), "★pieces では 当たらない");
   t(!自由文の列("  template_key text not null,\n"), "★template_key では 当たらない");
   t(直に引く('await sb.from("application_messages").select("id")'), "★直に 引く 形を 見つける");
+  t(!直に引く('await sb.from("application_messages").insert({ pieces: x })'),
+    "★出す 形では 当たらない（★門が 3つ 見ます）");
   t(!直に引く('await sb.rpc("get_messages", { p_application_id: id })'), "★関数を 呼ぶ 形は 当たらない");
   t(/select\s+\*/i.test("select * from applications"), "★select * を 見つける 目が 働いて いる");
 

@@ -125,6 +125,7 @@ import ApplyForm from "@/components/ApplyForm";
 import AppliedList from "@/components/AppliedList";
 import ChooseApplicant from "@/components/ChooseApplicant";
 import ApplicantDetail from "@/components/ApplicantDetail";
+import AnswerPiece from "@/components/AnswerPiece";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import WheelPicker from "@/components/WheelPicker";
@@ -7668,6 +7669,10 @@ export default function VocalTracker({
   // ★★応募した 募集（★見本 `SC['応募した募集']`）。
   // ★★応募を 選ぶ（★見本 `SC['応募を選ぶ']`）。
   // ★★応募者の 詳細（★見本 `SC['応募者の詳細']`）。
+  // ★★曲目を 答える（★見本 `SC['曲目を答える']`・§4c）。
+  const [answerFor, setAnswerFor] = useState(null);
+  const [answerBusy, setAnswerBusy] = useState(false);
+  const [answerError, setAnswerError] = useState("");
   const [applicantOf, setApplicantOf] = useState(null);
   const [applicantErr, setApplicantErr] = useState("");
   const [chooseFor, setChooseFor] = useState(null);
@@ -11448,6 +11453,49 @@ export default function VocalTracker({
       err: 出.error ? "いま 読めませんでした。" : ""
     };
   }, [userId]);
+
+  /**
+   * ★曲目を 答えます（★§4c）。
+   *
+   *   ★★★送るのは 曲の 名の 並び か、★決まった ことば だけ です。
+   *     ★★自由文は ありません。★台帳に 列が ありません。
+   *   ★★★たずねられて いる ときしか 通りません。★門が 見ます。
+   */
+  async function handleAnswerPiece(row) {
+    if (!answerFor) return;
+    setAnswerBusy(true);
+    setAnswerError("");
+    const supabase = createClient();
+    const { error } = await supabase.from("application_messages")
+      .insert({ ...row, application_id: answerFor.id, sender_user_id: userId });
+    setAnswerBusy(false);
+    if (error) {
+      console.error("★曲目を 答えられませんでした:", error);
+      setAnswerError("いま 送れませんでした。");
+      return;
+    }
+    setAnswerFor(null);
+  }
+
+  /**
+   * ★レパートリーに 1曲 足します（★§4c `inline_add`）。
+   *
+   *   ★★画面を 出て 戻る 手間を なくす ため です。
+   *   ★★入れ先は ふだんの レパートリーと 同じ 表 です。★別を 作りません。
+   */
+  async function handleAddRepertoire(name) {
+    const supabase = createClient();
+    const { error } = await supabase.from("repertoire_tessitura")
+      .upsert({ user_id: userId, repertoire_name: name },
+        { onConflict: "user_id,repertoire_name" });
+    if (error) {
+      console.error("★曲を 足せませんでした:", error);
+      setAnswerError("いま 足せませんでした。");
+      return false;
+    }
+    setRepertoireTessituraMap((prev) => ({ ...prev, [name]: { ...(prev[name] || {}) } }));
+    return true;
+  }
 
   /**
    * ★応募者の 詳細を 読みます（★§4e）。
@@ -27047,16 +27095,33 @@ export default function VocalTracker({
                     ★★字も 決めも lib/matchingSearch.js が 持ちます。
                     ★★★押した 先の 8画面は、★まだ ありません。
                       ★★渡さない ことで 出しません（★押せない 札を 置きません）。 */}
-                {layoutV2 && matchingOn && moreSection === "さがす" && applicantOf ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && answerFor ? (
+                  <div data-v2-answer="1">
+                    <AnswerPiece
+                      askedBy={answerFor.name || ""}
+                      repertoire={Object.keys(repertoireTessituraMap || {})}
+                      busy={answerBusy}
+                      error={answerError}
+                      onAddPiece={(s2) => handleAddRepertoire(s2)}
+                      onSubmit={(row) => { void handleAnswerPiece(row); }}
+                      onClose={() => { setAnswerFor(null); setAnswerError(""); }} />
+                  </div>
+                ) : null}
+
+                {layoutV2 && matchingOn && moreSection === "さがす" && !answerFor && applicantOf ? (
                   <div data-v2-applicant="1">
                     <ApplicantDetail
                       detail={applicantOf.detail || null}
                       loadError={applicantErr}
+                      onAnswer={() => setAnswerFor({
+                        id: (applicantOf.detail || {}).application_id,
+                        name: (applicantOf.detail || {}).display_name || ""
+                      })}
                       onClose={() => { setApplicantOf(null); setApplicantErr(""); }} />
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !applicantOf && chooseFor ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !answerFor && !applicantOf && chooseFor ? (
                   <div data-v2-choose="1">
                     <ChooseApplicant
                       rows={(chooseRows && chooseRows.rows) || []}
@@ -27069,7 +27134,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !applicantOf && !chooseFor && appliedOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !answerFor && !applicantOf && !chooseFor && appliedOpen ? (
                   <div data-v2-applied="1">
                     <AppliedList
                       rows={(applied && applied.rows) || []}
@@ -27078,7 +27143,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !applicantOf && !chooseFor && !appliedOpen && applyTo ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !answerFor && !applicantOf && !chooseFor && !appliedOpen && applyTo ? (
                   <div data-v2-apply="1">
                     <ApplyForm
                       posting={applyTo}
@@ -27099,7 +27164,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !applicantOf && !chooseFor && !appliedOpen && !applyTo && postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && postingOpen ? (
                   <div data-v2-posting="1">
                     <PostingForm
                       busy={postingBusy}
@@ -27109,7 +27174,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !applicantOf && !chooseFor && !appliedOpen && !applyTo && !postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && !postingOpen ? (
                   <div data-v2-matching="1">
                     <MatchingSearch
                       onNewPosting={() => { setPostingOpen(true); setPostingError(""); }}

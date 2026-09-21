@@ -2,7 +2,7 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
-import { ScreenHead, Card, Note, Li, H3 } from "@/components/UiV2";
+import { ScreenHead, Card, Note, Btn, Li, H3 } from "@/components/UiV2";
 import {
   HEADS, REC_GO, REP_NOTE, NOTES, NOTES_BOLDS, NOT_YET,
   splitCareer, wordOf, isAsking, hostOf
@@ -50,7 +50,7 @@ function 節({ head, items, render, note }) {
   );
 }
 
-export default function ApplicantDetail({ detail, onClose, loadError = "" }) {
+export default function ApplicantDetail({ detail, onClose, onAnswer, loadError = "" }) {
   if (!detail) {
     return (
       <div style={{ fontFamily: FONT_STACK }}>
@@ -101,6 +101,15 @@ export default function ApplicantDetail({ detail, onClose, loadError = "" }) {
           color: isAsking(detail) ? C.curtain : C.ink
         }}>{wordOf(detail)}</p>
       </Card>
+
+      {/* ★★★たずねられて いる ときだけ、★答える 道を 出します（★§4c）。
+           ★★たずねられて いない のに 出すと、★送れない 札に なります。
+           ★★台帳の 門も 同じ ことを 見て います（★2026-09-21）。 */}
+      {onAnswer && isAsking(detail) ? (
+        <Btn ghost onClick={onAnswer} style={{ marginTop: rem(9) }}>
+          {tx("曲目を 答える")}
+        </Btn>
+      ) : null}
 
       <節 head={HEADS.days} items={日}
         render={(d, last) => <Li key={d} last={last}><span>{d}</span></Li>} />
