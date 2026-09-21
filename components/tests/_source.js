@@ -208,6 +208,20 @@ async function loadLib(...parts) {
       写す(先);
       return `from "${new URL("file://" + path.join(置き場, 先)).href}"`;
     });
+    // ★★★`./` の 取り込みも 解きます（★2026-09-21）。
+    //   ★★`@/` だけ 見て いました。★`lib/` の 中では `./` も 使います。
+    //     ★★`lib/orgClosure.js` → `./orgContract.js`
+    //     ★★`lib/yearlyRefund.js` → `./plans.js`
+    //   ★★どちらも 写さずに 通り、★`Cannot find module` で 落ちました。
+    //   ★★★手で 一覧を 書く 形に 戻しません（→ ★台帳 08-10）。★たどります。
+    本文 = 本文.replace(/from "(\.\/[^"]+?)"/g, (m, rel) => {
+      const なま = rel.replace(/^\.\//, "");
+      const 先 = path.join(path.dirname(相対),
+        /\.[a-z0-9]+$/i.test(なま) ? なま : なま + ".js");
+      if (!fs.existsSync(path.join(ROOT, 先))) return m;
+      写す(先);
+      return `from "${new URL("file://" + path.join(置き場, 先)).href}"`;
+    });
     const 出 = path.join(置き場, 相対);
     fs.mkdirSync(path.dirname(出), { recursive: true });
     fs.writeFileSync(出, 本文);
