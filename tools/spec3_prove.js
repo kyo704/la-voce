@@ -54,7 +54,7 @@ const みる = (名, ok, 註) => { 数 += 1; if (!ok) 落 += 1;
   console.log("  はじめの 記録 …… " + 前 + "行\n");
 
   // ① 役職を 渡す → 記録が 1行 増える
-  const a = await 呼ぶ({ orgId: ORG, action: "assign", targetUser: 相手, postId: 役職 });
+  const a = await 呼ぶ({ orgId: ORG, action: "assign", userId: 相手, postId: 役職 });
   みる("①役職を 渡せた", a.status === 200, `HTTP ${a.status} ${JSON.stringify(a.json)}`);
   const 後 = 数える("select count(*) from post_change_log");
   みる("①-2 記録が 1行 増える（期待 1行 → 結果 " + (後 - 前) + "行）", 後 === 前 + 1,
@@ -71,7 +71,7 @@ const みる = (名, ok, 註) => { 数 += 1; if (!ok) 落 += 1;
   みる("①-6 役職の 名も 残る（★番号だけ だと 消えた とき 読めません）", 名 >= 1, `${名}行`);
 
   // ② 外す → もう1行 増える
-  const b = await 呼ぶ({ orgId: ORG, action: "unassign", targetUser: 相手 });
+  const b = await 呼ぶ({ orgId: ORG, action: "unassign", userId: 相手 });
   みる("②役職を 外せた", b.status === 200, `HTTP ${b.status}`);
   const 後2 = 数える("select count(*) from post_change_log");
   みる("②-2 もう1行 増える（期待 1行 → 結果 " + (後2 - 後) + "行）", 後2 === 後 + 1,
