@@ -1662,8 +1662,8 @@ SC['本番の前後']=function(name){
  +last(11).map(function(x,i){return '<div class="rowb"><s>'+(i-7>0?'+':'')+(i-7)+'</s><div class="bar" style="width:'+[40,65,88][x.voice-1]+'%;opacity:'+(i===7?1:0.45)+'"></div></div>'}).join('')
  +'<div class="usu">0＝本番の日</div></div>'
  +'<div class="note">1回ずつでも 見られます。重ねるのは 3回から。</div>'};
-SC['Woolsong']=function(){
- return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>Woolsong</h2></div>'
+SC['Woolsong']=function(){   /* ★名前は「つたえる」（裁定155。製品名と 同じ 名前を やめた）。画面の 鍵は そのまま */
+ return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>つたえる</h2></div>'
  +'<div class="card"><div style="font-size:14.5px;line-height:1.9">'
  +'できたものを、<br>外に お見せできます。</div>'
  +'<div class="usu" style="margin-top:9px;line-height:1.9">'
@@ -1968,7 +1968,7 @@ SC['伴奏をさがす']=function(){return bk('もっと')
    ★★マッチングは ★永久に 無料（★人数が 価値だから）
    ★課金した人が ★他人との 関係で 有利に なりません
      （★お金を 出せるのは、★さがす 学生より、★それを 狙う 年長者）  */
-var PAID = false;            /* ★Woolsong（年3,600円）に 入っているか */
+var PAID = false;            /* ★つたえる（年3,600円）に 入っているか */
 var IS_ORG = false;          /* ★団体として 登録しているか */
 
 /* ★ポートフォリオの 見た目 ── 裁定その95 §5 */
@@ -1977,7 +1977,7 @@ var PF_ORDER = ['本番の 順','曲目の 順','自分で 並べる'];
 
 SC['見た目を選ぶ']=function(){
  return bk('経歴')+'<div class="hd" style="padding-top:2px"><h2>見た目を 選ぶ</h2></div>'
- +(PAID?'':'<div class="warn">ここは <b>Woolsong（年3,600円）</b>の 中です。<br>'
+ +(PAID?'':'<div class="warn">ここは <b>つたえる（年3,600円）</b>の 中です。<br>'
    +'いまは ひとつめだけ お使いいただけます。</div>')
  +'<div class="sh3" style="margin-top:0">組み方</div><div class="box">'
  +PF_LOOK.map(function(v,k){
@@ -2404,7 +2404,7 @@ SC['ページの型']=function(){
  var L=(WEB_BY[FIELD]||WEB_BY.music).concat(PF_TEACH?WEB_BY.teacher:[]);
  return bk('あなたのページ')
  +'<div class="hd" style="padding-top:2px"><h2>ページの 形</h2></div>'
- +(PAID?'':'<div class="warn">ページを 出すには <b>Woolsong（年3,600円）</b>が 要ります。<br>形は、いまのままでも <b>お試しで 全部 見られます</b>。</div>')
+ +(PAID?'':'<div class="warn">ページを 出すには <b>つたえる（年3,600円）</b>が 要ります。<br>形は、いまのままでも <b>お試しで 全部 見られます</b>。</div>')
  +(PF_TRIAL?'<div class="warn"><b>'+PF_TRIAL+'までは、何度でも 無料で 選び直せます</b>。<br>その日に 使っている 形が、あなたの 形に なります。</div>':'')
  +(pfFieldFreeAvail()?'<div class="warn">お仕事を 変えられたので、<b>この 中から 1つ 無料で</b> 選べます。</div>':'')
 
@@ -2483,6 +2483,14 @@ SC['子どもの枠']=function(){
  +'見られると、<b>いつ・どの 役割の 方が 見たか</b>が ここに 出ます（見た 方の 名前は 出しません）。<br>'
  +'子どもの 枠で 使えるのは 公演だけです。記録・ひつじ・体調・さがす は 使えません。<br>'
  +'兄弟など、何人でも 足せます。<b>いつでも 外せます</b>（運営の 出欠の 記録だけ 残ります）。</div>'};
+
+function planAsk(next,n){openSheet('planAsk',next+'|'+n)}
+SH['planAsk']=function(a){var p=String(a).split('|'),t=planAskText(p[0],+p[1]);
+ return '<div class="sht">'+t[0]+'</div>'
+ +'<div class="card" style="padding:14px 15px;line-height:1.9;margin-top:9px">'+t[1]+'</div>'
+ +'<div class="btn" style="margin-top:10px" onclick="closeSheet();planSet(\''+p[0]+'\');draw()">'+(p[0]==='教室'?'14日 ためして':'学校に して')+(PLAN_DONE?'、招く':'')+'</div>'
+ +'<div class="btn g" style="margin-top:8px" onclick="closeSheet();'+(PLAN_DONE?'planNo();':'')+'draw()">やめる'+(PLAN_DONE?'（招かない）':'')+'</div>'};
+SC['運営のプラン']=function(){return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>プラン</h2><span class="role">'+S.dm.post+'</span></div>'+planBody()};
 
 SC['お仕事を選ぶ']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>どんな お仕事ですか</h2></div>'
@@ -3567,7 +3575,7 @@ SC['招く']=function(){
  return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>招く</h2></div>'
  +'<div class="usu" style="margin-bottom:11px">メールで お送りします</div>'
  +'<div class="h3" style="margin-top:0">メールアドレス</div>'
- +'<textarea class="ta" style="height:104px" placeholder="mina@example.com&#10;kanade@example.com"></textarea>'
+ +'<textarea class="ta" id="invTa" style="height:104px" placeholder="mina@example.com&#10;kanade@example.com"></textarea>'
  +'<div class="usu" style="margin-top:-2px">改行で 何人でも</div>'
  +'<div class="h3">学年</div><div class="pills">'
  +ORG.gakunen.slice(0,6).map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
@@ -3577,7 +3585,7 @@ SC['招く']=function(){
  +'<div class="warn">招待中は、ご請求に 入りません。<br>'
  +'<b>同意は ご本人から</b> いただきます（契約では 代えられません）。<br>'
  +'18歳未満の方は、保護者の 同意も いただきます。</div>'
- +'<div class="btn" onclick="toast(\'招待を 送りました\');pop()">送る</div>'
+ +'<div class="btn" onclick="planGate(inviteK(),function(){toast(\'招待を 送りました\');pop()})">送る</div>'
  +'<div class="note"><b>ご本人が 承知するまで、この学校からは その方が 見えません。</b><br>'
  +'合言葉（8文字）でも 入れます。教室を こちらから 探すことは できません。</div>'};
 
@@ -3654,7 +3662,7 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'公演\')"><span>公演<div class="usu">フィガロの結婚　バジリオ 役</div></span><s>›</s></div>'
  +'<div class="li" onclick="push(\'公演に入る\')"><span>公演の 合言葉で 入る</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'あなたのページ\')"><span>あなたの ページ<div class="usu">経歴・紙・公開</div></span><s>'+(PF_PUB?'公開中':pfCount()+'件')+' ›</s></div>'
- +'<div class="li" onclick="push(\'Woolsong\')"><span>Woolsong<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
+ +'<div class="li" onclick="push(\'Woolsong\')"><span>つたえる<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
  +'<div class="li" onclick="push(\'お仕事を選ぶ\')"><span>お仕事<div class="usu">画面の ことばが 変わります</div></span><s>'+VOCAB[FIELD].field+' ›</s></div>'
  +'<div class="li" onclick="push(\'保護者の画面\')"><span>保護者の 方の 画面<div class="usu">見本だけ。実際は メールから</div></span><s>›</s></div>'
  +'<div class="li" onclick="push(\'しらべていること\')"><span>しらべている こと</span><s>1組 ›</s></div>'
@@ -3711,19 +3719,26 @@ SC['聞いてほしいこと']=function(){
  +'<div class="h3">足せるもの</div><div class="pills">'+CAND.map(function(v){
    return '<span class="pill sm" onclick="'+(1)+'&&(S.ask.length<5?(S.ask.push(\''+esc(v)+'\'),draw()):toast(\'5つまでです\'))">＋ '+v+'</span>'}).join('')+'</div>'
  +'<div class="note">中核の 5つを 外しても かまいません（分析に 使うのは 5つですが、強制しません）。<br>足りない項目を 責めません。「あと◯項目」を 出しません。</div>'};
-SC['プラン']=function(){
+SC['プラン']=function(){   /* ★裁定155。個人が 最初に 見る 段は 3つ（無料／ぜんぶ／学生）。ひとつだけ は 小さく */
+ var stu=hasClass();
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>プラン</h2></div>'
- +'<div class="card"><div style="font-size:15.5px;font-weight:700">'+(paid()?'調べる（ひと月ごと）':'無料')+'</div>'
+ +'<div class="card"><div style="font-size:15.5px;font-weight:700">'+(paid()?'しらべる（ひと月ごと）':'無料')+'</div>'
  +'<div class="usu" style="margin-top:5px">'+(paid()?'次の お支払い　2026年10月9日':'お支払いは ありません')+'</div></div>'
- +'<div class="h3">いまも これからも 無料</div><div class="box">'
- +['記録','並べる','さかのぼる','ノート','ひつじ・おうち','受診用の 1枚','書き出す（CSV・JSON）'].map(function(v){
-   return '<div class="li"><span>'+v+'</span><s style="color:var(--midori)">無料</s></div>'}).join('')+'</div>'
- +'<div class="h3">調べる</div><div class="box">'
- +['詳しく 数える','調べることを 5つまで 選ぶ','本番の 前の3日だけ'].map(function(v){
-   return '<div class="li"><span>'+v+'</span><s>580円／月</s></div>'}).join('')+'</div>'
- +(paid()?'<div class="btn g" style="margin-top:11px" onclick="S.dm.pay=0;draw();toast(\'やめました\')">やめる</div>'
-  :'<div class="btn" style="margin-top:11px" onclick="push(\'調べる\')">調べるを 見る</div>')
- +'<div class="note">調べるは、ご自分で お選びいただくものです。<br>学校が お支払いになるのは、レッスンの 運営（日程・出欠・名簿・連絡）です。<br>学校を 離れても、調べるは そのまま 続きます。<b>記録は、どちらの 場合も 消えません</b>。</div>'};
+ +'<div class="box">'
+ +'<div class="li plain"><span><b>無料</b><div class="usu">記録・ふりかえる・ノート・ひつじ・さがす</div></span><s>0円</s></div>'
+ +'<div class="li" onclick="toast(\'この見本では 買いません\')"><span><b>ぜんぶ</b><div class="usu">つたえる・しらべる・よそおいの 全部。年払いは 244点を お支払いの 日に</div></span><s>月980円<br>年12,800円</s></div>'
+ +(stu?'<div class="li" onclick="toast(\'この見本では 買いません\')"><span><b>学生</b><div class="usu">学校の 名簿に いる 方は、ぜんぶが 半額</div></span><s>月490円<br>年6,400円</s></div>':'')
+ +'</div>'
+ +(stu?'<div class="usu" style="margin:-4px 0 11px">学生の 値段は、<b>あなたが 同意した ときだけ</b> 在籍を 確かめて 決めます。学校には 伝わりません。</div>':'')
+ +'<div class="sh3">ひとつだけ</div><div class="box">'
+ +[['つたえる','公開ページ・紙・英語','年3,600円','Woolsong'],['しらべる','声の 分析','月580円／年4,800円','調べる'],['よそおい','ひつじの 服','月580円／年5,800円','']].map(function(x){
+   return '<div class="li"'+(x[3]?' onclick="push(\''+x[3]+'\')"':'')+'><span style="font-size:14px">'+x[0]+'<div class="usu">'+x[1]+'</div></span><s style="font-size:13px">'+x[2]+'</s></div>'}).join('')+'</div>'
+ +(paid()?'<div class="btn g" style="margin-top:11px" onclick="S.dm.pay=0;draw();toast(\'やめました\')">やめる</div>':'')
+ +'<div class="note">記録・受診用の 1枚・書き出しは、<b>ずっと 無料</b>です。さがす（マッチング）も 永久に 無料です。<br>'
+ +'月払いは いつでも 止められます。止めても、その月の 終わりまで 使えます。<br>'
+ +'年払いは 1回払いで、<b>自動では 更新しません</b>。途中で やめると、<b>残りの 月数ぶんを お返しします</b>（244点は 返品できません）。<br>'
+ +'<b>よそおいの 品・ページの 型・244点は、どの プランを やめても 残ります</b>。<br>'
+ +'学校が 払うのは 運営（日程・出欠・名簿・連絡）だけです。あなたの プランとは 別です。</div>'};
 SC['書き出す']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>書き出す</h2></div>'
  +'<div class="h3">形</div><div class="pills"><span class="pill on">CSV</span><span class="pill">JSON</span></div>'
@@ -3951,16 +3966,19 @@ function opSettei(){
   +'<div class="li" onclick="push(\'ひとの一覧\')"><span>ひとと 役職（'+PEOPLE.length+'人）</span><s>絞って さがす ›</s></div></div>'
   +(can('post')?'<div class="usu" style="margin:-4px 0 4px">あなたは、<b>自分が 持っていない できること</b>を 人に 渡せません。</div>'
     :'<div class="usu" style="margin:-4px 0 4px">ひとの 役職を 変えられるのは　'+whoCan('post')+'</div>'):'';
- var bill=(can('bill')||can('bill_pay'))?'<div class="card"><div class="li" style="padding:7px 0"><span>数える 人数</span><s style="font-size:13.5px;color:var(--ink)">'+billN()+'人</s></div>'
+ var bill=(can('bill')||can('bill_pay'))?'<div class="box"><div class="li" onclick="push(\'運営のプラン\')"><span>いまの プラン<div class="usu">無料・教室・学校</div></span><s><b>'+ORGPLAN.kind+'</b> ›</s></div></div>'
+  +'<div class="card"><div class="li" style="padding:7px 0"><span>数える 人数</span><s style="font-size:13.5px;color:var(--ink)">'+billN()+'人</s></div>'
   +'<div class="li" style="padding:7px 0"><span>1人あたり</span><s style="font-size:13.5px;color:var(--ink)">'+Math.round(billYen()/billN())+'円</s></div>'
   +'<div class="li" style="padding:7px 0"><span>'+(PAY.cycle==='毎月'?'今月の':'1年ぶんの')+' ご請求</span><s style="font-size:17px;font-weight:700;color:var(--ink)">'+yen(billNow())+'円</s></div></div>'
   +'<div class="card" style="background:var(--band);border-color:var(--line3)"><div style="font-size:13px;line-height:1.9">'
   +billWl()+'</div></div>'
   +'<div class="h3">料金の 決まり</div><div class="box">'
-  +'<div class="li"><span>5人まで</span><s>0円</s></div>'
+  +'<div class="li"><span>先生1人＋生徒5人まで</span><s>0円</s></div>'
+   +'<div class="li"><span>教室（先生2人・生徒30人まで）</span><s>月2,980円</s></div>'
+   +'<div class="li"><span>学校（それより 多い）</span><s>名簿1人 月400円から</s></div>'
   +'<div class="li"><span>先生・事務</span><s>数えません</s></div>'
   +'<div class="li"><span>1年 まとめて</span><s>2か月ぶん 引きます</s></div>'
-  +'<div class="li"><span>導入支援（50人以上・1回だけ）</span><s>100,000円</s></div>'
+  +'<div class="li"><span>導入支援（100人以上・1回だけ）</span><s>100,000円</s></div>'
   +'<div class="li"><span>1年 まとめて（一括）</span><s>'+yen(billYear())+'円（2か月ぶん 引きます）</s></div></div>'
   +'<div class="h3">お支払い</div><div class="box">'
   +[['ご請求の 宛先（名義）',PAY.ate+'（'+PAY.atePost+'）'],['支払い方法',PAY.way],
@@ -4500,13 +4518,67 @@ function setZai(i,v){
  if(!can('meibo')){toast('あなたの役職では変えられません');return}
  var m=MEI[i],old=m[3];if(old===v)return;m[3]=v;
  draw();toast(m[0]+' を '+v+' にしました。数える人数は '+zaisekiN()+'人 になりました')}
-function billN(){return zaisekiN()}
-/* 料金＝いちばん安いもの。下限 9,800円（★2026-09-13 改定。前は 12,800円） */
-function billPlans(){var n=billN();return [[n+'人 × 400円',n*400],[n+'人 × 350円',n*350],['300人 × 250円',75000]]}
-function billYen(){var v=Math.min.apply(null,billPlans().map(function(x){return x[1]}));return Math.max(9800,v)}
-function billWl(){var y=billYen();
- return billPlans().map(function(x){return (x[1]===y?'<b>':'')+x[0]+'　＝ '+yen(x[1])+'円'+(x[1]===y?'　←　いちばん 安いもの</b>':'')}).join('<br>')
- +'<br>下限 9,800円（下回りません）'}
+/* ══ ★教室・学校の プラン ── 裁定155・156（2026-09-21）══
+   無料：先生1人＋生徒5人まで ／ 教室：先生2人・生徒30人まで 月2,980円（14日 ためせる・カード不要）
+   学校：月額＝max(12,800, min(n×400, max(n,100)×350, max(n,300)×250))
+   ★自動では 上げない。上限を 超える 人を 招こうと したときに 1度 たずねる。断れば 招かない
+   ★下げる ことは しない（期限まで 使い、次を 選ぶ）。★入っている 方は 取り上げない
+   ★見本では 先生の 人数を 見ていない（生徒の 数だけ）                                  */
+var ORGPLAN={kind:'学校',cycle:'毎月',trial:'',free:''};   /* trial：教室の 14日 ／ free：学校の 導入期間の 終わり */
+var BILL_DEMO=null, PLAN_DONE=null;
+function billN(){return BILL_DEMO!=null?BILL_DEMO:zaisekiN()}
+function planMax(k){return {'無料':5,'教室':30,'学校':Infinity}[k||ORGPLAN.kind]}
+function billPlan(){return ORGPLAN.kind}
+function gakkoYen(n){return Math.max(12800,Math.min(n*400,Math.max(n,100)*350,Math.max(n,300)*250))}
+function billYen(){var k=ORGPLAN.kind,n=billN();if(k==='無料'||ORGPLAN.trial||ORGPLAN.free)return 0;return k==='教室'?2980:gakkoYen(n)}
+function billWl(){var k=ORGPLAN.kind;
+ return k==='無料'?'<b>無料</b>　先生1人＋生徒5人まで'
+  :k==='教室'?'<b>教室</b>　先生2人・生徒30人まで　月2,980円'+(ORGPLAN.trial?'<br>ためしている ところです（'+ORGPLAN.trial+'まで 0円・カード 不要）':'')
+  :'<b>学校</b>　名簿1人 月400円（100人以上 350円・300人以上 250円）　下限 月12,800円'
+   +(ORGPLAN.free?'<br>導入期間です。<b>'+ORGPLAN.free+'まで 0円</b>。そのあと 月'+yen(gakkoYen(billN()))+'円':'')}
+function inviteK(){var t=document.getElementById('invTa');if(!t||!t.value.trim())return 1;
+ return t.value.split(/\n/).filter(function(x){return x.trim()}).length}
+function planGate(k,done){var n=billN(),mx=planMax();
+ if(n+k<=mx){done();return}
+ var next=ORGPLAN.kind==='無料'?'教室':'学校';
+ if(!can('bill_pay')){toast('いまの プランでは '+mx+'人までです。プランを 変えられるのは '+whoCan('bill_pay').replace(/<[^>]+>/g,''));return}
+ PLAN_DONE=done;planAsk(next,n+k)}
+function planSet(next){ORGPLAN.kind=next;ORGPLAN.trial=next==='教室'?'10月5日':'';
+ if(next==='学校')ORGPLAN.free='';if(typeof payLog==='function')payLog('プランを 「'+next+'」に しました');
+ var f=PLAN_DONE;PLAN_DONE=null;if(f)f();else{draw();toast(next==='教室'?'教室に しました（14日 ためせます）':'学校に しました')}}
+function planNo(){PLAN_DONE=null;toast('招きませんでした（いまの プランの 上限です）')}
+function planDemo(n,k,free){BILL_DEMO=n;ORGPLAN={kind:k,cycle:'毎月',trial:'',free:free||''};draw()}
+function planAskText(next,n){
+ return next==='教室'
+  ?['生徒が '+n+'人に なります','<b>教室</b>に しますか　月2,980円／年29,800円<br>先生2人・生徒30人まで。教室ページと、40人までの 公演を 含みます。<br><b>14日は 0円で ためせます（カード 不要）</b>。払わなければ 無料に 戻ります（入った 方は そのままです）。']
+  :['生徒が '+n+'人に なります','<b>学校</b>に しますか　名簿1人 月400円から（下限 月12,800円）<br>いまは '+(ORGPLAN.kind==='教室'?'教室':'無料')+'です。月払いは <b>翌月から</b> 学校の 額、年払いは <b>残りの 期間を 学校の 年額に 充当</b>します。']}
+/* ★いまの プランの 画面（運営）*/
+function planBody(){var k=ORGPLAN.kind,n=billN(),pay=can('bill_pay');
+ var opt=[['無料','先生1人＋生徒5人まで','0円'],['教室','先生2人・生徒30人まで。教室ページ・40人までの 公演','月2,980円／年29,800円'],
+   ['学校','学科・コース単位。レッスン割・実技試験・くばりもの・公演','名簿1人 月400円から（下限 12,800円）']];
+ var rank={'無料':0,'教室':1,'学校':2};
+ return '<div class="card"><div style="font-size:15.5px;font-weight:700">'+k+'</div>'
+ +'<div class="usu" style="margin-top:5px">数える 人数 '+n+'人'+(planMax()<Infinity?'（'+planMax()+'人まで）':'')+'　／　'+(PAY.cycle==='毎月'?'今月':'1年ぶん')+' '+yen(billNow())+'円</div>'
+ +'<div class="usu" style="margin-top:6px">'+billWl()+'</div></div>'
+ +'<div class="'+'box'+'">'+opt.map(function(o){var cur=o[0]===k,up=rank[o[0]]>rank[k];
+   return '<div class="li'+(up&&pay?'':' plain')+'"'+(up&&pay?' onclick="PLAN_DONE=null;planAsk(\''+o[0]+'\','+n+')"':'')+'><span><b>'+o[0]+'</b><div class="usu">'+o[1]+'</div></span>'
+    +'<s>'+o[2]+'<br><span class="usu">'+(cur?'いま':up?(pay?'これに する ›':'変えられるのは '+whoCan('bill_pay').replace(/<[^>]+>/g,'')):'いまより 小さい')+'</span></s></div>'}).join('')+'</div>'
+ +'<div class="h3">学校の 導入期間（0円）</div><div class="'+'box'+'">'
+ +'<div class="li plain"><span>最初の 1学科</span><s>2027年9月30日まで<br><span class="usu">2027年2月までに 年間契約</span></s></div>'
+ +'<div class="li plain"><span>2校目から</span><s>契約日から 最大3か月<br><span class="usu">次の 4月1日を 超えない</span></s></div>'
+ +'<div class="li plain"><span>教室</span><s>14日 ためす だけ</s></div></div>'
+ +'<div class="h3">見本の 切替</div><div class="pills">'
+ +'<span class="pill sm'+(BILL_DEMO==null&&k==='学校'&&!ORGPLAN.free?' on':'')+'" onclick="planDemo(null,\'学校\')">○○音楽大学（学校）</span>'
+ +'<span class="pill sm'+(ORGPLAN.free?' on':'')+'" onclick="planDemo(null,\'学校\',\'2027年9月30日\')">導入期間中</span>'
+ +'<span class="pill sm'+(BILL_DEMO===5?' on':'')+'" onclick="planDemo(5,\'無料\')">小さい 教室（5人・無料）</span>'
+ +'<span class="pill sm'+(BILL_DEMO===30?' on':'')+'" onclick="planDemo(30,\'教室\')">教室（30人）</span></div>'
+ +'<div class="usu" style="margin:-4px 0 8px">「小さい 教室」で 名簿 →「招く」を 押すと、6人目の ときに たずねます。</div>'
+ +'<div class="note"><b>自動では 上げません</b>。上限を 超える 方を 招こうと した ときに、1度だけ たずねます。断れば 招きません。<br>'
+ +'<b>下げる ことは しません</b>。期限まで 使って、次を 選びます。いま 入っている 方を 外すことも しません。<br>'
+ +'月払いは いつでも 止められます（その月の 終わりまで 使えます）。<br>'
+ +'年払いは 1回払いで、自動では 更新しません。途中で やめると <b>残りの 月数ぶんを お返しします</b>（教室は 月2,490円。学校は 契約書の とおり）。<br>'
+ +'導入期間が 終わる 1か月前に、<b>日付で 1回だけ</b> お知らせします。0円の あいだに 止めても 請求は ありません。<br>'
+ +'学生の 有料機能は、学生が ご自分で 買います（学校の ご請求には 入りません）。</div>'}
 function zaisekiN(){return MEI.filter(function(m){return m[3]==='在籍'}).length}
 SC['その人']=function(i){var m=MEI[i];
  return bk('名簿')+'<div class="hd" style="padding-top:2px"><h2>'+m[0]+'</h2><span class="role">'+m[3]+'</span></div>'
@@ -4793,9 +4865,9 @@ SH['shiboru']=function(){return '<div class="sht">絞る</div>'
  +'<div class="h3">先生</div><div class="pills">'+['斎藤','渡辺','高橋'].map(function(v){return '<span class="pill sm">'+v+'</span>'}).join('')+'</div>'
  +'<div class="wl">下から 出します（iPhoneでは 上に 置きません）。5人未満の かたまりは、数を 出しません。</div>'+shBtm()};
 SH['maneku']=function(){return '<div class="sht">招く</div>'
- +'<textarea class="ta" style="margin-top:9px;min-height:70px" placeholder="メールアドレス（改行で 何人でも）"></textarea>'
+ +'<textarea class="ta" id="invTa" style="margin-top:9px;min-height:70px" placeholder="メールアドレス（改行で 何人でも）"></textarea>'
  +'<div class="wl">招待中は、ご請求に 入りません。<b>同意は ご本人から</b> いただきます（契約では 代えられません）。</div>'
- +'<div class="btn" style="margin-top:10px" onclick="closeSheet();toast(\'招待を 送りました\')">送る</div>'};
+ +'<div class="btn" style="margin-top:10px" onclick="var k=inviteK();closeSheet();planGate(k,function(){draw();toast(\'招待を 送りました\')})">送る</div>'};
 SH['newgyoji']=function(){return '<div class="sht">行事を 出す</div>'
  +'<textarea class="ta" style="margin-top:9px;min-height:44px" placeholder="行事の 名前"></textarea>'
  +list(['日と 時間','場所','対象（学年・コース）'])+shBtm('出す')};
@@ -5970,7 +6042,7 @@ SC['やめるとどうなるか']=function(i){var o=ORGS[i];
  +'・この教室から、あなたが 見えなくなります<br><br>'
  +'<b>あなたの 記録・ノート・レパートリー・ひつじは、1つも 消えません。</b><br>'
  +'これまでの 出欠と、連絡に 書いたことは、<b>教室の 記録として 残ります</b>（運営の 義務です）<br>'
- +'<b>調べる</b>が この教室の 束で ついていた場合は、止まります（記録は 消えません）</div></div>'
+ +'ご自分で 払った もの（しらべる・ぜんぶ など）は、<b>そのまま 続きます</b></div></div>'
  +'<div class="two" style="margin-top:11px"><div class="btn g" onclick="pop()">やめない</div>'
  +'<div class="btn" onclick="toast(\'この見本では やめません\')">やめる</div></div>'
  +'<div class="note">あとから もう一度 招いてもらえば、また 入れます。<br>そのとき、記録は そのまま 続きます。</div>'};
