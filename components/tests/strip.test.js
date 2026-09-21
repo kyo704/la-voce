@@ -88,6 +88,44 @@ async function main() {
   t(/function stripCode/.test(src2), "★位置を 保つ ほうも ある");
   t(/38件が 一斉に 落ちました/.test(src2), "★なぜ 2つ 要るかが 書いて ある");
 
+  // =========================================================================
+  // ★六 ★正規表現リテラル（★2026-09-21 に 足しました）
+  //
+  //   ★★裁定135 で この 紙を 作った とき、★正規表現を 読み飛ばす 形が
+  //     ★ありません でした。★文字の 組の 中の 引用符で 位置が ずれます。
+  //   ★★`components/VocalTracker.jsx:3805` で 実際に 崩れ、★同じ 紙の
+  //     ★註 **700行** が 外れません でした。
+  //     ★★「註を 外した」つもりの 数えが、★註を 数えて いました。
+  //   ★★★較正は 両の 側 です ── ★消える はず と、★残る はず。
+  // =========================================================================
+  console.log("\n=== 六 ★正規表現リテラル ===");
+  {
+    const 崩れ = 'const a = x.replace(/[\u300c\u300d"\u2019]/g, "");\n// ここも おちる\n';
+    t(!m.stripJs(崩れ).code.includes("ここも おちる"),
+      "★文字の 組の 中の 引用符で 崩れない（★2026-09-21 の 一件）");
+
+    const 割り = m.stripJs("const a = (b) / c; // おちる\nconst d = 2;").code;
+    t(!割り.includes("おちる"), "★割り算の あとの 註も 落ちる");
+    t(割り.includes("(b) / c"), "★割り算を 消して いない");
+
+    t(!m.stripJs('function f(){ return /ab"c/.test(x); }\n// おちる\n').code
+      .includes("おちる"), "★`return` の あとは 正規表現");
+
+    t(m.stripJs('const u = "https://example.com";').code.includes("https://example.com"),
+      "★字の 中の // は 残す");
+
+    // ★いちばん 大きい 紙で、★註だけの 行が 1つも 残らない こと。
+    const 生 = fs.readFileSync(path.join(ROOT, "components", "VocalTracker.jsx"), "utf-8");
+    const 元 = 生.split("\n");
+    const 出 = m.stripJs(生).code.split("\n");
+    let 残り = 0, 最初 = 0;
+    for (let i = 0; i < 元.length; i += 1) {
+      if (!元[i].trim().startsWith("//")) continue;
+      if ((出[i] || "").trim().startsWith("//")) { 残り += 1; if (!最初) 最初 = i + 1; }
+    }
+    t(残り === 0, `★いちばん 大きい 紙で 註が 残らない（★いま ${残り}行${最初 ? "・最初 " + 最初 + "行目" : ""}）`);
+  }
+
   console.log(`\n${pass} 通り ／ ${fail} 落ち`);
   if (fail > 0) process.exit(1);
 }
