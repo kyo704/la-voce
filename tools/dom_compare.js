@@ -493,6 +493,23 @@ function calibrate() {
     await ap.waitForTimeout(2500);
   };
 
+  /**
+   * ★1歩 すすむ（★2026-09-21）。
+   *
+   *   ★★字で 押すのが 既定 です。★その 字が どの 台帳でも 変わらない とき。
+   *   ★★★`css:` で 始まる ときは、★その 場所を 押します。
+   *     ★★行の 名前が 台帳の 中身で 変わる 画面（★授業の型・名簿）の ため です。
+   *     ★★仕込みの 名前を 道に 書くと、★仕込みを 変えた 日に 道が 切れます。
+   */
+  const 一歩 = async (p, st, 待ち) => {
+    if (String(st).startsWith("css:")) {
+      await p.locator(String(st).slice(4)).first().click({ timeout: 待ち });
+      return;
+    }
+    await p.locator(`button:has-text("${st}"), [role="button"]:has-text("${st}")`)
+      .first().click({ timeout: 待ち });
+  };
+
   // ★★★温め（★裁定 その118 TECHNICAL_ISSUE・2026-09-20）。
   //   ★★手元の サーバは、★その 画面を **はじめて** 開く とき 組み立てます。
   //     ★★きょう、★日程・未送信・お知らせを書く の 3画面が 時間切れに なりました。
@@ -507,8 +524,7 @@ function calibrate() {
           .first().click({ timeout: 待ちクリック });
         await ap.waitForTimeout(1200);
         for (const st of (sc.impl.steps || [])) {
-          await ap.locator(`button:has-text("${st}"), [role="button"]:has-text("${st}")`)
-            .first().click({ timeout: 待ちクリック });
+          await 一歩(ap, st, 待ちクリック);
           await ap.waitForTimeout(900);
         }
       } catch (e) { /* ★温めです。★落ちても 進みます。 */ }
@@ -541,8 +557,7 @@ function calibrate() {
         .first().click({ timeout: 待ちクリック });
       await ap.waitForTimeout(1500);
       for (const s of (sc.impl.steps || [])) {
-        await ap.locator(`button:has-text("${s}"), [role="button"]:has-text("${s}")`)
-          .first().click({ timeout: 待ちクリック });
+        await 一歩(ap, s, 待ちクリック);
         await ap.waitForTimeout(1200);
       }
       // ★★★`data-ops-body` は 2026-09-20 に 足した 目じるし です。
