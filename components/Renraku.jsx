@@ -8,6 +8,7 @@ import {
   HIDE_AFTER_DAYS, HIDE_LINE, GO_MISOU_LABEL, GO_MISOU_SUB, SOON_LINE, visibleMessages, mayPost, studioName, isTwoPane, BODY_WIDTH,
   // ★★裁定 その87（2026-09-18）。★字も 幅も lib が 持ちます。
   LIST_WIDTH, NO_READ_TRACKING_LINE, MONKA_READ_SELF_LINE, showMonkaReadSelfBanner,
+  MONKA_READ_PAUSED_LINE, monkaReadOpen,
   SECTION_ANNOUNCE, SECTION_MONKA,
   SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard,
   // ★★2026-09-19（★実機の ご報告）── ★一覧に 本文を 出しません。
@@ -352,6 +353,19 @@ export default function Renraku({
       <p style={{ fontSize: "0.8125rem", color: C.ink, lineHeight: 1.85, margin: 0 }}>
         {MONKA_READ_SELF_LINE}
       </p>
+      {/* ★★★いまは 開けません（★2026-09-21・STEP_0）。
+           ★★上の 1行が 約束して いる「記録に 残ります」が、まだ 本当では
+             ★ありません。★本当に なるまで 開けません。
+           ★★台帳の 側でも 閉じて います。★ここは お知らせ だけ です。
+           ★★決めは lib/renraku.js が 持ちます。★ここで 判じません。 */}
+      {!monkaReadOpen() ? (
+        <p style={{
+          fontSize: "0.8125rem", color: C.ink, lineHeight: 1.85,
+          margin: "8px 0 0", fontWeight: 600
+        }}>
+          {MONKA_READ_PAUSED_LINE}
+        </p>
+      ) : null}
     </div>
   ) : null;
 
