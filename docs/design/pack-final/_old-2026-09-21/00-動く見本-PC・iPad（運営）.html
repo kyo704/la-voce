@@ -1058,8 +1058,7 @@ function jdate(iso){if(!iso)return '';var d=new Date(iso+'T00:00:00');
 function jspan(g){return g.t1?(g.t1+(g.t2?'〜'+g.t2:'〜')):''}
 function P_gyoji(){
  return '<h2>行事</h2><div class="sub">日と 時間と 場所と 対象を 知らせます　／　出欠は 集めません</div>'
- +'<div class="pills"><span class="pill" onclick="push(\'行事を出す\',-1)">＋ 行事を 出す</span>'
- +'<span class="pill on" onclick="push(\'公演の運営\')">公演の 運営（フィガロの結婚）</span></div>'
+ +'<div class="pills"><span class="pill" onclick="push(\'行事を出す\',-1)">＋ 行事を 出す</span></div>'
  +'<div class="tblwrap" style="max-height:none"><table>'
  +'<tr><th class="stick">行事</th><th>日</th><th>時間</th><th>場所</th><th>対象</th><th class="num">届く人</th><th>採点</th></tr>'
  +GYOJI.map(function(g,i){return '<tr class="click" onclick="push(\'行事を出す\','+i+')">'
@@ -3648,145 +3647,6 @@ SC['レッスン割']=P_wari;
 SC['希望の地図']=P_wariMap;
 SC['希望がまだの方']=P_wariMada;
 SC['レッスン割を確定']=P_wariDone;
-
-/* ══ ★公演の運営 ── 裁定その141（2026-09-21）══
-   ★香盤表（場面×役）が 正。稽古に 要る人は 香盤表から 出す
-   ★出演者の 体調は、どの 画面からも 見えない
-   ★配った物の 既読は、数も 出さない（裁定その87）               */
-var PROD={title:'フィガロの結婚',org:'○○市民オペラ',from:'10月1日',to:'2月22日',
- hon:'2月21日（土）・22日（日）',place:'○○文化会館 大ホール'};
-/* [役, 声, Aキャスト, Bキャスト] */
-var ROLES=[['フィガロ','バス','山田 大地',''],['スザンナ','ソプラノ','白石 澪','井上 かなで'],
- ['伯爵','バリトン','森 直哉',''],['伯爵夫人','ソプラノ','片山 ひなの','村上 ひかる'],
- ['ケルビーノ','メゾ','菊地 せな',''],['バジリオ','テノール','坂本 響',''],['合唱','','合唱 24人','']];
-/* [幕, 場, 題, 出る役, 分] */
-var SCENES=[['1幕','1場','部屋の寸法',[0,1],12],['1幕','2場','伯爵とケルビーノ',[1,4,2,5],18],
- ['1幕','3場','もう飛ぶまいぞ',[0,4,6],8],['2幕','1場','伯爵夫人の部屋',[3,1,4],20],
- ['2幕','2場','フィナーレ',[0,1,2,3,5],24],['3幕','1場','手紙の二重唱',[3,1],10],
- ['3幕','2場','結婚式',[0,1,2,3,6],15],['4幕','1場','庭',[0,1,2,3,4,5],26]];
-var KEIKO=[{d:'10月3日（金）',t:'19:00〜21:30',k:'立ち稽古',sc:[3,4],line:'A',pl:'○○稽古場 第1'},
- {d:'10月5日（日）',t:'13:00〜17:00',k:'音楽稽古',sc:[0,1,2],line:'両方',pl:'○○稽古場 第2'},
- {d:'10月10日（金）',t:'18:30〜21:30',k:'立ち稽古',sc:[1,7],line:'B',pl:'○○稽古場 第1'}];
-var KS={sc:{3:1,4:1},line:'A',late:{},add:[]};
-var HAIFU=[['香盤表','9月28日','全員'],['稽古予定（10月）','9月28日','全員'],['演出ノート 第2幕','10月2日','第2幕に 出る方']];
-var KATT={};   /* ★休み に した方だけ 持つ */
-
-function whoOf(r,line){var a=ROLES[r][2],b=ROLES[r][3];
- if(!b)return [a]; if(line==='A')return [a]; if(line==='B')return [b]; return [a,b]}
-function needed(scs,line){var rs={},out=[];
- scs.forEach(function(i){SCENES[i][3].forEach(function(r){rs[r]=1})});
- Object.keys(rs).map(Number).sort(function(a,b){return a-b}).forEach(function(r){
-  whoOf(r,line).forEach(function(n){out.push([n,ROLES[r][0]])})});return out}
-function scLab(scs){return scs.map(function(i){return SCENES[i][0]+SCENES[i][1]}).join('・')}
-function lineBtn(v){return '<span class="pill sm'+(KS.line===v?' on':'')+'" onclick="KS.line=\''+v+'\';draw()">'+v+'</span>'}
-
-function P_koen(){
- var k=KEIKO[0],need=needed(k.sc,k.line),off=need.filter(function(x){return KATT[x[0]]});
- return bk('行事')+'<h2>'+PROD.title+'</h2>'
- +'<div class="sub">'+PROD.org+'　／　稽古 '+PROD.from+'〜　／　本番 '+PROD.hon+'　'+PROD.place+'</div>'
- +'<div class="pills">'
- +'<span class="pill" onclick="push(\'香盤表\')">香盤表</span>'
- +'<span class="pill" onclick="push(\'稽古を組む\')">＋ 稽古を 組む</span>'
- +'<span class="pill" onclick="push(\'公演の出欠\')">出欠</span>'
- +'<span class="pill" onclick="push(\'配る\')">配る</span></div>'
- +'<div class="col2" style="align-items:flex-start">'
- +'<div class="card" style="flex:1.3;min-width:280px"><div class="h3" style="margin-top:0">きょうの 稽古</div>'
- +'<div class="li plain"><span><b>'+k.d+'　'+k.t+'</b><div class="usu">'+k.k+'　'+scLab(k.sc)+'　／　'+k.pl+'</div></span>'
- +'<s>'+k.line+'キャスト</s></div>'
- +'<div class="li" onclick="push(\'公演の出欠\')"><span>呼んでいる方</span><s>'+need.length+'人 ›</s></div>'
- +(off.length?'<div class="li plain"><span>休みの方</span><s>'+off.map(function(x){return x[0]}).join('、')+'</s></div>':'')
- +'</div>'
- +'<div class="card" style="flex:1;min-width:250px"><div class="h3" style="margin-top:0">これからの 稽古</div>'
- +KEIKO.slice(1).map(function(r){return '<div class="li plain"><span>'+r.d+'<div class="usu">'+r.k+'　'+scLab(r.sc)+'</div></span><s>'+r.line+'</s></div>'}).join('')
- +'</div></div>'
- +'<div class="card"><div class="h3" style="margin-top:0">配った もの</div>'
- +HAIFU.map(function(h){return '<div class="li plain"><span>'+h[0]+'<div class="usu">'+h[2]+'</div></span><s>'+h[1]+'</s></div>'}).join('')+'</div>'
- +'<div class="note"><b>出演者の 体調は、どの 画面からも 見られません。</b><br>'
- +'休んだことは、運営の 記録です。<b>ご本人の 画面に「無断欠席」とは 出ません</b>。<br>'
- +'連絡は 稽古場の LINE の ままで かまいません。ここは、その上に 載る 予定表と 香盤表です。</div>'}
-
-function P_kouban(){
- var sr=S.ksr, sc=S.ksc;
- var h=bk(PROD.title)+'<h2>香盤表</h2>'
- +'<div class="sub">場面 × 役　／　●が 出る 場面　／　<b>これが 正</b>。稽古に 要る方は ここから 出します</div>'
- +'<div class="col2" style="align-items:flex-start"><div style="flex:3;min-width:0">'
- +'<div class="tblwrap" style="max-height:none"><table><tr><th class="stick">場面</th><th class="num">分</th>'
- +ROLES.map(function(r,ri){return '<th style="cursor:pointer;text-align:center;'+(sc===ri?'background:var(--band2)':'')+'" onclick="S.ksc='+ri+';S.ksr=null;draw()">'
-   +r[0]+'<div class="usu" style="font-weight:400">'+r[2]+(r[3]?'<br>'+r[3]:'')+'</div></th>'}).join('')+'</tr>'
- +SCENES.map(function(x,si){return '<tr class="click" onclick="S.ksr='+si+';S.ksc=null;draw()"'+(sr===si?' style="background:var(--band2)"':'')+'>'
-   +'<td class="stick">'+x[0]+' '+x[1]+'<div class="usu">'+x[2]+'</div></td><td class="num">'+x[4]+'</td>'
-   +ROLES.map(function(r,ri){var on=x[3].indexOf(ri)>=0;
-     return '<td style="text-align:center;font-size:15px;'+(sc===ri?'background:var(--band2)':'')+'">'+(on?'●':'')+'</td>'}).join('')+'</tr>'}).join('')
- +'</table></div></div><div style="flex:1.2;min-width:240px"><div class="card">';
- if(sr!=null){var x=SCENES[sr];
-  h+='<div class="h3" style="margin-top:0">'+x[0]+' '+x[1]+'　'+x[2]+'</div>'
-   +needed([sr],'両方').map(function(p){return '<div class="li plain"><span>'+p[0]+'</span><s>'+p[1]+'</s></div>'}).join('')
-   +'<div class="usu" style="margin-top:8px">A・B 両方を 出しています</div>';
- }else if(sc!=null){var r=ROLES[sc];
-  h+='<div class="h3" style="margin-top:0">'+r[0]+'<span class="usu">　'+r[2]+(r[3]?'／'+r[3]:'')+'</span></div>'
-   +SCENES.filter(function(x){return x[3].indexOf(sc)>=0}).map(function(x){return '<div class="li plain"><span>'+x[0]+' '+x[1]+'</span><s>'+x[2]+'</s></div>'}).join('');
- }else{
-  h+='<div class="empty" style="padding:20px 8px"><div class="t">場面か 役を 押してください。</div>'
-   +'<div class="s">場面なら、要る方が。役なら、出る 場面が 出ます。</div></div>';
- }
- return h+'</div></div></div>'
- +'<div class="pills" style="margin-top:10px"><span class="pill">＋ 場面を 足す</span><span class="pill">CSV から 読み込む</span><span class="pill">PDF に する</span></div>'
- +'<div class="note">ダブルキャストは、<b>色ではなく 列の 中で</b> 分けています。<br>'
- +'香盤表を 直すと、まだ 先の 稽古の 呼び出しも 変わります。</div>'}
-
-function P_keikoKumu(){
- var scs=Object.keys(KS.sc).map(Number).sort(),need=needed(scs,KS.line);
- KS.add.forEach(function(n){need.push([n,'追加'])});
- return bk(PROD.title)+'<h2>稽古を 組む</h2><div class="sub">場面を 選ぶと、要る方が 出ます</div>'
- +'<div class="col2" style="align-items:flex-start">'
- +'<div class="card" style="flex:1;min-width:270px">'
- +'<div class="h3" style="margin-top:0">いつ・どこで</div>'
- +'<div class="li plain"><span>日</span><s>10月17日（金）</s></div>'
- +'<div class="li plain"><span>時間</span><s>19:00〜21:30</s></div>'
- +'<div class="li plain"><span>種類</span><s>立ち稽古</s></div>'
- +'<div class="li plain"><span>場所</span><s>○○稽古場 第1</s></div>'
- +'<div class="h3">場面</div>'
- +SCENES.map(function(x,si){var on=KS.sc[si];
-   return '<div class="li" onclick="if(KS.sc['+si+'])delete KS.sc['+si+'];else KS.sc['+si+']=1;draw()">'
-    +'<span>'+x[0]+' '+x[1]+'<div class="usu">'+x[2]+'　'+x[4]+'分</div></span>'
-    +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;border:1.6px solid '+(on?'var(--enji)':'var(--line)')+';'
-    +(on?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')+'vertical-align:-3px"></span></s></div>'}).join('')
- +'<div class="h3">キャスト</div><div class="pills">'+lineBtn('A')+lineBtn('B')+lineBtn('両方')+'</div>'
- +'</div>'
- +'<div class="card" style="flex:1.2;min-width:280px">'
- +'<div class="h3" style="margin-top:0">呼ぶ方　'+need.length+'人</div>'
- +(need.length?need.map(function(p){var late=KS.late[p[0]];
-   return '<div class="li plain"><span>'+p[0]+(p[1]==='追加'?' <span class="pill sm">追加</span>':'')
-    +'<div class="usu">'+(p[1]==='追加'?'香盤表に ない方':p[1])+'</div></span>'
-    +'<s>集合 <b>'+(late?'18:00':'18:30')+'</b> '
-    +'<span class="pill sm" onclick="KS.late[\''+p[0]+'\']=!KS.late[\''+p[0]+'\'];draw()">'+(late?'もどす':'早める')+'</span></s></div>'}).join('')
-   :'<div class="usu">場面を 選んでください</div>')
- +'<div class="li" onclick="KS.add.push(\'稽古ピアニスト 高橋\');draw()"><span style="color:var(--enji)">＋ ほかの方を 足す</span><s>›</s></div>'
- +'<div style="margin-top:12px"><span class="btn" onclick="toast(\'置きました。呼んだ方の きょうと 日程に 出ます\');pop()">この 稽古を 置く</span></div>'
- +'</div></div>'
- +'<div class="note">集合は、稽古の 始まりとは 別に <b>1人ずつ</b> ずらせます（衣裳・メイク・先に 音楽稽古）。<br>'
- +'香盤表に ない方を 足すと「追加」の 印が つきます。<br>'
- +'<b>ほかの方の 集合時刻は、出演者には 見えません</b>。自分の ものだけです。</div>'}
-
-function P_koenAtt(){
- var k=KEIKO[0],need=needed(k.sc,k.line);
- return bk(PROD.title)+'<h2>出欠</h2><div class="sub">'+k.d+'　'+k.t+'　'+k.k+'　'+scLab(k.sc)+'</div>'
- +'<div class="warn">はじめから <b>全員「来た」</b>です。来ていない方だけ 押してください。</div>'
- +'<div class="card p0">'+need.map(function(p){var off=KATT[p[0]];
-   return '<div class="li" onclick="KATT[\''+p[0]+'\']=!KATT[\''+p[0]+'\'];draw()"><span>'+p[0]+'<div class="usu">'+p[1]+'</div></span>'
-    +'<s>'+(off?'<span style="color:var(--ink3)">休み</span>':'来た')+'</s></div>'}).join('')+'</div>'
- +'<div class="note">電波の 届かない 稽古場でも 押せます。<b>つながったときに 送ります</b>。<br>'
- +'休んだことは 運営の 記録です。<b>ご本人の 画面には 出ません</b>。理由も うかがいません。</div>'}
-
-function P_haifu(){
- return bk(PROD.title)+'<h2>配る</h2><div class="sub">香盤表・稽古予定・演出ノート</div>'
- +'<div class="card p0">'+HAIFU.map(function(h){return '<div class="li plain"><span>'+h[0]+'<div class="usu">'+h[2]+'</div></span><s>'+h[1]+'に 配りました</s></div>'}).join('')+'</div>'
- +'<div class="pills" style="margin-top:10px"><span class="pill" onclick="askShow(\'配りますか\',\'演出ノート 第3幕\',\'第3幕に 出る方に 届きます。<br>届いたことを お知らせは しません。開いたときに 見えます。\',false,function(){HAIFU.push([\'演出ノート 第3幕\',\'10月16日\',\'第3幕に 出る方\']);draw();toast(\'配りました\')})">＋ PDF を 配る</span></div>'
- +'<div class="note"><b>読んだかどうか、読んだ 数は 出しません</b>。<br>'
- +'楽譜は 配りません（著作権の ため）。配れるのは 香盤表・稽古予定・演出ノート・進行表です。</div>'}
-
-SC['公演の運営']=P_koen; SC['香盤表']=P_kouban; SC['稽古を組む']=P_keikoKumu;
-SC['公演の出欠']=P_koenAtt; SC['配る']=P_haifu;
 var TAB={'ホーム':P_home,'日程':P_nittei,'名簿':P_meibo,'門下':P_monka,'行事':P_gyoji,
  '連絡':P_renraku,'設定':P_settei};
 var NAV=0;
@@ -3865,7 +3725,7 @@ function navHTML(nav){
 /* ══ ★たたむ ── 表の 画面では 自動で レールに ══
    Fluent NavigationView の Auto と 同じ考え。
    ★幅が 足りない 画面だけ たたみます                        */
-var WIDE = ['役職の一覧','名簿','日程を組む','置ける枠','採点','希望の地図','レッスン割','レッスン割を確定','香盤表','稽古を組む','公演の運営'];
+var WIDE = ['役職の一覧','名簿','日程を組む','置ける枠','採点','希望の地図','レッスン割','レッスン割を確定'];
 function autoRail(){
  var t=S.stack.length?topOf().s:S.tab;
  return WIDE.indexOf(t)>=0 && S.dev!=='pc'}

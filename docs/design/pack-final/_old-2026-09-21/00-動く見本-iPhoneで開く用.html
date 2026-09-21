@@ -722,7 +722,6 @@ function S_kyou(){
   +(ORGS.length>1?'<br>通っている ところが 全部、1つの 予定表に 出ます。教室どうしは 見えません。':'')+'</div>';
  }
  /* 近い 行事 */
- b += koenBand();
  b += wariBand();
  b += sagasuBand();
  if(hasClass()){
@@ -2116,78 +2115,6 @@ SC['レッスンの希望']=function(){
  +'見るのは、<b>担当の 先生と、日程を 組む 方だけ</b>です。ほかの 学生には 見えません。<br>'
  +'授業の コマは、はじめから × に しています。<b>授業の 名前は 先生に 伝わりません</b>。<br>'
  +'決まったら、きょうと 日程に 出ます。カレンダーにも 入れられます。</div>'};
-
-/* ══ ★公演（出演者の 側）── 裁定その141（2026-09-21）══
-   ★見えるのは 自分の 稽古・自分の 集合時刻・自分の 出る 場面
-   ★ほかの方の 集合時刻は 見えない                            */
-var KP={title:'フィガロの結婚',org:'○○市民オペラ',role:'バジリオ',hon:'2月21日（土）・22日（日）',
- place:'○○文化会館 大ホール',all:false};
-var KP_ROLES=['フィガロ','スザンナ','伯爵','伯爵夫人','ケルビーノ','バジリオ','合唱'];
-var KP_ME=5;
-var KP_SC=[['1幕','1場','部屋の寸法',[0,1]],['1幕','2場','伯爵とケルビーノ',[1,4,2,5]],
- ['1幕','3場','もう飛ぶまいぞ',[0,4,6]],['2幕','1場','伯爵夫人の部屋',[3,1,4]],
- ['2幕','2場','フィナーレ',[0,1,2,3,5]],['3幕','1場','手紙の二重唱',[3,1]],
- ['3幕','2場','結婚式',[0,1,2,3,6]],['4幕','1場','庭',[0,1,2,3,4,5]]];
-/* [日, 集合, 始まり, 種類, 場面, 場所] */
-var KP_K=[['10月3日（金）','18:30','19:00','立ち稽古',[3,4],'○○稽古場 第1'],
- ['10月5日（日）','12:30','13:00','音楽稽古',[0,1,2],'○○稽古場 第2'],
- ['10月10日（金）','18:00','18:30','立ち稽古',[1,7],'○○稽古場 第1']];
-function kpCalled(r){return r[4].some(function(i){return KP_SC[i][3].indexOf(KP_ME)>=0})}
-function kpLab(a){return a.map(function(i){return KP_SC[i][0]+KP_SC[i][1]}).join('・')}
-
-function koenBand(){
- var r=KP_K[0]; if(!kpCalled(r))return '';
- return '<div class="box" style="margin-bottom:11px"><div class="li" onclick="push(\'公演\')">'
-  +'<span>きょうの 稽古　<b>'+r[1]+' 集合</b>'
-  +'<div class="usu">'+r[2]+' '+r[3]+'　'+kpLab(r[4])+'　／　'+r[5]+'</div></span><s>›</s></div></div>'}
-
-SC['公演']=function(){
- var list=KP_K.filter(function(r){return KP.all||kpCalled(r)});
- var mine=KP_SC.filter(function(x){return x[3].indexOf(KP_ME)>=0});
- return bk('きょう')
- +'<div class="hd" style="padding-top:2px"><h2>'+KP.title+'</h2></div>'
- +'<div class="usu" style="margin-bottom:12px">'+KP.org+'　／　'+KP.role+' 役<br>本番 '+KP.hon+'　'+KP.place+'</div>'
-
- +'<div class="sh3" style="margin-top:0;display:flex;justify-content:space-between;align-items:center">'
- +'<span>'+(KP.all?'すべての 稽古':'呼ばれている 稽古')+'</span>'
- +'<span class="pill sm" onclick="KP.all=!KP.all;draw()">'+(KP.all?'自分の だけ':'全部 見る')+'</span></div>'
- +'<div class="box">'+list.map(function(r){var me=kpCalled(r);
-   return '<div class="li plain"><span>'+r[0]
-    +'<div class="usu">'+(me?'<b style="color:var(--ink)">'+r[1]+' 集合</b>　':'')+r[2]+'〜　'+r[3]+'</div>'
-    +'<div class="usu">'+kpLab(r[4])+'　／　'+r[5]+'</div></span>'
-    +'<s>'+(me?'':'<span class="usu">呼ばれていません</span>')+'</s></div>'}).join('')+'</div>'
-
- +'<div class="sh3">自分の 出る 場面</div><div class="box">'
- +mine.map(function(x){return '<div class="li plain"><span>'+x[0]+' '+x[1]+'</span><s>'+x[2]+'</s></div>'}).join('')
- +'<div class="li" onclick="push(\'香盤表を見る\')"><span>香盤表を 見る</span><s>›</s></div></div>'
-
- +'<div class="sh3">配られた もの</div><div class="box">'
- +[['香盤表','9月28日'],['稽古予定（10月）','9月28日'],['演出ノート 第2幕','10月2日']].map(function(h){
-   return '<div class="li"><span>'+h[0]+'<div class="usu">'+h[1]+'</div></span><s>PDF ›</s></div>'}).join('')+'</div>'
-
- +'<div class="note">ほかの方の 集合時刻は 見えません。<b>ご自分の ものだけ</b>です。<br>'
- +'<b>体調の 記録は、制作にも 舞台監督にも 見えません</b>。<br>'
- +'本番は、あなたの 本番の 予定にも 入っています。終わると「これまでの 出演」に 残ります。<br>'
- +'連絡は、稽古場の LINE の ままです。</div>'};
-
-SC['香盤表を見る']=function(){
- /* ★自分の 列を いちばん 左に（横に ずらさなくても 見える） */
- var ORD=[KP_ME].concat(KP_ROLES.map(function(r,i){return i}).filter(function(i){return i!==KP_ME}));
- return bk('公演')
- +'<div class="hd" style="padding-top:2px"><h2>香盤表</h2></div>'
- +'<div class="usu" style="margin-bottom:10px">●が 出る 場面。<b>'+KP_ROLES[KP_ME]+'</b>（あなた）の 列を 左に、濃く しています。ほかの 役は 横に ずらすと 見えます。</div>'
- +'<div style="overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)">'
- +'<table style="border-collapse:collapse;font-size:13px;min-width:560px">'
- +'<tr><th style="position:sticky;left:0;background:var(--card);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">場面</th>'
- +ORD.map(function(ri){var r=KP_ROLES[ri];return '<th style="padding:8px 6px;font-weight:500;border-bottom:1px solid var(--line);'
-   +(ri===KP_ME?'background:var(--enji);color:#fff;':'color:var(--ink3);')+'">'+r+'</th>'}).join('')+'</tr>'
- +KP_SC.map(function(x){return '<tr><td style="position:sticky;left:0;background:var(--card);padding:8px 10px;border-bottom:1px solid var(--line2);white-space:nowrap">'
-   +x[0]+' '+x[1]+'</td>'
-   +ORD.map(function(ri){var on=x[3].indexOf(ri)>=0;
-     return '<td style="text-align:center;border-bottom:1px solid var(--line2);'
-      +(ri===KP_ME?'background:color-mix(in srgb,var(--enji) 12%,var(--card));font-weight:700;':'')+'">'+(on?'●':'')+'</td>'}).join('')+'</tr>'}).join('')
- +'</table></div>'
- +'<div class="note">これは 舞台監督が 作った 香盤表です。直されると、ここも 変わります。</div>'};
 SC['お仕事を選ぶ']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>どんな お仕事ですか</h2></div>'
  +'<div class="usu" style="margin-bottom:12px">'
@@ -3382,7 +3309,6 @@ SC['もっと']=function(){
  +'<div class="li" onclick="openSheet(\'account\')"><span>アカウント</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'プラン\')"><span>プラン</span><s>'+(paid()?'調べる':'無料')+' ›</s></div>'
  +(hasSearch()?'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>':'')
- +'<div class="li" onclick="push(\'公演\')"><span>公演<div class="usu">フィガロの結婚　バジリオ 役</div></span><s>›</s></div>'
  +'<div class="li" onclick="push(\'あなたのページ\')"><span>あなたの ページ<div class="usu">経歴・紙・公開</div></span><s>'+(PF_PUB?'公開中':pfCount()+'件')+' ›</s></div>'
  +'<div class="li" onclick="push(\'Woolsong\')"><span>Woolsong<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
  +'<div class="li" onclick="push(\'お仕事を選ぶ\')"><span>お仕事<div class="usu">画面の ことばが 変わります</div></span><s>'+VOCAB[FIELD].field+' ›</s></div>'
