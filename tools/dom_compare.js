@@ -67,8 +67,21 @@ const HONE = `(root) => {
     if (/\\bnote\\b|\\bwarn\\b|\\busu\\b|\\bwl\\b/.test(cls)) kind = "注";
     else if (tag === "h1" || tag === "h2" || tag === "h3"
         || /\\bh3\\b|\\bsh3\\b|\\bfl\\b/.test(cls)) kind = "題";
-    else if (tag === "button" || tag === "th" || tag === "li"
-             || /\\bbtn\\b|\\bpill\\b|\\bli\\b/.test(cls)) kind = "文";
+    // ★★★段階3 ── ★札 だけ（★裁定 その111）。
+    //   ★★押す もの です。★「何が できるか」が ここに 出ます。
+    //   ★★見本は 'div.btn'、★実機は '<button>'。★種を 分けずに 見ます。
+    // ★★★'role="button"' を 足しかけて、★戻しました（★2026-09-21）。
+    //   ★★見本に 'role="button"' は **1つも ありません**（★数えました）。
+    //     ★★足すと、★実機の 'Li'（div role=button）だけが 札に なり、
+    //       ★★見本の 同じ 行は 'div.li' の まま 文 に なります。
+    //     ★★同じ ものが 別の 種に なる ── ★上の 行で 戒めて いる 過ち です。
+    //   ★★★そして これは 道具の 粗さ では ありません。**本当の 差** です ──
+    //     ★★見本は 行の 中に 「なおす ›」の 札を 置きます。
+    //     ★★実機は 行 その ものを 押させ、★「なおす」は ただの 字 です。
+    //     ★★隠すと、★その 差が 消えます。
+    else if (tag === "button" || /\\bbtn\\b/.test(cls)) kind = "札";
+    else if (tag === "th" || tag === "li"
+             || /\\bpill\\b|\\bli\\b/.test(cls)) kind = "文";
     if (kind === "注") {
       // ★★★注記は **文**に 割ってから くらべます（★2026-09-20・坂本さんの お決め）。
       //   ★★見本は 1つの かたまりに 何行も 入れて います。
@@ -591,14 +604,20 @@ function calibrate() {
     //   ★★消すと、★字の 形に 当てはまらない 注記が 見えなく なります。
     const 注 = (a) => a.filter((s) => s.startsWith("注｜"));
     const rc = kuraberu(注(mihon), 注(impl));
+    // ★★★段階3 ── ★札 だけ（★裁定 その111）。
+    //   ★★「押せる ものが 揃って いるか」を 見ます。
+    //   ★★★出て いない 札は、★機能が 無いのと 同じ です（★裁定 その120）。
+    const 札 = (a) => a.filter((s) => s.startsWith("札｜"));
+    const rb = kuraberu(札(mihon), 札(impl));
     // ★★★差を 3つに 分けます（★裁定 その118）。★㋒空白 ／ ㋐助詞 ／ 未仕分け。
     const wk0 = 仕分け(rn.onlyMihon, rn.onlyImpl);
     const wk1 = 仕分けもう一度(wk0.未, 約(impl));
     const wk = { 空白: wk0.空白.concat(wk1.空白), 助詞: wk0.助詞.concat(wk1.助詞), 未: wk1.未 };
-    出.push({ key: sc.key, ...r, title: rt, note: rn, cls: rc, wake: wk,
+    出.push({ key: sc.key, ...r, title: rt, note: rn, cls: rc, wake: wk, btn: rb,
       n: { mihon: mihon.length, impl: impl.length } });
     console.log(`  ok  ${sc.key} … 題 ${rt.same}/${rt.onlyMihon.length}/${rt.onlyImpl.length}`
       + `　約束 ${rn.same}/${rn.onlyMihon.length}/${rn.onlyImpl.length}`
+      + `　札 ${rb.same}/${rb.onlyMihon.length}/${rb.onlyImpl.length}`
       + `　｜　ぜんぶ ${r.same}/${r.onlyMihon.length}/${r.onlyImpl.length}`
       + "　（同じ/見本のみ/実機のみ）");
   }
@@ -710,6 +729,26 @@ function calibrate() {
     L.push(`\n**★${x.key}**\n`);
     a.onlyMihon.forEach((s) => L.push(`- ★見本のみ … ${s.replace("注｜", "")}`));
     a.onlyImpl.forEach((s) => L.push(`- ★実機のみ … ${s.replace("注｜", "")}`));
+  });
+
+  L.push("\n## ★二の三 ★札 だけ の くらべ（★段階3・裁定 その111）\n");
+  L.push("★★押す もの です。★「何が できるか」が ここに 出ます。");
+  L.push("★★★見本に あって 実機に 無い 札は、★**機能が 無いのと 同じ** です（★裁定 その120）。");
+  L.push("★★見本は `div.btn`、★実機は `<button>`。★種を 分けずに 見て います。\n");
+  L.push("| 画面 | 同じ | ★見本に あって 実機に 無い | ★実機に あって 見本に 無い |");
+  L.push("|---|---|---|---|");
+  出.forEach((x) => {
+    if (x.err || !x.btn) { L.push(`| ${x.key} | — | — | — |`); return; }
+    L.push(`| ${x.key} | ${x.btn.same} | ${x.btn.onlyMihon.length} | ${x.btn.onlyImpl.length} |`);
+  });
+  L.push("\n### ★札の 中身（★差の ある 画面 だけ）\n");
+  出.forEach((x) => {
+    if (x.err || !x.btn) return;
+    if (!x.btn.onlyMihon.length && !x.btn.onlyImpl.length) return;
+    L.push(`**★${x.key}**\n`);
+    x.btn.onlyMihon.forEach((s) => L.push(`- ★見本のみ … ${s.replace("札｜", "")}`));
+    x.btn.onlyImpl.forEach((s) => L.push(`- ★実機のみ … ${s.replace("札｜", "")}`));
+    L.push("");
   });
 
   L.push("\n## ★三 ★ぜんぶ（★行も 含む）── ★参考\n");
