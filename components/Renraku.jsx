@@ -13,6 +13,8 @@ import {
   READ_REASONS, READ_REASON_HEAD, READ_REASON_NOTE_HINT, READ_REASON_NOTE_MAX,
   READ_REASON_OPEN, READ_REASON_CANCEL, READ_WARN_LINE, READ_REASON_NOTES,
   READ_REASON_PICK_FIRST, READ_OPENED_BAND, needsReadReason, mayOpenWithReason,
+  // ★★開いた 記録の 一覧（★仕様シート §3 ／ ★台帳 08-14・2026-09-22）。
+  READ_LOG_HEAD, READ_LOG_ALL_HEAD, READ_LOG_NOTES, readLogRow,
   SECTION_ANNOUNCE, SECTION_MONKA,
   SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard,
   // ★★2026-09-19（★実機の ご報告）── ★一覧に 本文を 出しません。
@@ -412,21 +414,26 @@ export default function Renraku({
           ★★何を 読んだかは 残して いません。★列ごと ありません。 */}
       {!openStudio && (readsAll || []).length > 0 ? (
         <div style={card}>
-          <p style={{ ...small, marginBottom: 4 }}>開いた 記録（学校ぜんぶ）</p>
-          {readsAll.map((r) => (
-            <div key={r.id} className="flex items-center justify-between gap-2"
-              style={{ padding: "6px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.75rem" }}>
-              <span style={{ color: C.ink }}>
-                {nameOf ? nameOf(r.reader_id) : ""}（{r.reader_role}）
-              </span>
-              <span style={small}>
-                {teacherNameOf ? studioName(teacherNameOf(r.teacher_id)) : ""}
-                {"　"}{whenWord(r.read_at)}
-              </span>
+          <p style={{ ...small, marginBottom: 4 }}>{READ_LOG_ALL_HEAD}</p>
+          {readsAll.map((r) => readLogRow(r, nameOf, teacherNameOf)).map((x) => (
+            <div key={x.id}
+              style={{ padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.78125rem" }}>
+              <div className="flex items-center justify-between gap-2">
+                <span style={{ color: C.ink }}>{x.who}</span>
+                <span style={small}>{x.monka}{"　"}{whenWord(x.when)}</span>
+              </div>
+              {/* ★★理由と「何を 読んだか」を 出します（★仕様シート §3 の 列）。
+                   ★★「残していません」を 空欄に しません。★空欄は 無言 です。 */}
+              <div className="flex items-center justify-between gap-2" style={{ marginTop: 2 }}>
+                <span style={small}>{x.reason}</span>
+                <span style={small}>何を 読んだか：{x.read}</span>
+              </div>
             </div>
           ))}
           <p style={{ ...small, marginTop: 6 }}>
-            誰が・いつ・どの門下を、だけです。何を読んだかは 残しません。
+            {READ_LOG_NOTES.map((s, i) => (
+              <span key={i}>{s}{i < READ_LOG_NOTES.length - 1 ? <br /> : null}</span>
+            ))}
           </p>
         </div>
       ) : null}
@@ -436,18 +443,24 @@ export default function Renraku({
             ★片方だけが 見られる 記録は、★見張りに なりません。 */}
       {(reads || []).length > 0 ? (
         <div style={card}>
-          <p style={{ ...small, marginBottom: 4 }}>開いた 記録</p>
-          {reads.map((r) => (
-            <div key={r.id} className="flex items-center justify-between gap-2"
-              style={{ padding: "6px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.75rem" }}>
-              <span style={{ color: C.ink }}>
-                {nameOf ? nameOf(r.reader_id) : ""}（{r.reader_role}）が 開きました
-              </span>
-              <span style={small}>{whenWord(r.read_at)}</span>
+          <p style={{ ...small, marginBottom: 4 }}>{READ_LOG_HEAD}</p>
+          {reads.map((r) => readLogRow(r, nameOf, teacherNameOf)).map((x) => (
+            <div key={x.id}
+              style={{ padding: "7px 0", borderTop: `1px solid ${C.line}`, fontSize: "0.78125rem" }}>
+              <div className="flex items-center justify-between gap-2">
+                <span style={{ color: C.ink }}>{x.who}が 開きました</span>
+                <span style={small}>{whenWord(x.when)}</span>
+              </div>
+              <div className="flex items-center justify-between gap-2" style={{ marginTop: 2 }}>
+                <span style={small}>{x.reason}</span>
+                <span style={small}>何を 読んだか：{x.read}</span>
+              </div>
             </div>
           ))}
           <p style={{ ...small, marginTop: 6 }}>
-            誰が・いつ・どの門下を、だけです。何を読んだかは 残しません。
+            {READ_LOG_NOTES.map((s, i) => (
+              <span key={i}>{s}{i < READ_LOG_NOTES.length - 1 ? <br /> : null}</span>
+            ))}
           </p>
         </div>
       ) : null}

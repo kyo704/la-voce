@@ -98,7 +98,14 @@ const 受け = readCode("app/api/enrollment/accept", "route.js");
     "★学校で 絞って いません");
   // ★★★何を 読んだかは 残しません。★列ごと ありません。
   assert.ok(!/what_read|read_body|content/.test(連絡), "★中身を 出して います");
-  assert.ok(/何を読んだかは 残しません/.test(連絡), "★その 断りが ありません");
+  // ★★★2026-09-22、★字が lib に 移りました（★台帳 08-14 ／ 仕様シート §3）。
+  //   ★★前 …… 画面に「何を読んだかは 残しません」と 直に 書いて いました。
+  //   ★★いま … `READ_LOG_NOTES`（lib/renraku.js）が 持ち、★画面は 並べる だけ。
+  //   ★★画面に 残るのは 列の 名（「何を 読んだか」）です。
+  assert.ok(/何を 読んだか/.test(連絡), "★列の 名が ありません");
+  assert.ok(/中身は 残しません/.test(
+    require("fs").readFileSync(require("path").join(__dirname, "..", "..", "lib", "renraku.js"), "utf-8")),
+    "★その 断りが ありません");
 });
 
 見る("③ 確かめ ── ★誰が いつ を 残す", () => {

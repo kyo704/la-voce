@@ -158,7 +158,13 @@ function eq(a, b, label) {
   eq(m.shouldLogRead({ role: null, isMember: true }), false, "★学生も 残さない");
   eq(m.shouldLogRead({ role: "owner", isTeacher: true }), false, "★自分の 門下なら 残さない");
   t(/開いた 記録/.test(raw), "★画面に 出る");
-  t(/何を読んだかは 残しません/.test(raw), "★中身は 残さない、と 書く");
+  // ★★★2026-09-22、★字が 変わりました（★仕様シート §3 ／ ★台帳 08-14）。
+  //   ★★前 …… 「誰が・いつ・どの門下を、だけです。何を読んだかは 残しません。」
+  //   ★★いま … 「誰が・いつ・どの門下を・理由 だけ。中身は 残しません。消せません。」
+  //   ★★理由の 列が 増えた ので、★字も 変わりました。
+  //   ★★字そのものは lib が 持ちます（`READ_LOG_NOTES`）。★画面は 並べる だけ です。
+  t(/中身は 残しません/.test(readRaw("lib", "renraku.js")), "★中身は 残さない、と 書く");
+  t(/何を 読んだか/.test(raw), "★列の 名が ある");
   {
     const sel = sql.slice(sql.indexOf("org_message_reads_select"), sql.indexOf("org_message_reads_select") + 700);
     t(/auth\.uid\(\) = teacher_id/.test(sel), "★先生も 見られる");
@@ -184,8 +190,12 @@ function eq(a, b, label) {
     t(/openMonkaThread\(/.test(口), "★運営の 口は 道を 通る");
     t(!/fetchRenraku\(/.test(口), "★運営の 口は 直に 引かない");
   }
-  t(/shouldLogRead/.test(vt) && /logRenrakuRead/.test(vt),
-    "★古い 道は 残して ある（★決めの ことなので 消さない）");
+  // ★★★2026-09-22、★決まりました（★台帳 08-14 ／ Opus）──
+  //   ★★開いた 記録は `monka_read_log` **1本**。★`org_message_reads` は 廃める。
+  //   ★★だから 古い 道（`logRenrakuRead`）は **消しました**。
+  //   ★★この 見張りは 逆向きに なりました。★戻って きたら 気づきます。
+  t(!/logRenrakuRead/.test(vt), "★古い 道は 消えて いる（★台帳 08-14）");
+  t(/monka_read_log/.test(vt), "★新しい 出どころを 引いて いる");
 
   console.log("\n=== ⑦ 決まりB（★広い画面） ===");
   eq(m.BODY_WIDTH, 640, "★本文 640px");

@@ -162,7 +162,11 @@ import PortfolioV2 from "@/components/PortfolioV2";
 import Renraku from "@/components/Renraku";
 import TellTeacher from "@/components/TellTeacher";
 import AnnouncementCompose from "@/components/AnnouncementCompose";
-import { shouldLogRead, readErrorLine } from "@/lib/renraku";
+// ★`shouldLogRead` は 使わなく なりました（★2026-09-22・台帳 08-14）。
+//   ★★書くのは `open_monka_thread` だけ です。★画面は 書きません。
+import { readErrorLine, READ_LOG_COLUMNS,
+  STUDENT_READ_HEAD, STUDENT_READ_EMPTY, STUDENT_READ_NOTES,
+  studioName as studioNameOf, whenWord as whenWordJa } from "@/lib/renraku";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
@@ -5801,6 +5805,10 @@ export default function VocalTracker({
   const [renrakuMessages, setRenrakuMessages] = useState([]);
   const [renrakuAnnouncements, setRenrakuAnnouncements] = useState([]);
   const [renrakuReads, setRenrakuReads] = useState([]);
+  // ★★★門下を 開かれた 記録 ── ★学生 ご本人の 分（★仕様シート §3b・台帳 08-14）。
+  //   ★★出すのは「いつ・どの 門下」だけ です。★誰が・なぜ は 出しません。
+  //   ★★自分で 見に 行った ときだけ 引きます。★知らせ・帯・きょうには 出しません。
+  const [monkaNotices, setMonkaNotices] = useState(null);
   const [openStudio, setOpenStudio] = useState(null);
   // ★「先生に 伝える」を 開いている レッスン（★見本⑥）。
   const [tellLesson, setTellLesson] = useState(null);
@@ -10326,30 +10334,14 @@ export default function VocalTracker({
     if (annRes && !annRes.error) setRenrakuAnnouncements(annRes.data || []);
   }, []);
 
-  /**
-   * ★連絡：★開いた記録を 残します（★坂本さんのご指示・2026-09-10）。
-   *
-   *   ★★運営の方が 門下を 開いた ときだけ です（★lib/renraku.js）。
-   *     ★先生と 学生は、★自分の 門下です。★残しません。
-   *   ★★残せなくても、★画面は 止めません。★読めることが 先です。
-   */
-  //
-  //   ★★★2026-09-21、★呼ぶ ところが 無くなりました（★裁定159 S3）。
-  //     ★★運営が 門下を 開く 道は `open_monka_thread` に 移りました。
-  //       ★★あちらは 台帳の 中で 先に 1行 書きます（fail closed）。
-  //     ★★★けれど **消しません**。★`org_message_reads` は 別の 表 です。
-  //       ★★同じ 約束に 表が 2つ ある、という ことです。
-  //       ★★どちらを 正に するかは 決めの こと です（→ ★台帳 08-14）。
-  //       ★★黙って 消すと、★決める ときに 何が あったか 分からなく なります。
-  //   ★★★引き金（この 関数を 呼ぶ ところ）が 戻る 日 ──
-  //     ★★`org_message_reads` を 正と 決めた とき。★その ときは 逆に
-  //       ★`open_monka_thread` の 記録を どうするかを 決めます。
-  const logRenrakuRead = useCallback(async (orgId, teacherId, role) => {
-    const supabase = createClient();
-    const { error } = await supabase.from("org_message_reads")
-      .insert({ org_id: orgId, teacher_id: teacherId, reader_id: userId, reader_role: role });
-    if (error) console.error("開いた記録を残せませんでした:", error);
-  }, [userId]);
+  // ★★★2026-09-22、★`logRenrakuRead` を 消しました（★台帳 08-14 の 決め）。
+  //   ★★開いた 記録は `monka_read_log` **1本** に 決まりました。
+  //     ★★書くのは `open_monka_thread` です。★台帳の 中で 先に 1行 書きます。
+  //   ★★`org_message_reads` は 廃めます。★併せ持ちません。
+  //     ★★同じ 約束に 表が 2つ あると、★片方が 古く なって 気づけません。
+  //   ★★消した もの …… 画面から `org_message_reads` に insert する 関数 1つ。
+  //     ★★呼ぶ ところは 2026-09-21 から ありません でした。
+  //   ★★★記録 …… docs/records/2026-09-22-開いた記録を1本にする.md
 
   /** ★連絡：★開いた記録を 読みます。★読んだ側にも、読まれた側にも 見せます。 */
   /**
@@ -10357,26 +10349,47 @@ export default function VocalTracker({
    *
    *   ★★きょうまで、★門下を 1つ 開いた ときの 分 しか 出て いません でした。
    *     ★★見本は 表 です ── ★誰が・いつ・どの 門下 を 並べます。
-   *   ★★絞りは 決まりが します（`org_message_reads_select`）。
+   *   ★★絞りは 決まりが します（`monka_read_log_select_master_or_self`）。
    *     ★★読める 方 だけ に 返ります。★ここで 絞りません。
    */
   const [renrakuReadsAll, setRenrakuReadsAll] = useState([]);
   const fetchRenrakuReadsAll = useCallback(async (orgId) => {
     if (!orgId) return;
     const supabase = createClient();
-    const { data, error } = await supabase.from("org_message_reads")
-      .select("id, teacher_id, reader_id, reader_role, read_at")
+    // ★★★出どころは `monka_read_log` です（★台帳 08-14・2026-09-22）。
+    //   ★★絞りは 決まりが します …… 自分の 行（`monka_read`）と 全部（`master`）。
+    //   ★★ここで 絞りません。★2度 数えると、★片方が 古く なります。
+    const { data, error } = await supabase.from("monka_read_log")
+      .select(READ_LOG_COLUMNS)
       .eq("org_id", orgId)
-      .order("read_at", { ascending: false }).limit(50);
+      .order("viewed_at", { ascending: false }).limit(50);
     if (error) { console.error("★開いた記録を読めませんでした:", error); return; }
     setRenrakuReadsAll(data || []);
   }, []);
 
+  /**
+   * ★門下を 開かれた 記録（★学生 ご本人・仕様シート §3b）。
+   *
+   *   ★★台帳の 道（`get_monka_read_notices`）が 返すのは 2つ だけ です ──
+   *     ★`viewed_at`（いつ）と `teacher_name`（どの 門下）。
+   *   ★★誰が 開いたか・理由は 返りません。★運営の 中だけ の もの です。
+   *   ★★★引くのは、★ご本人が 開いた とき だけ です。
+   *     ★★先に 引くと、★出さない つもりでも 運んで しまいます。
+   */
+  const fetchMonkaNotices = useCallback(async () => {
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc("get_monka_read_notices");
+    if (error) { console.error("★開かれた記録を読めませんでした:", error); setMonkaNotices([]); return; }
+    setMonkaNotices(data || []);
+  }, []);
+
   const fetchRenrakuReads = useCallback(async (teacherId) => {
     const supabase = createClient();
-    const { data, error } = await supabase.from("org_message_reads")
-      .select("id, teacher_id, reader_id, reader_role, read_at")
-      .eq("teacher_id", teacherId).order("read_at", { ascending: false }).limit(20);
+    // ★★門下は `target_monka_id` です（★`teacher_id` では ありません）。
+    const { data, error } = await supabase.from("monka_read_log")
+      .select(READ_LOG_COLUMNS)
+      .eq("target_monka_id", teacherId)
+      .order("viewed_at", { ascending: false }).limit(20);
     if (!error) setRenrakuReads(data || []);
   }, []);
 
@@ -10616,8 +10629,8 @@ export default function VocalTracker({
       // ★★★数 だけ を 頼みます（`head: true`）。★中身を 運びません。
       //   ★★誰が 見たかは、★ホームに 出しません（★裁定 その76）。
       //     ★★数を 出すのは、★見られて いる ことを 双方が 知る ため です。
-      //   ★★絞りは 門（RLS）が します。★`org_message_reads_select` です。
-      const { count, error } = await supabase.from("org_message_reads")
+      //   ★★絞りは 門（RLS）が します。★`monka_read_log_select_master_or_self` です。
+      const { count, error } = await supabase.from("monka_read_log")
         .select("id", { count: "exact", head: true });
       if (!alive) return;
       if (error) { console.error("★開いた記録を数えられませんでした:", error); return; }
@@ -22934,7 +22947,10 @@ export default function VocalTracker({
                         const st = renrakuStudios.find((x) => x.teacherId === openStudio);
                         return handlePostRenraku(st && st.orgId, openStudio, body);
                       }}
-                      reads={renrakuReads} />
+                      /* ★★★開いた 記録は、★先生・学生の 画面に 出しません
+                           （★台帳 08-14・2026-09-22）。★`reads` を 渡しません。
+                           ★★学生が 見られるのは「いつ・どの 門下」だけ で、
+                             ★入口は 設定 です（★`get_monka_read_notices`）。 */ />
                     {/* ★★休むことは、★連絡板に 書かせません（★§6-1 の 対処②）。
                         ★★別の道を、★連絡の すぐ下に 置きます（★見本④）。 */}
                     {!openStudio && myAllLessons.length > 0 ? (
@@ -28705,6 +28721,46 @@ export default function VocalTracker({
                           ★いつも true で、★これは 正しい ことです。
                         ★★けれど「いつも 出す」と「★どの 画面にも 出す」は 別 です。
                       ★★畳んで あります（`<details>`）。★開くのは ご本人 です。 */}
+                  {/* ★★★門下を 開かれた 記録（★仕様シート §3b ／ ★台帳 08-14・2026-09-22）。
+                       ★★★入口は 設定 だけ です。
+                         ★★知らせ・バッジ・帯・きょうの 画面には 出しません（★9月10日の 決め）。
+                         ★★出すと、★見られた ことに 気づかせる 道具に なります。
+                       ★★★開いた ときに 初めて 引きます。★先に 運びません。
+                       ★★出すのは「いつ・どの 門下」だけ です。★誰が・なぜ は 出しません。 */}
+                  {renrakuStudios.length > 0 ? (
+                  <details className="rounded-2xl border"
+                    style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}
+                    onToggle={(e) => { if (e.target.open && monkaNotices === null) void fetchMonkaNotices(); }}>
+                    <summary className="p-4 text-sm font-medium cursor-pointer">{STUDENT_READ_HEAD}</summary>
+                    <div className="px-4 pb-4">
+                      {monkaNotices === null ? null
+                        : monkaNotices.length === 0 ? (
+                          <p className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.85 }}>
+                            {STUDENT_READ_EMPTY}
+                          </p>
+                        ) : (
+                          <div className="space-y-2">
+                            {monkaNotices.map((n, i) => (
+                              <div key={i} className="rounded-xl p-3 flex items-center justify-between"
+                                style={{ background: C.paper }}>
+                                <span className="text-xs" style={{ color: C.ink }}>
+                                  {studioNameOf(n.teacher_name)}
+                                </span>
+                                <span className="text-xs" style={{ color: C.inkSoft }}>
+                                  {whenWordJa(n.viewed_at)}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      <p className="text-xs mt-3" style={{ color: C.inkSoft, lineHeight: 1.85 }}>
+                        {STUDENT_READ_NOTES.map((s, i) => (
+                          <span key={i}>{s}{i < STUDENT_READ_NOTES.length - 1 ? <br /> : null}</span>
+                        ))}
+                      </p>
+                    </div>
+                  </details>
+                  ) : null}
                   {canSeeStudentTeacherLink() && (
                   <details className="rounded-2xl border" style={{ display: inMore("設定"), background: C.card, borderColor: C.line }}>
                     <summary className="p-4 text-sm font-medium cursor-pointer">{t("connectWithTeacherTitle")}</summary>
