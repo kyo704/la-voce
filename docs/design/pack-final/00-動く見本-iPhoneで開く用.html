@@ -722,6 +722,7 @@ function S_kyou(){
   +(ORGS.length>1?'<br>通っている ところが 全部、1つの 予定表に 出ます。教室どうしは 見えません。':'')+'</div>';
  }
  /* 近い 行事 */
+ b += kidBand();
  b += koenBand();
  b += wariBand();
  b += sagasuBand();
@@ -2120,20 +2121,43 @@ SC['レッスンの希望']=function(){
 /* ══ ★公演（出演者の 側）── 裁定その141（2026-09-21）══
    ★見えるのは 自分の 稽古・自分の 集合時刻・自分の 出る 場面
    ★ほかの方の 集合時刻は 見えない                            */
-var KP={title:'フィガロの結婚',org:'○○市民オペラ',role:'バジリオ',hon:'2月21日（土）・22日（日）',
- place:'○○文化会館 大ホール',all:false};
-var KP_ROLES=['フィガロ','スザンナ','伯爵','伯爵夫人','ケルビーノ','バジリオ','合唱'];
-var KP_ME=5;
-var KP_SC=[['1幕','1場','部屋の寸法',[0,1]],['1幕','2場','伯爵とケルビーノ',[1,4,2,5]],
- ['1幕','3場','もう飛ぶまいぞ',[0,4,6]],['2幕','1場','伯爵夫人の部屋',[3,1,4]],
- ['2幕','2場','フィナーレ',[0,1,2,3,5]],['3幕','1場','手紙の二重唱',[3,1]],
- ['3幕','2場','結婚式',[0,1,2,3,6]],['4幕','1場','庭',[0,1,2,3,4,5]]];
-/* [日, 集合, 始まり, 種類, 場面, 場所] */
-var KP_K=[['10月3日（金）','18:30','19:00','立ち稽古',[3,4],'○○稽古場 第1'],
- ['10月5日（日）','12:30','13:00','音楽稽古',[0,1,2],'○○稽古場 第2'],
- ['10月10日（金）','18:00','18:30','立ち稽古',[1,7],'○○稽古場 第1']];
-function kpCalled(r){return r[4].some(function(i){return KP_SC[i][3].indexOf(KP_ME)>=0})}
-function kpLab(a){return a.map(function(i){return KP_SC[i][0]+KP_SC[i][1]}).join('・')}
+/* ★種類ごとの 見本（裁定その148）。名前は 作りもの
+   KP_SC の 行：[幕, 場, 題, 出る列, ★自分は 降り番, 人数, ★出番の 時刻]
+   KP_K の 行：[日, 集合, 始まり, 種類, 行, 場所, ★しぼった 列]            */
+var KPS={
+ opera:{KP:{kind:'opera',title:'フィガロの結婚',org:'○○市民オペラ',role:'バジリオ 役',hon:'2月21日（土）・22日（日）',day:'2月22日（日）',
+   place:'○○文化会館 大ホール',iri:'10:30',iriNote:'衣裳・メイクの ため、全体より 30分 早く',all:false},
+  R:['フィガロ','スザンナ','伯爵','伯爵夫人','ケルビーノ','バジリオ','合唱'],ME:5,
+  SC:[['1幕','1場','部屋の寸法',[0,1]],['1幕','2場','伯爵とケルビーノ',[1,4,2,5]],['1幕','3場','もう飛ぶまいぞ',[0,4,6]],['2幕','1場','伯爵夫人の部屋',[3,1,4]],
+   ['2幕','2場','フィナーレ',[0,1,2,3,5]],['3幕','1場','手紙の二重唱',[3,1]],['3幕','2場','結婚式',[0,1,2,3,6]],['4幕','1場','庭',[0,1,2,3,4,5]]],
+  K:[['10月3日（金）','18:30','19:00','立ち稽古',[3,4],'○○稽古場 第1'],['10月5日（日）','12:30','13:00','音楽稽古',[0,1,2],'○○稽古場 第2'],
+   ['10月10日（金）','18:00','18:30','立ち稽古',[1,7],'○○稽古場 第1']],
+  H:[['香盤表','9月28日'],['稽古予定（10月）','9月28日'],['演出ノート 第2幕','10月2日']]},
+ orch:{KP:{kind:'orch',title:'第48回 定期演奏会',org:'○○市民オーケストラ',role:'Hr（ホルン）',hon:'3月8日（日）',day:'3月8日（日）',
+   place:'○○市民会館 大ホール',iri:'10:30',iriNote:'',all:false},
+  R:['1st Vn','2nd Vn','Va','Vc','Cb','Fl','Ob','Cl','Fg','Hr','Tp','Tbn','Timp'],ME:9,
+  SC:[['','','モーツァルト「フィガロの結婚」序曲',[0,1,2,3,4,5,6,7,8,9,10,12],true,{0:8,1:6,2:4,3:4,4:2,5:2,6:2,7:2,8:2,9:2,10:2,12:1}],
+   ['','','モーツァルト 交響曲第40番',[0,1,2,3,4,5,6,7,8,9],false,{0:8,1:6,2:4,3:4,4:2,5:1,6:2,7:2,8:2,9:2}],
+   ['','','ブラームス 交響曲第1番',[0,1,2,3,4,5,6,7,8,9,10,11,12],false,{0:10,1:8,2:6,3:6,4:4,5:2,6:2,7:2,8:2,9:4,10:2,11:3,12:1}]],
+  K:[['1月18日（日）','12:30','13:00','分奏',[1,2],'○○公民館 ホール',[5,6,7,8,9,10,11,12]],['2月1日（日）','12:30','13:00','トゥッティ',[0,1,2],'○○公民館 ホール']],
+  H:[['乗り番表','12月1日'],['練習予定（1〜3月）','12月1日'],['当日の 進行表','2月28日']]},
+ gala:{KP:{kind:'gala',title:'市民文化祭 ガラステージ',org:'○○市 文化協会',role:'テノール',hon:'10月26日（日）',day:'10月26日（日）',
+   place:'○○市民会館 大ホール',iri:'15:00',iriNote:'',all:false},
+  R:['ピアノ','ソプラノ','テノール','コール○○','弦楽四重奏','バンド','ゆいちゃん（ピアノ）'],ME:2,
+  SC:[['','','合唱「ふるさと」',[3,0],false,null,'16:00'],['','','ピアノ「エリーゼのために」',[6],false,null,'16:07'],
+   ['','','「ラ・ボエーム」より 冷たい手を',[2,0],false,null,'16:13'],
+   ['','','「ラ・ボエーム」より 私の名はミミ',[1,0],false,null,'16:18'],['','','アイネ・クライネ・ナハトムジーク 第1楽章',[4],false,null,'16:26'],
+   ['','','バンド 3曲',[5],false,null,'16:42'],['','','フィナーレ「乾杯の歌」',[0,1,2,3],false,null,'17:02']],
+  K:[['10月25日（土）','13:00','13:30','場当たり',[0,1,2,3,4,5,6],'○○市民会館 大ホール']],
+  H:[['出番表','10月1日'],['当日の 進行表','10月20日']]}};
+var KPW={opera:{tbl:'香盤表',row:'場面',mine:'自分の 出る 場面'},orch:{tbl:'乗り番表',row:'曲',mine:'乗り番'},gala:{tbl:'出番表',row:'演目',mine:'自分の 出番'}};
+var KP,KP_ROLES,KP_ME,KP_SC,KP_K,KP_H,KP_KIND='opera';
+function kpUse(k){var d=KPS[k];KP_KIND=k;KP=d.KP;KP_ROLES=d.R;KP_ME=d.ME;KP_SC=d.SC;KP_K=d.K;KP_H=d.H}
+kpUse('opera');
+function kpw(){return KPW[KP_KIND]}
+function kpIn(x){return x[3].indexOf(KP_ME)>=0&&!x[4]}
+function kpCalled(r){return (!r[6]||r[6].indexOf(KP_ME)>=0)&&r[4].some(function(i){return kpIn(KP_SC[i])})}
+function kpLab(a){return a.map(function(i){var x=KP_SC[i];return (x[0]||x[1])?x[0]+x[1]:x[2]}).join('・')}
 
 function koenBand(){
  var r=KP_K[0]; if(!kpCalled(r))return '';
@@ -2142,11 +2166,11 @@ function koenBand(){
   +'<div class="usu">'+r[2]+' '+r[3]+'　'+kpLab(r[4])+'　／　'+r[5]+'</div></span><s>›</s></div></div>'}
 
 SC['公演']=function(){
- var list=KP_K.filter(function(r){return KP.all||kpCalled(r)});
- var mine=KP_SC.filter(function(x){return x[3].indexOf(KP_ME)>=0});
+ var list=KP_K.filter(function(r){return KP.all||kpCalled(r)}),W=kpw();
+ var mine=KP_KIND==='orch'?KP_SC.filter(function(x){return x[3].indexOf(KP_ME)>=0}):KP_SC.filter(kpIn);
  return bk('きょう')
  +'<div class="hd" style="padding-top:2px"><h2>'+KP.title+'</h2></div>'
- +'<div class="usu" style="margin-bottom:12px">'+KP.org+'　／　'+KP.role+' 役<br>本番 '+KP.hon+'　'+KP.place+'</div>'
+ +'<div class="usu" style="margin-bottom:12px">'+KP.org+'　／　'+KP.role+'<br>本番 '+KP.hon+'　'+KP.place+'</div>'
 
  +'<div class="sh3" style="margin-top:0;display:flex;justify-content:space-between;align-items:center">'
  +'<span>'+(KP.all?'すべての 稽古':'呼ばれている 稽古')+'</span>'
@@ -2157,37 +2181,50 @@ SC['公演']=function(){
     +'<div class="usu">'+kpLab(r[4])+'　／　'+r[5]+'</div></span>'
     +'<s>'+(me?'›':'<span class="usu">呼ばれていません</span>')+'</s></div>'}).join('')+'</div>'
 
- +'<div class="sh3">自分の 出る 場面</div><div class="box">'
- +mine.map(function(x){return '<div class="li plain"><span>'+x[0]+' '+x[1]+'</span><s>'+x[2]+'</s></div>'}).join('')
- +'<div class="li" onclick="push(\'香盤表を見る\')"><span>香盤表を 見る</span><s>›</s></div></div>'
+ +'<div class="sh3">'+W.mine+'</div><div class="box">'
+ +mine.map(function(x){
+   if(KP_KIND==='orch')return '<div class="li plain"><span>'+x[2]+'</span><s>'+(x[4]?'<span class="usu">降り番</span>':'乗り')+'</s></div>';
+   if(KP_KIND==='gala')return '<div class="li plain"><span>'+x[2]+'</span><s><b>'+x[6]+'</b></s></div>';
+   return '<div class="li plain"><span>'+x[0]+' '+x[1]+'</span><s>'+x[2]+'</s></div>'}).join('')
+ +'<div class="li" onclick="push(\'香盤表を見る\')"><span>'+W.tbl+'を 見る</span><s>›</s></div></div>'
 
+ +'<div class="sh3">本番の 日　'+KP.day+'</div><div class="box">'
+ +'<div class="li plain"><span>あなたの 入り'+(KP.iriNote?'<div class="usu">'+KP.iriNote+'</div>':'')+'</span><s><b style="font-size:17px;color:var(--ink)">'+KP.iri+'</b></s></div>'
+ +'</div>'
+
+ +kidCalls()
  +'<div class="sh3">配られた もの</div><div class="box">'
- +[['香盤表','9月28日'],['稽古予定（10月）','9月28日'],['演出ノート 第2幕','10月2日']].map(function(h){
+ +KP_H.map(function(h){
    return '<div class="li"><span>'+h[0]+'<div class="usu">'+h[1]+'</div></span><s>PDF ›</s></div>'}).join('')+'</div>'
 
  +'<div class="note">ほかの方の 集合時刻は 見えません。<b>ご自分の ものだけ</b>です。<br>'
  +'<b>体調の 記録は、制作にも 舞台監督にも 見えません</b>。<br>'
+ +'<b>本番の 日の 時刻も、ご自分の 入りと 出番だけ</b>です。<br>'
  +'本番は、あなたの 本番の 予定にも 入っています。終わると「これまでの 出演」に 残ります。<br>'
- +'連絡は、稽古場の LINE の ままです。</div>'};
+ +'連絡は、稽古場の LINE の ままです。</div>'
+ +'<div class="pills" style="margin-top:10px"><span class="usu" style="align-self:center">見本：</span>'
+ +[['opera','オペラ'],['orch','オーケストラ'],['gala','ガラ']].map(function(k){
+   return '<span class="pill sm'+(KP_KIND===k[0]?' on':'')+'" onclick="kpUse(\''+k[0]+'\');draw()">'+k[1]+'</span>'}).join('')+'</div>'};
 
 SC['香盤表を見る']=function(){
  /* ★自分の 列を いちばん 左に（横に ずらさなくても 見える） */
  var ORD=[KP_ME].concat(KP_ROLES.map(function(r,i){return i}).filter(function(i){return i!==KP_ME}));
  return bk('公演')
- +'<div class="hd" style="padding-top:2px"><h2>香盤表</h2></div>'
- +'<div class="usu" style="margin-bottom:10px">●が 出る 場面。<b>'+KP_ROLES[KP_ME]+'</b>（あなた）の 列を 左に、濃く しています。ほかの 役は 横に ずらすと 見えます。</div>'
+ +'<div class="hd" style="padding-top:2px"><h2>'+kpw().tbl+'</h2></div>'
+ +'<div class="usu" style="margin-bottom:10px">'+(KP_KIND==='orch'?'数字は その 曲の 人数。':'●が 出る '+kpw().row+'。')+'<b>'+KP_ROLES[KP_ME]+'</b>（あなた）の 列を 左に、濃く しています。ほかは 横に ずらすと 見えます。</div>'
  +'<div style="overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)">'
  +'<table style="border-collapse:collapse;font-size:13px;min-width:560px">'
- +'<tr><th style="position:sticky;left:0;background:var(--card);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">場面</th>'
+ +'<tr><th style="position:sticky;left:0;background:var(--card);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">'+kpw().row+'</th>'
  +ORD.map(function(ri){var r=KP_ROLES[ri];return '<th style="padding:8px 6px;font-weight:500;border-bottom:1px solid var(--line);'
    +(ri===KP_ME?'background:var(--enji);color:#fff;':'color:var(--ink3);')+'">'+r+'</th>'}).join('')+'</tr>'
  +KP_SC.map(function(x){return '<tr><td style="position:sticky;left:0;background:var(--card);padding:8px 10px;border-bottom:1px solid var(--line2);white-space:nowrap">'
-   +x[0]+' '+x[1]+'</td>'
-   +ORD.map(function(ri){var on=x[3].indexOf(ri)>=0;
+   +((x[0]||x[1])?x[0]+' '+x[1]:'<span style="display:inline-block;max-width:150px;white-space:normal">'+x[2]+'</span>')+'</td>'
+   +ORD.map(function(ri){var on=x[3].indexOf(ri)>=0,v=on?(x[5]?(ri===KP_ME?(x[4]?'降り':'乗り'):x[5][ri]):'●'):'';
      return '<td style="text-align:center;border-bottom:1px solid var(--line2);'
-      +(ri===KP_ME?'background:color-mix(in srgb,var(--enji) 12%,var(--card));font-weight:700;':'')+'">'+(on?'●':'')+'</td>'}).join('')+'</tr>'}).join('')
+      +(ri===KP_ME?'background:color-mix(in srgb,var(--enji) 12%,var(--card));font-weight:700;':'')+'">'+v+'</td>'}).join('')+'</tr>'}).join('')
  +'</table></div>'
- +'<div class="note">これは 舞台監督が 作った 香盤表です。直されると、ここも 変わります。</div>'};
+ +'<div class="note">これは 運営が 作った '+kpw().tbl+'です。直されると、ここも 変わります。'
+ +(KP_KIND==='orch'?'<br>降り番は、あなたの 列にだけ 言葉で 出ます。席の 順は 出しません。':'')+'</div>'};
 
 var PHOTOS=[{n:'宣材（正面）'},{n:'『冬の旅』本番'},{n:'稽古'}];
 SC['写真']=function(){
@@ -2243,22 +2280,55 @@ SC['ページの設定']=function(){
  +'ページの 下には「通報」の しるしが 付きます。<br>'
  +'<b>体調の 記録は、1文字も 出ません</b>。</div>'};
 
-var KP_IN=true;
+var KP_IN=true, KP_WHO='me', KP_GUARD=false;
+/* ══ ★子どもが 出る 公演 ── 裁定その147（2026-09-21）══
+   ★15歳未満は 自分の アカウントを 作らない。保護者が 自分の アカウントで「子どもを 出す」
+   ★子どもの 枠が 持つのは 呼び名・配役・出欠だけ。★年齢・学校・写真・体調の 欄は 作らない
+   ★呼び出しには 解散の 時刻を 必ず 出す（お迎えの ため）                         */
+/* ★p は どの 公演か。log は 見た 記録（★いつ・どの 役割 だけ。見た 人の 名前は 持たない）*/
+var KIDS=[{n:'はるちゃん',role:'合唱（子ども）',p:'opera',tel:'090-0000-0000',log:[['10月3日 19:12','舞台監督']]},
+ {n:'ゆいちゃん',role:'ピアノ',p:'gala',tel:'',log:[]}];
+var KID_NEW={n:'',tel:''};
+/* [日, 集合, 解散, 種類, 場面, 場所, ★きょう] */
+var KID_K={opera:[['10月10日（金）','18:30','20:30','立ち稽古','3幕2場 結婚式','○○稽古場',1],
+  ['2月22日（日）','13:30','17:10','本番','3幕2場 結婚式','○○文化会館 大ホール']],
+ gala:[['10月25日（土）','13:00','14:00','場当たり','ピアノ「エリーゼのために」','○○市民会館 大ホール'],
+  ['10月26日（日）','15:30','16:21','本番（出番 16:07）','ピアノ「エリーゼのために」','○○市民会館 大ホール']]};
+function myKids(){return KIDS.filter(function(k){return k.p===KP_KIND})}
+/* ★保護者の「きょう」の帯。子ども1人に 1行。★解散は 必ず 出す */
+function kidBand(){var L=[];KIDS.forEach(function(k){(KID_K[k.p]||[]).forEach(function(r){if(r[6])L.push([k,r])})});
+ if(!L.length)return '';
+ return '<div class="box" style="margin-bottom:11px">'+L.map(function(x){var k=x[0],r=x[1];
+  return '<div class="li" onclick="kpUse(\''+k.p+'\');push(\'公演\')"><span>'+k.n+'　<b>'+r[1]+' 集合</b> ／ <b>'+r[2]+' 解散</b>　'+r[5]
+   +'<div class="usu">'+r[3]+'　'+r[4]+'</div></span><s>›</s></div>'}).join('')+'</div>'}
+function kidCalls(){return myKids().length
+ ?'<div class="sh3">子どもの 呼び出し</div><div class="box">'
+  +myKids().map(function(k){return (KID_K[k.p]||[]).map(function(r){
+    return '<div class="li plain"><span>'+k.n+'　'+r[0]+'<div class="usu">'+r[3]+'　'+r[4]+'　／　'+r[5]+'</div></span>'
+     +'<s style="text-align:right">集合 <b style="color:var(--ink)">'+r[1]+'</b><br>解散 <b style="color:var(--ink)">'+r[2]+'</b></s></div>'}).join('')}).join('')
+  +'<div class="li" onclick="push(\'子どもの枠\')"><span>子どもの 枠<div class="usu">呼び名・緊急の 連絡先・外す</div></span><s>›</s></div></div>'
+ :''}
 SC['公演に入る']=function(){
  return bk('もっと')
  +'<div class="hd" style="padding-top:2px"><h2>公演に 入る</h2></div>'
  +'<div class="usu" style="margin-bottom:10px">稽古場で 聞いた、または LINE で 届いた 合言葉を 入れてください。</div>'
  +'<input class="inp" id="kpCode" placeholder="8文字" style="font-family:monospace;font-size:20px;letter-spacing:.2em;text-align:center">'
+ +'<div class="sh3">だれが 出ますか</div><div class="box">'
+ +'<div class="li" onclick="KP_WHO=\'me\';draw()"><span>わたし</span><s>'+(KP_WHO==='me'?'●':'')+'</s></div>'
+ +'<div class="li" onclick="KP_WHO=\'kid\';draw()"><span>子ども（15歳未満）<div class="usu">あなたの アカウントで 出します</div></span><s>'+(KP_WHO==='kid'?'●':'')+'</s></div></div>'
+ +(KP_WHO==='kid'?'<div class="box"><div class="li" onclick="KP_GUARD=!KP_GUARD;draw()"><span>わたしは この 子の 保護者です（18歳以上）</span><s>'+(KP_GUARD?'はい':'—')+'</s></div></div>':'')
  +'<div class="btn" style="margin-top:12px" onclick="var v=(document.getElementById(\'kpCode\').value||\'\').replace(/\\s/g,\'\');'
  +'if(v.length!==8){toast(\'8文字です\');return}'
+ +'if(KP_WHO===\'kid\'){if(!KP_GUARD){toast(\'保護者の 方だけが 出せます\');return}push(\'子どもの枠\');return}'
  +'if(!GD.asked){push(\'年をたずねる\');return}if(GD.under18&&!GD.ok){push(\'保護者にお知らせ\');return}'
  +'KP_IN=true;S.stack=[];push(\'公演\');toast(\'入りました\')">入る</div>'
  +'<div class="note">入ると、<b>呼ばれた 稽古と、ご自分の 集合時刻</b>が 見えます。<br>'
  +'<b>体調の 記録は、制作にも 舞台監督にも 見えません</b>。<br>'
- +'18歳未満の 方は、保護者の 方の ひとことが 要ります。15歳未満の 方は 入れません。<br>'
+ +'15〜17歳の 方は、保護者の 方の ひとことが 要ります（保護者の アカウントから 出すことも できます）。<br>'
+ +'<b>15歳未満の 方は、アカウントを 作りません</b>。保護者の 方が「子ども」を 選んで 出します。<br>'
  +'入れなかった ときは「入れませんでした」とだけ 出ます。</div>'};
-SC['稽古']=function(i){var r=KP_K[i||0],me=kpCalled(r);
- var myS=r[4].filter(function(j){return KP_SC[j][3].indexOf(KP_ME)>=0});
+SC['稽古']=function(i){var r=KP_K[i||0]||KP_K[0],me=kpCalled(r);
+ var myS=r[4].filter(function(j){return kpIn(KP_SC[j])});
  return bk('公演')
  +'<div class="hd" style="padding-top:2px"><h2>'+r[0]+'</h2></div>'
  +'<div class="card" style="padding:15px 16px">'
@@ -2266,9 +2336,9 @@ SC['稽古']=function(i){var r=KP_K[i||0],me=kpCalled(r);
    :'<div class="usu">この 稽古には 呼ばれていません</div>')
  +'<div class="usu" style="margin-top:6px">'+r[2]+'〜　'+r[3]+'</div>'
  +'<div style="margin-top:8px;font-size:14px">'+r[5]+'</div></div>'
- +'<div class="sh3">この 稽古の 場面</div><div class="box">'
- +r[4].map(function(j){var x=KP_SC[j],mine=x[3].indexOf(KP_ME)>=0;
-   return '<div class="li plain"><span'+(mine?' style="font-weight:700"':'')+'>'+x[0]+' '+x[1]+'　'+x[2]+'</span><s>'+(mine?'出ます':'')+'</s></div>'}).join('')+'</div>'
+ +'<div class="sh3">この 稽古の '+kpw().row+(r[6]?'<span class="usu">　'+r[6].map(function(c){return KP_ROLES[c]}).join('・')+'だけ</span>':'')+'</div><div class="box">'
+ +r[4].map(function(j){var x=KP_SC[j],mine=kpIn(x);
+   return '<div class="li plain"><span'+(mine?' style="font-weight:700"':'')+'>'+((x[0]||x[1])?x[0]+' '+x[1]+'　':'')+x[2]+'</span><s>'+(mine?'出ます':(x[4]&&x[3].indexOf(KP_ME)>=0?'降り番':''))+'</s></div>'}).join('')+'</div>'
  +(me&&myS.length?'':'')
  +'<div class="note">来られない ときは、<b>稽古場の LINE で</b> 伝えてください（ここには 連絡の 窓を 作っていません）。<br>'
  +'ほかの 方の 集合時刻は 見えません。</div>'};
@@ -2349,6 +2419,33 @@ SH['pfBuy']=function(id){
  +'一度 買えば、ほかの 形と いつでも 行き来できます。</div>'
  +'<div class="btn" style="margin-top:12px" onclick="PF_OWN.push(\''+id+'\');PF_WEB=\''+id+'\';closeSheet();S.stack=[];push(\'あなたのページ\');push(\'ページの型\');toast(\'買いました\')">480円を 支払う</div>'
  +'<div class="btn g" style="margin-top:8px" onclick="closeSheet()">やめる</div>'+shBtm()};
+SC['子どもの枠']=function(){
+ return bk('公演')
+ +'<div class="hd" style="padding-top:2px"><h2>子どもの 枠</h2></div>'
+ +'<div class="usu" style="margin-bottom:10px">'+KP.title+'　／　あなたの アカウントで 出している 子ども</div>'
+ +(myKids().length?myKids().map(function(k){var i=KIDS.indexOf(k);
+   return '<div class="box" style="margin-bottom:11px"><div class="li plain"><span>'+k.n+'<div class="usu">'+(k.role||'配役は 運営が 決めます')+'　／　緊急の 連絡先 '+(k.tel?'あり':'なし')+'</div></span>'
+    +'<s><span class="pill sm" onclick="KIDS.splice('+i+',1);draw();toast(\'外しました\')">外す</span></s></div>'
+    +(k.tel?'<div class="li plain" style="cursor:default"><span class="usu">緊急の 連絡先を 見た 記録</span><s></s></div>'
+      +((k.log||[]).length?k.log.map(function(l){return '<div class="li plain"><span>'+l[0]+'</span><s>'+l[1]+'</s></div>'}).join('')
+        :'<div class="li plain"><span class="usu">まだ 見られていません</span><s></s></div>'):'')
+    +'</div>'}).join('')
+  :'<div class="empty"><div class="t">まだ いません。</div></div>')
+ +'<div class="sh3">子どもを 足す</div>'
+ +'<div class="usu" style="margin-bottom:6px">呼び名</div>'
+ +'<input class="inp" placeholder="れい：はるちゃん（本名で なくて かまいません）" value="'+KID_NEW.n+'" oninput="KID_NEW.n=this.value">'
+ +'<div class="usu" style="margin:10px 0 6px">緊急の 連絡先（任意）</div>'
+ +'<input class="inp" placeholder="保護者の 方の 電話" value="'+KID_NEW.tel+'" oninput="KID_NEW.tel=this.value">'
+ +'<div class="btn" style="margin-top:12px" onclick="if(!KID_NEW.n.trim()){toast(\'呼び名を 入れてください\');return}'
+ +'KIDS.push({n:KID_NEW.n.trim(),role:\'\',p:KP_KIND,tel:KID_NEW.tel.trim(),log:[]});KID_NEW={n:\'\',tel:\'\'};KP_IN=true;draw();toast(\'この 公演に 出しました\')">この 公演に 出す</div>'
+ +'<div class="note">子どもの 枠に あるのは <b>呼び名だけ</b>です。年齢・学校・写真・体調は <b>うかがいません</b>。<br>'
+ +'呼び名が 見えるのは <b>同じ 公演の 中だけ</b>です（公開の ページ・行事の 一覧には 出ません）。<br>'
+ +'呼び出しと 集合・<b>解散の 時刻</b>は、あなたの スマホに 出ます。<br>'
+ +'緊急の 連絡先を 見られるのは <b>公演の 責任者だけ、稽古と 本番の 当日だけ</b>です。<br>'
+ +'見られると、<b>いつ・どの 役割の 方が 見たか</b>が ここに 出ます（見た 方の 名前は 出しません）。<br>'
+ +'子どもの 枠で 使えるのは 公演だけです。記録・ひつじ・体調・さがす は 使えません。<br>'
+ +'兄弟など、何人でも 足せます。<b>いつでも 外せます</b>（運営の 出欠の 記録だけ 残ります）。</div>'};
+
 SC['お仕事を選ぶ']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>どんな お仕事ですか</h2></div>'
  +'<div class="usu" style="margin-bottom:12px">'
