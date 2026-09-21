@@ -1,0 +1,205 @@
+{
+  "_how": "裁定ごとに、見本に反映が要るか（mock: yes/no/unknown）と、その印（present: 見本にあるはずの文字列／absent: 無いはずの文字列）。mobile は全画面・iPhone の両方に要る。★裁定を書いたら、その場でここに1件足す",
+  "files": {
+    "mobile": [
+      "00-動く見本（さわれる・全画面）.html",
+      "00-動く見本-iPhoneで開く用.html"
+    ],
+    "ops": [
+      "00-動く見本-PC・iPad（運営）.html"
+    ],
+    "pcp": [
+      "00-動く見本-PC・iPad（個人）.html"
+    ]
+  },
+  "rulings": {
+    "141": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "P_koen",
+          "公演の運営"
+        ]
+      }
+    },
+    "142": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "つづきを 書く",
+          "もう一度 出す"
+        ],
+        "ops": [
+          "つづきを 書く"
+        ]
+      }
+    },
+    "143": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "公演を作る",
+          "TIERS"
+        ]
+      }
+    },
+    "144": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "koenLock"
+        ]
+      }
+    },
+    "145": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "P_keikoList",
+          "P_members",
+          "P_koenInfo"
+        ]
+      }
+    },
+    "146": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "PF_TRIAL"
+        ]
+      }
+    },
+    "147": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "子どもの枠",
+          "kidBand"
+        ],
+        "ops": [
+          "緊急の連絡先",
+          "after20"
+        ]
+      }
+    },
+    "148": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "var KINDS",
+          "乗り番表",
+          "当日の進行"
+        ],
+        "mobile": [
+          "kpUse"
+        ]
+      }
+    },
+    "149": {
+      "mock": "no",
+      "note": "台帳（RLS）の変更だけ"
+    },
+    "150": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "class=\"usu\">なおす ›"
+        ]
+      },
+      "absent": {
+        "ops": [
+          "btn g sm\">なおす ›"
+        ]
+      }
+    },
+    "151": {
+      "mock": "no",
+      "note": "台帳の列だけ。画面は 153"
+    },
+    "152": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "var WORKS",
+          "chgCard",
+          "iriList",
+          "gakuyaList"
+        ],
+        "mobile": [
+          "カレンダーにつなぐ",
+          "KP.chg"
+        ]
+      }
+    },
+    "153": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "KOMA_BY",
+          "どこにも 属さない"
+        ]
+      }
+    },
+    "154": {
+      "mock": "no",
+      "note": "155 で置き換え"
+    },
+    "155": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "ぜんぶ",
+          "月490円",
+          "ORGPLAN"
+        ],
+        "ops": [
+          "ORGPLAN",
+          "gakkoYen",
+          "プランを選ぶ"
+        ]
+      },
+      "absent": {
+        "mobile": [
+          "Woolsong（年3,600円）"
+        ],
+        "ops": [
+          "function billPlans"
+        ]
+      }
+    },
+    "156": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "2027年9月30日まで"
+        ],
+        "ops": [
+          "2027年9月30日まで"
+        ]
+      }
+    },
+    "157": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "REC_OK",
+          "日本に お住まいの 方 向け"
+        ]
+      },
+      "absent": {
+        "mobile": [
+          "Vimeo の 限定公開",
+          "ひと月あたり 300円"
+        ]
+      }
+    },
+    "158": {
+      "mock": "no",
+      "note": "実装の作業（見本は正のまま）"
+    },
+    "159": {
+      "mock": "no",
+      "note": "台帳の作業。見本の開いた記録は既存"
+    }
+  }
+}
