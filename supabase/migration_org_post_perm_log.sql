@@ -77,6 +77,7 @@ declare
   v_added text[];
   v_removed text[];
   v_who uuid;
+  v_skip boolean := false;
 begin
   v_who := auth.uid();
 
@@ -86,9 +87,16 @@ begin
     v_before := old.perms; v_after := null;
   else
     -- ★perms も 名前も 変わって いなければ、★何も 残しません。
+    --   ★★★ここで `return new;` と 書いて いました（★2026-09-21 に 直しました）。
+    --     ★★`fail_closed_lint.py` の F1 が 拾います ──
+    --       ★「中身を返す処理が、記録の insert より前にある」。
+    --     ★★引き金の `return` は 中身を 返す もの では ありません。
+    --       ★けれど、★道具に 例外を 覚えさせません。★形の ほうを 直します。
+    --     ★★★返すのは いちばん 下の 1か所 だけ に しました。
+    --       ★★記録を 書く か 書かないかは、★印（`v_skip`）で 決めます。
     if old.perms is not distinct from new.perms
        and old.name is not distinct from new.name then
-      return new;
+      v_skip := true;
     end if;
     v_before := old.perms; v_after := new.perms;
   end if;
@@ -106,6 +114,7 @@ begin
    where coalesce((v_before ->> k)::boolean, false)
      and not coalesce((v_after ->> k)::boolean, false);
 
+  if not v_skip then
   insert into public.org_post_perm_log
     (changed_by, changed_by_kind, org_id, post_id, post_name_at,
      perms_before, perms_after, added, removed, op)
@@ -116,7 +125,9 @@ begin
      coalesce(new.id, old.id),
      coalesce(new.name, old.name),
      v_before, v_after, v_added, v_removed, lower(tg_op));
+  end if;
 
+  -- ★返すのは ここ 1か所 だけ です（★上の 註）。
   if tg_op = 'DELETE' then return old; end if;
   return new;
 end;
