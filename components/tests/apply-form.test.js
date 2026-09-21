@@ -12,7 +12,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, stripCode, stripCounts, readRaw } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -27,6 +27,10 @@ async function main() {
   const libRaw = fs.readFileSync(path.join(ROOT, "lib", "applyForm.js"), "utf-8");
   const lib = stripComments(libRaw);
   const jsx = stripComments(readRaw("components", "ApplyForm.jsx"));
+  // ★★字も 落とした もの（★処理を 見る とき・裁定 その135）。
+  const libCode = stripCode(libRaw);
+  const jsxCode = stripCode(readRaw("components", "ApplyForm.jsx"));
+  console.log("  " + stripCounts(libRaw).line);
   const sql = stripComments(fs.readFileSync(path.join(ROOT, "supabase", "migration_applications.sql"), "utf-8"));
   const m = await import("data:text/javascript;base64,"
     + Buffer.from(libRaw.replace(/import[^;]*;/, "const tx=(s)=>s;"), "utf-8").toString("base64"));
@@ -50,12 +54,11 @@ async function main() {
     t(見本素.indexOf(w.label) >= 0, `★見本に「${w.label}」が ある`));
 
   console.log("=== 三 ★年齢・学年・門下を 出さない（★§7） ===");
-  // ★★★字を 探すと、★**約束の 文 じたい** に 当たります（★2026-09-21）。
-  //   ★★「年齢・学年・門下は、どちらにしても 出ません。」── ★これが 引っかかります。
-  //   ★★この 家では 一度 通った 罠 です（★CLAUDE.md「自分の 説明で 落ちる」）。
-  //   ★★★だから **読んで いるか** を 見ます。★字が 在るかでは ありません。
+  // ★★★2026-09-21、★仕組みに 直しました（★裁定 その135）。
+  //   ★★字ごと 落とした もので 見ます。★約束の 文 じたいには 当たりません。
+  //   ★★それでも「読んで いるか」を 見る 形は 残します。★二重に 守ります。
   const 読む = (名) => new RegExp(
-    `\\.${名}\\b|\\b${名}:|\\["${名}"\\]|select\\([^)]*${名}`).test(jsx + lib);
+    `\\.${名}\\b|\\b${名}:|\\["${名}"\\]|select\\([^)]*${名}`).test(jsxCode + libCode);
   ["age", "grade", "enrollment_year", "birthdate", "monka"].forEach((名) =>
     t(!読む(名), `★${名} を 読んで いない`));
   t(/年齢・学年・門下は、どちらにしても 出ません。/.test(lib),

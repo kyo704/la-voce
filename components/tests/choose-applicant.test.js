@@ -11,7 +11,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, stripSqlCode, stripCounts, readRaw } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -26,7 +26,11 @@ async function main() {
   const libRaw = fs.readFileSync(path.join(ROOT, "lib", "chooseApplicant.js"), "utf-8");
   const lib = stripComments(libRaw);
   const jsx = stripComments(readRaw("components", "ChooseApplicant.jsx"));
-  const sql = stripComments(fs.readFileSync(path.join(ROOT, "supabase", "migration_get_applications_v2.sql"), "utf-8"));
+  const sqlRaw = fs.readFileSync(path.join(ROOT, "supabase", "migration_get_applications_v2.sql"), "utf-8");
+  const sql = stripComments(sqlRaw);
+  // ★★字も 落とした もの（★処理を 見る とき・裁定 その135）。
+  const sqlCode = stripSqlCode(sqlRaw);
+  console.log("  " + stripCounts(sqlRaw, true).line);
   const m = await import("data:text/javascript;base64,"
     + Buffer.from(libRaw.replace(/import[^;]*;/, "const tx=(s)=>s;"), "utf-8").toString("base64"));
   const 見本 = fs.readFileSync(path.join(ROOT, "docs/design/pack-final/00-動く見本-iPhoneで開く用.html"), "utf-8");
@@ -36,12 +40,9 @@ async function main() {
   t(!並べ替え(lib), "★lib が 並べ替えて いない");
   t(!並べ替え(jsx), "★画面も 並べ替えて いない");
   t(/order by a\.created_at/.test(sql), "★台帳は 応募の 順で 返す");
-  // ★★★`comment on function` の 字にも 当たって いました（★2026-09-21）。
-  //   ★★あの 字は「実績の 順に しません」と 言って いる ほう です。
-  //   ★★この 家では 3度目の 罠 です ── ★自分の 説明で 落ちる。
-  //   ★★★返り の 形（returns table）と 本体 だけ を 見ます。
-  const 本体 = sql.slice(sql.indexOf("returns table"), sql.indexOf("$$;") + 3);
-  t(!/done|count\(\*\)|実績/.test(本体), "★台帳が 実績の 数を 返して いない");
+  // ★★★2026-09-21、★仕組みに 直しました（★裁定 その135）。
+  //   ★★その場しのぎの 切り出しを やめ、★字ごと 落とした もので 見ます。
+  t(!/done|count\(\*\)|実績/.test(sqlCode), "★台帳が 実績の 数を 返して いない");
   t(/実績の 順には しません。/.test(lib), "★そう 断って いる");
   t(m.inGivenOrder([{ id: 2 }, { id: 1 }]).map((x) => x.id).join() === "2,1",
     "★もらった 順の まま 返す");

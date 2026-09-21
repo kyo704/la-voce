@@ -51,6 +51,32 @@ const ROOT = path.join(__dirname, "..", "..");
  *   ★ブロックの 中に 行頭 // が 来ることは、★この 書き方では ありません
  *   （★JSDoc の 中は ★ * で 始まります）。
  */
+// ★★★2026-09-21、★中身を `lib/strip.js` に 移しました（★裁定 その135）。
+//   ★★★同じ 取り違えが **3度** 起きました ──
+//     ★周期の 語彙／「データ不足」の 判定／実績の 数。
+//     ★どれも「説明を 処理と 読んだ」です。★4度目を 待ちません。
+//   ★★★ここでは 書きません。★`lib/strip.js` を そのまま 読んで 使います。
+//     ★★あちらは アプリの 紙（ESM）です。★見張りは CommonJS です。
+//     ★★`export` を 外して 読み込みます。★写しを 作りません。
+const STRIP_SRC = fs.readFileSync(path.join(ROOT, "lib", "strip.js"), "utf-8")
+  .replace(/^export /gm, "");
+const STRIP = new Function(
+  STRIP_SRC + "\n; return { stripJs, stripSql, strippedLine };")();
+
+/**
+ * ★註（コメント）だけ を 外す。★**これまでの まま** です。
+ *
+ *   ★★★`lib/strip.js` に 差し替えようと して、★一度 失敗しました（★2026-09-21）。
+ *     ★★あちらは 位置を 保ちます（★消した ぶんを 空白に します）。
+ *     ★★こちらは **消します**（★字が 詰まります）。
+ *   ★★★400を 超える 見張りが、★詰まった 姿を 前提に して います。
+ *     ★★`/A[\s\S]{0,80}B/` の ような、★近さで 見る 形 です。
+ *     ★★空白に 置き換えると 遠く なり、★38件が 一斉に 落ちました。
+ *   ★★★だから 2つ 持ちます。★どちらも 要る もの です ──
+ *     ★`stripComments` …… ★詰める（★これまでの 見張り）
+ *     ★`stripCode` …… ★位置を 保つ（★新しい 見張り・裁定 その135）
+ *   ★★★新しく 書く 検査は `stripCode` を 使って ください。
+ */
 function stripComments(text) {
   return String(text == null ? "" : text)
     // ★★行が 先。★ブロックが あと。★この 順番に 意味が あります（上の いきさつ）。
@@ -58,6 +84,27 @@ function stripComments(text) {
     .replace(/^\s*--.*$/gm, "")            // SQL の行
     .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")   // JSX
     .replace(/\/\*[\s\S]*?\*\//g, "");      // ブロック
+}
+
+/**
+ * ★註 **と 字** を 外す（★裁定 その135）。
+ *
+ *   ★★「処理が どう 書いて あるか」を 見る 検査は、★こちらを 使います。
+ *   ★★画面に 出す 字が、★処理と 読まれる のを 止めます。
+ */
+function stripCode(text) {
+  return STRIP.stripJs(text).code;
+}
+
+/** ★SQL 用（★`--` と `comment on ... is '…'` の 中も 落とします）。 */
+function stripSqlCode(text) {
+  return STRIP.stripSql(text).code;
+}
+
+/** ★消した 数（★黙って 落とさない・裁定 その124）。 */
+function stripCounts(text, sql) {
+  const r = sql ? STRIP.stripSql(text) : STRIP.stripJs(text);
+  return { comments: r.comments, strings: r.strings, line: STRIP.strippedLine(r) };
 }
 
 /** リポジトリ相対のパスで読む（生のまま） */
@@ -186,4 +233,4 @@ function readPack(...parts) {
 
 module.exports = {
   assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib,
-  packParts, readPack };
+  packParts, readPack, stripCode, stripSqlCode, stripCounts };

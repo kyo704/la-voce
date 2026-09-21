@@ -11,7 +11,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, stripCode, stripCounts, readRaw } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -33,12 +33,13 @@ async function main() {
     + Buffer.from(libRaw.replace(/import[^;]*;/, "const tx=(s)=>s;"), "utf-8").toString("base64"));
   const 見本 = fs.readFileSync(path.join(ROOT, "docs/design/pack-final/00-動く見本-iPhoneで開く用.html"), "utf-8");
   const 見本素 = 見本.replace(/<[^>]+>/g, "").replace(/\\n|\+'|'\+/g, "");
+  console.log("  " + stripCounts(libRaw).line);
 
   console.log("=== 一 ★終わった わけを 出さない ===");
-  // ★★断りの 文 じたいは「わけを 書きません」と 言う ので、★そこは 除きます。
-  const 断り = (lib.match(/NOTES = Object\.freeze\(\[[\s\S]*?\]\)/) || [""])[0];
-  t(!わけを言う(lib.replace(断り, "")), "★lib が わけを 言って いない");
-  t(!わけを言う(jsx), "★画面も 言って いない");
+  // ★★★2026-09-21、★仕組みに 直しました（★裁定 その135）。
+  //   ★★手で 断りを 切り出して いました。★字ごと 落とした もので 見ます。
+  t(!わけを言う(stripCode(libRaw)), "★lib が わけを 言って いない");
+  t(!わけを言う(stripCode(readRaw("components", "AppliedList.jsx"))), "★画面も 言って いない");
   t(Object.keys(m.ENDED_WORDS).length === 2, "★終わり方は 2つ だけ");
   t(!/owner|chosen|winner/.test(sql.slice(sql.indexOf("case"), sql.indexOf("end,"))),
     "★台帳も、★誰に 決まったかを 返して いない");
