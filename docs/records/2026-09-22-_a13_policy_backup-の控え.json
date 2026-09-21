@@ -1,0 +1,134 @@
+[
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "memberships",
+    "policyname": "memberships_delete_admin",
+    "cmd": "DELETE",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "(is_org_owner_or_admin(auth.uid(), org_id) AND (role <> 'owner'::text))",
+    "with_check": null
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "memberships",
+    "policyname": "memberships_insert_bootstrap_owner",
+    "cmd": "INSERT",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "qual": null,
+    "with_check": "((user_id = auth.uid()) AND (role = 'owner'::text) AND (EXISTS ( SELECT 1\n   FROM organizations o\n  WHERE ((o.id = memberships.org_id) AND (o.created_by = auth.uid())))) AND (NOT (EXISTS ( SELECT 1\n   FROM memberships m\n  WHERE (m.org_id = memberships.org_id)))))"
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "memberships",
+    "policyname": "memberships_select",
+    "cmd": "SELECT",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "((auth.uid() = user_id) OR is_org_owner_or_admin(auth.uid(), org_id))",
+    "with_check": null
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "memberships",
+    "policyname": "memberships_update_role_management",
+    "cmd": "UPDATE",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "((auth.uid() = user_id) OR (is_org_owner_or_admin(auth.uid(), org_id) AND (role <> 'owner'::text)))",
+    "with_check": "\nCASE\n    WHEN (auth.uid() = user_id) THEN (role_rank(role) <= role_rank(( SELECT m.role\n       FROM memberships m\n      WHERE (m.id = memberships.id))))\n    ELSE (role <> 'owner'::text)\nEND"
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "enrollments",
+    "policyname": "enrollments_all_owner_admin",
+    "cmd": "ALL",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "is_org_owner_or_admin(auth.uid(), org_id)",
+    "with_check": "is_org_owner_or_admin(auth.uid(), org_id)"
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "assignments",
+    "policyname": "assignments_all_owner_admin",
+    "cmd": "ALL",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "qual": "is_org_owner_or_admin(auth.uid(), org_id)",
+    "with_check": "(is_org_owner_or_admin(auth.uid(), org_id) AND (COALESCE(( SELECT o.org_id\n   FROM assignments_old_identity(assignments.id) o(org_id, teacher_id, student_id)), org_id) = org_id) AND (COALESCE(( SELECT o.teacher_id\n   FROM assignments_old_identity(assignments.id) o(org_id, teacher_id, student_id)), teacher_id) = teacher_id) AND (COALESCE(( SELECT o.student_id\n   FROM assignments_old_identity(assignments.id) o(org_id, teacher_id, student_id)), student_id) = student_id))"
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "assignments",
+    "policyname": "assignments_select",
+    "cmd": "SELECT",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "((auth.uid() = teacher_id) OR (auth.uid() = student_id) OR is_org_owner_or_admin(auth.uid(), org_id))",
+    "with_check": null
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "org_invitations",
+    "policyname": "org_invitations_insert",
+    "cmd": "INSERT",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": null,
+    "with_check": "is_org_owner_or_admin(auth.uid(), org_id)"
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "org_invitations",
+    "policyname": "org_invitations_select",
+    "cmd": "SELECT",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "(is_org_owner_or_admin(auth.uid(), org_id) OR ((used_at IS NULL) AND (expires_at > now())))",
+    "with_check": null
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "org_events",
+    "policyname": "org_events_write_admin",
+    "cmd": "ALL",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "(EXISTS ( SELECT 1\n   FROM memberships m\n  WHERE ((m.org_id = org_events.org_id) AND (m.user_id = auth.uid()) AND (m.role = ANY (ARRAY['owner'::text, 'admin'::text])))))",
+    "with_check": "(EXISTS ( SELECT 1\n   FROM memberships m\n  WHERE ((m.org_id = org_events.org_id) AND (m.user_id = auth.uid()) AND (m.role = ANY (ARRAY['owner'::text, 'admin'::text])))))"
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "org_messages",
+    "policyname": "org_messages_insert",
+    "cmd": "INSERT",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": null,
+    "with_check": "((auth.uid() = author_id) AND (((teacher_id IS NOT NULL) AND ((auth.uid() = teacher_id) OR (EXISTS ( SELECT 1\n   FROM assignments a\n  WHERE ((a.org_id = org_messages.org_id) AND (a.student_id = auth.uid()) AND (a.teacher_id = org_messages.teacher_id) AND (a.ended_at IS NULL)))))) OR ((teacher_id IS NULL) AND (EXISTS ( SELECT 1\n   FROM memberships m\n  WHERE ((m.org_id = org_messages.org_id) AND (m.user_id = auth.uid()) AND (m.role = ANY (ARRAY['owner'::text, 'admin'::text]))))))))"
+  },
+  {
+    "saved_at": "2026-09-14 08:08:01.04223+00",
+    "schemaname": "public",
+    "tablename": "org_messages",
+    "policyname": "org_messages_select",
+    "cmd": "SELECT",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "qual": "((auth.uid() = teacher_id) OR (EXISTS ( SELECT 1\n   FROM assignments a\n  WHERE ((a.org_id = org_messages.org_id) AND (a.student_id = auth.uid()) AND (a.ended_at IS NULL) AND ((org_messages.teacher_id IS NULL) OR (a.teacher_id = org_messages.teacher_id))))) OR (EXISTS ( SELECT 1\n   FROM memberships m\n  WHERE ((m.org_id = org_messages.org_id) AND (m.user_id = auth.uid()) AND (m.role = ANY (ARRAY['owner'::text, 'admin'::text]))))))",
+    "with_check": null
+  }
+]
