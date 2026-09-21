@@ -6,3 +6,31 @@ npm-debug.log
 supabase/.temp/
 .git
 .DS_Store
+
+# ---------------------------------------------------------------------------
+# ★出す ものに 要らない 書きもの（★2026-09-22・Vercel の 置き場が 39.89GB）
+# ---------------------------------------------------------------------------
+#   ★★追跡して いる 376.0 MB の うち、★296 MB が 書きもの と 素材 です。
+#     ★★どれも 画面から 出て いません。★ビルドも 読みません。
+#   ★★★ただし 6つ だけ、★ビルドが 読みます。★下で 残して います ──
+#     docs/assets/second-color-table.json ／ serifu-add-70.json ／
+#     sheep-interior-index.json ／ sheep-items-index.json ／ sheep-tiles-index.json
+#     docs/opus/items.json
+#   ★★これを 外すと `next build` が 落ちます。★確かめて から 書きました。
+#
+#   ★★★この 除きは、★**これから 出す ぶん** にだけ 効きます。
+#     ★★すでに 積もって いる 39.89GB は 減りません。
+#     ★★古い デプロイを 消すのは、★Vercel の 画面から（★坂本さん）。
+
+docs/design
+docs/opus/*
+!docs/opus/items.json
+docs/reference
+docs/reports
+docs/records
+docs/ledgers
+docs/rulings
+docs/legal
+docs/decisions
+assets
+ios
