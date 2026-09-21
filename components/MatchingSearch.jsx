@@ -2,13 +2,13 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
-import { ScreenHead, Card, Note, Btn, Li, Warn, H3, Pill } from "@/components/UiV2";
+import { ScreenHead, Card, Note, Li, Warn, H3, Pill } from "@/components/UiV2";
 import {
   HEAD, TOP_LINES, TOP_BOLDS, KIND_PILLS, KIND_NOT_YET,
   PF_HEAD, PF_DONE, PF_EMPTY, PF_GO_DONE, PF_GO_EMPTY,
   SECTION_OPEN, SECTION_MINE, SECTION_CUT,
   EMPTY_HEAD, EMPTY_SUB, EMPTY_NOTES,
-  GO_NEW, GO_NEW_MINE, GO_APPLIED, CUT_UNDO, CUT_EMPTY,
+  GO_NEW, CUT_EMPTY,
   CUT_NOTES, CUT_NOTES_BOLD, NOTES,
   applicationWord, postingLine, portfolioState, SODAN_LINE
 } from "@/lib/matchingSearch";
@@ -43,10 +43,16 @@ function 太く(t, 太たち) {
   );
 }
 
+// ★★★NOT_YET ── ★ここから 行く 先が、★まだ ありません（★2026-09-21）。
+//   ★★`募集を 出す` ／ `応募する` ／ `応募を 選ぶ` ／ `応募した 募集` ／ `もどす`
+//   ★★★札を 置いて、★押しても 何も 起きない 形に しません（★§8⑤）。
+//     ★★だから 受け取る 口（prop）も 作りません。
+//     ★★口だけ 作ると、★見張り（no-dead-props）が 毎回 5件 数えます。
+//     ★★「まだ 作って いない」は 除きの 紙に 書きません。★直す もの です。
+//   ★★★when（外す 条件）── ★その 画面が できた 日。★1つずつ 戻します。
 export default function MatchingSearch({
   postings = [], myPostings = [], cuts = [], portfolio,
-  onOpenPosting, onNewPosting, onOpenMine, onGoApplied, onGoPortfolio, onUndoCut,
-  loadError = ""
+  onGoPortfolio, loadError = ""
 }) {
   const pf = portfolioState(portfolio);
 
@@ -94,11 +100,13 @@ export default function MatchingSearch({
             <p style={{ ...TYPE.li, color: C.ink, margin: 0, textAlign: "center" }}>{EMPTY_HEAD}</p>
             <p style={{ ...小, margin: `${rem(4)} 0 0`, textAlign: "center" }}>{EMPTY_SUB}</p>
           </Card>
-          {/* ★★★1件も 無い ときこそ、★出す 口を 残します（★裁定 その120）。
-               ★★「0件なら 節ごと 出さない」は 中身の 話 です。★入口は 残します。 */}
-          {onNewPosting ? (
-            <Btn onClick={onNewPosting} style={{ marginTop: rem(10) }}>{GO_NEW}</Btn>
-          ) : null}
+          {/* ★★★1件も 無い ときの 入口（★裁定 その120）。
+               ★★★行き先の 画面（募集を 出す）が、★まだ ありません。
+                 ★★押せない 札を 置きません。★いまは 字だけ お見せします。
+                 ★★when …… ★「募集を 出す」が できた 日に、★札に 戻します。 */}
+          <p style={{ ...小, margin: `${rem(10)} 0 0`, textAlign: "center" }}>
+            {GO_NEW}　……　{tx("まだ できません")}
+          </p>
           <Note>
             {EMPTY_NOTES.map((t) => (
               <span key={t} style={{ display: "block" }}>{t}</span>
@@ -109,10 +117,9 @@ export default function MatchingSearch({
         <Card>
           {postings.map((p, i) => {
             const 行 = postingLine(p);
+            // ★★押しても 開く 先が まだ ありません。★押せる 形に しません。
             return (
-              <Li key={p.id} last={i === postings.length - 1}
-                onClick={() => onOpenPosting && onOpenPosting(p)}
-                right={<span style={小}>›</span>}>
+              <Li key={p.id} last={i === postings.length - 1}>
                 <span>
                   {行.head}
                   {行.when ? <span style={{ display: "block", ...TYPE.mini, color: C.inkSoft }}>{行.when}</span> : null}
@@ -138,8 +145,7 @@ export default function MatchingSearch({
         <Card>
           {myPostings.map((p, i) => (
             <Li key={p.id} last={i === myPostings.length - 1}
-              onClick={() => onOpenMine && onOpenMine(p)}
-              right={<span style={小}>{applicationWord(p.application_count) || ""} ›</span>}>
+              right={<span style={小}>{applicationWord(p.application_count) || ""}</span>}>
               <span>
                 {p.title || p.kind || ""}
                 {Array.isArray(p.days) && p.days.length ? (
@@ -152,23 +158,15 @@ export default function MatchingSearch({
           ))}
         </Card>
       )}
-      {onNewPosting ? (
-        <Btn ghost onClick={onNewPosting} style={{ marginTop: rem(9) }}>{GO_NEW_MINE}</Btn>
-      ) : null}
 
       <H3>{SECTION_CUT}</H3>
       <Card>
         {cuts.length === 0 ? (
           <p style={{ ...小, margin: 0 }}>{CUT_EMPTY}</p>
         ) : cuts.map((c, i) => (
-          <Li key={c.target_user_id} last={i === cuts.length - 1}
-            right={onUndoCut ? (
-              <button type="button" onClick={() => onUndoCut(c)}
-                style={{
-                  background: "transparent", border: "none", color: C.inkSoft,
-                  ...TYPE.mini, minHeight: 44, padding: `0 ${rem(4)}`, fontFamily: FONT_STACK
-                }}>{CUT_UNDO}</button>
-            ) : null}>
+          // ★★「もどす」は、★書き込む 道が まだ ありません。
+          //   ★★when …… ★切りを 戻す 道（関数）を 作る 日。
+          <Li key={c.target_user_id} last={i === cuts.length - 1}>
             <span>{c.display_name || tx("お名前が ありません")}</span>
           </Li>
         ))}
@@ -179,9 +177,6 @@ export default function MatchingSearch({
         ))}
       </Note>
 
-      {onGoApplied ? (
-        <Btn ghost onClick={onGoApplied} style={{ marginTop: rem(9) }}>{GO_APPLIED}</Btn>
-      ) : null}
 
       <Note>
         {NOTES.map((t) => (

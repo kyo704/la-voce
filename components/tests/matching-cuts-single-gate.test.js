@@ -27,8 +27,11 @@ function t(c, label) {
 /** ★自前の 除外を 書いて いないか（★VERIFY Q4）。 */
 function 自前の除外(src) {
   const code = stripComments(src);
-  // ★`matching_cuts` を 直に 引く ／ 自分で 除外の 並びを 作る。
-  return /matching_cuts/.test(code)
+  // ★★★名を 書いただけ では 当てません（★2026-09-21 に 直しました）。
+  //   ★★`lib/backupTables.js` は、★控えを 取る 表の 名を 並べて いる だけ です。
+  //   ★★引いて いません。★除外も して いません。★名の 一覧 です。
+  //   ★★★見るのは「引いて いるか」「自分で 除いて いるか」だけ に します。
+  return /from\(\s*["'`]matching_cuts["'`]\s*\)/.test(code)
     || /\bcuts\b[^\n]{0,40}\.(?:includes|has|some|find)\(/.test(code);
 }
 
@@ -93,6 +96,8 @@ function main() {
   console.log("=== 五 ★較正（★故意に 1件 作る） ===");
   t(自前の除外('const rows = await sb.from("matching_cuts").select("user_id");'),
     "★自前で 表を 引く 書き方を 見つける");
+  t(!自前の除外('{ table: "matching_cuts", critical: true }'),
+    "★名を 並べただけ では 当たらない（★控えの 一覧）");
   t(自前の除外("const 出 = list.filter((x) => !cuts.includes(x.user_id));"),
     "★自前で 並びから 除く 書き方を 見つける");
   t(!自前の除外("const 出 = await sb.rpc('matching_visible', { p_target: id });"),

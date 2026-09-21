@@ -117,6 +117,9 @@ import { ScreenHead, HeadRound, H3, Card, Li, Seg, Note, Wl, Box, Btn, Pill, Inp
 import BottomSheet from "@/components/BottomSheet";
 import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
+// ★★さがす（マッチング）の 門。★9画面が 揃ったら 消します（★2026-09-21）。
+import { mayUseMatching } from "@/lib/matchingGate";
+import MatchingSearch from "@/components/MatchingSearch";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import WheelPicker from "@/components/WheelPicker";
@@ -7647,6 +7650,16 @@ export default function VocalTracker({
   const layoutV2 = mayUseLayoutV2(userId, {
     NEXT_PUBLIC_LAYOUT_V2_USER_IDS: process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS
   });
+  // ★★★さがす（マッチング）の 中身（★2026-09-21）。
+  //   ★★表を 直に 引きません。★`get_postings()` などの 関数を 通します（★裁定 その122）。
+  //   ★★「読めなかった」と「0件」を 分けて 持ちます。
+  const [matching, setMatching] = useState(null);
+  const [matchingError, setMatchingError] = useState("");
+  // ★★★さがす（マッチング）の 門（★2026-09-21）。★既定は 閉 です。
+  //   ★★9画面が 揃うまで、★名簿に 並べた 方 だけに 出します。
+  const matchingOn = mayUseMatching(userId, {
+    NEXT_PUBLIC_MATCHING_USER_IDS: process.env.NEXT_PUBLIC_MATCHING_USER_IDS
+  });
 
   // ★★★ここに 置く わけ（★2026-09-15）。
   //   ★★はじめ、★この 塊を ずっと 上（★:5872）に 書いて いました。
@@ -11375,6 +11388,53 @@ export default function VocalTracker({
     setActiveTab(key);
   }, []);
   const [moreSection, setMoreSection] = useState(null);
+  // ★★★さがす を 開いた ときに 読みます（★2026-09-21）。
+  //   ★★★ここに 置く わけ ── ★`moreSection` は この 上で 生まれます。
+  //     ★★上に 書いて いて、★見張り（no-tdz）が 止めました。
+  //     ★★描く たびに ReferenceError に なる ところ でした。
+  //   ★★開いて いない あいだは 引きません。★読まれない 値を 運びません。
+  //   ★★学校は 在籍の 1つ目 です。★いまは 1校を 前提に します。
+  //     ★★2校 以上に 在籍する 方の 出し分けは、★まだ 決まって いません。
+  useEffect(() => {
+    if (!matchingOn || moreSection !== "さがす" || !userId) return;
+    let alive = true;
+    (async () => {
+      const supabase = createClient();
+      const 在 = await runQueryWithAuthRetry(supabase, () =>
+        supabase.from("enrollments").select("org_id")
+          .eq("student_id", userId).eq("status", "active").limit(1),
+        "さがす（在籍）");
+      const orgId = (在.data && 在.data[0] && 在.data[0].org_id) || null;
+      if (!alive) return;
+      if (在.error || !orgId) {
+        setMatching({ postings: [], mine: [], cuts: [], orgId: null });
+        setMatchingError(在.error ? "いま 読めませんでした。" : "");
+        return;
+      }
+      const [出, 自, 切] = await Promise.all([
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.rpc("get_postings", { p_org_id: orgId }), "さがす（募集）"),
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.rpc("get_my_postings"), "さがす（自分の募集）"),
+        // ★★★表を 直に 引きません（★裁定 その122）。★お名前も 要ります。
+        //   ★★`get_my_cuts()` が、★見えなくした 方の 名を 返します。
+        runQueryWithAuthRetry(supabase, () =>
+          supabase.rpc("get_my_cuts"), "さがす（見えなくした方）")
+      ]);
+      if (!alive) return;
+      [["募集", 出], ["自分の募集", 自], ["切り", 切]].forEach(([名, r]) => {
+        if (r && r.error) console.error(`★さがすの ${名} を 読めませんでした:`, r.error);
+      });
+      setMatching({
+        postings: 出.data || [],
+        mine: 自.data || [],
+        cuts: 切.data || [],
+        orgId
+      });
+      setMatchingError(出.error ? "いま 読めませんでした。" : "");
+    })();
+    return () => { alive = false; };
+  }, [matchingOn, moreSection, userId]);
   // ★★どこから「もっと」へ 来たか（★2026-09-16・見本 `bk('戻る')`）。
   //   ★★見本の もっと には 戻る 道が あります。★`pop()` ── ★来た ところへ 帰ります。
   //   ★★実装の もっと は 帯の タブ なので、★「来た ところ」を 自分で 覚えます。
@@ -26656,7 +26716,11 @@ export default function VocalTracker({
                       //   ★★見るのは これ 1つ だけ です。
                       //     ★`activeTab` も `lessonRole` も 条件に しません。
                       //     ★★あの 2つが、★入口を 閉じて いた 当の もの です。
-                      canInvite: canSeeBetaFeatures(profile)
+                      canInvite: canSeeBetaFeatures(profile),
+                      // ★★★さがす（★2026-09-21・坂本さんの お決め）。
+                      //   ★★9画面の うち 1枚 しか ありません。★名簿の 方 だけに 出します。
+                      //   ★★決めるのは `lib/matchingGate.js` です。★ここで 決めません。
+                      mayMatch: matchingOn
                     }).map((sec) => (
                       <div key={sec.group || "top"}>
                         {sec.group ? <H3>{sec.group}</H3> : null}
@@ -26801,6 +26865,25 @@ export default function VocalTracker({
                     ★★決めは lib/portfolio.js が 持ちます。★ここでは 決めません。
                     ★★★読めなかった ときは、★空の 紙を 出しません。
                       ★★書いた ものが 消えた ように 見えます。 */}
+                {/* ★★★さがす（★見本 `SC['伴奏をさがす']`・裁定 その94 §4d）。
+                    ★★9画面の うち 1枚 目 です。★名簿の 方 だけに 出します。
+                    ★★字も 決めも lib/matchingSearch.js が 持ちます。
+                    ★★★押した 先の 8画面は、★まだ ありません。
+                      ★★渡さない ことで 出しません（★押せない 札を 置きません）。 */}
+                {layoutV2 && matchingOn && moreSection === "さがす" ? (
+                  <div data-v2-matching="1">
+                    <MatchingSearch
+                      postings={(matching && matching.postings) || []}
+                      myPostings={(matching && matching.mine) || []}
+                      cuts={(matching && matching.cuts) || []}
+                      portfolio={portfolioOk
+                        ? { ...portfolio, entries: portfolioEntries }
+                        : null}
+                      onGoPortfolio={() => setMoreSection("経歴")}
+                      loadError={matchingError} />
+                  </div>
+                ) : null}
+
                 {layoutV2 && moreSection === "経歴" ? (
                   <div data-v2-portfolio="1">
                     {!portfolioOk ? (

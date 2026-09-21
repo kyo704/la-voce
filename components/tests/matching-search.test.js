@@ -68,7 +68,12 @@ function main() {
   const 本体 = jsx.slice(jsx.indexOf("export default function"));
   const 空 = 本体.slice(本体.indexOf("EMPTY_HEAD"), 本体.indexOf("SECTION_MINE"));
   t(空.length > 200, `★中身を 切り出せて いる（${空.length}字）`);
-  t(/onNewPosting/.test(空), "★0件の ときも「募集を 出す」が 出る");
+  // ★★★行き先の 画面が まだ ありません（★2026-09-21）。
+  //   ★★押せない 札を 置きません。★いまは 字だけ 出します。
+  //   ★★★入口を **黙って 消して いない** ことを 見ます（★裁定 その120）。
+  t(/GO_NEW/.test(空), "★0件の ときも「募集を 出す」の 字が 出る");
+  t(/まだ できません/.test(空), "★まだ できない と 言って いる");
+  t(!/onNewPosting/.test(本体), "★行き先の 無い 口を 作って いない");
   t(/EMPTY_NOTES/.test(空), "★0件の ときの 断りが 出る");
 
   console.log("=== 六 ★出さない ものを 出して いない（★§4g・§7） ===");
