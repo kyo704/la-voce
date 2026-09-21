@@ -45,8 +45,8 @@ function 太く(t, 太たち) {
 }
 
 // ★★★NOT_YET ── ★ここから 行く 先が、★まだ ありません（★2026-09-21）。
-//   ★★`応募を 選ぶ` ／ `もどす`
-//   ★★（`募集を 出す`・`応募する`・`応募した 募集` は 2026-09-21 に できました）
+//   ★★`もどす`
+//   ★★（募集を 出す・応募する・応募した 募集・応募を 選ぶ は 2026-09-21）
 //   ★★★札を 置いて、★押しても 何も 起きない 形に しません（★§8⑤）。
 //     ★★だから 受け取る 口（prop）も 作りません。
 //     ★★口だけ 作ると、★見張り（no-dead-props）が 毎回 5件 数えます。
@@ -54,7 +54,8 @@ function 太く(t, 太たち) {
 //   ★★★when（外す 条件）── ★その 画面が できた 日。★1つずつ 戻します。
 export default function MatchingSearch({
   postings = [], myPostings = [], cuts = [], portfolio,
-  onGoPortfolio, onNewPosting, onOpenPosting, onGoApplied, loadError = ""
+  onGoPortfolio, onNewPosting, onOpenPosting, onGoApplied, onOpenMine,
+  loadError = ""
 }) {
   const pf = portfolioState(portfolio);
 
@@ -146,8 +147,15 @@ export default function MatchingSearch({
       ) : (
         <Card>
           {myPostings.map((p, i) => (
+            // ★★2026-09-21、★応募を 選ぶ 画面が できたので 押せる ように しました。
             <Li key={p.id} last={i === myPostings.length - 1}
-              right={<span style={小}>{applicationWord(p.application_count) || ""}</span>}>
+              onClick={onOpenMine ? () => onOpenMine(p) : undefined}
+              right={(
+                <span style={小}>
+                  {applicationWord(p.application_count) || ""}
+                  {onOpenMine ? " ›" : ""}
+                </span>
+              )}>
               <span>
                 {p.title || p.kind || ""}
                 {Array.isArray(p.days) && p.days.length ? (

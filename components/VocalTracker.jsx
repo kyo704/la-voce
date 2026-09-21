@@ -123,6 +123,7 @@ import MatchingSearch from "@/components/MatchingSearch";
 import PostingForm from "@/components/PostingForm";
 import ApplyForm from "@/components/ApplyForm";
 import AppliedList from "@/components/AppliedList";
+import ChooseApplicant from "@/components/ChooseApplicant";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import WheelPicker from "@/components/WheelPicker";
@@ -7664,6 +7665,11 @@ export default function VocalTracker({
   const [postingError, setPostingError] = useState("");
   // ★★応募する（★裁定 その94 §4）。★開いて いる 募集 1件 だけ。
   // ★★応募した 募集（★見本 `SC['応募した募集']`）。
+  // ★★応募を 選ぶ（★見本 `SC['応募を選ぶ']`）。
+  const [chooseFor, setChooseFor] = useState(null);
+  const [chooseRows, setChooseRows] = useState(null);
+  const [chooseBusy, setChooseBusy] = useState(false);
+  const [chooseError, setChooseError] = useState("");
   const [appliedOpen, setAppliedOpen] = useState(false);
   const [applied, setApplied] = useState(null);
   const [applyTo, setApplyTo] = useState(null);
@@ -11438,6 +11444,47 @@ export default function VocalTracker({
       err: 出.error ? "いま 読めませんでした。" : ""
     };
   }, [userId]);
+
+  /**
+   * ★自分の 募集の 応募を 読みます（★§4e）。
+   *
+   *   ★★並べ替えません。★台帳が 応募の 順で 返します（★裁定 その95）。
+   */
+  async function handleOpenMine(p) {
+    setChooseFor(p);
+    setChooseError("");
+    const supabase = createClient();
+    const r = await runQueryWithAuthRetry(supabase, () =>
+      supabase.rpc("get_applications", { p_posting_id: p.id }), "応募を 選ぶ");
+    if (r.error) console.error("★応募を 読めませんでした:", r.error);
+    setChooseRows({ rows: r.data || [], err: r.error ? "いま 読めませんでした。" : "" });
+  }
+
+  /**
+   * ★募集を 終わりに します（★裁定 その130 と 同じ 考え）。
+   *
+   *   ★★消しません。★一覧から 外れる だけ です。
+   *   ★★応募して くださった 方の 控えには 残ります。
+   */
+  async function handleClosePosting() {
+    if (!chooseFor) return;
+    setChooseBusy(true);
+    setChooseError("");
+    const supabase = createClient();
+    const { error } = await supabase.from("postings")
+      .update({ status: "closed" }).eq("id", chooseFor.id);
+    setChooseBusy(false);
+    if (error) {
+      console.error("★募集を 終わりに できませんでした:", error);
+      setChooseError("いま できませんでした。");
+      return;
+    }
+    setChooseFor(null);
+    setChooseRows(null);
+    const r = await fetchMatching();
+    setMatching(r);
+    setMatchingError(r.err);
+  }
 
   /**
    * ★応募した 募集を 読みます（★§4c）。
@@ -26975,7 +27022,19 @@ export default function VocalTracker({
                     ★★字も 決めも lib/matchingSearch.js が 持ちます。
                     ★★★押した 先の 8画面は、★まだ ありません。
                       ★★渡さない ことで 出しません（★押せない 札を 置きません）。 */}
-                {layoutV2 && matchingOn && moreSection === "さがす" && appliedOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && chooseFor ? (
+                  <div data-v2-choose="1">
+                    <ChooseApplicant
+                      rows={(chooseRows && chooseRows.rows) || []}
+                      loadError={(chooseRows && chooseRows.err) || ""}
+                      busy={chooseBusy}
+                      error={chooseError}
+                      onClosePosting={() => { void handleClosePosting(); }}
+                      onClose={() => { setChooseFor(null); setChooseRows(null); setChooseError(""); }} />
+                  </div>
+                ) : null}
+
+                {layoutV2 && matchingOn && moreSection === "さがす" && !chooseFor && appliedOpen ? (
                   <div data-v2-applied="1">
                     <AppliedList
                       rows={(applied && applied.rows) || []}
@@ -26984,7 +27043,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !appliedOpen && applyTo ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !chooseFor && !appliedOpen && applyTo ? (
                   <div data-v2-apply="1">
                     <ApplyForm
                       posting={applyTo}
@@ -27005,7 +27064,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !appliedOpen && !applyTo && postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !chooseFor && !appliedOpen && !applyTo && postingOpen ? (
                   <div data-v2-posting="1">
                     <PostingForm
                       busy={postingBusy}
@@ -27015,12 +27074,13 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !appliedOpen && !applyTo && !postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !chooseFor && !appliedOpen && !applyTo && !postingOpen ? (
                   <div data-v2-matching="1">
                     <MatchingSearch
                       onNewPosting={() => { setPostingOpen(true); setPostingError(""); }}
                       onOpenPosting={(p) => { void handleOpenPosting(p); }}
                       onGoApplied={() => { void handleOpenApplied(); }}
+                      onOpenMine={(p) => { void handleOpenMine(p); }}
                       postings={(matching && matching.postings) || []}
                       myPostings={(matching && matching.mine) || []}
                       cuts={(matching && matching.cuts) || []}
