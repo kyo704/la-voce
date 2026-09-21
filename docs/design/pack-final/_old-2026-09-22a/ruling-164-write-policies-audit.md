@@ -72,18 +72,3 @@ W3_審査員でない先生が「審査を終えた」印を付けて、その�
 - 直し方の型: ①列の UPDATE 権限を、その操作に要る列だけに絞る ②with check に「変えてよい値」を書く ③状態を進める操作（選ぶ・確定）は security definer の関数だけ
 - tools/ledger_inventory に「本人条件だけの UPDATE ポリシー × 全列の UPDATE 権限」を探す項目を足す（次の版）
 ```
-
-## 4. 訂正（2026-09-21・Code の調査を受けて。Opus が本番で確かめ直した）
-
-```yaml
-W3: 一意の制約は本番に既にある（evaluation_judge_done_pkey = PRIMARY KEY (event_id, judge_id)）
-  Opus の誤り: 制約を調べるとき、種類 'p'（主キー）を条件に入れていなかった（'c','u' だけ）。「一意の制約が無い」は誤り
-  残るのは insert の絞り（裁定165 §2 の共通の条件）だけ
-W2: authenticated に表ごとの UPDATE（と INSERT・SELECT）の権限がある。列ごとの権限の一覧に全部の列が出ていたのは、表ごとの権限のため
-  → 直しは「表ごとの UPDATE を外してから、列ごとに与え直す」の順が必須。列だけ与えても、表ごとの権限が残れば効かない
-    revoke update on public.org_messages from authenticated;
-    grant  update (withdrawn_at) on public.org_messages to authenticated;
-  VERIFY に足す: 当てたあと information_schema.role_table_grants に org_messages の authenticated:UPDATE が無いこと
-  同じ形を全表で: 列ごとの権限で絞ったつもりの表（profiles・evaluation_*・applications ほか）に、表ごとの UPDATE・INSERT が残っていないか
-    → tools/ledger_inventory の audit に A8 として次の版で足す
-```

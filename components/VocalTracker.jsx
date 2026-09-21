@@ -9872,7 +9872,11 @@ export default function VocalTracker({
     // upsert は「無ければ追加」の権限（RLSのINSERTポリシー）まで必要になり、
     // 通常はUPDATEより厳しく制限されているため、403で拒否されることがあった。
     // profiles行は既に存在するので、updateに戻す。
-    const { data, error } = await supabase.from("profiles").update({ character_equipped: characterEquipped }).eq("id", userId).select();
+    // ★★★`select()`（引数なし）は `select("*")` と 同じ です（★2026-09-22・5-1）。
+    //   ★★`profiles` には、★画面に 渡さない 列が あります（`is_admin` ほか）。
+    //   ★★ここで 要るのは「1行 当たったか」だけ です。★`id` で 足ります。
+    const { data, error } = await supabase.from("profiles")
+      .update({ character_equipped: characterEquipped }).eq("id", userId).select("id");
     if (error) {
       console.error("キャラクターの保存に失敗しました:", error);
       setCharacterSaveStatus("error");
@@ -13300,7 +13304,8 @@ export default function VocalTracker({
     }
     const org = orphan || await (async () => {
       const { data, error } = await supabase.from("organizations")
-        .insert({ name: "マイ教室", kind: "solo", created_by: userId }).select().single();
+        // ★★使うのは `org.id` だけ です（★2026-09-22・5-1）。
+        .insert({ name: "マイ教室", kind: "solo", created_by: userId }).select("id").single();
       if (error || !data) {
         console.error("教室の作成に失敗しました:", error);
         setInviteError(`教室を作成できませんでした：${(error && error.message) || "原因不明"}`);
@@ -15909,7 +15914,10 @@ export default function VocalTracker({
         total_score: total,
         factor_scores: factorScores
       })
-      .select()
+      // ★★★読む ときと 同じ 列に します（★2026-09-22・5-1）。
+      //   ★★ここで 返った 行を、★そのまま 覚えに 足して います。
+      //   ★★列が ずれると、★足した 行だけ 形が ちがう ことに なります。
+      .select(COLS_QUESTIONNAIRE_RESPONSES)
       .single();
     setQuestionnaireSaving(false);
     if (error) {

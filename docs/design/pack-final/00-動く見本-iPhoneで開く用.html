@@ -5132,7 +5132,7 @@ SC['行事を出す']=function(edit){
  +t2(S.gy.h1)+':'+t2(S.gy.m1)+' 〜 '+(S.gy.end?t2(S.gy.h2)+':'+t2(S.gy.m2):'未定')+'</div></div>'
  +'<div class="usu" style="margin:-4px 0 5px">はじまり</div>'+timeWheel('gy1',t2(S.gy.h1)+':'+t2(S.gy.m1),'gy1')
  +'<div class="usu" style="margin:6px 0 5px">終わり　'
- +'<span class="pill sm" style="float:right;padding:2px 9px;'+(S.gy.end?'':'background:var(--enji-bg);color:#fff;border-color:var(--enji-bg)')+'" onclick="S.gy.end=S.gy.end?0:1;draw()">未定に する</span></div>'
+ +'<span class="pill sm" style="float:right;padding:2px 9px;'+(S.gy.end?'':'background:var(--enji);color:#fff;border-color:var(--enji)')+'" onclick="S.gy.end=S.gy.end?0:1;draw()">未定に する</span></div>'
  +(S.gy.end?timeWheel('gy2',t2(S.gy.h2)+':'+t2(S.gy.m2),'gy2'):'<div class="usu">終わりを 決めていません</div>')
  +'<div class="fl">場所　<span class="back" style="float:right;padding:0" onclick="push(\'場所を決める\')">足す・消す ›</span></div>'
  +'<div class="pills">'+MST.place.map(function(v){
@@ -6258,13 +6258,13 @@ SC['同意を取り消す']=function(){
 SC['合言葉で入る']=function(){
  S.code=S.code||'';
  return bk('通っている ところ')+'<div class="hd" style="padding-top:2px"><h2>合言葉で 入る</h2></div>'
- +'<div class="warn">教室から もらった <b>8文字</b>を 打ってください。<br>教室の 一覧を さがすことは できません。</div>'
+ +'<div class="warn">教室から もらった <b>8文字</b>を 打ってください。<br>教室の 一覧を さがすことは できません。<br>何度か 間違えると、しばらく お試しいただけなく なります。</div>'
  +'<input class="inp" style="text-align:center;font-size:22px;letter-spacing:.3em" maxlength="6" placeholder="ABC123" value="'+S.code+'" oninput="S.code=this.value.toUpperCase();draw()">'
  +(S.code.length>=6?'<div class="card" style="margin-top:11px;border-color:var(--enji);background:var(--card2)">'
    +'<div style="font-size:14.5px;font-weight:700">◇◇ボイストレーニング</div>'
    +'<div class="usu" style="margin-top:4px">音楽教室　／　中村 あきこ 先生</div>'
    +'<div class="btn" style="margin-top:10px" onclick="push(\'招かれている\')">見えるものを 確かめる</div></div>'
-  :'<div class="usu" style="margin-top:9px">8文字 打つと、どこの 教室かが 出ます。</div>')
+  :'<div class="usu" style="margin-top:9px">8文字 打つと、どこの 教室かが 出ます。<br>合っていないときは、理由を お伝えしません。「入れませんでした」とだけ 出ます。</div>')
  +'<div class="note">合言葉だけでは 入りません。<b>見えるものを 見てから、あなたが 承知します。</b><br>'
  +'合言葉は 教室が いつでも 作り直せます（出回ったときの ため）。<br>'
  +'合言葉から、その教室の 名前 以外は 何も 分かりません。</div>'};

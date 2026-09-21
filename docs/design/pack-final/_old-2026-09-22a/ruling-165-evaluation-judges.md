@@ -65,7 +65,7 @@ with check (judge_id = auth.uid() and <共通の条件>
 -- evaluation_judge_done_own（ALL）
 using      (judge_id = auth.uid())
 with check (judge_id = auth.uid() and <共通の条件>)
--- ★主キー (event_id, judge_id) は本番に既にある（裁定164 §4 の訂正）。足さない
++ alter table evaluation_judge_done add primary key (event_id, judge_id);   -- いま一意の制約が無い
 ```
 
 ## 3. あわせて塞ぐもの（見つけた）
@@ -91,7 +91,6 @@ with check (judge_id = auth.uid() and <共通の条件>)
 - saiten を持つ事務が、その学校の先生を審査員に組む → 通る／別の学校の人を組む → 拒否
 - 組まれた先生が点を入れる → 通る／組まれていない担当中の先生 → 拒否
 - 組まれていない先生が judge_done を入れる → 拒否 → その回の点が0行
-- 同じ審査員の judge_done の2行目 → 主キーで拒否（既にある）
 - 審査員が confirmed_at を入れて insert → 権限エラー
 - 他の学校の event_id・item_id・student_id を混ぜた insert → 拒否
 ```

@@ -16,6 +16,10 @@
       {
         "selector": "CallExpression[callee.property.name='select'][arguments.0.value='*']",
         "message": "★`select(\"*\")` を 使わないで ください。★列を 名ざしで 並べます（★lib/dbColumns.js）。★列ごとの 渡しの ある 表では、★`*` は 0行では なく **要求ごと** 落ちます（★2026-09-20・lessons と org_events）。★わざと 使う ときは、★その 行に わけを 書いて `// eslint-disable-next-line no-restricted-syntax` を 置いて ください。"
+      },
+      {
+        "selector": "CallExpression[callee.property.name='select'][arguments.length=0]",
+        "message": "★引数の 無い `select()` は `select(\"*\")` と 同じ です（★2026-09-22・実行ルート 5-1）。★返る 列を 名ざしに して ください。★`profiles` の ように、★画面に 渡さない 列を 持つ 表が あります。★わざと 使う ときは、★その 行に わけを 書いて `// eslint-disable-next-line no-restricted-syntax` を 置いて ください。"
       }
     ]
   },

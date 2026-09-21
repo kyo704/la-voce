@@ -12,7 +12,7 @@ def run(cmd,timeout=900):
     r=subprocess.run(cmd,cwd=PACK,capture_output=True,text=True,timeout=timeout); return r.returncode,(r.stdout+r.stderr)
 def main(new,old):
     ng=[]
-    for t in ['price_check','ruling_mock_check','promise_diff','route_map','decision_needed_check','promise_coverage','policy_diff','fail_closed_lint','ledger_inventory','mobile_parity']:
+    for t in ['price_check','ruling_mock_check','promise_diff','route_map','decision_needed_check','promise_coverage','policy_diff','fail_closed_lint','ledger_inventory']:
         p=os.path.join(HERE,t+'.py')
         if os.path.exists(p):
             c,o=run(['python3',p,'--selftest'])
@@ -34,8 +34,6 @@ def main(new,old):
             with open(os.path.join(HERE,'promises','accepted.md'),'a',encoding='utf-8') as fh: fh.write(f'- {old}→{new}: {ACCEPT}\n')
             print('  約束の文の変化を「意図したもの」として記録した（tools/promises/accepted.md）')
         else: ng.append('promise_diff: 約束の文が変わった（上の +／- を1件ずつ確かめ、意図したものなら --accept "理由" で記録して配る）')
-    c,o=run(['python3',os.path.join(HERE,'mobile_parity.py')])
-    if c!=0: ng.append('mobile_parity: スマホ2本の中身が食い違っている（'+o.strip().splitlines()[0]+'）')
     c,o=run(['python3',os.path.join(HERE,'route_map.py')])
     miss=[int(x) for x in re.findall(r'入口不明 (\d+)',o)]
     prev=os.path.join(HERE,'.route_miss.json'); before=json.load(open(prev)) if os.path.exists(prev) else None

@@ -1718,24 +1718,6 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'書き出す\')"><span>書き出す（CSV・JSON）</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'同意\')"><span>同意を とりけす</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'退会\')"><span>退会する</span><s>›</s></div></div>'
-  /* ★2026-09-15、「教室」の かたまりを 足しました（★裁定 ㋒・Opus）。
-    ★この行が 無いために、★先生の 側の 入口が 1つも 無く なって いました。
-      ★札は「レッスン」の 画面の 中に しか なく、
-        ★門の 中の 帯（TABS_V2_ORDER）に lesson が ありません。
-      ★「入口は ホームに 2つ 残る」と 書いて ありましたが、その 2つは
-        ★レッスンが 1件でも ある ときだけ 出ます（★無いことを 毎朝 知らせない）。
-      ★生徒0人 → レッスン0件 → 行が出ない → タブへ行けない → 招待できない。
-    ★同じ形を 生徒の 側で 1度 解いて います ──
-      「場所を 移しただけで、鶏と 卵は 解けて いなかった」。
-      ★前回も 答えは「もっとへ 移す」でした。
-    ★この 見本は 門の 外の 画面を 写した もので、あちらの 帯には lesson が あります。
-      ★だから ここに 無いのは 誤りでは ありません。
-      ★描かれて いない 状態を 埋めた だけ です（★変更では なく 補い）。
-    ★★アプリでは、is_admin か teacher_beta_access を 持つ 方にだけ 出します。
-      ★持って いない 方には 出しません。★押せない 札に しません。
-      ★この 見本には その 印が ないので、★いつも 出る 形で 描いて います。 */
- +'<div class="h3">教室</div><div class="box">'
- +'<div class="li" onclick="toast(\'この見本では 招待しません\')"><span>生徒を 招待する</span><s>›</s></div></div>'
  +(role&&role!=='なし'?'<div class="h3">学校</div><div class="box"><div class="li" onclick="S.mode=\'o\';S.otab=tabsFor()[0];S.stack=[];draw()">'
    +'<span>○○音楽大学 の 運営</span><s>'+role+' ›</s></div></div>':'')
  +'<div class="note">法律の 行き先を、この 1か所に 集めています。<br>退会を 隠しません。引き止めを 2回以上 出しません。<br>'
@@ -1811,7 +1793,7 @@ SC['書き出す']=function(){
    return '<div class="li"><span>'+v+'</span><s style="color:var(--midori)">✓</s></div>'}).join('')+'</div>'
  +'<div class="btn" style="margin-top:11px" onclick="toast(\'端末に 保存しました\')">書き出す</div>'
  +'<div class="wl">病気の 名前・尺度の 名前は、見出しにも 入れません。<br>見出しは、画面と 同じ ことばです（のどの調子／声の出来 …）。</div>'
- +'<div class="note">書き出しは いつでも 無料です。退会された あとも、お手元の ファイルは あなたの ものです。</div>'};
+ +'<div class="note">無料です。退会したあとでも、書き出した ファイルは あなたのものです。</div>'};
 SC['同意']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>同意を とりけす</h2></div>'
  +'<div class="box">'
