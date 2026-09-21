@@ -84,6 +84,11 @@ const 的 = JSON.parse(process.argv[2] || '[]');
     console.log("  題 …… " + 題.join(" / "));
     const 札 = [...new Set(await 札を数える())];
     console.log("  札 …… " + 札.slice(0, 26).join(" · "));
+    // ★探す 字（`find` で 渡された もの）が 出て いるか。
+    if (t.find) {
+      const 在る = (await ap.locator(`text=${t.find}`).count()) > 0;
+      console.log(`  探した字 …… 「${t.find}」…… ${在る ? "出て います" : "出て いません"}`);
+    }
   }
   await b.close();
 })().catch((e) => { console.error("止まりました --", e.message); process.exit(1); });
