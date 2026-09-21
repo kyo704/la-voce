@@ -128,6 +128,7 @@ import ApplicantDetail from "@/components/ApplicantDetail";
 import AnswerPiece from "@/components/AnswerPiece";
 import AfterMatch from "@/components/AfterMatch";
 import MatchingReport from "@/components/MatchingReport";
+import CutSheet from "@/components/CutSheet";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import WheelPicker from "@/components/WheelPicker";
@@ -7675,6 +7676,10 @@ export default function VocalTracker({
   // ★★成立後（★見本 `SC['成立後']`）と、★通報（★§6）。
   const [matchOf, setMatchOf] = useState(null);
   const [matchErr, setMatchErr] = useState("");
+  // ★★この人との やりとり（★見本 `SH['cut']`・§5）。
+  const [cutTo, setCutTo] = useState(null);
+  const [cutBusy, setCutBusy] = useState(false);
+  const [cutError, setCutError] = useState("");
   const [reportTo, setReportTo] = useState(null);
   const [reportBusy, setReportBusy] = useState(false);
   const [reportError, setReportError] = useState("");
@@ -11502,6 +11507,51 @@ export default function VocalTracker({
       return;
     }
     setMatchOf({ match: 中 });
+  }
+
+  /**
+   * ★切ります（★§5「L3_CUT」）。★1押し です。
+   *
+   *   ★★わけを うかがいません。★相手に 知らせません。
+   *   ★★間違えても、★「見えなくした 方」から 戻せます。
+   */
+  async function handleCut(row) {
+    const orgId = matching && matching.orgId;
+    if (!cutTo || !orgId) { setCutError("いま できませんでした。"); return; }
+    setCutBusy(true);
+    setCutError("");
+    const supabase = createClient();
+    const { error } = await supabase.from("matching_cuts").insert({
+      ...row, user_id: userId, target_user_id: cutTo.userId, org_id: orgId
+    });
+    setCutBusy(false);
+    // ★★もう 切って ある ときは、★同じ ことです。★誤りに しません。
+    if (error && error.code !== "23505") {
+      console.error("★切れませんでした:", error);
+      setCutError("いま できませんでした。");
+      return;
+    }
+    setCutTo(null);
+    setApplyTo(null);
+    const g = await fetchMatching();
+    setMatching(g);
+    setMatchingError(g.err);
+  }
+
+  /** ★戻します（★切った ご本人 だけ）。 */
+  async function handleUndoCut(c) {
+    const supabase = createClient();
+    const { error } = await supabase.from("matching_cuts")
+      .delete().eq("user_id", userId).eq("target_user_id", c.target_user_id)
+      .eq("kind", c.kind);
+    if (error) {
+      console.error("★戻せませんでした:", error);
+      setMatchingError("いま 戻せませんでした。");
+      return;
+    }
+    const g = await fetchMatching();
+    setMatching(g);
+    setMatchingError(g.err);
   }
 
   /**
@@ -27172,6 +27222,17 @@ export default function VocalTracker({
                     ★★字も 決めも lib/matchingSearch.js が 持ちます。
                     ★★★押した 先の 8画面は、★まだ ありません。
                       ★★渡さない ことで 出しません（★押せない 札を 置きません）。 */}
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && cutTo ? (
+                  <div data-v2-cut="1">
+                    <CutSheet
+                      busy={cutBusy}
+                      error={cutError}
+                      onCut={(row) => { void handleCut(row); }}
+                      onReport={() => { setCutTo(null); setReportTo(cutTo); }}
+                      onClose={() => { setCutTo(null); setCutError(""); }} />
+                  </div>
+                ) : null}
+
                 {layoutV2 && matchingOn && moreSection === "さがす" && reportTo ? (
                   <div data-v2-report="1">
                     <MatchingReport
@@ -27182,7 +27243,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && matchOf ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && matchOf ? (
                   <div data-v2-match="1">
                     <AfterMatch
                       match={matchOf.match}
@@ -27195,7 +27256,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !matchOf && answerFor ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && answerFor ? (
                   <div data-v2-answer="1">
                     <AnswerPiece
                       askedBy={answerFor.name || ""}
@@ -27208,7 +27269,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !matchOf && !answerFor && applicantOf ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && applicantOf ? (
                   <div data-v2-applicant="1">
                     <ApplicantDetail
                       detail={applicantOf.detail || null}
@@ -27224,7 +27285,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !matchOf && !answerFor && !applicantOf && chooseFor ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && !applicantOf && chooseFor ? (
                   <div data-v2-choose="1">
                     <ChooseApplicant
                       rows={(chooseRows && chooseRows.rows) || []}
@@ -27237,7 +27298,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !matchOf && !answerFor && !applicantOf && !chooseFor && appliedOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && !applicantOf && !chooseFor && appliedOpen ? (
                   <div data-v2-applied="1">
                     <AppliedList
                       rows={(applied && applied.rows) || []}
@@ -27246,7 +27307,7 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && applyTo ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && applyTo ? (
                   <div data-v2-apply="1">
                     <ApplyForm
                       posting={applyTo}
@@ -27262,12 +27323,16 @@ export default function VocalTracker({
                       busy={applyBusy}
                       error={applyError}
                       onGoPortfolio={() => { setApplyTo(null); setMoreSection("経歴"); }}
+                      onCutSheet={() => setCutTo({
+                        userId: applyTo.owner_user_id || null,
+                        name: applyTo.owner_display_name || ""
+                      })}
                       onSubmit={(row) => { void handleApply(row); }}
                       onClose={() => { setApplyTo(null); setApplyError(""); }} />
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && postingOpen ? (
                   <div data-v2-posting="1">
                     <PostingForm
                       busy={postingBusy}
@@ -27277,13 +27342,14 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && !postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && !postingOpen ? (
                   <div data-v2-matching="1">
                     <MatchingSearch
                       onNewPosting={() => { setPostingOpen(true); setPostingError(""); }}
                       onOpenPosting={(p) => { void handleOpenPosting(p); }}
                       onGoApplied={() => { void handleOpenApplied(); }}
                       onOpenMine={(p) => { void handleOpenMine(p); }}
+                      onUndoCut={(c) => { void handleUndoCut(c); }}
                       postings={(matching && matching.postings) || []}
                       myPostings={(matching && matching.mine) || []}
                       cuts={(matching && matching.cuts) || []}

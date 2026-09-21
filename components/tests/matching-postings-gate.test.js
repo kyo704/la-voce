@@ -13,7 +13,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments } = require("./_source");
+const { stripComments , readsTable } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -22,14 +22,12 @@ function t(c, label) {
 
 /** ★画面や lib が、★募集の 表を 直に 引いて いないか。 */
 function 直に引く(src) {
-  const code = stripComments(src);
-  // ★★★裁定 その122 が 言うのは「**引かない**」です（2026-09-21 に 直しました）。
-  //   ★★「画面は postings を 直接 select しない。★必ず get_postings() を 通す」。
-  //   ★★出す（insert）のは 別 です。★門（RLS）が 在籍を 見ます。
-  //   ★★だから `.select(` が 続く ときだけ 当てます。
-  return /from\(\s*["'`]postings["'`]\s*\)\s*\n?\s*\.select\(/.test(code)
-    || /\bfrom\s+postings\b/.test(code);
+  // ★★★2026-09-21、★1か所に 集めました（★`_source.js` の `readsTable`）。
+  //   ★★同じ 直しを 4枚で しました。★4度目 です（★台帳 08-10）。
+  //   ★★裁定 その122 が 言うのは「引かない」です。★書くのは 門が 見ます。
+  return readsTable(src, "postings");
 }
+
 
 function main() {
   const raw = fs.readFileSync(path.join(ROOT, "supabase", "migration_postings.sql"), "utf-8");

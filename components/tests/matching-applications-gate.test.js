@@ -11,7 +11,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments } = require("./_source");
+const { stripComments , readsTable } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -24,12 +24,12 @@ function 自由文の列(表) {
 }
 /** ★画面や lib が、★応募の 表を 直に 引いて いないか。 */
 function 直に引く(src) {
-  const code = stripComments(src);
-  // ★★★裁定 その122 が 言うのは「**引かない**」です（2026-09-21 に 直しました）。
-  //   ★★出す（insert）のは 別 です。★門（RLS）が 在籍と 募集の 学校を 見ます。
-  //   ★★`postings` の 見張りでも 同じ 直しを しました。
-  return /from\(\s*["'`]applications["'`]\s*\)\s*\n?\s*\.select\(/.test(code);
+  // ★★★2026-09-21、★1か所に 集めました（★`_source.js` の `readsTable`）。
+  //   ★★同じ 直しを 4枚で しました。★4度目 です（★台帳 08-10）。
+  //   ★★裁定 その122 が 言うのは「引かない」です。★書くのは 門が 見ます。
+  return readsTable(src, "applications");
 }
+
 
 function main() {
   const raw = fs.readFileSync(path.join(ROOT, "supabase", "migration_applications.sql"), "utf-8");

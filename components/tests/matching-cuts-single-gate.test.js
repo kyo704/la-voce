@@ -18,7 +18,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments } = require("./_source");
+const { stripComments , readsTable } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -27,14 +27,17 @@ function t(c, label) {
 
 /** ★自前の 除外を 書いて いないか（★VERIFY Q4）。 */
 function 自前の除外(src) {
+  // ★★★2026-09-21、★引く ところは 1か所に 集めました（★`readsTable`）。
+  //   ★★同じ 直しを 4枚で しました。★4度目 です（★台帳 08-10）。
+  //   ★★裁定 その122 が 言うのは「引かない」です。★書くのは 門が 見ます。
+  // ★★★もう 1つ、★ここ だけの 見方が あります ──
+  //   ★★自分で 除外の 並びを 作って いないか（★VERIFY Q4）。
+  //   ★★除外は `matching_visible()` 1本 です。★画面で 除きません。
   const code = stripComments(src);
-  // ★★★名を 書いただけ では 当てません（★2026-09-21 に 直しました）。
-  //   ★★`lib/backupTables.js` は、★控えを 取る 表の 名を 並べて いる だけ です。
-  //   ★★引いて いません。★除外も して いません。★名の 一覧 です。
-  //   ★★★見るのは「引いて いるか」「自分で 除いて いるか」だけ に します。
-  return /from\(\s*["'`]matching_cuts["'`]\s*\)/.test(code)
+  return readsTable(src, "matching_cuts")
     || /\bcuts\b[^\n]{0,40}\.(?:includes|has|some|find)\(/.test(code);
 }
+
 
 function main() {
   const sqlRaw = fs.readFileSync(path.join(ROOT, "supabase", "migration_matching_cuts.sql"), "utf-8");

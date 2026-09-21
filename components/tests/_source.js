@@ -101,6 +101,22 @@ function stripSqlCode(text) {
   return STRIP.stripSql(text).code;
 }
 
+/**
+ * ★その 紙が、★その 表を **直に 引いて** いるか。
+ *
+ *   ★★★裁定 その122 が 言うのは「引かない」です。★書くのは 別 です。
+ *     ★★`postings` ／ `applications` ／ `application_messages` ／ `matching_cuts`
+ *     ★★★4つとも、★同じ 直しを 1枚ずつ しました。★4度目 です。
+ *       ★★台帳 08-10「3度 同じ 形が 起きたら、★仕組みに する」。
+ *       ★★だから ここに 集めます。★見張りごとに 書きません。
+ *   ★★見るのは `.from("X").select(` の 形 だけ です。
+ *     ★★`insert` / `update` / `delete` は 門（RLS）が 見ます。
+ */
+function readsTable(src, name) {
+  const code = stripComments(src);
+  return new RegExp(`from\\(\\s*["'\`]${name}["'\`]\\s*\\)\\s*\\n?\\s*\\.select\\(`).test(code);
+}
+
 /** ★消した 数（★黙って 落とさない・裁定 その124）。 */
 function stripCounts(text, sql) {
   const r = sql ? STRIP.stripSql(text) : STRIP.stripJs(text);
@@ -233,4 +249,4 @@ function readPack(...parts) {
 
 module.exports = {
   assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib,
-  packParts, readPack, stripCode, stripSqlCode, stripCounts };
+  packParts, readPack, stripCode, stripSqlCode, stripCounts, readsTable };

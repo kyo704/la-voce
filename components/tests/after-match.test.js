@@ -87,7 +87,15 @@ async function main() {
   t(/onReport/.test(jsx) && /REPORT/.test(jsx), "★通報の 札が ある");
   const vt = stripCode(readRaw("components", "VocalTracker.jsx"));
   t(/from\("matching_reports"\)/.test(vt), "★通報を 入れる 道が ある");
-  t(!/matching_cuts/.test(vt), "★切りの 行を 画面で 作って いない（★引き金が 作ります）");
+  // ★★★2026-09-21、★「この人との やりとり」の 板が できました。
+  //   ★★切る のは ご本人の 動きです。★画面が 作って よい もの です。
+  //   ★★★見るのは「**通報の ついでに** 切って いないか」です。
+  //     ★★通報の 切りは 台帳の 引き金が 作ります（★裁定 その125）。
+  //     ★★画面が 重ねて 作ると、★2つ 行が できます。
+  const 報 = vt.slice(vt.indexOf("async function handleReport"),
+    vt.indexOf("async function handleReport") + 1100);
+  t(報.length > 100, "★通報の ところを 切り出せて いる");
+  t(!/matching_cuts/.test(報), "★通報の ついでに 切って いない（★引き金が 作ります）");
 
   console.log("=== 七 ★読めなかった を 成立して いない に しない ===");
   t(m.isMatched(null) === null, "★null は null（★分からない）");

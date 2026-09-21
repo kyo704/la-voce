@@ -13,7 +13,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments } = require("./_source");
+const { stripComments , readsTable } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -23,13 +23,12 @@ function 自由文の列(表) {
   return /^\s*(body|message|text|comment|note|memo|free_\w+)\s+text/m.test(表);
 }
 function 直に引く(src) {
-  const code = stripComments(src);
-  // ★★★裁定 その122 が 言うのは「**引かない**」です（★2026-09-21）。
-  //   ★★出す（insert）のは 別 です。★門（RLS）が 3つ 見ます ──
-  //     ★募集の 持ち主か／たずねられて いるか／切れて いないか。
-  //   ★★`postings`・`applications` の 見張りでも 同じ 直しを しました。
-  return /from\(\s*["'`]application_messages["'`]\s*\)\s*\n?\s*\.select\(/.test(code);
+  // ★★★2026-09-21、★1か所に 集めました（★`_source.js` の `readsTable`）。
+  //   ★★同じ 直しを 4枚で しました。★4度目 です（★台帳 08-10）。
+  //   ★★裁定 その122 が 言うのは「引かない」です。★書くのは 門が 見ます。
+  return readsTable(src, "application_messages");
 }
+
 
 function main() {
   const raw = fs.readFileSync(path.join(ROOT, "supabase", "migration_application_messages.sql"), "utf-8");

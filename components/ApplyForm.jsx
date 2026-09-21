@@ -54,7 +54,7 @@ function 角({ on }) {
 }
 
 export default function ApplyForm({
-  posting, portfolio, onSubmit, onClose, onGoPortfolio, busy, error = ""
+  posting, portfolio, onSubmit, onClose, onGoPortfolio, onCutSheet, busy, error = ""
 }) {
   const [f, setF] = useState(() => emptyForm(posting));
   if (!posting) return null;
@@ -175,6 +175,15 @@ export default function ApplyForm({
           <span key={t} style={{ display: "block" }}>{太く(t, NOTES_BOLDS)}</span>
         ))}
       </Note>
+
+      {/* ★★★この人との やりとりについて（★見本の とおり・§5-4）。
+           ★★応募する 前でも、★切る 口と 通報の 口が あります。
+           ★★切ったら 通報できない、に しません。 */}
+      {onCutSheet ? (
+        <Btn ghost onClick={onCutSheet} style={{ marginTop: rem(9) }}>
+          {tx("この人との やりとりについて")}
+        </Btn>
+      ) : null}
 
       {/* ★★まだ できない こと。★札を 置かず、★字で お伝えします。 */}
       <div style={{ marginTop: rem(10) }}>

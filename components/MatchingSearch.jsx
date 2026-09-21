@@ -8,7 +8,7 @@ import {
   PF_HEAD, PF_DONE, PF_EMPTY, PF_GO_DONE, PF_GO_EMPTY,
   SECTION_OPEN, SECTION_MINE, SECTION_CUT,
   EMPTY_HEAD, EMPTY_SUB, EMPTY_NOTES,
-  GO_NEW, GO_NEW_MINE, GO_APPLIED, CUT_EMPTY,
+  GO_NEW, GO_NEW_MINE, GO_APPLIED, CUT_UNDO, CUT_EMPTY,
   CUT_NOTES, CUT_NOTES_BOLD, NOTES,
   applicationWord, postingLine, portfolioState, SODAN_LINE
 } from "@/lib/matchingSearch";
@@ -44,17 +44,10 @@ function 太く(t, 太たち) {
   );
 }
 
-// ★★★NOT_YET ── ★ここから 行く 先が、★まだ ありません（★2026-09-21）。
-//   ★★`もどす`
-//   ★★（募集を 出す・応募する・応募した 募集・応募を 選ぶ は 2026-09-21）
-//   ★★★札を 置いて、★押しても 何も 起きない 形に しません（★§8⑤）。
-//     ★★だから 受け取る 口（prop）も 作りません。
-//     ★★口だけ 作ると、★見張り（no-dead-props）が 毎回 5件 数えます。
-//     ★★「まだ 作って いない」は 除きの 紙に 書きません。★直す もの です。
-//   ★★★when（外す 条件）── ★その 画面が できた 日。★1つずつ 戻します。
+// ★★★2026-09-21、★9画面が ひととおり つながりました。
 export default function MatchingSearch({
   postings = [], myPostings = [], cuts = [], portfolio,
-  onGoPortfolio, onNewPosting, onOpenPosting, onGoApplied, onOpenMine,
+  onGoPortfolio, onNewPosting, onOpenPosting, onGoApplied, onOpenMine, onUndoCut,
   loadError = ""
 }) {
   const pf = portfolioState(portfolio);
@@ -185,9 +178,15 @@ export default function MatchingSearch({
         {cuts.length === 0 ? (
           <p style={{ ...小, margin: 0 }}>{CUT_EMPTY}</p>
         ) : cuts.map((c, i) => (
-          // ★★「もどす」は、★書き込む 道が まだ ありません。
-          //   ★★when …… ★切りを 戻す 道（関数）を 作る 日。
-          <Li key={c.target_user_id} last={i === cuts.length - 1}>
+          // ★★2026-09-21、★戻せる ように しました。
+          //   ★★消すのは ご本人 だけ です（★門が 見ます）。
+          <Li key={c.target_user_id} last={i === cuts.length - 1}
+            right={onUndoCut ? (
+              <button type="button" onClick={() => onUndoCut(c)} style={{
+                background: "transparent", border: "none", color: C.inkSoft,
+                ...TYPE.mini, minHeight: 44, padding: `0 ${rem(4)}`, fontFamily: FONT_STACK
+              }}>{CUT_UNDO}</button>
+            ) : null}>
             <span>{c.display_name || tx("お名前が ありません")}</span>
           </Li>
         ))}
