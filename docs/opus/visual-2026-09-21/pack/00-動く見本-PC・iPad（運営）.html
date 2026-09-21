@@ -872,7 +872,8 @@ function P_meibo(){
 /* ══════════ ④ 門下（先生） ══════════ */
 function P_monka(){
  return '<h2>門下</h2><div class="sub">斎藤 めぐみ の 門下　'+MONKA.length+'人　／　学年の 順に 並べています</div>'
- +'<div class="pills"><span class="pill" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</span>'
+ +'<div class="pills"><span class="pill on" onclick="push(\'レッスン割\')">レッスン割（年度初め）</span>'
+ +'<span class="pill" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</span>'
  +'<span class="pill" onclick="push(\'代表を決める\')">代表を 決める</span>'
  +'<span class="pill" onclick="push(\'まだの人\')">時間割が まだの方</span></div>'
  +'<div class="tblwrap">'
@@ -3501,6 +3502,151 @@ var SC={'重なり':P_kasa,'重なりを直す':P_kasaFix,'出欠つけ':P_shukk
  '場所を決める':function(){S.st2='場所';go('設定');return ''},
  '採点':P_saiten,'点を入れる':P_tenIreru,'門下に招く':P_monkaInvite,'授業の型':P_presets,'型の中身':P_presetEdit,
  '評価の項目':P_hyokaItem};
+
+/* ══ ★レッスン割（年度初め）── 裁定その138 R1 ／ その139（2026-09-21）══
+   ★学生が 希望（◎△×）を 出す → 先生が 地図を 見て 置く → 確定して 配る
+   ★既存の「日程を組む」を 土台に します                              */
+var WARI={name:'2027年度 前期',from:'4月7日',to:'7月25日',due:'3月10日',done:false};
+/* ★学生の 希望。2=◎ 1=△ 0=×。null は まだ */
+var PREF=MONKA.map(function(m,i){
+ if(i%6===5) return null;
+ var o={};
+ DAYS.forEach(function(d,di){myKoma().forEach(function(k,ki){var K=di+'-'+ki;
+  if(!isFree(i,K)){o[K]=0;return}
+  var r=(i*7+di*3+ki*5)%9; o[K]=r<3?2:(r<6?1:0)})});
+ return o});
+function prefAt(K){var a=[],b=[];
+ PREF.forEach(function(p,i){if(!p||isTaken(i))return;
+  if(p[K]===2)a.push(i);else if(p[K]===1)b.push(i)});return [a,b]}
+function wariAns(){return PREF.filter(function(p){return p}).length}
+function wariPut(i,K){PLACED[K]={i:i,pl:MST.place[2],len:45,rp:'毎週',to:PERIOD.to};
+ toast(MONKA[i][0]+' さんを 置きました');draw()}
+function wariOff(K){delete PLACED[K];toast('外しました');draw()}
+
+function P_wari(){
+ var n=MONKA.length,a=wariAns(),put=Object.keys(PLACED).length;
+ return bk('門下')+'<h2>レッスン割</h2>'
+ +'<div class="sub">'+WARI.name+'　／　'+WARI.from+'〜'+WARI.to+'　／　斎藤 めぐみ の 門下</div>'
+ +(WARI.done?'<div class="warn">確定しました。<b>学生の カレンダーに 届いています</b>。'
+   +'動かすと、カレンダーにも そのまま 反映されます。</div>'
+   :'<div class="warn">年度初めの レッスンを、<b>1日で</b> 割り振るための 画面です。<br>'
+   +'学生の 希望を 見ながら 置き、確定すると 全員の カレンダーに 届きます。</div>')
+ +'<div class="col2" style="align-items:flex-start">'
+ +'<div class="card" style="flex:1;min-width:260px"><div class="h3" style="margin-top:0">いまの ようす</div>'
+ +'<div class="li plain"><span>希望を 出した方</span><s>'+a+' / '+n+'人</s></div>'
+ +'<div class="li'+(n-a?'':' plain')+'"'+(n-a?' onclick="push(\'希望がまだの方\')"':'')+'>'
+ +'<span>まだの方</span><s>'+(n-a)+'人'+(n-a?' ›':'')+'</s></div>'
+ +'<div class="li plain"><span>置いた方</span><s>'+put+' / '+n+'人</s></div>'
+ +'<div class="li plain"><span>しめきり</span><s>'+WARI.due+'</s></div></div>'
+ +'<div class="card" style="flex:1;min-width:260px"><div class="h3" style="margin-top:0">すすめかた</div>'
+ +'<div class="li" onclick="push(\'希望の地図\')"><span>① 希望の 地図を 見る'
+ +'<div class="usu">どの コマに 何人 来られるか</div></span><s>›</s></div>'
+ +'<div class="li" onclick="push(\'希望の地図\')"><span>② 地図から 置く'
+ +'<div class="usu">コマを 押すと、来られる方の 名前が 出ます</div></span><s>›</s></div>'
+ +'<div class="li" onclick="push(\'レッスン割を確定\')"><span>③ 確定して 配る'
+ +'<div class="usu">全員の カレンダーへ</div></span><s>'+(WARI.done?'済み':'›')+'</s></div>'
+ +'</div></div>'
+ +'<div class="note">希望は、<b>担当の 先生と、日程を 組む 方だけ</b>が 見られます。<br>'
+ +'理由は うかがっていません。授業の コマは「×」とだけ 伝わり、授業名は 出ません。<br>'
+ +'<b>まだの方に、こちらから 催促は しません。</b>'
+ +'細かく 動かすときは「レッスンの 日程を 組む」も 使えます。</div>'}
+
+function P_wariMap(){
+ var sel=S.wcell, max=1;
+ DAYS.forEach(function(d,di){myKoma().forEach(function(k,ki){var q=prefAt(di+'-'+ki);
+  max=Math.max(max,q[0].length*2+q[1].length)})});
+ var h=bk('レッスン割')+'<h2>希望の 地図</h2>'
+ +'<div class="sub">'+WARI.name+'　／　◎ 行ける　△ できれば　／　濃いほど、行ける方が 多い</div>'
+ +'<div class="col2" style="align-items:flex-start">'
+ +'<div style="flex:3;min-width:0"><div class="grid" style="max-height:none"><table class="wk">'
+ +'<tr><th class="stick">コマ</th>'+DAYS.map(function(d){return '<th>'+d+'</th>'}).join('')+'</tr>'
+ +myKoma().map(function(k,ki){return '<tr><td class="stick" style="font-size:13px">'+k[0]
+  +'<br><span class="usu">'+k[1]+'〜'+k[2]+'</span></td>'
+  +DAYS.map(function(d,di){var K=di+'-'+ki,pl=PLACED[K],busy=getT(K);
+   if(pl)return '<td><div class="koma mine'+(sel===K?' sel2':'')+'" onclick="S.wcell=\''+K+'\';draw()">'
+     +'<b>'+MONKA[pl.i][0]+'</b>置きました</div></td>';
+   if(busy)return '<td><div class="koma busy"><b>'+busy+'</b>入りません</div></td>';
+   var q=prefAt(K),v=q[0].length*2+q[1].length,pc=Math.round(v/max*62);
+   var dark=pc>38;
+   return '<td><div class="slot" style="cursor:pointer;min-height:46px;'
+     +'background:color-mix(in srgb,var(--enji) '+pc+'%,var(--card));'
+     +'color:'+(dark?'#fff':'var(--ink)')+';'
+     +(sel===K?'outline:2px solid var(--ink);outline-offset:-2px;':'')+'"'
+     +' onclick="S.wcell=\''+K+'\';draw()">'
+     +(v?'◎ '+q[0].length+'　△ '+q[1].length:'—')+'</div></td>'}).join('')+'</tr>'}).join('')
+ +'</table></div></div>'
+ /* 右：その コマの 名前 */
+ +'<div style="flex:1.3;min-width:250px">';
+ if(!sel){
+  h+='<div class="card"><div class="empty" style="padding:22px 10px">'
+   +'<div class="t">コマを 押してください。</div>'
+   +'<div class="s">そこに 来られる方の 名前が 出ます。</div></div></div>';
+ }else{
+  var di=+sel.split('-')[0],ki=+sel.split('-')[1],kk=myKoma()[ki];
+  h+='<div class="card"><div class="h3" style="margin-top:0">'+DAYS[di]+'曜　'+kk[0]
+   +'<span class="usu">　'+kk[1]+'〜'+kk[2]+'</span></div>';
+  if(PLACED[sel]){
+   h+='<div class="li plain"><span><b>'+MONKA[PLACED[sel].i][0]+'</b><div class="usu">置きました</div></span>'
+    +'<s><span class="pill sm" onclick="wariOff(\''+sel+'\')">外す</span></s></div>';
+  }else{
+   var q=prefAt(sel);
+   h+='<div class="usu" style="margin:2px 0 6px">◎ 行ける</div>'
+    +(q[0].length?q[0].map(function(i){return '<div class="li plain"><span>'+MONKA[i][0]
+      +'<div class="usu">'+MONKA[i][1]+'</div></span>'
+      +'<s><span class="pill sm on" onclick="wariPut('+i+',\''+sel+'\')">ここに 置く</span></s></div>'}).join('')
+     :'<div class="usu" style="padding:4px 0 8px">いません</div>')
+    +'<div class="usu" style="margin:10px 0 6px">△ できれば</div>'
+    +(q[1].length?q[1].map(function(i){return '<div class="li plain"><span>'+MONKA[i][0]
+      +'<div class="usu">'+MONKA[i][1]+'</div></span>'
+      +'<s><span class="pill sm" onclick="wariPut('+i+',\''+sel+'\')">ここに 置く</span></s></div>'}).join('')
+     :'<div class="usu" style="padding:4px 0">いません</div>');
+  }
+  h+='</div>';
+ }
+ h+='</div></div>'
+  +'<div class="note">色は <b>1色の 濃さだけ</b>です（信号の 色は 使いません）。<br>'
+  +'すでに 置いた方は、ほかの コマの 名前から 消えます。<br>'
+  +'◎の 多い方から 順に 並べることは しません。<b>置くのは 先生です</b>。</div>';
+ return h}
+
+function P_wariMada(){
+ var L=[];PREF.forEach(function(p,i){if(!p)L.push(i)});
+ return bk('レッスン割')+'<h2>希望が まだの方</h2><div class="sub">'+L.length+'人　／　'+WARI.name+'</div>'
+ +'<div class="card p0">'+L.map(function(i){return '<div class="li" onclick="push(\'置ける枠\','+i+')">'
+   +'<span>'+MONKA[i][0]+'<div class="usu">'+MONKA[i][1]+'</div></span><s>時間割から 置く ›</s></div>'}).join('')+'</div>'
+ +'<div class="note"><b>こちらから 催促は しません。</b><br>'
+ +'声を かけるか、時間割の 空いている コマから 置いてください。<br>'
+ +'希望が 出ていなくても、置くことは できます。</div>'}
+
+function P_wariDone(){
+ var n=MONKA.length,put=Object.keys(PLACED).length,left=[];
+ MONKA.forEach(function(m,i){if(!isTaken(i))left.push(i)});
+ return bk('レッスン割')+'<h2>確定して 配る</h2><div class="sub">'+WARI.name+'</div>'
+ +'<div class="col2" style="align-items:flex-start">'
+ +'<div class="card" style="flex:1;min-width:260px">'
+ +'<div class="li plain"><span>置いた方</span><s style="font-size:15px;color:var(--ink)">'+put+' / '+n+'人</s></div>'
+ +'<div class="li plain"><span>期間</span><s>'+WARI.from+'〜'+WARI.to+'</s></div>'
+ +'<div class="li plain"><span>届く ところ</span><s>学生の きょう・日程・カレンダー</s></div></div>'
+ +'<div class="card" style="flex:1;min-width:260px"><div class="h3" style="margin-top:0">置けていない方　'+left.length+'人</div>'
+ +(left.length?left.map(function(i){return '<div class="li plain"><span>'+MONKA[i][0]+'</span>'
+   +'<s><span class="pill sm" onclick="push(\'置ける枠\','+i+')">置く</span></s></div>'}).join('')
+  :'<div class="usu">いません</div>')+'</div></div>'
+ +(WARI.done
+   ?'<div class="warn" style="margin-top:12px">確定しました。<br>'
+    +'学生は、それぞれ 自分の カレンダーの 住所を 持っています。'
+    +'<div style="font-family:monospace;font-size:12.5px;margin-top:6px;color:var(--ink3)">'
+    +'webcal://woolsong.app/ics/●●●●●●●●</div></div>'
+   :'<div style="margin-top:12px"><span class="btn" onclick="askShow(\'確定しますか\',WARI.name,'
+    +'\'置いた '+put+'人に、レッスンが 届きます。<br>置けていない方は、あとから 置けます。<br>'
+    +'確定したあと 動かしても、カレンダーに そのまま 反映されます。\',false,'
+    +'function(){WARI.done=true;draw();toast(\'確定しました\')})">確定して 配る</span></div>')
+ +'<div class="note"><b>お知らせは 送りません。</b>学生が 開いたときに 見えます。<br>'
+ +'置けていない方が いても、確定できます。</div>'}
+
+SC['レッスン割']=P_wari;
+SC['希望の地図']=P_wariMap;
+SC['希望がまだの方']=P_wariMada;
+SC['レッスン割を確定']=P_wariDone;
 var TAB={'ホーム':P_home,'日程':P_nittei,'名簿':P_meibo,'門下':P_monka,'行事':P_gyoji,
  '連絡':P_renraku,'設定':P_settei};
 var NAV=0;
@@ -3579,7 +3725,7 @@ function navHTML(nav){
 /* ══ ★たたむ ── 表の 画面では 自動で レールに ══
    Fluent NavigationView の Auto と 同じ考え。
    ★幅が 足りない 画面だけ たたみます                        */
-var WIDE = ['役職の一覧','名簿','日程を組む','置ける枠','採点'];
+var WIDE = ['役職の一覧','名簿','日程を組む','置ける枠','採点','希望の地図','レッスン割','レッスン割を確定'];
 function autoRail(){
  var t=S.stack.length?topOf().s:S.tab;
  return WIDE.indexOf(t)>=0 && S.dev!=='pc'}
