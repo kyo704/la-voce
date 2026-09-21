@@ -162,7 +162,7 @@ import PortfolioV2 from "@/components/PortfolioV2";
 import Renraku from "@/components/Renraku";
 import TellTeacher from "@/components/TellTeacher";
 import AnnouncementCompose from "@/components/AnnouncementCompose";
-import { shouldLogRead } from "@/lib/renraku";
+import { shouldLogRead, MONKA_READ_FAILED } from "@/lib/renraku";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
@@ -10274,6 +10274,32 @@ export default function VocalTracker({
    *   ★★90日を 過ぎた ものは、★画面の 側で 落とします（★lib/renraku.js）。
    *     ★消すのは 別の 定期処理です。★ここでは 消しません。
    */
+  /**
+   * ★門下を 開く（★裁定159 S3・2026-09-21）。
+   *
+   *   ★★★画面から `org_messages` を 直に 引きません。★道を 通ります。
+   *     ★★道が 先に 1行 書き、★書けたときだけ 中身を 返します（fail closed）。
+   *     ★★画面からの insert に 任せません。★呼ばなければ 残らない、を 作りません。
+   *   ★★★理由が 無ければ 道が 断ります。★画面でも 先に たずねます。
+   *   ★★断られたら 中身を 出しません。★空の 画面に しません。
+   */
+  const [monkaReadError, setMonkaReadError] = useState("");
+  const openMonkaThread = useCallback(async (orgId, teacherId, kind, note) => {
+    setMonkaReadError("");
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc("open_monka_thread", {
+      p_org_id: orgId, p_teacher_id: teacherId,
+      p_reason_kind: kind, p_reason_note: note || null
+    });
+    if (error) {
+      console.error("★門下を 開けませんでした:", error);
+      setMonkaReadError(MONKA_READ_FAILED);
+      return false;
+    }
+    setRenrakuMessages(data || []);
+    return true;
+  }, []);
+
   const fetchRenraku = useCallback(async (orgId, teacherId) => {
     const supabase = createClient();
     const [msgRes, annRes] = await Promise.all([
