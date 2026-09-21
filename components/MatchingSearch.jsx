@@ -2,16 +2,17 @@
 
 import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
-import { ScreenHead, Card, Note, Li, Warn, H3, Pill } from "@/components/UiV2";
+import { ScreenHead, Card, Note, Btn, Li, Warn, H3, Pill } from "@/components/UiV2";
 import {
   HEAD, TOP_LINES, TOP_BOLDS, KIND_PILLS, KIND_NOT_YET,
   PF_HEAD, PF_DONE, PF_EMPTY, PF_GO_DONE, PF_GO_EMPTY,
   SECTION_OPEN, SECTION_MINE, SECTION_CUT,
   EMPTY_HEAD, EMPTY_SUB, EMPTY_NOTES,
-  GO_NEW, CUT_EMPTY,
+  GO_NEW, GO_NEW_MINE, CUT_EMPTY,
   CUT_NOTES, CUT_NOTES_BOLD, NOTES,
   applicationWord, postingLine, portfolioState, SODAN_LINE
 } from "@/lib/matchingSearch";
+import { ENDED_LABEL } from "@/lib/postingForm";
 import { tx } from "@/lib/t";
 
 // ============================================================================
@@ -44,7 +45,8 @@ function 太く(t, 太たち) {
 }
 
 // ★★★NOT_YET ── ★ここから 行く 先が、★まだ ありません（★2026-09-21）。
-//   ★★`募集を 出す` ／ `応募する` ／ `応募を 選ぶ` ／ `応募した 募集` ／ `もどす`
+//   ★★`応募する` ／ `応募を 選ぶ` ／ `応募した 募集` ／ `もどす`
+//   ★★（`募集を 出す` は 2026-09-21 に できました）
 //   ★★★札を 置いて、★押しても 何も 起きない 形に しません（★§8⑤）。
 //     ★★だから 受け取る 口（prop）も 作りません。
 //     ★★口だけ 作ると、★見張り（no-dead-props）が 毎回 5件 数えます。
@@ -52,7 +54,7 @@ function 太く(t, 太たち) {
 //   ★★★when（外す 条件）── ★その 画面が できた 日。★1つずつ 戻します。
 export default function MatchingSearch({
   postings = [], myPostings = [], cuts = [], portfolio,
-  onGoPortfolio, loadError = ""
+  onGoPortfolio, onNewPosting, loadError = ""
 }) {
   const pf = portfolioState(portfolio);
 
@@ -100,13 +102,11 @@ export default function MatchingSearch({
             <p style={{ ...TYPE.li, color: C.ink, margin: 0, textAlign: "center" }}>{EMPTY_HEAD}</p>
             <p style={{ ...小, margin: `${rem(4)} 0 0`, textAlign: "center" }}>{EMPTY_SUB}</p>
           </Card>
-          {/* ★★★1件も 無い ときの 入口（★裁定 その120）。
-               ★★★行き先の 画面（募集を 出す）が、★まだ ありません。
-                 ★★押せない 札を 置きません。★いまは 字だけ お見せします。
-                 ★★when …… ★「募集を 出す」が できた 日に、★札に 戻します。 */}
-          <p style={{ ...小, margin: `${rem(10)} 0 0`, textAlign: "center" }}>
-            {GO_NEW}　……　{tx("まだ できません")}
-          </p>
+          {/* ★★★1件も 無い ときこそ、★出す 口を 残します（★裁定 その120）。
+               ★★2026-09-21、★行き先が できたので 札に 戻しました。 */}
+          {onNewPosting ? (
+            <Btn onClick={onNewPosting} style={{ marginTop: rem(10) }}>{GO_NEW}</Btn>
+          ) : null}
           <Note>
             {EMPTY_NOTES.map((t) => (
               <span key={t} style={{ display: "block" }}>{t}</span>
@@ -153,11 +153,22 @@ export default function MatchingSearch({
                     {p.days.join("　")}
                   </span>
                 ) : null}
+                {/* ★★期限の 来た もの（★裁定 その130）。★消えて いません。 */}
+                {p.ended ? (
+                  <span style={{ display: "block", ...TYPE.mini, color: C.inkSoft }}>
+                    {ENDED_LABEL}
+                  </span>
+                ) : null}
               </span>
             </Li>
           ))}
         </Card>
       )}
+
+      {/* ★★1件でも ある ときも、★出す 口を 置きます（★見本の「＋ 自分も 募集を 出す」）。 */}
+      {onNewPosting ? (
+        <Btn ghost onClick={onNewPosting} style={{ marginTop: rem(9) }}>{GO_NEW_MINE}</Btn>
+      ) : null}
 
       <H3>{SECTION_CUT}</H3>
       <Card>

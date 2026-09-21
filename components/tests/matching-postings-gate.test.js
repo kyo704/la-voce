@@ -22,7 +22,11 @@ function t(c, label) {
 /** ★画面や lib が、★募集の 表を 直に 引いて いないか。 */
 function 直に引く(src) {
   const code = stripComments(src);
-  return /from\(\s*["'`]postings["'`]\s*\)/.test(code)
+  // ★★★裁定 その122 が 言うのは「**引かない**」です（2026-09-21 に 直しました）。
+  //   ★★「画面は postings を 直接 select しない。★必ず get_postings() を 通す」。
+  //   ★★出す（insert）のは 別 です。★門（RLS）が 在籍を 見ます。
+  //   ★★だから `.select(` が 続く ときだけ 当てます。
+  return /from\(\s*["'`]postings["'`]\s*\)\s*\n?\s*\.select\(/.test(code)
     || /\bfrom\s+postings\b/.test(code);
 }
 
@@ -117,6 +121,8 @@ function main() {
   console.log("=== 六 ★較正（★故意に 1件 作る） ===");
   t(直に引く('const { data } = await sb.from("postings").select("id");'),
     "★直に 引く 書き方を 見つける");
+  t(!直に引く('await sb.from("postings").insert({ org_id: id });'),
+    "★出す 書き方では 当たらない（★門が 在籍を 見ます）");
   t(!直に引く('const { data } = await sb.rpc("get_postings", { p_org_id: id });'),
     "★関数を 呼ぶ 書き方は 見つけない");
   t(!直に引く("// postings は get_postings から 引きます"), "★説明の 中の 字では 当たらない");

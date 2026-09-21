@@ -120,6 +120,7 @@ import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu
 // ★★さがす（マッチング）の 門。★9画面が 揃ったら 消します（★2026-09-21）。
 import { mayUseMatching } from "@/lib/matchingGate";
 import MatchingSearch from "@/components/MatchingSearch";
+import PostingForm from "@/components/PostingForm";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import WheelPicker from "@/components/WheelPicker";
@@ -7655,6 +7656,10 @@ export default function VocalTracker({
   //   ★★「読めなかった」と「0件」を 分けて 持ちます。
   const [matching, setMatching] = useState(null);
   const [matchingError, setMatchingError] = useState("");
+  // ★★募集を 出す（★裁定 その94 §4g・その130）。★開いて いる あいだ だけ。
+  const [postingOpen, setPostingOpen] = useState(false);
+  const [postingBusy, setPostingBusy] = useState(false);
+  const [postingError, setPostingError] = useState("");
   // ★★★さがす（マッチング）の 門（★2026-09-21）。★既定は 閉 です。
   //   ★★9画面が 揃うまで、★名簿に 並べた 方 だけに 出します。
   const matchingOn = mayUseMatching(userId, {
@@ -11395,46 +11400,73 @@ export default function VocalTracker({
   //   ★★開いて いない あいだは 引きません。★読まれない 値を 運びません。
   //   ★★学校は 在籍の 1つ目 です。★いまは 1校を 前提に します。
   //     ★★2校 以上に 在籍する 方の 出し分けは、★まだ 決まって いません。
+  // ★★★読み直しを 1か所に します（★出した あとにも 使います）。
+  //   ★★2つ 書くと、★片方だけ 直る 日が 来ます。
+  const fetchMatching = useCallback(async () => {
+    const supabase = createClient();
+    const 在 = await runQueryWithAuthRetry(supabase, () =>
+      supabase.from("enrollments").select("org_id")
+        .eq("student_id", userId).eq("status", "active").limit(1),
+      "さがす（在籍）");
+    const orgId = (在.data && 在.data[0] && 在.data[0].org_id) || null;
+    if (在.error || !orgId) {
+      return { postings: [], mine: [], cuts: [], orgId: null,
+        err: 在.error ? "いま 読めませんでした。" : "" };
+    }
+    const [出, 自, 切] = await Promise.all([
+      runQueryWithAuthRetry(supabase, () =>
+        supabase.rpc("get_postings", { p_org_id: orgId }), "さがす（募集）"),
+      runQueryWithAuthRetry(supabase, () =>
+        supabase.rpc("get_my_postings"), "さがす（自分の募集）"),
+      runQueryWithAuthRetry(supabase, () =>
+        supabase.rpc("get_my_cuts"), "さがす（見えなくした方）")
+    ]);
+    [["募集", 出], ["自分の募集", 自], ["見えなくした方", 切]].forEach(([名, r]) => {
+      if (r && r.error) console.error(`★さがすの ${名} を 読めませんでした:`, r.error);
+    });
+    return {
+      postings: 出.data || [], mine: 自.data || [], cuts: 切.data || [], orgId,
+      err: 出.error ? "いま 読めませんでした。" : ""
+    };
+  }, [userId]);
+
+  /**
+   * ★募集を 出します（★裁定 その94 §4g・その130）。
+   *
+   *   ★★★`org_id` は ここで 入れます。★画面で 選ばせません。
+   *     ★★台帳の 門も 在籍を 見ます（★2026-09-21）。★二重に 守ります。
+   */
+  async function handleCreatePosting(row) {
+    const orgId = matching && matching.orgId;
+    if (!orgId) { setPostingError("いま 出せませんでした。"); return; }
+    setPostingBusy(true);
+    setPostingError("");
+    const supabase = createClient();
+    const { error } = await supabase.from("postings")
+      .insert({ ...row, org_id: orgId, owner_user_id: userId });
+    setPostingBusy(false);
+    if (error) {
+      console.error("★募集を 出せませんでした:", error);
+      setPostingError("いま 出せませんでした。");
+      return;
+    }
+    setPostingOpen(false);
+    const r = await fetchMatching();
+    setMatching(r);
+    setMatchingError(r.err);
+  }
+
   useEffect(() => {
     if (!matchingOn || moreSection !== "さがす" || !userId) return;
     let alive = true;
     (async () => {
-      const supabase = createClient();
-      const 在 = await runQueryWithAuthRetry(supabase, () =>
-        supabase.from("enrollments").select("org_id")
-          .eq("student_id", userId).eq("status", "active").limit(1),
-        "さがす（在籍）");
-      const orgId = (在.data && 在.data[0] && 在.data[0].org_id) || null;
+      const r = await fetchMatching();
       if (!alive) return;
-      if (在.error || !orgId) {
-        setMatching({ postings: [], mine: [], cuts: [], orgId: null });
-        setMatchingError(在.error ? "いま 読めませんでした。" : "");
-        return;
-      }
-      const [出, 自, 切] = await Promise.all([
-        runQueryWithAuthRetry(supabase, () =>
-          supabase.rpc("get_postings", { p_org_id: orgId }), "さがす（募集）"),
-        runQueryWithAuthRetry(supabase, () =>
-          supabase.rpc("get_my_postings"), "さがす（自分の募集）"),
-        // ★★★表を 直に 引きません（★裁定 その122）。★お名前も 要ります。
-        //   ★★`get_my_cuts()` が、★見えなくした 方の 名を 返します。
-        runQueryWithAuthRetry(supabase, () =>
-          supabase.rpc("get_my_cuts"), "さがす（見えなくした方）")
-      ]);
-      if (!alive) return;
-      [["募集", 出], ["自分の募集", 自], ["切り", 切]].forEach(([名, r]) => {
-        if (r && r.error) console.error(`★さがすの ${名} を 読めませんでした:`, r.error);
-      });
-      setMatching({
-        postings: 出.data || [],
-        mine: 自.data || [],
-        cuts: 切.data || [],
-        orgId
-      });
-      setMatchingError(出.error ? "いま 読めませんでした。" : "");
+      setMatching(r);
+      setMatchingError(r.err);
     })();
     return () => { alive = false; };
-  }, [matchingOn, moreSection, userId]);
+  }, [matchingOn, moreSection, userId, fetchMatching]);
   // ★★どこから「もっと」へ 来たか（★2026-09-16・見本 `bk('戻る')`）。
   //   ★★見本の もっと には 戻る 道が あります。★`pop()` ── ★来た ところへ 帰ります。
   //   ★★実装の もっと は 帯の タブ なので、★「来た ところ」を 自分で 覚えます。
@@ -26870,9 +26902,20 @@ export default function VocalTracker({
                     ★★字も 決めも lib/matchingSearch.js が 持ちます。
                     ★★★押した 先の 8画面は、★まだ ありません。
                       ★★渡さない ことで 出しません（★押せない 札を 置きません）。 */}
-                {layoutV2 && matchingOn && moreSection === "さがす" ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && postingOpen ? (
+                  <div data-v2-posting="1">
+                    <PostingForm
+                      busy={postingBusy}
+                      error={postingError}
+                      onSubmit={(row) => { void handleCreatePosting(row); }}
+                      onClose={() => { setPostingOpen(false); setPostingError(""); }} />
+                  </div>
+                ) : null}
+
+                {layoutV2 && matchingOn && moreSection === "さがす" && !postingOpen ? (
                   <div data-v2-matching="1">
                     <MatchingSearch
+                      onNewPosting={() => { setPostingOpen(true); setPostingError(""); }}
                       postings={(matching && matching.postings) || []}
                       myPostings={(matching && matching.mine) || []}
                       cuts={(matching && matching.cuts) || []}
