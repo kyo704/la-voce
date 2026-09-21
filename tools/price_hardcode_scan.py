@@ -15,12 +15,29 @@
 
 import io
 import os
+import os
 import re
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# ★★★共通の 下ごしらえを 使います（★2026-09-21・裁定135 の 5度目）。
+#   ★★ここに 書いて いた 形は、★**行の 頭の 註 だけ** を 落として いました。
+#     ★★`const a = 1; // 12,800円` の ような 行の 終わりの 註が 残り、
+#       ★★「直書き」として 挙がって いました。
+#   ★★正規表現リテラルも 読み飛ばせません でした。
+#   ★★`tools/strip_common.py` は `lib/strip.js` と 同じ 決まり です。
+from strip_common import strip_js as _strip_js
+
+
 def strip(t):
+  return _strip_js(t)
+
+
+def _strip_old(t):
   t = re.sub(r"/\*[\s\S]*?\*/", "", t)
   t = re.sub(r"(?m)^\s*//.*$", "", t)
   t = re.sub(r"(?m)^\s*\*.*$", "", t)
