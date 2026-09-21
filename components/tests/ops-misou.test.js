@@ -99,5 +99,37 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok((vt.match(/fetchMisou/g) || []).length >= 3, "★読み道が 呼ばれて いません");
   });
 
+  見る("⑩開く 札 ── ★字は 2つ・出す 道は 画面に 無い（★裁定 その142）", () => {
+    assert.strictEqual(m.CONTINUE_LABEL, "つづきを 書く");
+    assert.strictEqual(m.RESEND_LABEL, "もう一度 出す");
+    // ★★★「もう一度 出す」は 送れなかった 行 **だけ**。
+    //   ★★1度も 出して いない ものに「もう一度」と 書くと、
+    //     ★★出した ことが ある と 読めます。
+    assert.strictEqual(m.openLabel({ kind: "failed" }), m.RESEND_LABEL);
+    assert.strictEqual(m.openLabel({ kind: "draft" }), m.CONTINUE_LABEL);
+    assert.strictEqual(m.openLabel({}), m.CONTINUE_LABEL);
+    assert.strictEqual(m.openLabel(null), m.CONTINUE_LABEL);
+    // ★★押すと 書く 画面が 開く だけ です。★ここから 直に 出しません。
+    assert.ok(/onOpen/.test(ui), "★開く 道が ありません");
+    assert.ok(!/onSend/.test(ui), "★直に 出す 道が 残って います");
+    // ★★空でも 押せます（★つづきを 書く ため）。
+    assert.ok(!/maySend/.test(ui), "★空を 止めて います");
+  });
+
+  見る("⑪やめる ── ★中身が あれば 残す（★裁定 その142）", () => {
+    assert.strictEqual(m.CANCEL_LABEL, "やめる");
+    // ★★両の 側を 見ます。★片方だけ だと、★いつも 残す／いつも 捨てる が 通ります。
+    assert.strictEqual(m.shouldKeepDraft({ title: "", body: "あ" }), true);
+    assert.strictEqual(m.shouldKeepDraft({ title: "あ", body: "" }), true);
+    assert.strictEqual(m.shouldKeepDraft({ title: "", body: "" }), false);
+    assert.strictEqual(m.shouldKeepDraft({ title: "  ", body: "\n " }), false,
+      "★空白だけ を 中身と 数えて います");
+    assert.strictEqual(m.shouldKeepDraft(null), false);
+    // ★★残した ことを 黙りません。
+    assert.ok(m.CANCEL_KEPT_LINE.includes("未送信"), "★どこに 残ったか 言って いません");
+    const ac = readCode("components", "AnnouncementCompose.jsx");
+    assert.ok(/CANCEL_LABEL/.test(ac), "★書く 画面に やめる が ありません");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })();

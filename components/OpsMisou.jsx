@@ -5,9 +5,9 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { ScreenHead, H3, Card, Li, Note, Warn, Ask } from "@/components/UiV2";
 import {
-  HEAD, BACK_LABEL, KINDS, WARN_LINES, countWord, split, maySend,
-  whyCannotSend, headOf, FAIL_WORD, EMPTY_HEAD, NOT_READ,
-  SEND_LABEL, DELETE_LABEL, DELETE_ASK, NOTES
+  HEAD, BACK_LABEL, KINDS, WARN_LINES, countWord, split,
+  headOf, FAIL_WORD, EMPTY_HEAD, NOT_READ,
+  openLabel, DELETE_LABEL, DELETE_ASK, NOTES
 } from "@/lib/opsMisou";
 
 // ============================================================================
@@ -23,7 +23,7 @@ import {
 const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsMisou({
-  rows, onSend, onDelete, onClose, busy, error = ""
+  rows, onOpen, onDelete, onClose, busy, error = ""
 }) {
   const [消す, set消す] = useState(null);
   const 分け = split(rows);
@@ -37,16 +37,21 @@ export default function OpsMisou({
       {印 === "failed" ? (
         <p style={{ ...小, margin: "3px 0 0" }}>{FAIL_WORD}</p>
       ) : null}
+      {/* ★★★押すと、★書く 画面が 開く だけ です（★裁定 その142）。
+           ★★ここから 直に 出しません。★出すか どうかは、★書く 画面で
+             ★もう一度 人が 決めます（★上の 約束 と 同じ 考え）。
+           ★★★だから 中身が 空でも 押せます。★つづきを 書く ため です。
+             ★★「中身が ありません」で 止めて いたのは、★直に 出して
+               いた ころ の 名残り でした。 */}
       <div style={{ display: "flex", gap: 8, marginTop: rem(8) }}>
-        <button type="button" disabled={busy || !maySend(r)}
-          onClick={() => onSend && onSend(r)}
+        <button type="button" disabled={busy}
+          onClick={() => onOpen && onOpen(r)}
           style={{
             minHeight: 44, padding: `0 ${rem(14)}`, borderRadius: 999,
-            border: `1px solid ${maySend(r) ? C.curtain : C.line}`,
-            background: maySend(r) ? C.curtain : C.line,
-            color: maySend(r) ? C.onCurtain : C.inkSoft,
+            border: `1px solid ${C.curtain}`, background: C.curtain,
+            color: C.onCurtain,
             fontSize: rem(12.5), fontFamily: FONT_STACK
-          }}>{SEND_LABEL}</button>
+          }}>{openLabel(r)}</button>
         <button type="button" disabled={busy}
           onClick={() => set消す(r)}
           style={{
@@ -55,9 +60,6 @@ export default function OpsMisou({
             fontSize: rem(12.5), fontFamily: FONT_STACK
           }}>{DELETE_LABEL}</button>
       </div>
-      {whyCannotSend(r) ? (
-        <p style={{ ...小, margin: "6px 0 0" }}>{whyCannotSend(r)}</p>
-      ) : null}
     </Card>
   );
 

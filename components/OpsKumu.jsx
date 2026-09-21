@@ -5,13 +5,17 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 // ★★表の すべり・貼り付けは 1か所が 持ちます（★裁定 その81 §5-1）。
 import { TABLE_CLASS, ANCHOR_CLASSES } from "@/lib/visualTokens";
-import { ScreenHead, H3, Box, Li, Note, Usu, Warn } from "@/components/UiV2";
+import { ScreenHead, H3, Box, Li, Note, Usu, Warn, Ask } from "@/components/UiV2";
 import {
   HEAD, DAYS, slotKey, weekDates, weekWord, periodWord,
   freeAt, whoWrote, countWord, NOTES, NOT_WRITTEN_LINE, NOT_YET,
   // ★★誰の 分を 組むか（★裁定 その99 F1・2026-09-19）。
   PICK_TEACHER_HEAD, PICK_TEACHER_SUB, PICK_TEACHER_EMPTY, PICK_TEACHER_EMPTY_HOW,
-  needsTeacherPick, whoseWord
+  needsTeacherPick, whoseWord,
+  // ★★やり直す（★裁定 その142・2026-09-21）。★決めは lib が 持ちます。
+  REDO_LABEL, REDO_ASK, REDO_NOTE, mayRedo,
+  // ★★自分の 予定だけ 全部 外す（★裁定 その142）。
+  CLEAR_BUSY_LABEL, CLEAR_BUSY_ASK, CLEAR_BUSY_NOTE
 } from "@/lib/opsKumu";
 
 // ============================================================================
@@ -43,10 +47,23 @@ export default function OpsKumu({
   perms, teachers = [], teacherId, onPickTeacher,
   // ★★★入れられる 枠へ（★見本 `P_okeru`・裁定 その108・2026-09-20）。
   //   ★★渡されなければ 押しどころに しません。
-  onOpenOkeru
+  onOpenOkeru,
+  // ★★★やり直す（★裁定 その142・2026-09-21）。
+  //   ★`onRedo` … ★その 週に 置いた ものを 受け取って、まとめて 外します
+  //   ★`published` … ★出した あとか どうか。★出した あとは やり直せません
+  //     ★★`NOT_YET` …… ★「出す」は まだ ありません（★この 紙の `publish`）。
+  //       ★★作る 日に、★ここへ 本当の 値を 渡して ください。★いまは false です。
+  onRedo, published = false,
+  // ★★★自分の 予定だけ 全部 外す（★裁定 その142・2026-09-21）。
+  //   ★★渡されなければ 札を 出しません（★押せない 札を 置きません）。
+  //   ★★外れるのは **押した ご本人の** 印 だけ です。★台帳が そう 縛ります。
+  onClearBusy
 }) {
   const [week, setWeek] = useState(0);
   const [cell, setCell] = useState(null);
+  // ★★やり直す 前に 一度 お尋ねします（★戻せない ため）。
+  const [やり直す, setやり直す] = useState(false);
+  const [予定外す, set予定外す] = useState(false);
   // ★★★`sched_all` の 方は、★先生を 選んで から です。
   //   ★★選ぶまで 表を 出しません。★誰の 分か 分からない 表は、★出せません。
   const 選ぶ = needsTeacherPick(perms) && !teacherId;
@@ -130,6 +147,22 @@ export default function OpsKumu({
         {week !== 0 ? (
           <button type="button" onClick={() => setWeek(0)} style={札}>今週へ</button>
         ) : null}
+        {/* ★★★やり直す（★裁定 その142）。★この 週 だけ です。
+             ★★置いた ものが 無い ときは 出しません ── ★外す ものが ありません。
+             ★★押せない 札を 置きません（★§8⑤）。 */}
+        {onRedo && mayRedo({ published, placedCount: 置いた.length }) ? (
+          <button type="button" onClick={() => setやり直す(true)} style={札}>
+            {REDO_LABEL}
+          </button>
+        ) : null}
+        {/* ★★★ご自分の「来られない」の 印を まとめて 外します（★裁定 その142）。
+             ★★「やり直す」とは 別の もの です ── ★あちらは レッスン、
+               ★こちらは ご自分の 印 です。★字も 分けて あります。 */}
+        {onClearBusy ? (
+          <button type="button" onClick={() => set予定外す(true)} style={札}>
+            {CLEAR_BUSY_LABEL}
+          </button>
+        ) : null}
       </div>
 
       {periods.length === 0 ? (
@@ -188,6 +221,23 @@ export default function OpsKumu({
       )}
 
       {/* ★★選んだ マス ── ★その 時間に 来られる 方。 */}
+      {/* ★★★やり直す 前の お尋ね。★戻せません。★何枚 外すかを 言います。 */}
+      {やり直す ? (
+        <Ask title={REDO_ASK}
+          note={`${REDO_NOTE}（${置いた.length}件）`}
+          okLabel={REDO_LABEL}
+          onOk={() => { if (onRedo) onRedo(置いた); setやり直す(false); setCell(null); }}
+          onCancel={() => setやり直す(false)} />
+      ) : null}
+
+      {/* ★★★ご自分の 印を 外す 前の お尋ね。★戻せません。 */}
+      {予定外す ? (
+        <Ask title={CLEAR_BUSY_ASK} note={CLEAR_BUSY_NOTE}
+          okLabel={CLEAR_BUSY_LABEL}
+          onOk={() => { if (onClearBusy) onClearBusy(); set予定外す(false); }}
+          onCancel={() => set予定外す(false)} />
+      ) : null}
+
       {cell ? (() => {
         const [di, ord] = cell.split("-").map(Number);
         const p = periods.find((x) => Number(x.ord) === ord) || null;

@@ -14020,6 +14020,10 @@ export default function VocalTracker({
   const [misouRows, setMisouRows] = useState(undefined);
   const [misouBusy, setMisouBusy] = useState(false);
   const [misouError, setMisouError] = useState("");
+  // ★★★いま 書く 画面で 開いて いる 下書き（★裁定 その142・2026-09-21）。
+  //   ★★`null` なら 新しく 書いて います。★行が あれば その 行の つづき です。
+  //   ★★出した とき・やめた ときに、★同じ 行へ 戻します。★2つ 作りません。
+  const [misouEditing, setMisouEditing] = useState(null);
   // ★★★保護者の 同意を お尋ねする（★裁定 その107・2026-09-20）。
   //   ★★`null` なら 出しません。★1度 閉じたら、★こちらからは 出しません。
   const [guardianAsk, setGuardianAsk] = useState(null);
@@ -14677,6 +14681,27 @@ export default function VocalTracker({
    *   ★★★ご自分の 行 だけ です（★決まりが そう して います）。
    *   ★★「あなたの 予定が 入って いる 枠は 出しません」の もと に なります。
    */
+  /**
+   * ★ご自分の「来られない」の 印を、★まとめて 外します（★裁定 その142）。
+   *
+   *   ★★★表を 直に 触りません。★道（`clear_my_busy_slots`）を 通ります。
+   *     ★★読む ときと 同じ 形 です（★`get_my_busy_slots`）。
+   *     ★★`my_timetable` を 直に 読むのは `MyTimetable.jsx` だけ ── ★その ままです。
+   *   ★★★道は `auth.uid()` に 縛って あります。★人を 引数で 指せません。
+   *     ★★運営の 方が、★よその 先生の 予定を 消す ことは できません。
+   *   ★★画面は 押す 前に 一度 お尋ねして います。
+   */
+  async function handleClearMyBusy() {
+    const supabase = createClient();
+    const { error } = await supabase.rpc("clear_my_busy_slots");
+    if (error) {
+      console.error("★ご自分の 予定を 外せませんでした:", error);
+      return false;
+    }
+    await fetchMyBusy();
+    return true;
+  }
+
   async function fetchMyBusy() {
     const supabase = createClient();
     // ★★★表を 直に 引きません（★2026-09-20・見張りが 捕まえました）。
@@ -15032,6 +15057,57 @@ export default function VocalTracker({
     } finally {
       setMisouBusy(false);
     }
+  }
+
+  /**
+   * ★下書きを しまいます（★裁定 その142・2026-09-21）。
+   *
+   *   ★★★「やめる」を 押した とき に 呼びます。★中身が あれば 残します。
+   *     ★★残すか どうかは `lib/opsMisou.js` の `shouldKeepDraft` が 決めます。
+   *       ★★ここでは 決めません。★呼ぶ 側から 受け取ります。
+   *   ★★★開いて いた 行が あれば **その 行を 直します**。★2つに しません。
+   *     ★★新しく 書いて いた なら、★1行 作ります。
+   *   ★★★出しません。★`org_message_drafts` に 置く だけ です。
+   *     ★★この 表から 人に 届く 道は ありません（★lib/opsMisou.js の 註）。
+   */
+  async function handleSaveDraft(orgId, draftId, draft, aim) {
+    const 宛 = aim || {};
+    const 中身 = {
+      title: (draft && draft.title) || null,
+      body: String((draft && draft.body) || ""),
+      target_division_ids: 宛.divisionIds || [],
+      target_grade_years: 宛.gradeYears || [],
+      target_user_ids: 宛.userIds || []
+    };
+    const supabase = createClient();
+    try {
+      const q = draftId
+        ? supabase.from("org_message_drafts")
+          .update({ ...中身, updated_at: new Date().toISOString() })
+          .eq("id", draftId).select("id")
+        : supabase.from("org_message_drafts")
+          .insert({ ...中身, org_id: orgId, author_id: userId, kind: "draft" })
+          .select("id");
+      const { data, error } = await q;
+      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      return true;
+    } catch (err) {
+      console.error("★下書きを しまえませんでした:", err);
+      return false;
+    }
+  }
+
+  /**
+   * ★開いて いた 下書きを、★直して から 出します（★裁定 その142）。
+   *
+   *   ★★★先に 直し、★それから `send_message_draft` を 呼びます。
+   *     ★★出すのと 消すのは、★台帳の 中で 1つの 取引 です。
+   *     ★★★直さずに 出すと、★画面で 書き換えた 字が 落ちます。
+   */
+  async function handleSendEditedDraft(orgId, draftId, draft, aim) {
+    const ok = await handleSaveDraft(orgId, draftId, draft, aim);
+    if (!ok) return false;
+    return handleSendDraft(orgId, draftId);
   }
 
   /**
@@ -17018,6 +17094,20 @@ export default function VocalTracker({
                   onPlace={(x) => handlePlaceLesson(opsOrgId,
                     { ...x, teacherId: 見る先生 })}
                   onRemove={(l) => handleRemoveLesson(opsOrgId, l)}
+                  /* ★★★やり直す（★裁定 その142・2026-09-21）。
+                       ★★1つずつ 外すのと 同じ 道を 通ります。★新しい 消し方を
+                         ★作りません。★門も 記録も、★1つずつ の ときと 同じ です。
+                       ★★★順に 外します。★まとめて 投げません ──
+                         ★★1つ 落ちた とき、★どれが 残ったかが 分からなく なります。
+                       ★★画面は 押す 前に 一度 お尋ねして います。 */
+                  onRedo={async (置いた) => {
+                    for (const l of (置いた || [])) {
+                      await handleRemoveLesson(opsOrgId, l);
+                    }
+                  }}
+                  /* ★★★ご自分の 予定だけ 全部 外す（★裁定 その142）。
+                       ★★外れるのは 押した ご本人の 印 だけ です。 */
+                  onClearBusy={() => { void handleClearMyBusy(); }}
                   onClose={() => { setOpsKumuOpen(false); setOpsKumuTeacher(null); }} />
               );
             }
@@ -17348,7 +17438,15 @@ export default function VocalTracker({
                   rows={misouRows}
                   busy={misouBusy}
                   error={misouError}
-                  onSend={(r) => { void handleSendDraft(opsOrgId, r.id); }}
+                  /* ★★★押すと 書く 画面が 開く だけ です（★裁定 その142）。
+                       ★★ここから 直に 出しません。★出すか どうかは、
+                         ★書く 画面で もう一度 人が 決めます。 */
+                  onOpen={(r) => {
+                    setMisouEditing(r);
+                    setMisouOpen(false);
+                    setMisouError("");
+                    setComposing(true);
+                  }}
                   onDelete={(r) => { void handleDeleteDraft(opsOrgId, r.id); }}
                   onClose={() => { setMisouOpen(false); setMisouError(""); }} />
               );
@@ -17385,12 +17483,45 @@ export default function VocalTracker({
                       counted: (e.status || "active") === "active"
                     }))}
                     nameOf={(id) => orgDisplayName(id) || ""}
+                    /* ★★★未送信から 開いた とき（★裁定 その142）。
+                         ★★はじめの 字を 渡します。★「つづきを 書く」も
+                           ★「もう一度 出す」も、★ここへ 来ます。 */
+                    initialTitle={(misouEditing && misouEditing.title) || ""}
+                    initialBody={(misouEditing && misouEditing.body) || ""}
                     onPost={async (teacherId, body, aim) => {
-                      const ok = await handlePostRenraku(opsOrgId, teacherId, body, aim);
-                      if (ok) await fetchRenraku(opsOrgId, openStudio);
+                      // ★★★下書きの つづき なら、★その 行を 直して から 出します。
+                      //   ★★新しく 作りません。★未送信に 抜け殻が 残ります。
+                      const ok = misouEditing
+                        ? await handleSendEditedDraft(opsOrgId, misouEditing.id,
+                          { title: (aim && aim.title) || null, body }, aim)
+                        : await handlePostRenraku(opsOrgId, teacherId, body, aim);
+                      if (ok) {
+                        setMisouEditing(null);
+                        await fetchRenraku(opsOrgId, openStudio);
+                      }
                       return ok;
                     }}
-                    onClose={() => setComposing(false)} />
+                    /* ★★★やめる（★裁定 その142）。★中身が あれば 未送信に 残します。
+                         ★★残すか どうかは `lib/opsMisou.js` が 決めて、
+                           ★★その 答えを `残す` で 受け取ります。★ここで 判じません。
+                         ★★★中身が 無く、★開いて いた 行も 無ければ、
+                           ★★何も しません。★空の 下書きを 作りません。 */
+                    onCancel={async (draft, 残す, aim) => {
+                      if (残す) {
+                        await handleSaveDraft(opsOrgId, misouEditing && misouEditing.id,
+                          draft, aim);
+                      } else if (misouEditing) {
+                        // ★★中身を 空に して やめた ── ★もとの 行を 残しません。
+                        await handleDeleteDraft(opsOrgId, misouEditing.id);
+                      }
+                      setMisouEditing(null);
+                      setComposing(false);
+                      if (残す) {
+                        setMisouOpen(true);
+                        void fetchMisou(opsOrgId);
+                      }
+                    }}
+                    onClose={() => { setMisouEditing(null); setComposing(false); }} />
                 );
               }
               return (

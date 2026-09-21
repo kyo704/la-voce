@@ -11,6 +11,8 @@ import {
 } from "@/lib/renraku";
 // ★★学校の 形（★裁定 その98）。★学部は 学科の 上に つないで あります。
 import { choosableFor, parentNameOf } from "@/lib/orgDivisions";
+// ★★やめる ときの 決め（★裁定 その142）。★残すか どうかは lib が 決めます。
+import { CANCEL_LABEL, shouldKeepDraft } from "@/lib/opsMisou";
 
 // ============================================================================
 // おしらせを 書く ── 見本②（2026-09-10）
@@ -37,14 +39,18 @@ const small = { fontSize: "0.6875rem", color: C.inkSoft, lineHeight: 1.8 };
 
 export default function AnnouncementCompose({
   orgName, memberCount, studios, teacherNameOf, onPost, onClose, posting,
+  // ★★★未送信から 開いた とき の はじめの 字（★裁定 その142）。
+  //   ★★`onCancel` …… ★やめる を 押した とき。★中身が あれば 残します。
+  //     ★★渡されなければ 札を 出しません（★押せない 札を 置きません）。
+  initialTitle = "", initialBody = "", onCancel,
   // ★★★宛先を 段で 狭めます（★見本 `P_write`・2026-09-19）。
   //   ★`divisions` … ★`org_divisions` の 行
   //   ★`roster` … ★`{ user_id, division_id, grade_year, counted }`
   //   ★`nameOf` … ★お名前（★名ざしで 足す とき に 使います）
   divisions = [], roster = [], nameOf
 }) {
-  const [body, setBody] = useState("");
-  const [title, setTitle] = useState("");
+  const [body, setBody] = useState(initialBody || "");
+  const [title, setTitle] = useState(initialTitle || "");
   const [target, setTarget] = useState(null);   // ★null＝学校の みなさん
   // ★★段の 宛先（★学科・学年・お名前）。★空＝しぼらない。
   const [aim, setAim] = useState(EMPTY_TARGET);
@@ -240,6 +246,31 @@ export default function AnnouncementCompose({
           background: body.trim() ? C.curtain : C.line, color: "#FFFDF8",
           fontSize: "0.9375rem"
         }}>{posting ? "出しています" : "出す"}</button>
+
+      {/* ★★★やめる（★裁定 その142・2026-09-21）。
+           ★★中身が あれば 未送信に 残します。★黙って 捨てません。
+           ★★何も 書いて いなければ、★残す ものが ありません。★閉じる だけ です。
+           ★★★残すか どうかを ここで 判じません。★`shouldKeepDraft` が 決めます。
+           ★★★「✕」とは 別に 置きます ── ★✕は「閉じる」、★これは
+             ★「書くのを やめる」です。★どこへ 行くかが ちがいます。 */}
+      {onCancel ? (
+        <button type="button" disabled={posting}
+          onClick={() => {
+            // ★★★宛先も 一緒に 渡します。★しまう とき に 要ります。
+            //   ★★字 だけ 残して 宛先を 落とすと、★つづきを 書く とき
+            //     ★★誰に 出す つもり だったかが 分からなく なります。
+            void onCancel(
+              { title: title.trim(), body },
+              shouldKeepDraft({ title, body }),
+              target === null ? aim : EMPTY_TARGET);
+          }}
+          className="w-full"
+          style={{
+            minHeight: 48, borderRadius: 12,
+            border: `1px solid ${C.line}`, background: C.card,
+            color: C.inkSoft, fontSize: "0.9375rem"
+          }}>{CANCEL_LABEL}</button>
+      ) : null}
 
       {/* ★★注記の 印（★段3a 段階2・2026-09-20）。★見た目は 変わりません。 */}
       <p className="note" style={small}>

@@ -193,5 +193,59 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/\$\{di\}-\$\{p\.id\}/.test(kumu), "★コマの 鍵が ちがいます");
   });
 
+  見る("★やり直す ── ★出した あとは できない・空では 出さない（★裁定 その142）", () => {
+    assert.strictEqual(K.REDO_LABEL, "やり直す");
+    // ★★★3つの 側を すべて 見ます。★1つだけ だと、★いつも 出る／
+    //   ★★いつも 出ない が 通って しまいます。
+    assert.strictEqual(K.mayRedo({ published: false, placedCount: 3 }), true);
+    assert.strictEqual(K.mayRedo({ published: true, placedCount: 3 }), false,
+      "★出した あとに やり直せて います");
+    assert.strictEqual(K.mayRedo({ published: false, placedCount: 0 }), false,
+      "★外す ものが 無いのに 札を 出して います");
+    assert.strictEqual(K.mayRedo(), false);
+    // ★★たずねてから 外します。★戻せません。
+    assert.ok(/REDO_ASK/.test(画面), "★お尋ねが ありません");
+    assert.ok(/<Ask/.test(画面), "★お尋ねの 箱が ありません");
+    assert.ok(/mayRedo\(/.test(画面), "★門を 画面で 書き直して います");
+    // ★★★1つずつ 外すのと 同じ 道 を 通ること。
+    //   ★★新しい 消し方を 作ると、★門も 記録も 2つに なります。
+    const 所 = 蔵.indexOf("onRedo=");
+    assert.ok(所 > 0, "★配線が ありません");
+    assert.ok(/handleRemoveLesson/.test(蔵.slice(所, 所 + 420)),
+      "★別の 消し方を 作って います");
+    // ★★「出す」は まだ ありません。★引き金を 書き残して ある こと。
+    assert.ok(K.NOT_YET.some((x) => x.key === "publish" && x.needs),
+      "★外す 条件が 書いて ありません");
+  });
+
+  見る("★自分の 予定だけ 全部 外す ── ★よその 人に 触らない（★裁定 その142）", () => {
+    assert.strictEqual(K.CLEAR_BUSY_LABEL, "自分の予定だけ 全部外す");
+    assert.ok(/CLEAR_BUSY_ASK/.test(画面), "★お尋ねが ありません");
+    // ★★★「やり直す」と 混ぜない こと。★別の ものを 外します。
+    assert.notStrictEqual(K.CLEAR_BUSY_LABEL, K.REDO_LABEL);
+    assert.notStrictEqual(K.CLEAR_BUSY_ASK, K.REDO_ASK);
+    // ★★★表を 直に 触らない こと。★道を 通ります。
+    const 所 = 蔵.indexOf("handleClearMyBusy");
+    assert.ok(所 > 0, "★道が ありません");
+    const 本文 = 蔵.slice(所, 所 + 500);
+    assert.ok(/clear_my_busy_slots/.test(本文), "★道の 名が ありません");
+    assert.ok(!/from\("my_timetable"\)/.test(本文), "★表を 直に 触って います");
+    // ★★『my_timetable を 読むのは MyTimetable.jsx だけ』── ★その ままで ある こと。
+    assert.ok(!/from\("my_timetable"\)/.test(蔵),
+      "★運営の 画面から 表に 触って います");
+    // ★★★道が `auth.uid()` に 縛って ある こと。★人を 引数で 指せない こと。
+    const 紙 = readCode("supabase", "migration_clear_my_busy_slots.sql");
+    assert.ok(/create function public\.clear_my_busy_slots\(\)/.test(紙),
+      "★引数を 取って います（★人を 指せて しまいます）");
+    assert.ok(/user_id = auth\.uid\(\)/.test(紙), "★ご自分に 縛って いません");
+    assert.ok(/security definer/i.test(紙) && /set search_path/i.test(紙),
+      "★道の 足もとが 決まって いません");
+    // ★★みなに 渡して いない こと（★既定では PUBLIC に 渡ります）。
+    assert.ok(/revoke all on function public\.clear_my_busy_slots\(\) from public/i.test(紙),
+      "★みなに 渡した ままです");
+    assert.ok(/grant execute on function public\.clear_my_busy_slots\(\) to authenticated/i.test(紙),
+      "★渡す 先が ありません");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })().catch((e) => { console.error("★止まりました ──", e.message); process.exit(1); });
