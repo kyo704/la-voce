@@ -32,6 +32,15 @@ alter table public.monka_read_log
   add column if not exists name_at text;
 
 -- ★理由は4つだけ。参照表を作りません（裁定159 Q1）。
+--
+--   ★★★ここを 触る 人へ（★2026-09-21・→ 台帳 08-12）
+--     ★★もとからある `reason` 列に「4字以上」の縛りがあります。
+--       ★★下の道は `reason` にも同じ値を入れています。
+--     ★★★4つの名前を **短くすると**、`reason` の縛りだけが先に止まります。
+--       ★★止まると記録が書けません。記録が書けないと中身も返りません。
+--       ★★つまり「名前を短くしただけ」で、門下が開けなくなります。
+--     ★★いちばん短い `jiko` が4字ちょうどです。★余白が ありません。
+--     ★★`reason` を畳むかどうかは 台帳 08-12 に書いてあります。
 alter table public.monka_read_log
   drop constraint if exists monka_read_log_reason_kind_check;
 alter table public.monka_read_log
