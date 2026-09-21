@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// STRIP: A（振る舞い）── ★引いて いるかを 見ます。
 /**
  * ★切る（matching_cuts）の 見張り（★裁定 その121 STEP0・2026-09-21）。
  *
