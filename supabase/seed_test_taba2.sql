@@ -22,3 +22,8 @@ values ('cccccccc-0000-4000-8000-000000000003',
         (select org_id from public.postings where id = 'aaaaaaaa-0000-4000-8000-000000000001'),
         array['mon'], 'ukeraremasu', 'sent')
 on conflict (id) do nothing;
+
+-- ③ local2 の 持ち物（★A1 の 較正 用。★⑩⑪が 確かめられません）
+insert into public.character_inventory (user_id, item_key)
+values ('eafa63c2-4592-4996-8c7c-18ecbec5a34f', 'hat_straw')
+on conflict do nothing;

@@ -1,5 +1,5 @@
 {
-  "_source": "確定-学校の値段.md（第3版・2026-09-21）／裁定155。★値段を変えたら、まずこのファイルを変える",
+  "_source": "確定-学校の値段.md（第3版・2026-09-21）／裁定155。★値段を変えたら、まずこのファイルを変える。裁定166（lookup_key・公演の段・導入期間）",
   "version": "2026-09-21-v3",
   "org": {
     "free_max_students": 5,
@@ -107,5 +107,46 @@
   "stale_scan_exclude": [
     "_old-*/**",
     "**/_old-*/**"
-  ]
+  ],
+  "koen_tiers": [
+    [
+      15,
+      0
+    ],
+    [
+      40,
+      20000
+    ],
+    [
+      120,
+      50000
+    ],
+    [
+      300,
+      100000
+    ],
+    [
+      600,
+      150000
+    ]
+  ],
+  "stripe_lookup_keys": {
+    "ind_zenbu_m": 980,
+    "ind_zenbu_y": 12800,
+    "ind_gakusei_m": 490,
+    "ind_gakusei_y": 6400,
+    "ind_tsutaeru_y": 3600,
+    "ind_shiraberu_m": 580,
+    "ind_shiraberu_y": 4800,
+    "ind_yosooi_m": 580,
+    "ind_yosooi_y": 5800,
+    "ind_page_type": 480,
+    "kyo_m": 2980,
+    "kyo_y": 29800
+  },
+  "gakko_free_period": {
+    "pilot_free_until": "2027-09-30",
+    "free_months": 3,
+    "cap": "前日 of next April 1"
+  }
 }

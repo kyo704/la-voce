@@ -1,0 +1,280 @@
+{
+  "_how": "裁定ごとに、見本に反映が要るか（mock: yes/no/unknown）と、その印（present: 見本にあるはずの文字列／absent: 無いはずの文字列）。mobile は全画面・iPhone の両方に要る。★裁定を書いたら、その場でここに1件足す。ruled＝裁定の日、reflected＝見本に入った版（mock: yes のとき必須）",
+  "files": {
+    "mobile": [
+      "00-動く見本（さわれる・全画面）.html",
+      "00-動く見本-iPhoneで開く用.html"
+    ],
+    "ops": [
+      "00-動く見本-PC・iPad（運営）.html"
+    ],
+    "pcp": [
+      "00-動く見本-PC・iPad（個人）.html"
+    ]
+  },
+  "rulings": {
+    "141": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "P_koen",
+          "公演の運営"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v9以前"
+    },
+    "142": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "つづきを 書く",
+          "もう一度 出す"
+        ],
+        "ops": [
+          "つづきを 書く"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v9以前"
+    },
+    "143": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "公演を作る",
+          "TIERS"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v9以前"
+    },
+    "144": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "koenLock"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v9以前"
+    },
+    "145": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "P_keikoList",
+          "P_members",
+          "P_koenInfo"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v9以前"
+    },
+    "146": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "PF_TRIAL"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v9以前"
+    },
+    "147": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "子どもの枠",
+          "kidBand"
+        ],
+        "ops": [
+          "緊急の連絡先",
+          "after20"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v12"
+    },
+    "148": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "var KINDS",
+          "乗り番表",
+          "当日の進行"
+        ],
+        "mobile": [
+          "kpUse"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v11"
+    },
+    "149": {
+      "mock": "no",
+      "note": "台帳（RLS）の変更だけ",
+      "ruled": "2026-09-21"
+    },
+    "150": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "class=\"usu\">なおす ›"
+        ]
+      },
+      "absent": {
+        "ops": [
+          "btn g sm\">なおす ›"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v10"
+    },
+    "151": {
+      "mock": "no",
+      "note": "台帳の列だけ。画面は 153",
+      "ruled": "2026-09-21"
+    },
+    "152": {
+      "mock": "yes",
+      "present": {
+        "ops": [
+          "var WORKS",
+          "chgCard",
+          "iriList",
+          "gakuyaList"
+        ],
+        "mobile": [
+          "カレンダーにつなぐ",
+          "KP.chg"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v15"
+    },
+    "153": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "KOMA_BY",
+          "どこにも 属さない"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v15"
+    },
+    "154": {
+      "mock": "no",
+      "note": "155 で置き換え",
+      "ruled": "2026-09-21"
+    },
+    "155": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "ぜんぶ",
+          "月490円",
+          "ORGPLAN"
+        ],
+        "ops": [
+          "ORGPLAN",
+          "gakkoYen",
+          "プランを選ぶ"
+        ]
+      },
+      "absent": {
+        "mobile": [
+          "Woolsong（年3,600円）"
+        ],
+        "ops": [
+          "function billPlans"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v17"
+    },
+    "156": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "2027年9月30日まで"
+        ],
+        "ops": [
+          "2027年9月30日まで"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v18"
+    },
+    "157": {
+      "mock": "yes",
+      "present": {
+        "mobile": [
+          "REC_OK",
+          "日本に お住まいの 方 向け"
+        ]
+      },
+      "absent": {
+        "mobile": [
+          "Vimeo の 限定公開",
+          "ひと月あたり 300円"
+        ]
+      },
+      "ruled": "2026-09-21",
+      "reflected": "design-v19"
+    },
+    "158": {
+      "mock": "no",
+      "note": "実装の作業（見本は正のまま）",
+      "ruled": "2026-09-21"
+    },
+    "159": {
+      "mock": "yes",
+      "ruled": "2026-09-21",
+      "reflected": "design-v21",
+      "present": {
+        "mobile": [
+          "なぜ 開きますか",
+          "HIRAITA_M",
+          "monkaOpenM"
+        ],
+        "ops": [
+          "MR_REASONS",
+          "monkaOpen(",
+          "<th>理由</th>"
+        ]
+      },
+      "absent": {
+        "mobile": [
+          "先生と 学生からも 見られます",
+          "先生と 学生の 画面からも"
+        ],
+        "ops": [
+          "（先生・学生からも 見えます）"
+        ]
+      },
+      "note": "S3 の見本：他人の門下は理由を選ぶまで中身を出さない。記録は運営の中だけ（見本の食い違いを直した）"
+    },
+    "160": {
+      "mock": "no",
+      "note": "台帳の作業が先。見本の「役職の中身」に変えた記録を足すのは台帳ができてから（次の版）",
+      "ruled": "2026-09-21"
+    },
+    "161": {
+      "mock": "no",
+      "ruled": "2026-09-21",
+      "note": "台帳の権限・構造の締め直し"
+    },
+    "162": {
+      "mock": "no",
+      "ruled": "2026-09-21",
+      "note": "本番の権限バグ（IDOR）。見本に影響なし"
+    },
+    "163": {
+      "mock": "no",
+      "ruled": "2026-09-21",
+      "note": "本番の権限の穴（評価の書き込み・RLS無効の表）"
+    }
+  }
+}

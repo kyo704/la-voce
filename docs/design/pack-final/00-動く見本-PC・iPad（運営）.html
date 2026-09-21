@@ -1152,14 +1152,14 @@ function paneMonka(i){var m=MONKAS[i],ro=can('monka_read')&&!can('monka_write');
   +(MR.kind==='sonohoka'?'<input class="inp" maxlength="100" placeholder="短く（100字まで）" value="'+esc(MR.note)+'" oninput="MR.note=this.value">':'')
   +'<div style="margin-top:12px"><span class="btn'+(MR.kind?'':' g')+'" onclick="monkaOpen('+i+')">開く</span></div>'
   +'<div class="note">理由を 選ばないと 開けません。開くたびに 1行 残ります。<br>'
-  +'記録は <b>運営の 中だけ</b>で 見ます（生徒・先生の 画面には 出しません）。ご本人から 求められたら、<b>30日以内に</b> お見せします。<br>'
+  +'記録は <b>運営の 中だけ</b>で 見ます。門下の 学生は、自分で 見に行けば「いつ 開かれたか」だけ 分かります（誰が・理由は 出しません。知らせも 出しません）。ご本人から 求められたら、<b>30日以内に</b> 全部 お見せします。<br>'
   +'<b>何を 読んだかは 残しません</b>（開いたことと 理由だけ）。</div>';
  return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:3px">'
  +'<div style="font-size:19px;font-weight:700">'+m[0]+'</div>'
  +'<span class="tag">'+m[1]+'人</span>'+(ro?'<span class="tag" style="background:var(--band2);color:var(--yama)">読むだけ</span>':'')+'</div>'
  +'<div class="usu" style="margin-bottom:14px">○○音楽大学</div>'
  +(ro?'<div class="warn">この 門下を 開いたことが <b>開いた記録</b>に 残りました。<br>'
-   +'記録は <b>運営の 中だけ</b>で 見ます（生徒・先生の 画面には 出しません）。<br>'
+   +'記録は <b>運営の 中だけ</b>で 見ます。門下の 学生は、自分で 見に行けば「いつ 開かれたか」だけ 分かります。<br>'
    +'<b>何を 読んだかは 残しません</b>（開いたことだけ）。求められたら お見せします。</div>':'')
  +'<div class="post"><div class="ph2"><span class="av">斎</span><span class="nm3">斎藤 めぐみ 先生</span><span class="dt">9月8日</span></div>'
  +'<div class="bd2">実技試験の 集合は 12時30分、第1ホールです。順番は 前日に 貼り出します。</div></div>'
@@ -1180,7 +1180,7 @@ function P_kaita(){
    +'<td style="color:var(--ink4)">残していません</td></tr>'}).join('')
  +'</table></div>'
  +'<div class="warn" style="margin-top:14px"><b>誰が 見られるか（9月10日 変更）</b><br>'
- +'この 記録は <b>運営の 中だけ</b>で 見ます。生徒・先生の 画面には 出しません。<br>'
+ +'この 記録は <b>運営の 中だけ</b>で 見ます。<b>門下の 学生は、自分で 見に行けば「いつ・どの 門下が 開かれたか」だけ 分かります</b>（誰が・理由は 出しません。知らせ・印・帯は 出しません。9月21日 裁定159 §8）。<br>'
  +'理由：生徒の 画面に 常に 出すと、<b>見られている</b>という 気持ちを 毎日 与えます。<br>'
  +'　それは 記録の 正直さを 下げます（書かなくなる ほうが 損です）。</div>'
  +'<div class="note">かわりに、この 3つで 約束を 守ります。<br>'

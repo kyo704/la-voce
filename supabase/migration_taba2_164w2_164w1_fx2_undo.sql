@@ -13,6 +13,9 @@ drop policy if exists applications_update_own on public.applications;
 create policy applications_update_own on public.applications
   for update using (auth.uid() = applicant_user_id) with check (auth.uid() = applicant_user_id);
 
+-- A1 を 戻す
+grant insert, update, delete on table public.character_inventory to authenticated;
+
 -- FX2 を 戻す
 grant insert on table public.monka_read_log to authenticated;
 create policy monka_read_log_insert_self_monka_read on public.monka_read_log

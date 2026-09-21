@@ -14,12 +14,15 @@
   A2 *_log に利用者が直接 insert できるポリシー（関数・引き金を通らずに書ける）
   A3 *_log の人への外部キーが ON DELETE CASCADE（退会で記録が消える）※本人だけの記録（email_change_log）は除く
   A4 security definer で anon が実行できる関数（許可リスト以外）
+  ★関数の露出は anon・authenticated（auth の欄）・呼び出し元（サーバの service_role か）の3つで判断する。anon だけで結論を出さない（裁定162 §8）
   A5 本番の移行の名前に seed／test／demo／screenshot／furniture（本番に試しのデータ）
-  A6 TRUNCATE を持つ表（REST からは出せないが、権限でも閉じる）"""
+  A6 TRUNCATE を持つ表（REST からは出せないが、権限でも閉じる）
+  A7 entries を読む security definer の関数が許可リストの外（先生が生徒の記録を見る道を作らない。裁定167）"""
 import json, sys, os, re
 HERE=os.path.dirname(os.path.abspath(__file__))
 OWN_ONLY_LOGS={'email_change_log'}                 # 本人の操作の記録。退会で消えてよい
 ANON_OK={'accept_guardian_consent(p_token text)'}   # 保護者はログインしない（合言葉で）
+ENTRIES_READERS_OK={'admin_entry_stats(p_user_id uuid)','character_unlock_summary(p_user_id uuid)'}   # 裁定167 D2。足すときは裁定にする
 def load(p): return json.load(open(p,encoding='utf-8'))
 def audit(S,env='prod'):
     out=[]
@@ -36,6 +39,7 @@ def audit(S,env='prod'):
             out.append(('A3',k,'退会で記録が消える（ON DELETE CASCADE）'))
     for k,v in (S.get('functions') or {}).items():
         if v.get('sd') and v.get('anon') and k not in ANON_OK: out.append(('A4',k,'security definer を anon が実行できる'))
+        if v.get('sd') and v.get('e') and k not in ENTRIES_READERS_OK: out.append(('A7',k,'entries（体調の記録）を読む security definer の関数が許可リストの外（裁定167 D2）'))
     if env=='prod':
         for m in S.get('migrations') or []:
             if re.search(r'seed|test|demo|screenshot|furniture|shot',m,re.I): out.append(('A5',m,'本番の移行に試しのデータの名前'))
@@ -59,6 +63,7 @@ def twin(P,T):
             else:
                 if p[k].get('h')!=t[k].get('h'): d.append((sec,k,'中身が違う'))
                 if p[k].get('anon')!=t[k].get('anon'): d.append((sec,k,f"anon の実行 本番={p[k].get('anon')} 試し={t[k].get('anon')}"))
+                if 'auth' in p[k] and 'auth' in t[k] and p[k].get('auth')!=t[k].get('auth'): d.append((sec,k,f"authenticated の実行 本番={p[k].get('auth')} 試し={t[k].get('auth')}"))
     return d
 def main(a):
     if a[0]=='audit':
@@ -83,10 +88,14 @@ def selftest():
     S={'grants':{'x_log':'a:SELECT,a:TRUNCATE','drafts':'a:TRUNCATE'},'log_policies':{'x_log.ins':'INSERT|{authenticated}'},
        'log_fks':{'x_log_user_id_fkey':'FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE',
                   'email_change_log_user_id_fkey':'FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE'},
-       'functions':{'f()':{'h':'1','sd':True,'anon':True},'accept_guardian_consent(p_token text)':{'h':'2','sd':True,'anon':True}},
+       'functions':{'f()':{'h':'1','sd':True,'anon':True},'accept_guardian_consent(p_token text)':{'h':'2','sd':True,'anon':True},
+                    'peek(x uuid)':{'h':'3','sd':True,'anon':False,'e':True},'admin_entry_stats(p_user_id uuid)':{'h':'4','sd':True,'anon':False,'e':True}},
        'migrations':['20260101_seed_demo','20260102_real']}
     got={r[0] for r in audit(S)}
-    for c in ('A1','A2','A3','A4','A5','A6'):
+    for c in ('A1','A2','A3','A4','A5','A6','A7'):
+        pass
+    if any(r[0]=='A7' and 'admin_entry_stats' in r[1] for r in audit(S)): print('SELFTEST FAIL: 許可リストの entries の関数を拾った'); ok=False
+    for c in ('A1','A2','A3','A4','A5','A6','A7'):
         if c not in got: print('SELFTEST FAIL: 見つけられない',c); ok=False
     if any('email_change_log' in r[1] for r in audit(S)): print('SELFTEST FAIL: 本人だけの記録まで拾った'); ok=False
     if any('accept_guardian_consent' in r[1] for r in audit(S)): print('SELFTEST FAIL: 許可リストの関数を拾った'); ok=False

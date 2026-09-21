@@ -1,0 +1,111 @@
+{
+  "_source": "確定-学校の値段.md（第3版・2026-09-21）／裁定155。★値段を変えたら、まずこのファイルを変える",
+  "version": "2026-09-21-v3",
+  "org": {
+    "free_max_students": 5,
+    "kyoshitsu": {
+      "max_students": 30,
+      "monthly": 2980,
+      "annual": 29800
+    },
+    "gakko": {
+      "floor": 12800,
+      "tiers": [
+        [
+          0,
+          400
+        ],
+        [
+          100,
+          350
+        ],
+        [
+          300,
+          250
+        ]
+      ],
+      "annual_months": 10,
+      "setup_fee": 100000,
+      "setup_fee_min_students": 100
+    }
+  },
+  "individual": {
+    "zenbu": {
+      "monthly": 980,
+      "annual": 12800,
+      "refund_per_month": 400
+    },
+    "gakusei": {
+      "monthly": 490,
+      "annual": 6400,
+      "refund_per_month": 200
+    },
+    "tsutaeru": {
+      "annual": 3600,
+      "refund_per_month": 300
+    },
+    "shiraberu": {
+      "monthly": 580,
+      "annual": 4800,
+      "refund_per_month": 400
+    },
+    "yosooi": {
+      "monthly": 580,
+      "annual": 5800,
+      "refund_per_month": 490
+    },
+    "page_type": 480
+  },
+  "kyoshitsu_refund_per_month": 2490,
+  "check_points": [
+    5,
+    6,
+    30,
+    31,
+    32,
+    50,
+    60,
+    88,
+    95,
+    100,
+    150,
+    216,
+    300,
+    500,
+    800
+  ],
+  "stale_patterns": [
+    {
+      "re": "下限\\s*(月\\s*)?9,?800",
+      "why": "下限9,800円は裁定155で廃止"
+    },
+    {
+      "re": "税別",
+      "why": "表示は税込（裁定155）"
+    },
+    {
+      "re": "よそおい[^\\n]{0,20}年\\s*12,?800",
+      "why": "よそおい単品の年は5,800円（裁定155）"
+    },
+    {
+      "re": "導入支援（?50人以上",
+      "why": "導入支援は100人以上（裁定155 Q4）"
+    },
+    {
+      "re": "(人を\\s*超える|人以上)[^\\n]{0,20}ご相談",
+      "why": "「ご相談」を置かない（裁定141 C3・155）"
+    },
+    {
+      "re": "日割りでのお返しはありません",
+      "why": "年払いはB案（裁定155 C1）"
+    },
+    {
+      "re": "月\\s*300\\s*円",
+      "why": "「月300円相当」を使わない（裁定157 T4）"
+    }
+  ],
+  "stale_scan_exclude": [
+    "_old-*/**",
+    "**/_old-*/**"
+  ]
+}

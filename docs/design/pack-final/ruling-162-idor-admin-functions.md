@@ -4,7 +4,7 @@
 ruling: 162
 date: 2026-09-21
 version: design-v21
-severity: ★重大（本番。いま実害があるかは未確認だが、設計として穴）
+severity: ★訂正（2026-09-21 同日）：本番は安全。危ないのは試しの環境だけ（§8）
 how: Opus が本番の security definer 関数65本（拡張機能を除く全部）を1本ずつ読んだ
 finding_count: 2件（重大）＋1件（軽微）
 ```
@@ -118,4 +118,29 @@ STEP: query_logs（24時間分ずつ）で admin_entry_stats・character_unlock_
 Q: 9/21 9:30 の admin_entry_stats への呼び出し（秘密鍵・node）に心当たりがあるか（Code の試験なら問題なし）
 FX7（裁定161）に追加: 試しの anon 実行可を本番に合わせて閉じる（40件超）。または「試しは緩くてよい」と決めるなら、
   S1・S2 のような重大な変更の証明だけは、試しではなく本番の複製（migration を当てただけの、まっさらな試し）で行う運用にする
+```
+
+## 8. ★訂正（同日・Code の検証で分かった。Opus の誤り）
+
+```yaml
+誤り: Opus は「anon が実行できるか」だけを見て、authenticated の実行権を確かめずに「ログインしていれば誰でも呼べる」と書いた
+事実（Opus が本番で確かめ直した）:
+  admin_entry_stats:        anon=false ／ authenticated=false ／ service_role=true
+  character_unlock_summary: anon=false ／ authenticated=false ／ service_role=true
+  → 本番では利用者は直接呼べない。サーバ（app/admin/page.js:167・app/api/character/unlock/route.js:87）が
+    service_role で、自分で本人を確かめてから呼ぶ設計（No.024：「authenticated に渡して中で弾く」は採らない）
+  → Code の実測：本番の3件とも 42501 で拒否
+§1 の修正案は撤回: service_role では auth.uid() が null なので、「p_user_id is distinct from auth.uid()」は正当な管理の呼び出しまで塞ぐ
+  「引数を無くして auth.uid() を中で使う」も撤回（No.024 と逆・サーバからの呼び出しを壊す）
+
+決定（Code の推奨を採る）:
+  - 関数はそのまま（引数を残す）
+  - 塞ぐのは試しの環境の権限だけ：anon・authenticated から execute を外し、本番と同じにする（裁定161 FX7 の一部）
+  - 任意の二重の守り（Code が判断）: 「auth.uid() is not null and p_user_id is distinct from auth.uid() なら null」
+    → service_role（uid が null）は通り、万一 authenticated に権限が広がったときだけ効く。入れなくてもよい
+
+繰り返さないために:
+  - 関数の露出を調べるときは anon・authenticated・service_role の3つの実行権と、呼び出し元（サーバか画面か）を必ず見る
+  - tools/ledger_inventory.sql・.py に authenticated の実行権を足した（auth の欄）。twin でも比べる
+  - 裁定163 は、表の列ごとの権限（authenticated に INSERT・UPDATE がある）と引き金（BEFORE UPDATE だけ・insert の守り無し）まで確かめ直した → 163 は本物
 ```

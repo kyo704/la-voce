@@ -2,7 +2,7 @@
 -- 出力の JSON を tools/ledger_snapshots/<日付>_<prod|test>.json に保存し、ledger_inventory.py で比べる
 select json_build_object(
  'functions',(select json_object_agg(p.proname||'('||pg_get_function_identity_arguments(p.oid)||')',
-     json_build_object('h',left(md5(pg_get_functiondef(p.oid)),10),'sd',p.prosecdef,'anon',has_function_privilege('anon',p.oid,'EXECUTE')))
+     json_build_object('h',left(md5(pg_get_functiondef(p.oid)),10),'sd',p.prosecdef,'anon',has_function_privilege('anon',p.oid,'EXECUTE'),'auth',has_function_privilege('authenticated',p.oid,'EXECUTE'),'e',(pg_get_functiondef(p.oid) ~* '\mentries\M')))
    from pg_proc p join pg_namespace n on n.oid=p.pronamespace
    where n.nspname='public' and p.prokind='f' and not exists(select 1 from pg_depend d where d.objid=p.oid and d.deptype='e')),
  'policies',(select json_object_agg(tablename||'.'||policyname, cmd||'|'||roles::text||'|'||left(md5(coalesce(qual,'')||'#'||coalesce(with_check,'')),10)) from pg_policies where schemaname='public'),

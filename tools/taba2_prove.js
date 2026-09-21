@@ -14,6 +14,9 @@
 //   ⑥W1 決まり … 応募した 人が 'chosen' に できない（★通らない）
 //   ⑦FX2 直書き … `monka_read` を 持つ 人でも log に 直に 入れられない
 //   ⑧FX2 道 ……… `open_monka_thread` は いままで どおり 1行 増やす
+//   ⑨A1 直書き … 持ち物に 自分で 品を 足せない（★裁定167 A1）
+//   ⑩A1 書換え … 持って いる 品の `item_key` を 書き換えられない
+//   ⑪A1 読み …… 持ち物は いままで どおり 読める（★較正・1行以上）
 const fs = require("fs"), path = require("path");
 const { execFileSync } = require("child_process");
 const ROOT = path.resolve(__dirname, "..");
@@ -116,6 +119,24 @@ const みる = (名, ok, 註) => { 数 += 1; if (!ok) 落 += 1;
   const 後 = 数える("select count(*) from monka_read_log");
   みる("⑧open_monka_thread は 1行 増やす（較正）", !e8 && 後 === 前 + 1,
     e8 ? String(e8.message).slice(0, 48) : `${前} → ${後}`);
+
+  // ⑨⑩⑪ A1 ── 持ち物
+  const { data: 持ち, error: e11 } = await sb.from("character_inventory")
+    .select("item_key").eq("user_id", 私のid);
+  みる("⑪持ち物は いままで どおり 読める（較正）", !e11 && Array.isArray(持ち),
+    e11 ? String(e11.message).slice(0, 48) : `${(持ち || []).length}件`);
+  const { error: e9 } = await sb.from("character_inventory")
+    .insert({ user_id: 私のid, item_key: "★ためし-払って いない 品" });
+  みる("⑨持ち物に 自分で 足せない", !!e9, e9 ? String(e9.message).slice(0, 48) : "入って しまいました");
+  if (持ち && 持ち.length > 0) {
+    const { data: d10, error: e10 } = await sb.from("character_inventory")
+      .update({ item_key: "★ためし-書き換え" })
+      .eq("user_id", 私のid).eq("item_key", 持ち[0].item_key).select("item_key");
+    みる("⑩持ち物を 書き換えられない", !!e10 || !d10 || d10.length === 0,
+      e10 ? String(e10.message).slice(0, 48) : `${(d10 || []).length}行`);
+  } else {
+    みる("⑩持ち物が 0件（★較正できず）", false, "試しの 行が 要ります");
+  }
 
   console.log(`\n  ${数 - 落} / ${数}`);
   process.exit(落 ? 1 : 0);

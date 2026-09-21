@@ -43,6 +43,22 @@ create policy applications_update_own on public.applications
               and status = any (array['sent'::text, 'withdrawn'::text]));
 
 -- ────────────────────────────────────────────────
+-- A1（裁定167）── character_inventory ── 払わずに 付けられない
+-- ────────────────────────────────────────────────
+--   ★★★いま …… authenticated に 表ごとの INSERT・UPDATE・DELETE が あります。
+--     ★★画面は `character_inventory` を 見て「持って いる」を 決めます
+--       （`components/VocalTracker.jsx:6773`）。
+--     ★★だから、★`item_key` を 好きに 書けば 有料の 品が 手に 入ります。
+--     ★★UPDATE で 無料の 品を 有料の 品に 書き換える ことも できます。
+--   ★★★買う 道・贈る 道は `service_role` です（`app/api/character/buy|gift/route.js`）。
+--     ★★RLS を 通り抜ける 鍵 なので、★外しても 買えなく なりません。
+--   ★★★退会の 消し込みも `service_role` です（`purgeAccount(admin, …)`）。
+--     ★★DELETE を 外しても 退会は 通ります。
+--   ★★読むのは そのまま です。★画面も 書き出しも SELECT だけ です。
+revoke insert, update, delete on table public.character_inventory
+  from public, anon, authenticated;
+
+-- ────────────────────────────────────────────────
 -- FX2 ── monka_read_log ── 直に 書けない
 -- ────────────────────────────────────────────────
 -- ★読むのは そのまま です（本人と master）。

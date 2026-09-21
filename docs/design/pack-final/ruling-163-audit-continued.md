@@ -35,6 +35,11 @@ VERIFY:
   - 正規の審査員が、自分に割り当てられた event で insert → 成功（いままでどおり）
 ```
 
+確かめ直し（同日・裁定162 の誤りを受けて）:
+  - authenticated に evaluation_scores・evaluation_reviews の INSERT・UPDATE（列ごと・全列）がある
+  - 引き金は evaluation_scores_guard_trg（BEFORE UPDATE）だけ。insert の守りは無い
+  → REST から直接 insert できる。この穴は本物
+
 ## 2. RLS が無効のまま、authenticated に全権限がある表
 
 ```yaml

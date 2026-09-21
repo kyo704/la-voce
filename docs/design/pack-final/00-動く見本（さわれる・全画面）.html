@@ -1757,7 +1757,7 @@ SC['プラン']=function(){   /* ★裁定155。個人が 最初に 見る 段�
  +'<div class="box">'
  +'<div class="li plain"><span><b>無料</b><div class="usu">記録・ふりかえる・ノート・ひつじ・さがす</div></span><s>0円</s></div>'
  +'<div class="li" onclick="toast(\'この見本では 買いません\')"><span><b>ぜんぶ</b><div class="usu">つたえる・しらべる・よそおいの 全部。年払いは 244点を お支払いの 日に</div></span><s>月980円<br>年12,800円<br><span class="usu">単品の 年額の 合計 14,200円</span></s></div>'
- +(stu?'<div class="li" onclick="toast(\'この見本では 買いません\')"><span><b>学生</b><div class="usu">学校の 名簿に いる 方は、ぜんぶが 半額</div></span><s>月490円<br>年6,400円</s></div>':'')
+ +(stu?'<div class="li" onclick="openSheet(\'gakuseiDoui\')"><span><b>学生</b><div class="usu">学校の 名簿に いる 方は、ぜんぶが 半額</div></span><s>月490円<br>年6,400円</s></div>':'')
  +'</div>'
  +(stu?'<div class="usu" style="margin:-4px 0 11px">学生の 値段は、<b>あなたが 同意した ときだけ</b> 在籍を 確かめて 決めます。学校には 伝わりません。</div>':'')
  +'<div class="sh3">ひとつだけ</div><div class="box">'
@@ -1770,6 +1770,21 @@ SC['プラン']=function(){   /* ★裁定155。個人が 最初に 見る 段�
  +'年払いは 1回払いで、<b>自動では 更新しません</b>。途中で やめると、<b>残りの 月数ぶんを お返しします</b>（244点は 返品できません）。<br>'
  +'<b>よそおいの 品・ページの 型・244点は、どの プランを やめても 残ります</b>。<br>'
  +'学校が 払うのは 運営（日程・出欠・名簿・連絡）だけです。あなたの プランとは 別です。</div>'};
+/* ★学生の 値段の 同意（裁定166 R2）。在籍を「値段を 決める ためだけ」に 確かめる。学校には 伝えない */
+var GAKUSEI={doui:0,ok:0};
+SH['gakuseiDoui']=function(){
+ return '<div class="sht">学生の 値段で 買う</div>'
+ +'<div class="card" style="padding:14px 15px;line-height:1.9;margin-top:9px">'
+ +'学生の 値段（月490円／年6,400円）に するため、<b>学校の 名簿に あなたが 在籍しているか</b>を 確かめます。<br>'
+ +'・確かめるのは「在籍しているか」<b>だけ</b>です。学年・コース・記録は 見ません。<br>'
+ +'・<b>値段を 決める ためだけ</b>に 使います。ほかの ことには 使いません。<br>'
+ +'・学校には、あなたが 学生の 値段で 買ったことを <b>伝えません</b>。<br>'
+ +'・在籍が 確かめられないときは、ふつうの 値段（ぜんぶ 月980円）の ご案内に なります。<br>'
+ +'・同意は いつでも やめられます（プラン → 学生の 値段の 同意）。やめると 次の 更新から ふつうの 値段です。いまの 期間は そのまま 使えます。</div>'
+ +'<div class="btn" style="margin-top:10px" onclick="GAKUSEI.doui=1;GAKUSEI.ok=1;closeSheet();draw();toast(\'在籍を 確かめました。学生の 値段で 買えます（見本では 買いません）\')">同意して 確かめる</div>'
+ +'<div class="btn g" style="margin-top:8px" onclick="closeSheet();draw()">やめる</div>'
+ +'<div class="usu" style="margin-top:8px">残るもの：同意した 日時と 文面の 版・確かめた 結果（在籍している／いない）。どこの 学校かは 残しません。</div>'};
+
 SC['書き出す']=function(){
  return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>書き出す</h2></div>'
  +'<div class="h3">形</div><div class="pills"><span class="pill on">CSV</span><span class="pill">JSON</span></div>'
@@ -2185,7 +2200,7 @@ function opRenraku(){
  +[['斎藤先生の 門下','12人','きのう','op-m1'],['渡辺先生の 門下','7人','9月1日','op-m2'],['高橋先生の 門下','9人','8月28日','op-m3']].map(function(x){
    return '<div class="li" onclick="UNREAD[\''+x[3]+'\']=0;push(\'門下を開く\',\''+esc(x[0])+'\')"><span>'+dot(x[3])+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>'+x[2]+' ›</s></div>'}).join('')+'</div>':'')
  +(can('monka_read')?'<div class="box" style="margin-top:9px"><div class="li" onclick="push(\'開いた記録\')"><span>開いた 記録</span><s>'+HIRAITA_M.length+'件 ›</s></div></div>':'')
- +'<div class="note">本文の 抜粋を 一覧に 出しません（体調の語が 並ぶからです）。<br>門下を 開くときは <b>理由を 選んでから</b> 開きます。<b>開いた記録が 残ります</b>（誰が・いつ・どの門下を・理由）。消せません。<br>その記録は <b>運営の 中だけ</b>で 見ます（先生・学生の 画面には 出しません）。ご本人から 求められたら、<b>30日以内に</b> お見せします。</div>'}
+ +'<div class="note">本文の 抜粋を 一覧に 出しません（体調の語が 並ぶからです）。<br>門下を 開くときは <b>理由を 選んでから</b> 開きます。<b>開いた記録が 残ります</b>（誰が・いつ・どの門下を・理由）。消せません。<br>その記録は <b>運営の 中だけ</b>で 見ます。門下の 学生は、自分で 見に行けば「<b>いつ 開かれたか</b>」だけ 分かります（誰が・理由は 出しません。知らせも 出しません）。ご本人から 求められたら、<b>30日以内に</b> 全部 お見せします。</div>'}
 function opSettei(){
  var pp=myPost().p;
  var jikan=(can('koma')||can('koma_mine'))?'<div class="h3">時間・場所</div><div class="box">'
@@ -2957,7 +2972,7 @@ SC['門下を開く']=function(name){
   +MR_REASONS.map(function(r){return '<div class="li" onclick="MR.kind=\''+r[0]+'\';draw()"><span>'+r[1]+'</span><s>'+(MR.kind===r[0]?'●':'')+'</s></div>'}).join('')+'</div>'
   +(MR.kind==='sonohoka'?'<input class="inp" maxlength="100" placeholder="短く（100字まで）" value="'+esc(MR.note)+'" oninput="MR.note=this.value">':'')
   +'<div class="btn" style="margin-top:12px'+(MR.kind?'':';opacity:.55')+'" onclick="monkaOpenM(\''+esc(name)+'\')">開く</div>'
-  +'<div class="note">理由を 選ばないと 開けません。開くたびに 1行 残ります。<br>記録は <b>運営の 中だけ</b>で 見ます。ご本人から 求められたら、<b>30日以内に</b> お見せします。</div>';
+  +'<div class="note">理由を 選ばないと 開けません。開くたびに 1行 残ります。<br>記録は <b>運営の 中だけ</b>で 見ます。門下の 学生は、自分で 見に行けば「いつ 開かれたか」だけ 分かります（誰が・理由は 出しません）。求められたら、<b>30日以内に</b> 全部 お見せします。</div>';
  ['op-m1','op-m2','op-m3'].forEach(function(k,i){
    if(['斎藤先生の 門下','渡辺先生の 門下','高橋先生の 門下'][i]===name)UNREAD[k]=0});
  return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px">'+name+'</h2><span class="role">読むだけ</span></div>'
@@ -2971,7 +2986,7 @@ SC['開いた記録']=function(){
  return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2>開いた 記録</h2></div>'
  +'<div class="box">'+HIRAITA_M.map(function(x){
    return '<div class="li" style="cursor:default"><span>'+x[0]+'<br><span class="usu">'+x[2]+'　／　'+x[3]+'</span></span><s>'+x[1]+'</s></div>'}).join('')+'</div>'
- +'<div class="note">誰が・いつ・どの門下を・理由 だけ。中身は 残しません。消せません。<br>この 記録は <b>運営の 中だけ</b>で 見ます（先生・学生の 画面には 出しません）。ご本人から 求められたら、<b>30日以内に</b> お見せします。</div>'};
+ +'<div class="note">誰が・いつ・どの門下を・理由 だけ。中身は 残しません。消せません。<br>この 記録は <b>運営の 中だけ</b>で 見ます。門下の 学生は、自分で 見に行けば「いつ 開かれたか」だけ 分かります（誰が・理由は 出しません。知らせも 出しません）。ご本人から 求められたら、<b>30日以内に</b> 全部 お見せします。</div>'};
 var ME='斎藤 めぐみ';
 var KASANARI=[
  {k:'場所',d:'9月9日（火）',t:'13:00 〜 14:30',w:'第1教室',key:'1-2',st:'知らせた',res:{},
