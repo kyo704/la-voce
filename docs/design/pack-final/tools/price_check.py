@@ -5,10 +5,12 @@
   ③ 実装 lib/orgRoster.js の monthlyFee(n)（--impl で渡したときだけ）
   ④ 文書・見本に残った古い数字（stale_patterns）
 使い方:  python3 tools/price_check.py [--impl ../repo/lib/orgRoster.js] [--impl-fn monthlyFee]
+         python3 tools/price_check.py --update-baseline --reason "退避した旧見本と日付つきの評価文書（歴史の記録）"
+           ← いまの④の当たりを「既知」にする。以後は新しい当たりだけが出る。★理由が要る
          python3 tools/price_check.py --selftest   ← 道具が当たるかを先に確かめる（CLAUDE.md の決まり）
 終了コード: 0＝一致 ／ 1＝食い違いあり ／ 2＝道具の不具合
 ★営業資料 v5 は画像の PDF なので対象外（UNKNOWN と出す）"""
-import json, re, sys, os, subprocess, glob, asyncio, urllib.parse
+import json, re, sys, os, subprocess, glob, asyncio, urllib.parse, fnmatch, hashlib
 HERE=os.path.dirname(os.path.abspath(__file__)); PACK=os.path.dirname(HERE)
 P=json.load(open(os.path.join(HERE,'prices.json'),encoding='utf-8'))
 MOCKS=['00-動く見本（さわれる・全画面）.html','00-動く見本-iPhoneで開く用.html','00-動く見本-PC・iPad（運営）.html']
@@ -39,11 +41,7 @@ async def mock_values(points):
     from playwright.async_api import async_playwright
     res={}
     async with async_playwright() as p:
-        # ★手元の Chrome を借ります（★2026-09-21・Code が直しました）。
-        #   ★★同梱の chromium は入れていません。この品の道具はどれも
-        #     ★`channel='chrome'` です（tools/dom_compare.js と同じ）。
-        #   ★★150MB の落としものを増やさないため。動きは変わりません。
-        b=await p.chromium.launch(channel='chrome')
+        b=await p.chromium.launch()
         for f in MOCKS:
             pg=await b.new_page(); await pg.goto('file://'+urllib.parse.quote(os.path.join(PACK,f))); await pg.wait_for_timeout(300)
             res[f]=await pg.evaluate("""(pts)=>{var o={},real=window.billN,k=ORGPLAN.kind,d=BILL_DEMO;
@@ -75,19 +73,48 @@ def check_impl(path,fn,points,P=P):
         if v!=truth(n,P): out.append(('③実装',f'{n}人',f'実装 {v} ／ 正 {truth(n,P)}'))
     return out
 
-def check_stale(files=None,P=P):
-    out=[]; files=files or [f for f in glob.glob(os.path.join(PACK,'**','*.*'),recursive=True)
-        if f.endswith(('.md','.html')) and '/legal/' not in f and not os.path.basename(f).startswith('ruling-')]  # 裁定と法務の調査は「当時の記録」なので見ない
+def _scan_files():
+    ex=P.get('stale_scan_exclude',[])
+    out=[]
+    for f in glob.glob(os.path.join(PACK,'**','*.*'),recursive=True):
+        rel=os.path.relpath(f,PACK).replace(os.sep,'/')
+        if not f.endswith(('.md','.html')): continue
+        if '/legal/' in '/'+rel or os.path.basename(f).startswith('ruling-'): continue  # 裁定と法務の調査は当時の記録
+        if any(fnmatch.fnmatch(rel,g) for g in ex): continue
+        out.append(f)
+    return out
+
+def _hit_id(rel,why,ctx): return hashlib.sha1((rel+'|'+why+'|'+re.sub(r'\s+','',ctx)).encode()).hexdigest()[:12]
+
+def check_stale(files=None,P=P,baseline=None):
+    """④ 古い数字。★基準線（stale_baseline.json）にある既知の当たりは出さない。新しい当たりだけを出す"""
+    out=[]; files=files or _scan_files()
+    base=baseline if baseline is not None else _load_baseline()
     for f in files:
-        t=open(f,encoding='utf-8',errors='ignore').read()
+        t=open(f,encoding='utf-8',errors='ignore').read(); rel=os.path.relpath(f,PACK)
         for sp in P['stale_patterns']:
             for m in re.finditer(sp['re'],t):
                 ctx=t[max(0,m.start()-30):m.end()+30].replace('\n',' ')
                 if re.search(r'廃止|改める|前は|置き換え|使わない|置かない|置いていません|扱わない|扱っていません|削除|B案|撤回|ではなく|→',ctx): continue
                 ls=t.rfind('\n',0,m.start())+1
-                if re.match(r'\s*design-v\d+',t[ls:ls+20]): continue  # README の版の履歴  # 古い数字を「直した」と書いた行は除く
-                out.append(('④古い数字',os.path.relpath(f,PACK),f'{sp["why"]}: …{ctx}…'))
+                if re.match(r'\s*design-v\d+',t[ls:ls+20]): continue
+                hid=_hit_id(rel,sp['why'],ctx)
+                if hid in base: continue
+                out.append(('④古い数字',rel,f'{sp["why"]}: …{ctx}…',hid))
     return out
+
+def _load_baseline():
+    p=os.path.join(HERE,'stale_baseline.json')
+    return json.load(open(p,encoding='utf-8')).get('hits',{}) if os.path.exists(p) else {}
+
+def update_baseline(reason):
+    """いまの当たりを「既知」として基準線に入れる。★理由が要る。理由の無い追加はしない"""
+    if not reason or len(reason)<6: print('REFUSED: --reason に理由（6文字以上）を書く'); return 2
+    p=os.path.join(HERE,'stale_baseline.json'); d=json.load(open(p,encoding='utf-8')) if os.path.exists(p) else {'hits':{}}
+    new=check_stale(baseline=d['hits'])
+    for r in new: d['hits'][r[3]]={'file':r[1],'what':r[2][:120],'reason':reason}
+    json.dump(d,open(p,'w',encoding='utf-8'),ensure_ascii=False,indent=1)
+    print(f'BASELINE: {len(new)}件を既知に（理由: {reason}）。合計 {len(d["hits"])}件'); return 0
 
 def run(impl=None,fn='monthlyFee'):
     pts=P['check_points']; rows=check_doc()+check_mocks(pts)+check_stale()
@@ -97,7 +124,7 @@ def run(impl=None,fn='monthlyFee'):
     print('  営業資料v5: UNKNOWN（画像のため）')
     if not rows: print('RESULT: MATCH（食い違い 0件）'); return 0
     tool=[r for r in rows if r[1]=='TOOL_ERROR']
-    for r in rows: print('  DIFF',' | '.join(r))
+    for r in rows: print('  DIFF',' | '.join(r[:3]))
     print(f'RESULT: {"TOOL_ERROR" if tool else "MISMATCH"}（{len(rows)}件）'); return 2 if tool else 1
 
 def selftest():
@@ -107,10 +134,13 @@ def selftest():
     if not check_doc(bad): print('SELFTEST FAIL: 確定文書の食い違いを見つけられない'); ok=False
     if not check_mocks([31],bad): print('SELFTEST FAIL: 見本の食い違いを見つけられない'); ok=False
     tmp=os.path.join(HERE,'_selftest.md'); open(tmp,'w',encoding='utf-8').write('教室の 下限 9,800円 です\n表示は 税別\n')
-    hits=check_stale([tmp]); os.remove(tmp)
+    hits=check_stale([tmp],baseline={})
+    hid=hits[0][3] if hits else None
+    if hid and check_stale([tmp],baseline={hid:1}).__len__()!=len(hits)-1: print('SELFTEST FAIL: 基準線の既知を除けない'); ok=False
+    os.remove(tmp)
     if len(hits)<2: print('SELFTEST FAIL: 古い数字を見つけられない'); ok=False
     tmp2=os.path.join(HERE,'_selftest2.md'); open(tmp2,'w',encoding='utf-8').write('下限 9,800円 は廃止した\n')
-    if check_stale([tmp2]): print('SELFTEST FAIL: 「廃止した」と書いた行まで拾っている'); ok=False
+    if check_stale([tmp2],baseline={}): print('SELFTEST FAIL: 「廃止した」と書いた行まで拾っている'); ok=False
     os.remove(tmp2)
     if check_doc() or check_mocks([5,6,31,216,500]): print('SELFTEST FAIL: 正しい値で食い違いが出る'); ok=False
     print('SELFTEST', 'PASS' if ok else 'FAIL'); return 0 if ok else 2
@@ -118,6 +148,7 @@ def selftest():
 if __name__=='__main__':
     a=sys.argv[1:]
     if '--selftest' in a: sys.exit(selftest())
+    if '--update-baseline' in a: sys.exit(update_baseline(a[a.index('--reason')+1] if '--reason' in a else ''))
     impl=a[a.index('--impl')+1] if '--impl' in a else None
     fn=a[a.index('--impl-fn')+1] if '--impl-fn' in a else 'monthlyFee'
     sys.exit(run(impl,fn))

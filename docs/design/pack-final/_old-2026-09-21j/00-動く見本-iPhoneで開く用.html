@@ -3829,7 +3829,6 @@ function opHome(){
  +'<div class="k" onclick="goo(\'名簿\')"><div class="v">216</div><div class="l">名簿の 人数</div></div>'
  +'<div class="k" onclick="goo(\'名簿\')"><div class="v">9</div><div class="l">先生</div></div>'
  +'<div class="k" onclick="push(\'重なり\')"><div class="v" style="color:var(--yama)">'+KASANARI.length+'</div><div class="l">重なり（場所 '+kasaN('場所')+'）</div></div></div>'
- +opSaitenBand()
  +'<div class="h3">きょうの 流れ</div><div class="box">'
  +[['9:00','声楽A','斎藤 めぐみ','第1教室'],['10:30','声楽B','渡辺 たける','第2教室'],['13:00','声楽A','斎藤 めぐみ','第1教室'],
    ['16:00','声楽C','高橋 のぞみ','第3練習室'],['17:30','アンサンブル','渡辺 たける','大ホール']].map(function(x){
@@ -5183,7 +5182,6 @@ function opHomeT(){
  +'<div class="usu" style="margin-top:4px">出ている方の <b>空きコマ</b>から、日程を 組めます</div>'
  +'<div class="btn" style="margin-top:10px;background:var(--midori)" onclick="push(\'日程を組む\')">レッスンの 日程を 組む</div>'
  +'<div class="btn g" style="margin-top:7px" onclick="push(\'まだの人\')">まだ 出していない方を 見る</div></div>'
- +opSaitenBand()
  +'<div class="h3">きょうの レッスン</div><div class="box">'
  +todayOf(ME).map(function(y){var x=y[0],i=y[1];
    var nm=x.gr?x.l:(x.one||x.l),sub=x.gr?'<b>'+x.gr.length+'人</b>（みんなの レッスン）　'+x.pl:(gradeOf(x.one)||'個人レッスン')+'　'+x.pl;

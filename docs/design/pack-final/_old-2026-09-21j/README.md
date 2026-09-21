@@ -1,4 +1,4 @@
-# 一式 ── 2026年9月21日（design-v20）
+# 一式 ── 2026年9月21日（design-v19）
 
 ## 読む順番
 
@@ -45,17 +45,11 @@
 
 道具
   tools/allsc.py   見本4本の全画面を開いてエラーを数える
-  tools/price_check.py         値段の4か所の突き合わせ（正は tools/prices.json）
-  tools/ruling_mock_check.py   裁定が見本に入っているか（登録は tools/ruling_mock_registry.json）
-  tools/promise_diff.py        約束の文の版ごとの差分（控えは tools/promises/）
-  tools/route_map.py           画面ごとの道すじ → tools/経路一覧.md
-  tools/decision_needed_check.py  権限変更の報告の型の確かめ（型は tools/権限変更の型.md）
-  tools/道具の使い方.md        いつ・誰が走らせるか
 ```
 
 ---
 
-## 見本の状態（2026-09-21・design-v20・allsc.py で確認）
+## 見本の状態（2026-09-21・design-v19・allsc.py で確認）
 
 ```
 読込エラー   4本とも 0
@@ -116,13 +110,11 @@ orgOf / setBusy / bCol / bRow / bAllOn の二重定義 ── 元から。未処
 
 古い版の見分け方：見本で「6文字」を grep。1件でもあれば古い。
 
-版タグ：design-v20（2026-09-21）
+版タグ：design-v19（2026-09-21）
 
 ## 版の履歴
 
 ```
-design-v20  iPhone 版の運営モードに「あなたが 審査員の 試験」の帯が無く、採点に入れなかった（全画面版との食い違い。route_map.py で見つけた）→ 直した。道具2本（route_map・decision_needed_check）と price_check の基準線
-design-v19  （追記3）道具3本（価格の突き合わせ・裁定の見本反映・約束の差分）。約束の控え design-v19＝1,145文
 design-v19  （追記2）実行ルート第10版（第9版は消した）。裁定158・159
 design-v19  （追記）運営の名簿の注記「税別」→「税込」。design-v19  裁定157（法務 T1〜T7）。録画の4つの問い・料金の表示・「判定」の語。見本の back() 未定義（14か所）を直した
 design-v18  教室・学校のプランを申し込む画面（スマホ・PC）。6人目・31人目で1度たずねる。裁定156（学校の導入期間）

@@ -18,6 +18,7 @@ def check(R,T):
     rows=[]
     for no,e in sorted(R['rulings'].items(),key=lambda x:int(x[0])):
         if e.get('mock')!='yes': continue
+        if not e.get('reflected'): rows.append((no,'NO_VERSION','—','reflected（見本に入った版）が書かれていない'))
         for k,marks in e.get('present',{}).items():
             for f in R['files'][k]:
                 for mk in marks:
@@ -36,6 +37,8 @@ def main():
     print('RULING_MOCK_CHECK'); [print('  ',' | '.join(r)) for r in rows]
     old=sorted({re.match(r'ruling-(\d+)',os.path.basename(p)).group(1) for p in glob.glob(os.path.join(PACK,'ruling-*.md'))}-set(R['rulings']),key=int)
     print('  （141 より前の裁定は未登録のまま:',', '.join(n for n in old if int(n)<141),'→ 触るときに1件ずつ登録）')
+    lag=[(n,e.get('ruled',''),e.get('reflected','')) for n,e in R['rulings'].items() if e.get('mock')=='yes']
+    print('  裁定の日 → 見本に入った版:',', '.join(f'{n}:{r}→{v}' for n,r,v in lag))
     print('RESULT:', 'OK' if not rows else f'NG（{len(rows)}件）'); return 0 if not rows else 1
 def selftest():
     R=load(); T=texts(R); ok=True
