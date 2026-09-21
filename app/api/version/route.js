@@ -66,7 +66,12 @@ export async function GET() {
         layoutV2Ids: (process.env.NEXT_PUBLIC_LAYOUT_V2_USER_IDS || "").trim() !== "",
         // ★★運営モードの 直しの 門（★2026-09-13・lib/opsFixGate.js）。
         //   ★★お名前は 出しません。★入って いるか どうか だけ。
-        opsFixEmails: (process.env.NEXT_PUBLIC_OPS_FIX_ALLOWLIST || "").trim() !== ""
+        opsFixEmails: (process.env.NEXT_PUBLIC_OPS_FIX_ALLOWLIST || "").trim() !== "",
+        // ★★さがす（マッチング）の 門（★2026-09-21・lib/matchingGate.js）。
+        //   ★★きょう、★「入れたのに 出ない」を もう一度 やりました。
+        //     ★★この 紙に 並べて いなかった ので、★外から 見分けられません でした。
+        //   ★★★読んで いる ところ …… `components/VocalTracker.jsx` の `mayUseMatching`。
+        matchingIds: (process.env.NEXT_PUBLIC_MATCHING_USER_IDS || "").trim() !== ""
       },
       // ★★配信されている コードが 出す、★羊の 大きさの 式。
       //   ★★これが 新しい 形なら、★配信の 経路は 塞がっていません。
@@ -97,6 +102,9 @@ export async function GET() {
           .split(",").map((x) => x.trim()).filter(Boolean).length,
         // ★★何人 入って いるか だけ。★どなたかは 出しません。
         opsFixEmails: (process.env.NEXT_PUBLIC_OPS_FIX_ALLOWLIST || "")
+          .split(",").map((x) => x.trim()).filter(Boolean).length,
+        // ★★さがすの 門に 何人 入って いるか（★2026-09-21）。★どなたかは 出しません。
+        matchingIds: (process.env.NEXT_PUBLIC_MATCHING_USER_IDS || "")
           .split(",").map((x) => x.trim()).filter(Boolean).length
       }
     }),
