@@ -2453,8 +2453,7 @@ SC['応募者の詳細']=function(i){
  +'<div class="btn" style="margin-top:12px" onclick="push(\'成立後\')">この方に 決める</div>'
  +'<div class="btn g" style="margin-top:9px" onclick="openSheet(\'cut\',\''+o.n+'\')">'
  +'この人との やりとりについて</div>'
- +'<div class="note">お名前は、決めたあとに 見えます。<br>'
- +'<b>年齢・学年・'+W('monka')+'は 出しません。</b>決めるのに 要らないからです。<br>'
+ +'<div class="note"><b>年齢・学年・'+W('monka')+'は 出しません。</b>決めるのに 要らないからです。<br>'
  +'写真・録画・'+W('rep')+'は、<b>ご本人が 出すかどうかを 選んでいます</b>。<br>'
  +'「この学校で N回」は、<b>まだ 一度も 無い方には 出しません</b>。<br>'
  +'空いている コマだけを 出しています。授業は 出ません。<br>'
@@ -2566,6 +2565,391 @@ SC['紙のポートフォリオ']=function(){return bk('公開の範囲')
 +'<b>書き出した 日</b>を 右下に 入れます。古い 紙が 出回らないように。<br>'
 +'項目が 空の ときは、その 節ごと 出しません。空欄を 見せません。</div>'};
 
+
+
+/* ══ ★あなたのページ ── 裁定その129・131（2026-09-21）══
+   ★問題1：★入口が 3つとも マッチング経由でした
+   　　　  → ★さがすを 使わない 方（声・舞台）が 辿り着けない
+   ★★問題2：★「経歴」が 15欄を 1画面に 並べる 形でした
+   　　　   → ★1つも 埋まらずに 閉じられます
+   ★★★直し：★もっとの 直下に 置く ／ ★1画面 1種類        */
+
+/* ★書いたもの。★kind ごとに 数える */
+var PF = {
+ keireki:[{k:'gakko', t:'○○音楽院（イタリア）', d:'2024–'},
+          {k:'gakko', t:'○○音楽大学 声楽科 卒業', d:'2020–24'}],
+ shiji:  [{t:'高橋 のぞみ'},{t:'斎藤 めぐみ'}],
+ sho:    [{t:'○○声楽コンクール 第2位', d:'2025'}],
+ honban: [{t:'『冬の旅』全曲　千葉文化会館', d:'2026.11'},
+          {t:'『フィガロの結婚』ドン・バジリオ', d:'2026.07'},
+          {t:'Bach『クリスマス・オラトリオ』独唱', d:'2025.12'}],
+ rep:    [{t:'冬の旅（全曲）'},{t:'詩人の恋'},{t:'魔王'},{t:'Fauré 歌曲集'}],
+ rokuga: [{t:'『冬の旅』第1曲', d:'2026.10'}],
+ press:  [], shozoku:[], link:[]
+};
+var PF_PUB = false;          /* ★公開しているか */
+var PF_TYPE = 'T5';          /* ★いまの 型 */
+
+/* ★分野で 出す 種類が 変わります（裁定その119） */
+var PF_KINDS = {
+ music: [['keireki','学んだところ'],['shiji','師事した方'],['sho','受賞'],
+         ['honban','演奏・出演'],['rep','レパートリー'],['rokuga','録画・音源'],
+         ['press','批評'],['shozoku','所属'],['link','リンク']],
+ voice: [['keireki','学んだところ'],['shozoku','所属・養成所'],['honban','持ち役'],
+         ['koe','声質・音域・方言'],['rokuga','声の サンプル'],['sho','受賞'],
+         ['link','リンク']],
+ stage: [['keireki','学んだところ'],['shozoku','所属'],['honban','舞台・映像'],
+         ['karada','身長・靴・髪'],['dekiru','できること'],['sho','受賞'],
+         ['press','批評'],['link','リンク']]
+};
+function pfKinds(){ return PF_KINDS[FIELD] || PF_KINDS.music }
+function pfCount(){ var n=0; for(var k in PF) n += (PF[k]||[]).length; return n }
+
+/* ── P1 あなたのページ ── */
+
+/* ══ ★紙と ページは 別もの ── 2026-09-21 ══
+   ★データは 1つ。★出す 先が 2つ
+   　紙    ★応募に 使う。A4・1枚。★12型
+   　ページ ★見てもらう。URL を 渡す。★13型
+   ★Opus が 1つに まとめていました。★用途が 違います   */
+var PF_KAMI = 'T5';     /* ★紙の 型 */
+var PF_WEB  = 't01';    /* ★ページの 型 */
+var PF_SLUG = '';       /* ★まだ 作っていない */
+
+var KAMI_T = [
+ ['T5','クラシック',  '日本の 音大・コンクール',       '最も 安全。ATS が 読める'],
+ ['T1','ミニマル',    '欧州の 音楽院・格を 示す',     '3件しか 書かない'],
+ ['T3','スプリット',  '声優・俳優',                 '左に 条件を 固定'],
+ ['T4','タイムライン','経歴で 語る・留学した方',      '縦の 線で 歩みを'],
+ ['T2','グリッド',    '写真が ある方',              '写真が 4点 要る'],
+ ['T6','和・縦書き',  '邦楽・和物',                 '洋楽には 使わない']
+];
+var WEB_T = [
+ ['t01','舞台の夜',  '歌手 一般',        'Woolsong の 既定の 顔'],
+ ['t04','大劇場',    'プロの 歌手',      '全面の 写真・欧文の 名前'],
+ ['t14','器楽',      '★楽器の 方',       '使っている 楽器を 上に'],
+ ['t15','指揮・作曲','★指揮・作曲の 方',  '作品と 初演が 主役'],
+ ['t09','教室',      '教える方',        'レッスン案内が 先'],
+ ['t11','ボイス',    '声優・ナレーター',  '声の サンプルが 最上部'],
+ ['t13','宣材',      '俳優・ダンサー',    '写真が 主役'],
+ ['t10','ミニマル',  '言葉の 少ない方',   '縦書きの 名前・余白']
+];
+
+/* ── 紙の 型を 選ぶ ── */
+SC['紙の型']=function(){
+ return bk('あなたのページ')
+ +'<div class="hd" style="padding-top:2px"><h2>紙の 形を 選ぶ</h2></div>'
+ +'<div class="usu" style="margin-bottom:12px">'
+ +'A4・1枚。印刷して 出せます。<b>12種の うち 6種</b>を 出しています。</div>'
+ +'<div class="box">'
+ +KAMI_T.map(function(x){
+   var on = PF_KAMI===x[0];
+   return '<div class="li" onclick="PF_KAMI=\''+x[0]+'\';draw();'
+    +'toast(\'えらびました\')"><span>'+x[1]
+    +'<div class="usu">'+x[2]+'</div>'
+    +'<div class="usu" style="color:var(--ink4)">'+x[3]+'</div></span>'
+    +'<s>'+(on?'<span style="color:var(--enji)">これ</span>':'›')+'</s></div>'}).join('')
+ +'</div>'
+ +'<div class="btn g" style="margin-top:12px" onclick="push(\'紙をたしかめる\')">'
+ +'できあがりを 見る</div>'
+ +'<div class="note">中身は 変わりません。<b>並べ方と 見た目だけ</b>です。<br>'
+ +'あとから いつでも 変えられます。<br>'
+ +'スプリット（左右2段）は、<b>機械が 読めません</b>。紙で 出すときだけに。</div>'};
+
+/* ── ページの 型を 選ぶ ── */
+SC['ページの型']=function(){
+ return bk('あなたのページ')
+ +'<div class="hd" style="padding-top:2px"><h2>ページの 形を 選ぶ</h2></div>'
+ +'<div class="usu" style="margin-bottom:12px">'
+ +'インターネットで 見てもらう ページです。<b>13種の うち 6種</b>を 出しています。</div>'
+ +(PAID?'':'<div class="warn">ページを 出すには <b>Woolsong（年3,600円）</b>が 要ります。<br>'
+   +'紙に することは、<b>いまのままで できます</b>。</div>')
+ +'<div class="box">'
+ +WEB_T.map(function(x){
+   var on = PF_WEB===x[0];
+   return '<div class="li" onclick="PF_WEB=\''+x[0]+'\';draw();'
+    +'toast(\'えらびました\')"><span>'+x[1]
+    +'<div class="usu">'+x[2]+'</div>'
+    +'<div class="usu" style="color:var(--ink4)">'+x[3]+'</div></span>'
+    +'<s>'+(on?'<span style="color:var(--enji)">これ</span>':'›')+'</s></div>'}).join('')
+ +'</div>'
+ +'<div class="btn g" style="margin-top:12px" onclick="push(\'ページをたしかめる\')">'
+ +'できあがりを 見る</div>'
+ +'<div class="note">中身は、紙と <b>同じもの</b>です。<br>'
+ +'ページには、お知らせ・写真・レッスン案内も 置けます。<br>'
+ +'色・書体・節の 順番は、あとから 変えられます。</div>'};
+
+/* ── 紙を たしかめる ── */
+SC['紙をたしかめる']=function(){
+ var n = PF.honban.length + PF.rokuga.length;
+ return bk('紙の型')
+ +'<div class="hd" style="padding-top:2px"><h2>紙　'+PF_KAMI+'</h2></div>'
+ +(n<3?'<div class="warn">出しているものが '+n+'件です。<br>'
+   +'<b>少ないと 見えるかもしれません。</b>このまま 出すことも できます。</div>':'')
+ +'<div style="background:#fff;color:#241C15;aspect-ratio:210/297;'
+ +'border:1px solid var(--line);border-radius:2px;padding:8% 7.5%;'
+ +'font-size:clamp(6px,1.6vw,10px);line-height:1.66;display:flex;'
+ +'flex-direction:column;overflow:hidden">'
+ +'<div style="font-size:2em;font-weight:600;font-family:Georgia,serif">坂本 響</div>'
+ +'<div style="color:#8C7D6C;letter-spacing:.2em;margin-top:.3em">テノール</div>'
+ +PF.sho.map(function(v){return '<div style="margin-top:1.4em;font-size:1.1em">'
+   +v.t+'</div>'}).join('')
+ +'<div style="margin-top:1.2em;line-height:2.1">'
+ +PF.honban.map(function(v){return '<div style="display:flex;gap:.9em">'
+   +'<span style="color:#8C7D6C;width:22%">'+(v.d||'')+'</span>'+v.t+'</div>'}).join('')
+ +'</div>'
+ +'<div style="margin-top:.9em;line-height:2.1;font-size:.95em">'
+ +PF.keireki.map(function(v){return '<div style="display:flex;gap:.9em">'
+   +'<span style="color:#8C7D6C;width:22%">'+(v.d||'')+'</span>'+v.t+'</div>'}).join('')
+ +'</div>'
+ +'<div style="margin-top:auto;border-top:.5px solid #E4DAC4;padding-top:.7em;'
+ +'font-size:.85em;color:#A0917F;display:flex;justify-content:space-between">'
+ +'<span>woolsong.app/p/7fk2m</span><span>2026年9月21日 現在</span></div></div>'
+ +'<div class="btn" style="margin-top:12px">PDF で 書き出す</div>'
+ +'<div class="btn g" style="margin-top:8px">印刷する</div>'
+ +'<div class="note"><b>点は つけません。</b>他の方と 比べません。<br>'
+ +'1枚に 収まらないときは、お知らせします。<br>'
+ +'<b>書き出した 日</b>を 右下に 入れます。古い 紙が 出回らないように。</div>'};
+
+/* ── ページを たしかめる ── */
+SC['ページをたしかめる']=function(){
+ return bk('ページの型')
+ +'<div class="hd" style="padding-top:2px"><h2>ページ　'+PF_WEB+'</h2></div>'
+ +'<div class="card" style="padding:0;overflow:hidden">'
+ +'<div style="background:var(--band2);padding:6px 11px;font-size:11.5px;'
+ +'color:var(--ink4)">woolsong.app/@'+(PF_SLUG||'____')+'</div>'
+ +'<div style="background:linear-gradient(160deg,#2B211A,#4A3B30);color:#fff;'
+ +'padding:28px 20px">'
+ +'<div style="font-size:24px;font-weight:600;font-family:Georgia,serif">坂本 響</div>'
+ +'<div style="font-size:12.5px;opacity:.72;margin-top:3px">テノール</div>'
+ +(PF.sho.length?'<div style="font-size:13.5px;margin-top:13px;opacity:.92">'
+   +PF.sho[0].t+'</div>':'')
+ +'<div style="margin-top:16px"><span style="background:#fff;color:#241C15;'
+ +'padding:7px 17px;border-radius:99px;font-size:13px">ご依頼</span></div></div>'
+ +'<div style="aspect-ratio:16/9;background:#14100D;display:flex;'
+ +'align-items:center;justify-content:center;color:#8C7D6C;font-size:13px">'
+ +'▶　'+(PF.rokuga.length?PF.rokuga[0].t:'録画')+'</div>'
+ +'<div style="padding:18px 20px">'
+ +'<div style="font-size:11.5px;letter-spacing:.18em;color:var(--ink4);'
+ +'margin-bottom:9px">出　演</div>'
+ +PF.honban.map(function(v){return '<div style="display:flex;gap:12px;'
+   +'padding:8px 0;border-bottom:1px solid var(--line2);font-size:13.5px">'
+   +'<span style="color:var(--ink4);width:66px;flex:none">'+(v.d||'')+'</span>'
+   +'<span>'+v.t+'</span></div>'}).join('')
+ +'<div style="font-size:11.5px;letter-spacing:.18em;color:var(--ink4);'
+ +'margin:18px 0 9px">'+W('rep')+'</div>'
+ +'<div style="display:flex;flex-wrap:wrap;gap:5px">'
+ +PF.rep.map(function(v){return '<span style="font-size:12.5px;padding:3px 11px;'
+   +'border-radius:99px;background:var(--band2)">'+v.t+'</span>'}).join('')
+ +'</div></div></div>'
+ +'<div class="btn g" style="margin-top:12px" onclick="push(\'整える\')">'
+ +'色・書体を 整える</div>'
+ +'<div class="btn" style="margin-top:8px" onclick="push(\'出す\')">'
+ +'出す</div>'
+ +'<div class="note">お知らせ・写真・レッスン案内も 置けます。<br>'
+ +'<b>体調の 記録は、1文字も 出ません。</b><br>'
+ +'出さないかぎり、誰にも 見えません。</div>'};
+
+/* ── 整える ── */
+SC['整える']=function(){
+ return bk('ページをたしかめる')
+ +'<div class="hd" style="padding-top:2px"><h2>整える</h2></div>'
+ +'<div class="sh3" style="margin-top:0">色</div>'
+ +'<div style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:13px">'
+ +[['臙脂','#7A1F2E'],['藍','#3E5C8C'],['墨','#2B2320'],['苔','#5C6B4A'],
+   ['葡萄','#5B3A5E'],['琥珀','#8C5A2B'],['鉄','#4A5560'],['薔薇','#A34F6A']]
+  .map(function(x,i){
+   return '<span style="width:34px;height:34px;border-radius:50%;background:'+x[1]
+    +';display:inline-block;'+(i===0?'box-shadow:0 0 0 2px var(--card),0 0 0 4px '+x[1]:'')
+    +'" title="'+x[0]+'"></span>'}).join('')
+ +'</div>'
+ +'<div class="usu" style="margin-top:-6px">8色から。'
+ +'<b>赤・黄・緑は ありません</b>（信号の 色を 使いません）。</div>'
+
+ +'<div class="sh3">文字</div><div class="box">'
+ +[['明朝と ゴシック',true],['明朝だけ',false],['ゴシックだけ',false]]
+  .map(function(x){
+   return '<div class="li"><span>'+x[0]+'</span><s>'
+    +'<span style="display:inline-block;width:17px;height:17px;border-radius:50%;'
+    +'border:1.6px solid '+(x[1]?'var(--enji)':'var(--line)')+';'
+    +(x[1]?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
+    +'vertical-align:-3px"></span></s></div>'}).join('')+'</div>'
+
+ +'<div class="sh3">写真の かたち</div><div class="box">'
+ +[['角丸',true],['四角',false]].map(function(x){
+   return '<div class="li"><span>'+x[0]+'</span><s>'
+    +'<span style="display:inline-block;width:17px;height:17px;border-radius:50%;'
+    +'border:1.6px solid '+(x[1]?'var(--enji)':'var(--line)')+';'
+    +(x[1]?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
+    +'vertical-align:-3px"></span></s></div>'}).join('')+'</div>'
+
+ +'<div class="sh3">節の 順番</div><div class="box">'
+ +['プロフィール','出演','レパートリー','録画','お知らせ','お問い合わせ']
+  .map(function(v,i){
+   return '<div class="li"><span>'+v+'</span>'
+    +'<s><span class="pill sm">↑</span> <span class="pill sm">↓</span> '
+    +'<span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
+    +'border:1.6px solid var(--enji);background:var(--enji);'
+    +'box-shadow:inset 0 0 0 3px var(--card);vertical-align:-3px"></span></s></div>'}).join('')
+ +'</div>'
+ +'<div class="note">節を 消すことも、順番を 変えることも できます。<br>'
+ +'<b>型の 骨組みは 崩れません。</b><br>'
+ +'ここで えらんだものは、<b>型を 変えても 残ります</b>。</div>'};
+
+SC['あなたのページ']=function(){
+ var n = pfCount();
+ if(!n) return bk('もっと')
+  +'<div class="hd" style="padding-top:2px"><h2>あなたの ページ</h2></div>'
+  +'<div class="empty" style="padding:38px 20px"><div class="t">'
+  +'まだ 何も 書いていません。</div>'
+  +'<div class="s">ひとつ 書いてみませんか。</div></div>'
+  +'<div class="btn" onclick="push(\'なにを書く\')">書く</div>'
+  +'<div class="note">学んだところ、師事した方、出た 本番。<br>'
+  +'<b>ひとつずつで かまいません。</b>途中で やめても 残ります。<br>'
+  +'書いたものは、<b>紙にも、ページにも なります</b>。</div>';
+
+ return bk('もっと')
+ +'<div class="hd" style="padding-top:2px"><h2>あなたの ページ</h2></div>'
+
+ /* ★小さな 見本 */
+ +'<div class="card" style="padding:0;overflow:hidden;margin-bottom:11px">'
+ +'<div style="background:#fff;color:#241C15;padding:19px 17px 15px;font-size:12px;'
+ +'line-height:1.7;border-bottom:1px solid var(--line)">'
+ +'<div style="font-size:19px;font-weight:600;font-family:Georgia,serif">坂本 響</div>'
+ +'<div style="color:#8C7D6C;letter-spacing:.14em;margin-top:2px">テノール</div>'
+ +'<div style="margin-top:11px;color:#4A3F35">'
+ +(PF.sho.length?PF.sho[0].t+'<br>':'')
+ +(PF.honban.length?PF.honban[0].t:'')+'</div></div>'
+ +'<div class="li plain" style="font-size:13px"><span>'
+ +(PF_PUB?'<span style="color:var(--ok)">公開しています</span>'
+        :'まだ 公開していません')+'</span>'
+ +'<s><span class="usu">'+PF_TYPE+'</span></s></div></div>'
+
+ /* ★書いたもの */
+ +'<div class="sh3">書いたもの　'+n+'件</div>'
+ +'<div class="box">'
+ +pfKinds().map(function(x){
+   var c = (PF[x[0]]||[]).length;
+   return '<div class="li" onclick="push(\'書く\',\''+x[0]+'\')"><span>'+x[1]
+    +'</span><s>'+(c?c+'件':'<span class="usu">まだ</span>')+' ›</s></div>'}).join('')
+ +'<div class="li" onclick="push(\'なにを書く\')">'
+ +'<span style="color:var(--enji)">＋ 足す</span><s>›</s></div></div>'
+
+ /* ★紙と ページを 分けます。★用途が 違います */
+ +'<div class="sh3">出す さき</div>'
+ +'<div class="box">'
+ +'<div class="li" onclick="push(\'紙の型\')"><span>紙に する'
+ +'<div class="usu">A4・1枚。応募・オーディションに</div></span>'
+ +'<s>'+PF_KAMI+' ›</s></div>'
+ +'<div class="li" onclick="push(\'ページの型\')"><span>ページを 作る'
+ +'<div class="usu">URL を 渡す。見てもらう・依頼を 受ける</div></span>'
+ +'<s>'+(PF_PUB?'公開中':PF_WEB)+' ›</s></div>'
+ +'</div>'
+
+ +'<div class="note"><b>中身は 同じです。</b>出す さきだけが 違います。<br>'
+ +'紙は、<b>印刷して 持っていく</b>もの。<br>'
+ +'ページは、<b>URL を 渡して 見てもらう</b>もの。<br>'
+ +'出さないかぎり、誰にも 見えません。</div>'};
+
+/* ── P2 なにを書く ── */
+SC['なにを書く']=function(){
+ return bk('あなたのページ')
+ +'<div class="hd" style="padding-top:2px"><h2>何を 足しますか</h2></div>'
+ +'<div class="box">'
+ +pfKinds().map(function(x){
+   var c = (PF[x[0]]||[]).length;
+   return '<div class="li" onclick="S.stack.pop();push(\'書く\',\''+x[0]+'\')">'
+    +'<span>'+x[1]+'</span><s>'+(c?c+'件':'')+' ›</s></div>'}).join('')
+ +'</div>'
+ +'<div class="note"><b>ひとつずつで かまいません。</b><br>'
+ +'ぜんぶ 書く 必要は ありません。<br>'
+ +'あとから いつでも 足せます。</div>'};
+
+/* ── P2 書く（★1画面 1種類） ── */
+SC['書く']=function(kind){
+ var K = pfKinds(), lbl='';
+ K.forEach(function(x){ if(x[0]===kind) lbl=x[1] });
+ var list = PF[kind] || [];
+ var hasDate = ['keireki','sho','honban','rokuga'].indexOf(kind)>=0;
+
+ return bk('あなたのページ')
+ +'<div class="hd" style="padding-top:2px"><h2>'+lbl+'</h2></div>'
+
+ +(list.length
+   ? '<div class="box">'+list.map(function(v,i){
+      return '<div class="li"><span>'+v.t
+       +(v.d?'<div class="usu">'+v.d+'</div>':'')+'</span>'
+       +'<s><span class="pill sm">消す</span></s></div>'}).join('')+'</div>'
+   : '<div class="empty"><div class="t">まだ ありません。</div></div>')
+
+ +'<div class="sh3">足す</div>'
+ +(hasDate?'<div class="fl">いつ</div>'
+   +'<input class="inp" placeholder="れい：2026.11　／　2020–24">':'')
+ +'<div class="fl">'+lbl+'</div>'
+ +'<input class="inp" placeholder="'
+ +(kind==='keireki'?'○○音楽大学 声楽科 卒業'
+  :kind==='shiji'?'高橋 のぞみ'
+  :kind==='sho'?'○○声楽コンクール 第2位'
+  :kind==='honban'?'『冬の旅』全曲　千葉文化会館'
+  :kind==='rep'?'冬の旅（全曲）'
+  :kind==='rokuga'?'『冬の旅』第1曲'
+  :kind==='koe'?'中〜高　A3–E5'
+  :kind==='karada'?'168cm'
+  :kind==='dekiru'?'殺陣'
+  :'')+'">'
+ +(kind==='rokuga'?'<div class="fl">URL</div>'
+   +'<input class="inp" placeholder="https://youtu.be/xxxxxxxx">'
+   +'<div class="usu" style="margin-top:-4px">YouTube ／ Vimeo。'
+   +'<b>動画は お預かりしません</b>。URL だけです</div>':'')
+ +'<div class="btn" style="margin-top:12px" onclick="toast(\'足しました\');back()">'
+ +'足す</div>'
+
+ +'<div class="note">手を 止めると、<b>そのまま 残ります</b>。<br>'
+ +'途中で やめても かまいません。<br>'
+ +(kind==='shiji'?'公開の 講座で 教わった方は、<b>分けて 書いてください</b>。':'')
+ +'</div>'};
+
+/* ── P5 たしかめる ── */
+SC['出す']=function(){
+ return bk('ページをたしかめる')
+ +'<div class="hd" style="padding-top:2px"><h2>出す</h2></div>'
+ +(GD.under18?'<div class="warn"><b>18歳以上の方だけが、外に 出せます。</b><br>'
+   +'紙に することは、どなたでも できます。</div>':'')
+
+ +'<div class="sh3" style="margin-top:0">あなたの しるし</div>'
+ +'<div style="display:flex;gap:0;align-items:center;margin-bottom:5px">'
+ +'<span style="font-size:13.5px;color:var(--ink3);white-space:nowrap">'
+ +'woolsong.app/@</span>'
+ +'<input class="inp" style="margin:0" value="hibiki-s"></div>'
+ +'<div class="usu">英数字と −。3〜24文字。<b>変えられるのは 年に2回まで</b>。</div>'
+
+ +'<div class="sh3">誰が 見られますか</div><div class="box">'
+ +[['自分だけ',true],['同じ 学校の 方',false],
+   ['どなたでも',false]].map(function(x,i){
+   var lock = GD.under18 && i===2;
+   return '<div class="li'+(lock?' plain':'')+'"'
+    +(lock?' style="color:var(--ink4)"':'')+'><span>'+x[0]
+    +(i===2?'<div class="usu">検索にも 出ます</div>':'')+'</span><s>'
+    +(lock?'<span class="usu">18歳以上</span>'
+      :'<span style="display:inline-block;width:17px;height:17px;border-radius:50%;'
+       +'border:1.6px solid '+(x[1]?'var(--enji)':'var(--line)')+';'
+       +(x[1]?'background:var(--enji);box-shadow:inset 0 0 0 3px var(--card);':'')
+       +'vertical-align:-3px"></span>')+'</s></div>'}).join('')+'</div>'
+
+ +'<div class="box" style="margin-top:11px"><div class="li">'
+ +'<span>検索に 出さない<div class="usu">Google などに 載りません</div></span>'
+ +'<s><span style="display:inline-block;width:17px;height:17px;border-radius:4px;'
+ +'border:1.6px solid var(--line);vertical-align:-3px"></span></s></div></div>'
+
+ +'<div class="btn" style="margin-top:12px" onclick="PF_PUB=true;back();'
+ +'toast(\'出しました\')">この 形で 出す</div>'
+ +(PF_PUB?'<div class="btn g" style="margin-top:8px" onclick="PF_PUB=false;'
+   +'back();toast(\'下げました\')">いったん 下げる</div>':'')
+
+ +'<div class="note"><b>下げても、書いたものは 消えません。</b><br>'
+ +'お支払いが 止まっても、30日は そのまま 出ます。<br>'
+ +'そのあとは 見えなくなりますが、<b>お手元には 残ります</b>。<br>'
+ +'<b>体調の 記録は、1文字も 出ません。</b></div>'};
 
 SC['経歴']=function(){return bk('レパートリー')
 +'<div class="hd" style="padding-top:2px"><h2>経歴</h2></div>'
@@ -2862,6 +3246,7 @@ SC['もっと']=function(){
  +'<div class="li" onclick="openSheet(\'account\')"><span>アカウント</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'プラン\')"><span>プラン</span><s>'+(paid()?'調べる':'無料')+' ›</s></div>'
  +(hasSearch()?'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>':'')
+ +'<div class="li" onclick="push(\'あなたのページ\')"><span>あなたの ページ<div class="usu">経歴・紙・公開</div></span><s>'+(PF_PUB?'公開中':pfCount()+'件')+' ›</s></div>'
  +'<div class="li" onclick="push(\'Woolsong\')"><span>Woolsong<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
  +'<div class="li" onclick="push(\'お仕事を選ぶ\')"><span>お仕事<div class="usu">画面の ことばが 変わります</div></span><s>'+VOCAB[FIELD].field+' ›</s></div>'
  +'<div class="li" onclick="push(\'保護者の画面\')"><span>保護者の 方の 画面<div class="usu">見本だけ。実際は メールから</div></span><s>›</s></div>'
