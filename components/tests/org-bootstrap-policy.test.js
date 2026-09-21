@@ -71,8 +71,12 @@ assertTrue(/\.eq\("role", "owner"\)/.test(fn), "既に owner なら作り直さ�
 console.log("\n=== ★INSERT ... RETURNING のための SELECT ポリシー ===");
 // .select() を付けた INSERT は、書いた行を読み返します。
 // できたばかりの教室は membership が無いので、作成者自身にも読めませんでした。
-assertTrue(/\.insert\(\{ name: "マイ教室"[\s\S]{0,120}\.select\(\)/.test(fn),
-  "アプリは .select() を付けて INSERT している（org.id が要るため）");
+// ★★★2026-09-22、★引数の 無い `select()` を `select("id")` に しました
+//   （★実行ルート 5-1）。★`select()` は `select("*")` と 同じ です。
+//   ★★見張る ところは 変わりません ── ★「書いた 行を 読み返して いる」こと。
+//   ★★読み返す 列が 名ざしに なった だけ です。★`org.id` しか 使って いません。
+assertTrue(/\.insert\(\{ name: "マイ教室"[\s\S]{0,200}\.select\("id"\)/.test(fn),
+  "アプリは .select(\"id\") を付けて INSERT している（org.id が要るため）");
 const sel = readRaw("supabase", "migration_org_insert_policies.sql");
 assertTrue(/organizations_select_own_created/.test(sel) || /created_by = auth\.uid\(\)/.test(sel),
   "★作成者が自分の教室を読める SELECT ポリシーが要る");
