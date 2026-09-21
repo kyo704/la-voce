@@ -24,10 +24,18 @@ def lint(sql):
     for name,head,body in functions(sql):
         ins=[m.start() for m in re.finditer(r"insert\s+into\s+[\w\.\"]*_log\b",body,re.I)]
         if not ins: continue
+        is_trigger=bool(re.search(r"returns\s+trigger",head,re.I))
+        # ★ガード（何も 変える 前の 早い return）は 数えない。危ないのは「他の insert/update/delete を した あとで、
+        #   記録の insert より 前に return して しまう」経路だけ
+        mut=[p for p in re.finditer(r'\b(insert\s+into|update|delete\s+from)\s+([\w\."]+)',body,re.I) if not p.group(2).rstrip('"').split('.')[-1].endswith('_log')]
+        mut_pos=[m.start() for m in mut]
         ret=[m.start() for m in re.finditer(r"\breturn\s+query\b|\breturn\s+(?!;)\S",body,re.I)]
-        if ret and min(ret)<min(ins): out.append((name,'F1','中身を返す処理が、記録の insert より前にある'))
-        for m in re.finditer(r"exception\s+when\s+(others|[\w_]+)\s+then([\s\S]*?)(?=\bend\b)",body,re.I):
-            if not re.search(r"\braise\b",m.group(2),re.I): out.append((name,'F2',f'exception when {m.group(1)} で握りつぶしている（raise が無い）'))
+        risky_ret=[r for r in ret if r<min(ins) and any(mp<r for mp in mut_pos)]
+        if not is_trigger and risky_ret: out.append((name,'F1','他の書き込みの あとで、記録の insert より 前に return している経路が ある'))
+        for m in re.finditer(r"(begin[\s\S]*?)exception\s+when\s+(others|[\w_]+)\s+then([\s\S]*?)(?=\bend\b)",body,re.I):
+            guarded,kind,handler=m.group(1),m.group(2),m.group(3)
+            if not re.search(r"_log\b",guarded,re.I): continue   # ★記録（_log）の insert を 囲んでいる 例外 だけを 見る。ほかの 表（通知など）への 例外は 対象外
+            if not re.search(r"\braise\s*;|\braise\s+exception\b|\braise\s+sqlstate\b|\braise\s+'",handler,re.I): out.append((name,'F2',f'記録の insert を exception when {kind} で握りつぶしている（raise warning／notice は握りつぶしと同じ）'))
         if re.search(r"insert\s+into\s+[\w\.\"]*_log\b[\s\S]*?on\s+conflict\s+do\s+nothing",body,re.I): out.append((name,'F3','記録の insert に on conflict do nothing'))
         if re.search(r"security\s+definer",head,re.I) and not re.search(r"set\s+search_path",head,re.I): out.append((name,'F4','security definer なのに set search_path が無い'))
         short=name.split('.')[-1].strip('"')
@@ -48,7 +56,7 @@ begin
 end $$;
 """
 BAD=GOOD.replace("  insert into monka_read_log(who, monka, reason_kind) values (auth.uid(), p, r);\n  return query select * from org_messages where monka_id = p;",
- "  return query select * from org_messages where monka_id = p;\n  begin insert into monka_read_log(who, monka, reason_kind) values (auth.uid(), p, r) on conflict do nothing; exception when others then null; end;").replace(" set search_path = public","")+"grant execute on function read_monka(uuid,text) to anon;\n"
+ "  update org_messages set opened=true where monka_id = p;\n  return query select * from org_messages where monka_id = p;\n  begin insert into monka_read_log(who, monka, reason_kind) values (auth.uid(), p, r) on conflict do nothing; exception when others then null; end;").replace(" set search_path = public","")+"grant execute on function read_monka(uuid,text) to anon;\n"
 def selftest():
     ok=True
     if lint(GOOD): print('SELFTEST FAIL: 正しい関数で NG',lint(GOOD)); ok=False
@@ -56,6 +64,10 @@ def selftest():
     for f in ['F1','F2','F3','F4','F5']:
         if f not in got: print('SELFTEST FAIL: 見つけられない',f); ok=False
     if lint("-- insert into x_log values(1); return 1;\n"): print('SELFTEST FAIL: コメントを拾った'); ok=False
+    TRG="create function t() returns trigger language plpgsql security definer set search_path=public as $$ begin if old.a is not distinct from new.a then return new; end if; insert into a_log values(1); return new; end $$;"
+    if lint(TRG): print('SELFTEST FAIL: 引き金の早い return を F1 にした'); ok=False
+    WARN="create function w() returns int language plpgsql as $$ begin insert into b_log values(1); begin insert into n values(1); exception when others then raise warning 'x'; end; return 1; end $$;"
+    if not any(r[1]=='F2' for r in lint(WARN)): print('SELFTEST FAIL: raise warning の握りつぶしを見逃した'); ok=False
     print('SELFTEST','PASS' if ok else 'FAIL'); return 0 if ok else 2
 if __name__=='__main__':
     a=sys.argv[1:]

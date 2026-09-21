@@ -11,7 +11,8 @@ import {
   MONKA_READ_PAUSED_LINE, monkaReadOpen,
   // ★★なぜ 開くかを たずねる（★裁定159 S3）。★決めは lib が 持ちます。
   READ_REASONS, READ_REASON_HEAD, READ_REASON_NOTE_HINT, READ_REASON_NOTE_MAX,
-  READ_REASON_OPEN, READ_REASON_CANCEL, READ_REASON_KEPT_LINE, mayOpenWithReason,
+  READ_REASON_OPEN, READ_REASON_CANCEL, READ_WARN_LINE, READ_REASON_NOTES,
+  READ_REASON_PICK_FIRST, READ_OPENED_BAND, needsReadReason, mayOpenWithReason,
   SECTION_ANNOUNCE, SECTION_MONKA,
   SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard,
   // ★★2026-09-19（★実機の ご報告）── ★一覧に 本文を 出しません。
@@ -119,6 +120,11 @@ export default function Renraku({
   const [たずねる, setたずねる] = useState(null);
   const [わけ, setわけ] = useState(null);
   const [短文, set短文] = useState("");
+  // ★★選んで いない まま 押した とき の 1行（★仕様シート §2）。
+  //   ★★押しても 何も 起きません。★黙らせません。
+  const [選んで, set選んで] = useState(false);
+  // ★★開いた あと の 帯（★仕様シート §2）。
+  const [開いた, set開いた] = useState(null);
   const [draft, setDraft] = useState("");
   // ★★どの お知らせを 開いて いるか（★2026-09-19・実機の ご報告）。
   //   ★★一覧には 名と いつ だけ。★本文は 開いた ときだけ 出ます。
@@ -222,9 +228,21 @@ export default function Renraku({
             /* ★★★開く 前に たずねます（★裁定159 S3）。
                  ★★理由の 無い 閲覧を 作りません。★台帳の 道も 断ります。
                  ★★閉じる ときは そのまま 通します（null）。 */
+            /* ★★★理由を たずねるのは、★`monka_read` を 持ち、かつ
+                 ★その 門下の 先生 ご本人で ない とき だけ です（★仕様シート §2）。
+                 ★★ご自分の 門下は、★いままで どおり そのまま 読めます。
+               ★★★別の 行を 押したら、★開いた ものを 捨てます。
+                 ★★もう一度 同じ 門下を 開くには、★また 理由を 選びます。 */
             onClick={() => {
+              set開いた(null);
               if (s.teacherId === null) { onOpenStudio(null); return; }
-              setたずねる(s.teacherId); setわけ(null); set短文("");
+              // ★★ご自分の 門下かは `isTeacherOf` が 知って います。
+              //   ★★新しい 受け口を 増やしません。★同じ 決めを 2か所に しません。
+              const 自分の = isTeacherOf ? isTeacherOf(s.teacherId) : false;
+              if (自分の || !needsReadReason({ perms, teacherId: s.teacherId, meId: null })) {
+                onOpenStudio(s.teacherId); return;
+              }
+              setたずねる(s.teacherId); setわけ(null); set短文(""); set選んで(false);
             }}
             className="w-full text-left"
             style={{
@@ -248,6 +266,13 @@ export default function Renraku({
            ★★「その他」だけ 短文が 要ります。★空では 開けません。
            ★★★答えは 記録に 残ります。★そのことを 先に お伝えします。 */}
       {/* ★★★開けなかった ときの 1行。★黙って 何も 起きない、に しません。 */}
+      {/* ★★★開いた あとの 帯（★仕様シート §2）。 */}
+      {開いた && openStudio === 開いた && !readError ? (
+        <div style={{ ...card, background: C.paper, borderColor: C.curtain }}>
+          <p style={{ fontSize: "0.8125rem", color: C.ink, margin: 0 }}>{READ_OPENED_BAND}</p>
+        </div>
+      ) : null}
+
       {readError ? (
         <div style={{ ...card, borderColor: C.curtain }}>
           <p style={{ fontSize: "0.8125rem", color: C.ink, margin: 0 }}>{readError}</p>
@@ -256,6 +281,11 @@ export default function Renraku({
 
       {たずねる ? (
         <div style={{ ...card, borderColor: C.curtain, borderWidth: 2 }}>
+          {/* ★★上の 帯（★仕様シート §2 の 字）。 */}
+          <p style={{
+            fontSize: "0.8125rem", color: C.ink, lineHeight: 1.85,
+            margin: "0 0 8px", background: C.paper, borderRadius: 8, padding: "8px 10px"
+          }}>{READ_WARN_LINE}</p>
           <p style={{ fontSize: "0.90625rem", color: C.ink, margin: "0 0 8px", fontWeight: 600 }}>
             {READ_REASON_HEAD}
           </p>
@@ -280,19 +310,27 @@ export default function Renraku({
                 fontSize: "1rem", lineHeight: 1.8, resize: "vertical", marginTop: 4
               }} />
           ) : null}
-          <p style={small}>{READ_REASON_KEPT_LINE}</p>
+          {選んで && !mayOpenWithReason(わけ, 短文) ? (
+            <p style={{ ...small, color: C.ink }}>{READ_REASON_PICK_FIRST}</p>
+          ) : null}
+          {READ_REASON_NOTES.map((t) => (
+            <p key={t} style={{ ...small, margin: "2px 0 0" }}>{t}</p>
+          ))}
           <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-            <button type="button" disabled={!mayOpenWithReason(わけ, 短文)}
+            {/* ★★★選んで いなくても 押せます（★仕様シート §2）。
+                 ★★押しても 何も 起きず、★「理由を 選んでください」が 出ます。
+                 ★★押せない 札に しません ── ★なぜ 進めないかが 分かりません。 */}
+            <button type="button"
               onClick={() => {
+                if (!mayOpenWithReason(わけ, 短文)) { set選んで(true); return; }
                 const t = たずねる;
-                setたずねる(null);
+                setたずねる(null); set選んで(false); set開いた(t);
                 onOpenStudio(t, わけ, 短文.trim() || null);
               }}
               style={{
                 flex: 1, minHeight: 44, borderRadius: 10,
-                border: `1px solid ${mayOpenWithReason(わけ, 短文) ? C.curtain : C.line}`,
-                background: mayOpenWithReason(わけ, 短文) ? C.curtain : C.line,
-                color: mayOpenWithReason(わけ, 短文) ? "#FFFDF8" : C.inkSoft,
+                border: `1px solid ${C.curtain}`,
+                background: C.curtain, color: "#FFFDF8",
                 fontSize: "0.90625rem"
               }}>{READ_REASON_OPEN}</button>
             <button type="button" onClick={() => setたずねる(null)}

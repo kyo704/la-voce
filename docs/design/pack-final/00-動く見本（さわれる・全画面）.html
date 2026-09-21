@@ -2184,8 +2184,8 @@ function opRenraku(){
  +(can('monka_read')?'<div class="h3">門下</div><div class="box">'
  +[['斎藤先生の 門下','12人','きのう','op-m1'],['渡辺先生の 門下','7人','9月1日','op-m2'],['高橋先生の 門下','9人','8月28日','op-m3']].map(function(x){
    return '<div class="li" onclick="UNREAD[\''+x[3]+'\']=0;push(\'門下を開く\',\''+esc(x[0])+'\')"><span>'+dot(x[3])+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>'+x[2]+' ›</s></div>'}).join('')+'</div>':'')
- +(can('monka_read')?'<div class="box" style="margin-top:9px"><div class="li" onclick="push(\'開いた記録\')"><span>開いた 記録</span><s>14件 ›</s></div></div>':'')
- +'<div class="note">本文の 抜粋を 一覧に 出しません（体調の語が 並ぶからです）。<br>門下を 開くと、<b>開いた記録が 残ります</b>（誰が・いつ・どの門下を）。<br>その記録は、<b>先生と 学生からも 見られます</b>。</div>'}
+ +(can('monka_read')?'<div class="box" style="margin-top:9px"><div class="li" onclick="push(\'開いた記録\')"><span>開いた 記録</span><s>'+HIRAITA_M.length+'件 ›</s></div></div>':'')
+ +'<div class="note">本文の 抜粋を 一覧に 出しません（体調の語が 並ぶからです）。<br>門下を 開くときは <b>理由を 選んでから</b> 開きます。<b>開いた記録が 残ります</b>（誰が・いつ・どの門下を・理由）。消せません。<br>その記録は <b>運営の 中だけ</b>で 見ます（先生・学生の 画面には 出しません）。ご本人から 求められたら、<b>30日以内に</b> お見せします。</div>'}
 function opSettei(){
  var pp=myPost().p;
  var jikan=(can('koma')||can('koma_mine'))?'<div class="h3">時間・場所</div><div class="box">'
@@ -2940,22 +2940,38 @@ SC['自分の門下']=function(){
  +'<div class="note">添付は できません。90日で 消えます。<br>'
  +'生徒からの 返信は ありません（連絡板では ありません）。<br>'
  +'生徒の 記録の 中身には、ここからも たどりつけません。</div>'};
+/* ★他人の 門下は、理由を 選ぶまで 中身を 出さない（裁定159）。開くたびに 1行 */
+var MR_REASONS=[['jiko','事故・苦情の 調べ'],['honnin','ご本人からの 求め'],['horei','法令に 基づく 求め'],['sonohoka','その他（短く 書く）']];
+var MR={name:'',kind:'',note:'',open:''};
+var HIRAITA_M=[['事務 田村','9月9日 10:22','斎藤先生の 門下','事故・苦情の 調べ'],['坂本 響（学長）','9月7日 19:40','渡辺先生の 門下','ご本人からの 求め'],
+   ['事務 田村','9月2日 14:05','斎藤先生の 門下','事故・苦情の 調べ']];
+function monkaOpenM(name){if(!MR.kind){toast('理由を 選んでください');return}
+ if(MR.kind==='sonohoka'&&!MR.note.trim()){toast('その他は、短く 書いてください');return}
+ var r=MR_REASONS.filter(function(x){return x[0]===MR.kind})[0][1]+(MR.kind==='sonohoka'?'：'+MR.note.trim().slice(0,100):'');
+ HIRAITA_M.unshift([S.dm.post,'いま',name,r]);MR.open=name;MR.kind='';MR.note='';draw();toast('開きました。開いた 記録に 残りました')}
 SC['門下を開く']=function(name){
+ if(MR.name!==name){MR={name:name,kind:'',note:'',open:''}}
+ if(MR.open!==name)return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px">'+name+'</h2><span class="role">読むだけ</span></div>'
+  +'<div class="warn">開くと <b>開いた 記録</b>に 残ります（誰が・いつ・どの 門下を・理由）。消せません。</div>'
+  +'<div class="sh3">なぜ 開きますか</div><div class="box">'
+  +MR_REASONS.map(function(r){return '<div class="li" onclick="MR.kind=\''+r[0]+'\';draw()"><span>'+r[1]+'</span><s>'+(MR.kind===r[0]?'●':'')+'</s></div>'}).join('')+'</div>'
+  +(MR.kind==='sonohoka'?'<input class="inp" maxlength="100" placeholder="短く（100字まで）" value="'+esc(MR.note)+'" oninput="MR.note=this.value">':'')
+  +'<div class="btn" style="margin-top:12px'+(MR.kind?'':';opacity:.55')+'" onclick="monkaOpenM(\''+esc(name)+'\')">開く</div>'
+  +'<div class="note">理由を 選ばないと 開けません。開くたびに 1行 残ります。<br>記録は <b>運営の 中だけ</b>で 見ます。ご本人から 求められたら、<b>30日以内に</b> お見せします。</div>';
  ['op-m1','op-m2','op-m3'].forEach(function(k,i){
    if(['斎藤先生の 門下','渡辺先生の 門下','高橋先生の 門下'][i]===name)UNREAD[k]=0});
  return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:15.5px">'+name+'</h2><span class="role">読むだけ</span></div>'
- +'<div class="warn">この 門下を 開いたことが、<b>開いた記録</b>に 残りました。<br>先生と 学生からも 見られます。</div>'
+ +'<div class="warn">この 門下を 開いたことが、<b>開いた記録</b>に 残りました（運営の 中だけ）。</div>'
  +'<div class="post"><div class="ph2"><span class="av">斎</span><span class="nm3">斎藤先生</span><span class="dt">9月8日</span></div>'
  +'<div class="bd2">実技試験の 集合は 12時30分、第1ホールです。</div></div>'
  +'<div class="post"><div class="ph2"><span class="av">高</span><span class="nm3">高木 みなみ</span><span class="dt">9月8日</span></div>'
  +'<div class="bd2">並び順は 前回と 同じで よいですか。</div></div>'
- +'<div class="note">書き込み欄が ありません。運営から 書けません。<br>苦情・事故のときに 確かめるための 画面です。<br><b>何を 読んだか</b>は 残しません（開いたことだけ）。</div>'};
+ +'<div class="note">書き込み欄が ありません。運営から 書けません。<br>苦情・事故のときに 確かめるための 画面です。<br><b>何を 読んだか</b>は 残しません（開いたことと 理由だけ）。<br>戻って もう一度 開くと、もう 1行 残ります。</div>'};
 SC['開いた記録']=function(){
  return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2>開いた 記録</h2></div>'
- +'<div class="box">'+[['事務 田村','9月9日 10:22','斎藤先生の 門下'],['坂本 響（owner）','9月7日 19:40','渡辺先生の 門下'],
-   ['事務 田村','9月2日 14:05','斎藤先生の 門下']].map(function(x){
-   return '<div class="li" style="cursor:default"><span>'+x[0]+'<br><span class="usu">'+x[2]+'</span></span><s>'+x[1]+'</s></div>'}).join('')+'</div>'
- +'<div class="note">誰が・いつ・どの門下を 開いたか だけ。中身は 残しません。<br>先生と 学生の 画面からも、同じものが 見られます。</div>'};
+ +'<div class="box">'+HIRAITA_M.map(function(x){
+   return '<div class="li" style="cursor:default"><span>'+x[0]+'<br><span class="usu">'+x[2]+'　／　'+x[3]+'</span></span><s>'+x[1]+'</s></div>'}).join('')+'</div>'
+ +'<div class="note">誰が・いつ・どの門下を・理由 だけ。中身は 残しません。消せません。<br>この 記録は <b>運営の 中だけ</b>で 見ます（先生・学生の 画面には 出しません）。ご本人から 求められたら、<b>30日以内に</b> お見せします。</div>'};
 var ME='斎藤 めぐみ';
 var KASANARI=[
  {k:'場所',d:'9月9日（火）',t:'13:00 〜 14:30',w:'第1教室',key:'1-2',st:'知らせた',res:{},

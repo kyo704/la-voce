@@ -162,7 +162,7 @@ import PortfolioV2 from "@/components/PortfolioV2";
 import Renraku from "@/components/Renraku";
 import TellTeacher from "@/components/TellTeacher";
 import AnnouncementCompose from "@/components/AnnouncementCompose";
-import { shouldLogRead, MONKA_READ_FAILED } from "@/lib/renraku";
+import { shouldLogRead, readErrorLine } from "@/lib/renraku";
 import OpsShell from "@/components/OpsShell";
 import OpsSchedule from "@/components/OpsSchedule";
 import OpsRoster from "@/components/OpsRoster";
@@ -10293,7 +10293,9 @@ export default function VocalTracker({
     });
     if (error) {
       console.error("★門下を 開けませんでした:", error);
-      setMonkaReadError(MONKA_READ_FAILED);
+      // ★★台帳の 字を そのまま 出しません。★頭の 語で 分けます（★仕様シート §1）。
+      //   ★★決めは lib/renraku.js の `readErrorLine` が 1つ 持ちます。
+      setMonkaReadError(readErrorLine(error.message));
       return false;
     }
     setRenrakuMessages(data || []);
