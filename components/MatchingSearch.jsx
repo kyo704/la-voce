@@ -9,6 +9,7 @@ import {
   SECTION_OPEN, SECTION_MINE, SECTION_CUT,
   EMPTY_HEAD, EMPTY_SUB, EMPTY_NOTES,
   GO_NEW, GO_NEW_MINE, GO_APPLIED, CUT_UNDO, CUT_EMPTY, NO_ENROLL, NO_ENROLL_SUB,
+  SCHOOL_HEAD, showSchoolPicker,
   CUT_NOTES, CUT_NOTES_BOLD, NOTES,
   applicationWord, postingLine, portfolioState, SODAN_LINE
 } from "@/lib/matchingSearch";
@@ -47,6 +48,7 @@ function 太く(t, 太たち) {
 // ★★★2026-09-21、★9画面が ひととおり つながりました。
 export default function MatchingSearch({
   postings = [], myPostings = [], cuts = [], portfolio, enrolled = true,
+  schools = [], orgId, onPickSchool,
   onGoPortfolio, onNewPosting, onOpenPosting, onGoApplied, onOpenMine, onUndoCut,
   loadError = ""
 }) {
@@ -85,6 +87,28 @@ export default function MatchingSearch({
             </span>
           </Li>
         </Card>
+      ) : null}
+
+      {/* ★★★学校を 選ぶ（★裁定 その140）。★2校 以上の ときだけ 出します。
+           ★★1校 だけ の 方に、★選ぶ ものが 1つの 札を 見せません（★裁定 その73）。
+           ★★★11校 並んでも 崩れません。★折り返さず、★横に 流します（★Q7）。 */}
+      {showSchoolPicker(schools) ? (
+        <>
+          <H3>{SCHOOL_HEAD}</H3>
+          <div style={{
+            display: "flex", gap: 6, overflowX: "auto", paddingBottom: rem(4),
+            margin: `0 0 ${rem(9)}`, WebkitOverflowScrolling: "touch"
+          }}>
+            {schools.map((x) => (
+              <span key={x.org_id} style={{ flex: "none" }}>
+                <Pill on={x.org_id === orgId}
+                  onClick={onPickSchool ? () => onPickSchool(x.org_id) : undefined}>
+                  {x.name}
+                </Pill>
+              </span>
+            ))}
+          </div>
+        </>
       ) : null}
 
       {/* ★★★学校に 在籍して いない 方には、★できない ことを 先に お伝えします。

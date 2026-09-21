@@ -29,7 +29,7 @@ function 人をさがす(src) {
   return /from\(\s*["'`]profiles["'`]\s*\)|rpc\(\s*["'`]get_org_student_names/.test(src);
 }
 
-function main() {
+async function main() {
   const libRaw = fs.readFileSync(path.join(ROOT, "lib", "matchingSearch.js"), "utf-8");
   const lib = stripComments(libRaw);
   const jsxRaw = readRaw("components", "MatchingSearch.jsx");
@@ -45,8 +45,11 @@ function main() {
   // ★★見本に 無い 字（★こちらで 足した 断り）は 突き合わせません。
   //   ★★`NO_ENROLL` …… ★在籍が 無い ときの 断り（★2026-09-21）。
   //     ★★見本には ありません。★見本は「在籍して いる 方」を 前提に して います。
+  //   ★★`SCHOOL_HEAD` …… ★学校を 選ぶ 題（★裁定 その140・2026-09-21）。
+  //     ★★見本には ありません。★見本は 1校を 前提に して います。
   const 私の字 = (lib.match(/KIND_NOT_YET = Object\.freeze\(\{[\s\S]*?\}\)/) || [""])[0]
-    + (lib.match(/NO_ENROLL[\s\S]*?NO_ENROLL_SUB = tx\("[^"]*"\);/) || [""])[0];
+    + (lib.match(/NO_ENROLL[\s\S]*?NO_ENROLL_SUB = tx\("[^"]*"\);/) || [""])[0]
+    + (lib.match(/SCHOOL_HEAD = tx\("[^"]*"\);/) || [""])[0];
   [...lib.matchAll(/tx\("([^"{]+)"\)/g)].map((m) => m[1])
     .filter((s) => s.length >= 8 && !/\{n\}/.test(s) && 私の字.indexOf(s) < 0)
     .forEach((s) => t(見本素.indexOf(s) >= 0, `★見本に「${s.slice(0, 26)}…」が ある`));
@@ -91,6 +94,32 @@ function main() {
   t(/onNewPosting && enrolled/.test(本体), "★在籍が 無ければ 出す 札を 出さない");
   t((本体.match(/onNewPosting && enrolled/g) || []).length === 2,
     "★0件の ときも、★1件でも ある ときも、★同じ 条件");
+
+  console.log("=== 五の三 ★学校を 選ぶ（★裁定 その140） ===");
+  const m = await import("data:text/javascript;base64,"
+    + Buffer.from(libRaw.replace(/import[^;]*;/, "const tx=(s)=>s;"), "utf-8").toString("base64"));
+  // ★Q1 ── ★1校 だけ なら 出しません。
+  t(m.showSchoolPicker([{ org_id: "a" }]) === false, "★Q1 1校 だけ なら 札を 出さない");
+  t(m.showSchoolPicker([{ org_id: "a" }, { org_id: "b" }]) === true, "★2校 以上なら 出す");
+  t(m.showSchoolPicker([]) === false, "★0校でも 出さない");
+  // ★★覚えて いる 学校を 選び直す こと。
+  const 校 = [{ org_id: "a" }, { org_id: "b" }];
+  t(m.pickSchool(校, "b") === "b", "★覚えた 学校を 選ぶ");
+  t(m.pickSchool(校, "z") === "a", "★覚えた 学校に 在籍して いなければ 1つ目");
+  t(m.pickSchool(校, null) === "a", "★覚えが 無ければ 1つ目");
+  t(m.pickSchool([], "a") === null, "★1校も 無ければ null");
+  // ★★覚えるのは 端末だけ（★台帳に 持たない）。
+  t(/localStorage/.test(本体) || /localStorage/.test(stripComments(readRaw("components", "VocalTracker.jsx"))),
+    "★端末に 覚えて いる");
+  const vt = stripComments(readRaw("components", "VocalTracker.jsx"));
+  t(!/insert[^;]*last_org|update[^;]*last_org/.test(vt), "★台帳に 覚えて いない");
+  // ★★混ぜて いない こと（★1つの 学校ぶん だけ を 引く）。
+  t(/get_postings", \{ p_org_id: orgId \}/.test(vt), "★1つの 学校ぶん だけ 引いて いる");
+  t(!/schools\.map[^;]{0,120}get_postings/.test(vt), "★学校ごとに 引いて 混ぜて いない");
+  // ★★11枚 並んでも 横に 流せる こと（★Q7）。
+  t(/overflowX: "auto"/.test(本体), "★Q7 横に 流せる");
+  t(!/flexWrap: "wrap"/.test(本体.slice(本体.indexOf("showSchoolPicker"),
+    本体.indexOf("showSchoolPicker") + 700)), "★折り返して いない");
 
   console.log("=== 六 ★出さない ものを 出して いない（★§4g・§7） ===");
   ["start_time", "end_time", "venue", "place", "age", "grade", "enrollment_year"]

@@ -119,6 +119,7 @@ import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
 // ★★さがす（マッチング）の 門。★9画面が 揃ったら 消します（★2026-09-21）。
 import { mayUseMatching } from "@/lib/matchingGate";
+import { pickSchool, SCHOOL_KEY } from "@/lib/matchingSearch";
 import MatchingSearch from "@/components/MatchingSearch";
 import PostingForm from "@/components/PostingForm";
 import ApplyForm from "@/components/ApplyForm";
@@ -7662,6 +7663,9 @@ export default function VocalTracker({
   // ★★★さがす（マッチング）の 中身（★2026-09-21）。
   //   ★★表を 直に 引きません。★`get_postings()` などの 関数を 通します（★裁定 その122）。
   //   ★★「読めなかった」と「0件」を 分けて 持ちます。
+  // ★★★選んだ 学校（★裁定 その140）。★端末だけに 覚えます。
+  //   ★★台帳に 持ちません。★「最後に 見た 学校」は 残す 値打ちが ありません。
+  const [matchOrg, setMatchOrg] = useState(null);
   const [matching, setMatching] = useState(null);
   const [matchingError, setMatchingError] = useState("");
   // ★★募集を 出す（★裁定 その94 §4g・その130）。★開いて いる あいだ だけ。
@@ -11441,15 +11445,20 @@ export default function VocalTracker({
   //   ★★2つ 書くと、★片方だけ 直る 日が 来ます。
   const fetchMatching = useCallback(async () => {
     const supabase = createClient();
-    const 在 = await runQueryWithAuthRetry(supabase, () =>
-      supabase.from("enrollments").select("org_id")
-        .eq("student_id", userId).eq("status", "active").limit(1),
-      "さがす（在籍）");
-    const orgId = (在.data && 在.data[0] && 在.data[0].org_id) || null;
-    if (在.error || !orgId) {
-      return { postings: [], mine: [], cuts: [], orgId: null,
-        err: 在.error ? "いま 読めませんでした。" : "" };
+    // ★★★在籍して いる 学校を、★並びを 決めて 引きます（★裁定 その140 FIX_NOW）。
+    //   ★★きょうまで `limit(1)` で、★並びを 決めて いませんでした。
+    //   ★★開く たびに 学校が 変わりえます。★11校の 方では ふつうに 起きます。
+    const 校 = await runQueryWithAuthRetry(supabase, () =>
+      supabase.rpc("get_my_schools"), "さがす（在籍の 学校）");
+    const 学校 = 校.data || [];
+    if (校.error || 学校.length === 0) {
+      return { postings: [], mine: [], cuts: [], orgId: null, schools: [],
+        err: 校.error ? "いま 読めませんでした。" : "" };
     }
+    // ★★覚えて いる 学校が いまも 在籍なら それ、★無ければ 入った 順の 1つ目。
+    const 覚 = (typeof window !== "undefined" && window.localStorage)
+      ? window.localStorage.getItem(SCHOOL_KEY) : null;
+    const orgId = pickSchool(学校, matchOrg || 覚);
     const [出, 自, 切] = await Promise.all([
       runQueryWithAuthRetry(supabase, () =>
         supabase.rpc("get_postings", { p_org_id: orgId }), "さがす（募集）"),
@@ -11462,10 +11471,11 @@ export default function VocalTracker({
       if (r && r.error) console.error(`★さがすの ${名} を 読めませんでした:`, r.error);
     });
     return {
-      postings: 出.data || [], mine: 自.data || [], cuts: 切.data || [], orgId,
+      postings: 出.data || [], mine: 自.data || [], cuts: 切.data || [],
+      orgId, schools: 学校,
       err: 出.error ? "いま 読めませんでした。" : ""
     };
-  }, [userId]);
+  }, [userId, matchOrg]);
 
   /**
    * ★この方に 決めます（★見本 `SC['応募者の詳細']` の 札）。
@@ -11698,6 +11708,21 @@ export default function VocalTracker({
       supabase.rpc("get_my_applications"), "応募した 募集");
     if (r.error) console.error("★応募した 募集を 読めませんでした:", r.error);
     setApplied({ rows: r.data || [], err: r.error ? "いま 読めませんでした。" : "" });
+  }
+
+  /**
+   * ★学校を 選びます（★裁定 その140）。★端末だけに 覚えます。
+   *
+   *   ★★台帳は 何も 知りません。★`get_postings` が 在籍を 見ます。
+   *   ★★画面から 来た `org_id` を、★台帳は 信じません。
+   */
+  function handlePickSchool(orgId) {
+    setMatchOrg(orgId);
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        window.localStorage.setItem(SCHOOL_KEY, orgId);
+      }
+    } catch (e) { /* ★覚えられない ことも あります。★止まりません。 */ }
   }
 
   /**
@@ -27335,6 +27360,9 @@ export default function VocalTracker({
                 {layoutV2 && matchingOn && moreSection === "さがす" && !reportTo && !cutTo && !matchOf && !answerFor && !applicantOf && !chooseFor && !appliedOpen && !applyTo && postingOpen ? (
                   <div data-v2-posting="1">
                     <PostingForm
+                      schoolName={((((matching && matching.schools) || [])
+                        .find((x) => x.org_id === (matching && matching.orgId)) || {}).name) || ""}
+                      manySchools={(((matching && matching.schools) || []).length >= 2)}
                       busy={postingBusy}
                       error={postingError}
                       onSubmit={(row) => { void handleCreatePosting(row); }}
@@ -27346,6 +27374,9 @@ export default function VocalTracker({
                   <div data-v2-matching="1">
                     <MatchingSearch
                       enrolled={!!(matching && matching.orgId)}
+                      schools={(matching && matching.schools) || []}
+                      orgId={(matching && matching.orgId) || null}
+                      onPickSchool={handlePickSchool}
                       onNewPosting={() => { setPostingOpen(true); setPostingError(""); }}
                       onOpenPosting={(p) => { void handleOpenPosting(p); }}
                       onGoApplied={() => { void handleOpenApplied(); }}

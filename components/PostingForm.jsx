@@ -8,7 +8,7 @@ import {
   HEAD, KINDS, FEE_UNITS, HEADS, OPTIONAL,
   ALL_DAYS_LABEL, ALL_DAYS_SUB, ANY_DAY_LABEL, SCHEDULE_NOTE,
   SODAN_LABEL, SODAN_SUB, PIECE_HINT, SUBMIT,
-  NOTES, NOTES_BOLD, NOT_YET, EXPIRE_HEAD, EXPIRES, EXPIRE_NOTE,
+  NOTES, NOTES_BOLD, NOT_YET, EXPIRE_HEAD, EXPIRES, EXPIRE_NOTE, TO_SCHOOL,
   emptyForm, canSubmit, whyNot, toRow
 } from "@/lib/postingForm";
 import { tx } from "@/lib/t";
@@ -40,7 +40,9 @@ function 丸({ on }) {
   );
 }
 
-export default function PostingForm({ onSubmit, onClose, busy, error = "" }) {
+export default function PostingForm({
+  onSubmit, onClose, busy, error = "", schoolName = "", manySchools = false
+}) {
   const [f, setF] = useState(emptyForm());
   const [日, set日] = useState("");
   const 直 = (patch) => setF((x) => ({ ...x, ...patch }));
@@ -53,6 +55,20 @@ export default function PostingForm({ onSubmit, onClose, busy, error = "" }) {
           ...TYPE.mini, minHeight: 44, padding: `0 ${rem(4)}`, fontFamily: FONT_STACK
         }}>{tx("‹ もどる")}</button>
       ) : null} />
+
+      {/* ★★★どこに 出すか（★裁定 その140 POSTING）。
+           ★★2校 以上に 在籍して いる 方には、★必ず 書きます。
+           ★★1つの 募集を、★2校に 同時に 出しません。 */}
+      {manySchools && schoolName ? (
+        <Card>
+          <p style={{ ...TYPE.li, color: C.ink, margin: 0 }}>
+            {TO_SCHOOL.replace("{s}", schoolName)}
+          </p>
+          <p style={{ ...小, margin: `${rem(4)} 0 0` }}>
+            {tx("変えるときは、さがすの 画面で 学校を 選び直してください。")}
+          </p>
+        </Card>
+      ) : null}
 
       {/* ★★日にち。★時間は 入れません（★§4g）。 */}
       <H3>{HEADS.days}</H3>
