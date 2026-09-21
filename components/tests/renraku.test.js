@@ -164,7 +164,28 @@ function eq(a, b, label) {
     t(/auth\.uid\(\) = teacher_id/.test(sel), "★先生も 見られる");
     t(/a\.student_id = auth\.uid\(\)/.test(sel), "★学生も 見られる");
   }
-  t(/shouldLogRead\(/.test(vt), "★呼ぶ側が lib に 尋ねている");
+  // ★★★2026-09-21、★運営が 門下を 開く 道が 変わりました（★裁定159 S3）。
+  //   ★★前 …… 画面が `org_messages` を 引き、★画面が `org_message_reads` に 書く
+  //   ★★いま … 道（`open_monka_thread`）が 先に 書き、★書けたときだけ 中身を 返す
+  //   ★★★`shouldLogRead` と `logRenrakuRead` は **残して あります**。
+  //     ★★`org_message_reads` は 別の 表 で、★同じ 約束に 表が 2つ あります。
+  //     ★★どちらを 正に するかは 決めの こと です（→ ★台帳 08-14）。
+  //     ★★黙って 消させない ため、★在る ことを ここで 見張ります。
+  t(/open_monka_thread/.test(vt), "★開く 道（RPC）を 通って いる");
+  t(/p_reason_kind/.test(vt), "★理由を 渡して いる");
+  // ★★★直に 引く 道は **残ります**。★先生ご本人と 門下の 学生 の 分 です。
+  //   ★★S1 は その 枝を 1つも 触って いません（★裁定159）。
+  //   ★★変わったのは「運営が よその 門下を 開く」ところ だけ です。
+  //   ★★だから「どこにも 直に 引かない」とは 見ません。★運営の 口 を 見ます。
+  {
+    const i = vt.indexOf("onOpenStudio={(tid, kind, note)");
+    t(i > 0, "★運営の 口が 理由を 受け取って いる");
+    const 口 = vt.slice(i, i + 700);
+    t(/openMonkaThread\(/.test(口), "★運営の 口は 道を 通る");
+    t(!/fetchRenraku\(/.test(口), "★運営の 口は 直に 引かない");
+  }
+  t(/shouldLogRead/.test(vt) && /logRenrakuRead/.test(vt),
+    "★古い 道は 残して ある（★決めの ことなので 消さない）");
 
   console.log("\n=== ⑦ 決まりB（★広い画面） ===");
   eq(m.BODY_WIDTH, 640, "★本文 640px");

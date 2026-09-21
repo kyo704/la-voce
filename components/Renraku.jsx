@@ -9,6 +9,9 @@ import {
   // ★★裁定 その87（2026-09-18）。★字も 幅も lib が 持ちます。
   LIST_WIDTH, NO_READ_TRACKING_LINE, MONKA_READ_SELF_LINE, showMonkaReadSelfBanner,
   MONKA_READ_PAUSED_LINE, monkaReadOpen,
+  // ★★なぜ 開くかを たずねる（★裁定159 S3）。★決めは lib が 持ちます。
+  READ_REASONS, READ_REASON_HEAD, READ_REASON_NOTE_HINT, READ_REASON_NOTE_MAX,
+  READ_REASON_OPEN, READ_REASON_CANCEL, READ_REASON_KEPT_LINE, mayOpenWithReason,
   SECTION_ANNOUNCE, SECTION_MONKA,
   SCREEN_HEAD, EMPTY_HEAD, EMPTY_HOW, isEmptyBoard,
   // ★★2026-09-19（★実機の ご報告）── ★一覧に 本文を 出しません。
@@ -98,6 +101,8 @@ function Message({ m, nameOf }) {
 
 export default function Renraku({
   studios, announcements, messages, openStudio, onOpenStudio,
+  // ★★開けなかった ときの 1行（★裁定159 S3）。★渡されなければ 出しません。
+  readError = "",
   role, isTeacherOf, isMemberOf, nameOf, teacherNameOf,
   onPost, reads, posting, onCompose,
   // ★★★未送信へ（★お決め D82・2026-09-19）。★渡されなければ 出しません。
@@ -108,6 +113,12 @@ export default function Renraku({
   //   ★★門下を 1つ 開いて いない ときに 出します。
   //   ★★誰が・いつ・どの 門下 だけ です。★何を 読んだかは 残して いません。
   readsAll = []}) {
+  // ★★★なぜ 開くかを たずねる 箱（★裁定159 S3・2026-09-21）。
+  //   ★★null なら 出しません。★門下の 番号が 入って いれば、その 門下を 開く 手前 です。
+  //   ★★理由が 決まるまで、★中身を 引きません。★台帳の 道も 断ります。
+  const [たずねる, setたずねる] = useState(null);
+  const [わけ, setわけ] = useState(null);
+  const [短文, set短文] = useState("");
   const [draft, setDraft] = useState("");
   // ★★どの お知らせを 開いて いるか（★2026-09-19・実機の ご報告）。
   //   ★★一覧には 名と いつ だけ。★本文は 開いた ときだけ 出ます。
@@ -207,7 +218,14 @@ export default function Renraku({
       {(studios || []).map((s) => {
         const on = openStudio === s.teacherId;
         return (
-          <button key={s.teacherId} type="button" onClick={() => onOpenStudio(s.teacherId)}
+          <button key={s.teacherId} type="button"
+            /* ★★★開く 前に たずねます（★裁定159 S3）。
+                 ★★理由の 無い 閲覧を 作りません。★台帳の 道も 断ります。
+                 ★★閉じる ときは そのまま 通します（null）。 */
+            onClick={() => {
+              if (s.teacherId === null) { onOpenStudio(null); return; }
+              setたずねる(s.teacherId); setわけ(null); set短文("");
+            }}
             className="w-full text-left"
             style={{
               ...card, minHeight: 56, display: "block",
@@ -225,6 +243,68 @@ export default function Renraku({
           </button>
         );
       })}
+      {/* ★★★なぜ 開くかを たずねる 箱（★裁定159 S3・2026-09-21）。
+           ★★4つは 台帳の 縛りと 同じ 鍵 です（`lib/renraku.js`）。
+           ★★「その他」だけ 短文が 要ります。★空では 開けません。
+           ★★★答えは 記録に 残ります。★そのことを 先に お伝えします。 */}
+      {/* ★★★開けなかった ときの 1行。★黙って 何も 起きない、に しません。 */}
+      {readError ? (
+        <div style={{ ...card, borderColor: C.curtain }}>
+          <p style={{ fontSize: "0.8125rem", color: C.ink, margin: 0 }}>{readError}</p>
+        </div>
+      ) : null}
+
+      {たずねる ? (
+        <div style={{ ...card, borderColor: C.curtain, borderWidth: 2 }}>
+          <p style={{ fontSize: "0.90625rem", color: C.ink, margin: "0 0 8px", fontWeight: 600 }}>
+            {READ_REASON_HEAD}
+          </p>
+          {READ_REASONS.map((r) => (
+            <button key={r.key} type="button" onClick={() => setわけ(r.key)}
+              className="w-full text-left"
+              style={{
+                display: "block", width: "100%", minHeight: 44, marginBottom: 6,
+                borderRadius: 10, padding: "0 12px",
+                border: `1px solid ${わけ === r.key ? C.curtain : C.line}`,
+                borderWidth: わけ === r.key ? 2 : 1,
+                background: わけ === r.key ? C.paper : C.card,
+                color: C.ink, fontSize: "0.8125rem"
+              }}>{r.label}</button>
+          ))}
+          {わけ === "sonohoka" ? (
+            <textarea value={短文} onChange={(e) => set短文(e.target.value)}
+              placeholder={READ_REASON_NOTE_HINT} maxLength={READ_REASON_NOTE_MAX}
+              style={{
+                width: "100%", minHeight: 64, borderRadius: 10, padding: 10,
+                border: `1px solid ${C.line}`, background: C.paper, color: C.ink,
+                fontSize: "1rem", lineHeight: 1.8, resize: "vertical", marginTop: 4
+              }} />
+          ) : null}
+          <p style={small}>{READ_REASON_KEPT_LINE}</p>
+          <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+            <button type="button" disabled={!mayOpenWithReason(わけ, 短文)}
+              onClick={() => {
+                const t = たずねる;
+                setたずねる(null);
+                onOpenStudio(t, わけ, 短文.trim() || null);
+              }}
+              style={{
+                flex: 1, minHeight: 44, borderRadius: 10,
+                border: `1px solid ${mayOpenWithReason(わけ, 短文) ? C.curtain : C.line}`,
+                background: mayOpenWithReason(わけ, 短文) ? C.curtain : C.line,
+                color: mayOpenWithReason(わけ, 短文) ? "#FFFDF8" : C.inkSoft,
+                fontSize: "0.90625rem"
+              }}>{READ_REASON_OPEN}</button>
+            <button type="button" onClick={() => setたずねる(null)}
+              style={{
+                minHeight: 44, padding: "0 14px", borderRadius: 10,
+                border: `1px solid ${C.line}`, background: C.card,
+                color: C.inkSoft, fontSize: "0.90625rem"
+              }}>{READ_REASON_CANCEL}</button>
+          </div>
+        </div>
+      ) : null}
+
       <p style={small}>
         {HIDE_LINE}<br />
         書かれたものを、こちらで 読み取って 調べることは しません。

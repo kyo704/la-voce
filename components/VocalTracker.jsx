@@ -10331,6 +10331,17 @@ export default function VocalTracker({
    *     ★先生と 学生は、★自分の 門下です。★残しません。
    *   ★★残せなくても、★画面は 止めません。★読めることが 先です。
    */
+  //
+  //   ★★★2026-09-21、★呼ぶ ところが 無くなりました（★裁定159 S3）。
+  //     ★★運営が 門下を 開く 道は `open_monka_thread` に 移りました。
+  //       ★★あちらは 台帳の 中で 先に 1行 書きます（fail closed）。
+  //     ★★★けれど **消しません**。★`org_message_reads` は 別の 表 です。
+  //       ★★同じ 約束に 表が 2つ ある、という ことです。
+  //       ★★どちらを 正に するかは 決めの こと です（→ ★台帳 08-14）。
+  //       ★★黙って 消すと、★決める ときに 何が あったか 分からなく なります。
+  //   ★★★引き金（この 関数を 呼ぶ ところ）が 戻る 日 ──
+  //     ★★`org_message_reads` を 正と 決めた とき。★その ときは 逆に
+  //       ★`open_monka_thread` の 記録を どうするかを 決めます。
   const logRenrakuRead = useCallback(async (orgId, teacherId, role) => {
     const supabase = createClient();
     const { error } = await supabase.from("org_message_reads")
@@ -17571,16 +17582,22 @@ export default function VocalTracker({
                     void fetchMisou(opsOrgId);
                   }}
                   openStudio={openStudio}
-                  onOpenStudio={(tid) => {
-                    setOpenStudio(tid);
-                    if (!tid) return;
-                    void fetchRenraku(opsOrgId, tid);
-                    void fetchRenrakuReads(tid);
-                    // ★★運営の方が 開いた ときだけ 残します。
-                    if (shouldLogRead({ perms: gate, isTeacher: tid === userId, isMember: false })) {
-                      void logRenrakuRead(opsOrgId, tid, role);
-                    }
+                  /* ★★★門下を 開く（★裁定159 S3・2026-09-21）。
+                       ★★理由を 受け取って、★道（open_monka_thread）を 通ります。
+                       ★★道が 先に 1行 書き、★書けたときだけ 中身を 返します。
+                       ★★★画面から `org_messages` を 直に 引きません。
+                         ★★呼ばなければ 残らない、を 作りません（★裁定159 の 一件）。
+                       ★★開けなければ 開いた ことに しません。★空の 画面に しません。 */
+                  onOpenStudio={(tid, kind, note) => {
+                    if (!tid) { setOpenStudio(null); return; }
+                    void (async () => {
+                      const ok = await openMonkaThread(opsOrgId, tid, kind, note);
+                      if (!ok) return;
+                      setOpenStudio(tid);
+                      void fetchRenrakuReads(tid);
+                    })();
                   }}
+                  readError={monkaReadError}
                   role={role}
                   isTeacherOf={(tid) => tid === userId}
                   isMemberOf={() => false}
