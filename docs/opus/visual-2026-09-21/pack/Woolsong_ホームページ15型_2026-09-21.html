@@ -428,6 +428,46 @@
 .t13 footer{margin-top:50px;font-size:12px;color:#999;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 @media (max-width:760px){.t13 .hero{grid-template-columns:1fr;min-height:0}.t13 .hero .ph{min-height:0;aspect-ratio:3/4}.t13 .hero .txt{padding:24px 20px}.t13 .strip{grid-template-columns:repeat(2,1fr);padding:8px 20px 0}.t13 .page{padding:10px 20px 70px}.t13 .hist,.t13 .press{grid-template-columns:1fr}.t13 .contact{grid-template-columns:1fr}}
 
+
+/* ══ ★器楽・指揮・作曲 ── 裁定その119 追補（2026-09-21）══
+   ★13型は 声楽・声・舞台 向けでした
+   ★器楽に 固有の 欄が ありません：
+     ★楽器 ／ ★使っている 楽器（製作者・年・貸与元）／ ★共演・団体
+   ★弦楽器では、★使っている 楽器が 経歴の 一部です         */
+#gE article{display:none}
+#gE article.on{display:block}
+
+/* t14 器楽 */
+.t14 .head{display:flex;gap:20px;align-items:flex-start;padding:34px 0 22px;
+ border-bottom:1px solid var(--line)}
+.t14 .head h1{margin:0;font-size:34px;font-weight:600;letter-spacing:.03em}
+.t14 .head h1 small{display:block;font-size:14px;font-weight:400;color:var(--ink2);
+ margin-top:6px;letter-spacing:.14em}
+.t14 .inst{margin-left:auto;text-align:right;font-size:13px;line-height:1.9;
+ color:var(--ink2);border-left:1px solid var(--line);padding-left:18px}
+.t14 .inst b{display:block;color:var(--ink);font-size:14px}
+.t14 .cat{font-size:11.5px;letter-spacing:.2em;color:var(--accent);
+ margin:24px 0 10px;font-weight:500}
+.t14 .pf{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);
+ font-size:14px;align-items:baseline}
+.t14 .pf .y{flex:0 0 62px;color:var(--ink2);font-size:12.5px}
+.t14 .pf .w{flex:1;min-width:0}
+.t14 .pf .w b{font-weight:500}
+.t14 .pf .w em{font-style:normal;color:var(--ink2);font-size:13px;display:block;
+ margin-top:2px}
+
+/* t15 指揮・作曲 */
+.t15 .hero{padding:40px 0 26px;border-bottom:2px solid var(--ink)}
+.t15 .hero h1{margin:0;font-size:38px;font-weight:600;line-height:1.15}
+.t15 .hero .role{font-size:13px;letter-spacing:.24em;color:var(--accent);
+ margin-top:10px}
+.t15 .wk{padding:13px 0;border-bottom:1px solid var(--line)}
+.t15 .wk .t{font-size:15px;font-weight:500}
+.t15 .wk .m{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.8}
+.t15 .wk .pr{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:3px;
+ background:var(--accent);color:#fff;margin-right:7px}
+.t15 .two{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:640px){.t15 .two{grid-template-columns:1fr}}
 </style>
 </head>
 <body data-font="mincho" data-photo="round" data-density="normal">
@@ -446,6 +486,9 @@
   <button data-t="gD:t11">11 ボイス</button>
   <button data-t="gD:t12">12 収録</button>
   <button data-t="gD:t13">13 宣材</button>
+  <span style="align-self:center;color:var(--ink2);font-size:12px;padding:0 6px">｜器楽・指揮</span>
+  <button data-t="gE:t14">14 器楽</button>
+  <button data-t="gE:t15">15 指揮・作曲</button>
   <button class="toggle" onclick="document.getElementById('panel').classList.toggle('open')">カスタマイズ</button>
 </div>
 <div class="spacer"></div>
@@ -965,6 +1008,117 @@
 </article>
 
 </div>
+<!-- ══ ★器楽・指揮・作曲（裁定その119 追補）══ -->
+<div id="gE">
+
+<article id="t14" class="t14"><div class="page">
+ <div class="head">
+  <h1>三浦 奏<small>ヴァイオリン</small></h1>
+  <div class="inst">
+   <b>1750年 グァダニーニ</b>
+   ○○財団より 貸与<br>弓：F. トゥルテ
+  </div>
+ </div>
+
+ <section data-sec="events">
+  <div class="cat">協奏曲</div>
+  <div class="pf"><span class="y">2026.11</span><span class="w">
+   <b>Brahms　ヴァイオリン協奏曲 ニ長調</b>
+   <em>○○交響楽団　指揮：△△　サントリーホール</em></span></div>
+  <div class="pf"><span class="y">2026.05</span><span class="w">
+   <b>Sibelius　ヴァイオリン協奏曲</b>
+   <em>□□フィルハーモニー　指揮：◇◇</em></span></div>
+ </section>
+
+ <section data-sec="rep">
+  <div class="cat">室内楽</div>
+  <div class="pf"><span class="y">2026.09</span><span class="w">
+   <b>Schubert　弦楽五重奏曲 ハ長調</b>
+   <em>○○クァルテット　紀尾井ホール</em></span></div>
+  <div class="pf"><span class="y">2026.03</span><span class="w">
+   <b>Brahms　ピアノ三重奏曲 第1番</b>
+   <em>共演：△△（pf）・□□（vc）</em></span></div>
+ </section>
+
+ <section data-sec="press">
+  <div class="cat">リサイタル</div>
+  <div class="pf"><span class="y">2025.12</span><span class="w">
+   <b>無伴奏の夕べ</b>
+   <em>Bach　無伴奏ソナタ第1番 ／ Ysaÿe　第3番　○○ホール</em></span></div>
+ </section>
+
+ <section data-sec="profile">
+  <div class="cat">経　歴</div>
+  <div class="pf"><span class="y">2024–</span><span class="w">
+   <b>○○音楽院（ドイツ）</b><em>△△ 氏に師事</em></span></div>
+  <div class="pf"><span class="y">2020–24</span><span class="w">
+   <b>○○音楽大学 器楽科 卒業</b><em>□□ 氏に師事</em></span></div>
+  <div class="pf"><span class="y">2025</span><span class="w">
+   <b>○○国際コンクール 第3位</b></span></div>
+ </section>
+
+ <section data-sec="contact">
+  <div class="cat">お問い合わせ</div>
+  <div style="font-size:14px;line-height:2">
+   ○○マネジメント<br>
+   <span style="color:var(--ink2)">contact@example.com</span></div>
+ </section>
+</div></article>
+
+<article id="t15" class="t15"><div class="page">
+ <div class="hero">
+  <h1>橋本 詩織</h1>
+  <div class="role">作曲　／　指揮</div>
+ </div>
+
+ <div class="two" style="margin-top:24px">
+  <section data-sec="rep">
+   <div style="font-size:11.5px;letter-spacing:.2em;color:var(--ink2);
+    margin-bottom:12px">作　品</div>
+   <div class="wk"><div class="t">『白い 波』　管弦楽のための</div>
+    <div class="m"><span class="pr">初演</span>2026　○○交響楽団</div></div>
+   <div class="wk"><div class="t">弦楽四重奏曲 第2番</div>
+    <div class="m"><span class="pr">初演</span>2025　△△クァルテット<br>
+     ○○出版より 刊行</div></div>
+   <div class="wk"><div class="t">『三つの 歌』　ソプラノと ピアノ</div>
+    <div class="m">2024　委嘱：□□音楽祭</div></div>
+   <div class="wk"><div class="t">ピアノのための 小品集</div>
+    <div class="m">2023　○○出版</div></div>
+  </section>
+
+  <section data-sec="events">
+   <div style="font-size:11.5px;letter-spacing:.2em;color:var(--ink2);
+    margin-bottom:12px">指　揮</div>
+   <div class="wk"><div class="t">○○交響楽団</div>
+    <div class="m">2026.10　定期演奏会<br>
+     Mahler　交響曲 第4番</div></div>
+   <div class="wk"><div class="t">△△室内管弦楽団</div>
+    <div class="m">2026.06　Mozart 交響曲 第40番 ほか</div></div>
+   <div class="wk"><div class="t">□□ユースオーケストラ</div>
+    <div class="m">2025–　音楽監督</div></div>
+  </section>
+ </div>
+
+ <section data-sec="profile" style="margin-top:26px;padding-top:22px;
+  border-top:1px solid var(--line)">
+  <div style="font-size:11.5px;letter-spacing:.2em;color:var(--ink2);
+   margin-bottom:12px">経　歴</div>
+  <div style="font-size:14px;line-height:2.1">
+   ○○音楽大学 作曲科 卒業。同大学院 修了。<br>
+   △△ 氏、□□ 氏に師事。指揮を ◇◇ 氏に師事。<br>
+   2024年 ○○作曲賞 受賞。
+  </div>
+ </section>
+
+ <section data-sec="contact" style="margin-top:22px">
+  <div style="font-size:14px;line-height:2;color:var(--ink2)">
+   楽譜の お求め・委嘱の ご相談は<br>
+   <span style="color:var(--ink)">shiori@example.com</span></div>
+ </section>
+</div></article>
+
+</div>
+
 
 
 <script>

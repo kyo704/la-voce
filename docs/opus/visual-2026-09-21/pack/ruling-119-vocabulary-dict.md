@@ -119,7 +119,36 @@ VOCAB:
     voice: 音域
     stage: 音域
 
-★置き換えが要るのは 9語
+  # ── ★器楽・指揮・作曲に固有（2026-09-21 追補）──
+  instrument:                 # ★楽器
+    music: 楽器
+    voice: null
+    stage: null
+  my_instrument:              # ★使っている楽器
+    music: 使っている 楽器
+    voice: null
+    stage: null
+    note: |
+      弦楽器では経歴の一部（「1750年 グァダニーニ」）
+      ★貸与元も書く（「○○財団より貸与」）
+  ensemble:                   # ★共演・団体
+    music: 共演・団体
+    voice: null
+    stage: 共演
+  conducted:                  # ★指揮した団体
+    music: 指揮した 団体
+    voice: null
+    stage: null
+  works:                      # ★作品（作曲）
+    music: 作品
+    voice: null
+    stage: null
+  premiere:                   # ★初演
+    music: 初演
+    voice: null
+    stage: null
+
+★置き換えが要るのは 9語 ＋ ★器楽の 6語
   piece / repertoire / maker / score / concert /
   monka / accompanist / singer / contest
 
