@@ -141,11 +141,15 @@ grant select on table public.evaluation_scores  to authenticated;
 grant select on table public.evaluation_reviews to authenticated;
 
 -- ★`confirmed_at` を 抜いた 列 だけ 渡します。
-grant insert (id, org_id, event_id, student_id, item_id, judge_id, points, entered_at, updated_at),
-      update (points, entered_at, updated_at)
+-- ★`judge_name_at` …… ★そのときの 審査員の 名前（★束0・裁定168 ★2）。
+--   ★入れる のは 審査員 ご自身 です。★あとから 書き換えられます（★名前を 直す ため）。
+grant insert (id, org_id, event_id, student_id, item_id, judge_id, points,
+              judge_name_at, entered_at, updated_at),
+      update (points, judge_name_at, entered_at, updated_at)
   on table public.evaluation_scores to authenticated;
-grant insert (id, org_id, event_id, student_id, judge_id, body, created_at, updated_at),
-      update (body, updated_at)
+grant insert (id, org_id, event_id, student_id, judge_id, body,
+              judge_name_at, created_at, updated_at),
+      update (body, judge_name_at, updated_at)
   on table public.evaluation_reviews to authenticated;
 
 commit;

@@ -10320,7 +10320,8 @@ export default function VocalTracker({
       teacherId
         ? (() => {
           let query = supabase.from("org_messages")
-            .select("id, org_id, teacher_id, author_id, body, title, created_at, withdrawn_at")
+            .select("id, org_id, teacher_id, author_id, body, title, created_at, withdrawn_at, "
+              + "author_name_at, teacher_name_at")
             .eq("teacher_id", teacherId);
           if (orgId) query = query.eq("org_id", orgId);
           return query.order("created_at", { ascending: true });
@@ -10328,7 +10329,8 @@ export default function VocalTracker({
         : Promise.resolve({ data: [] }),
       (() => {
         let query = supabase.from("org_messages")
-          .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at")
+          .select("id, org_id, teacher_id, author_id, body, created_at, withdrawn_at, "
+            + "author_name_at, teacher_name_at")
           .is("teacher_id", null);
         if (orgId) query = query.eq("org_id", orgId);
         return query.order("created_at", { ascending: false }).limit(5);
@@ -10404,7 +10406,7 @@ export default function VocalTracker({
    *     ★画面でも 出しませんが、★門が 本体です。
    *   ★送れたかを 返します。★呼ぶ側が、★欄を 空にするかを 決めます。
    */
-  async function handlePostRenraku(orgId, teacherId, body, aim) {
+  async function handlePostRenraku(orgId, teacherId, body, aim, 名前) {
     if (!String(body || "").trim()) return false;
     setRenrakuPosting(true);
     try {
@@ -10416,6 +10418,14 @@ export default function VocalTracker({
       const { data, error } = await supabase.from("org_messages")
         .insert({
           org_id: orgId, teacher_id: teacherId, author_id: userId,
+          // ★★★そのときの 名前を 写します（★裁定168 ★3・2026-09-22）。
+          //   ★★先生が 退会すると `author_id` も `teacher_id` も null に なります。
+          //   ★★写さないと、★連絡は 残っても「誰が・どの 門下で」が 消えます。
+          //   ★★★名前は **呼ぶ 側から 受け取ります**。★ここで 引きません。
+          //     ★★`orgProfileNames` は この 行より **下** で 作られて います。
+          //     ★★動きはしますが、★`no-tdz` の 見張りが 止めます。★正しい 止め方 です。
+          author_name_at: (名前 && 名前.author) || null,
+          teacher_name_at: (名前 && 名前.teacher) || null,
           body: body.trim(),
           title: 宛.title || null,
           target_division_ids: 宛.divisionIds || [],
@@ -14546,9 +14556,16 @@ export default function VocalTracker({
     setEvalBusy(true);
     try {
       const supabase = createClient();
+      // ★★★そのときの 名前を 写します（★裁定168 ★2・2026-09-22）。
+      //   ★★審査員が 退会すると `judge_id` は null に なります（SET NULL）。
+      //   ★★写して おかないと、★点は 残っても 誰の 点かが 分からなく なります。
+      //   ★★名前が 取れない ときは 入れません（★`null` の まま）。
+      //     ★「分からない」と 書くのは 画面の 仕事 です。★台帳に 字を 作りません。
+      const 私の名 = (orgProfileNames[userId] && orgProfileNames[userId].displayName) || null;
       const 行 = Object.keys(points).map((itemId) => ({
         org_id: orgId, event_id: eventId, student_id: studentId,
         item_id: itemId, judge_id: userId, points: points[itemId],
+        judge_name_at: 私の名,
         updated_at: new Date().toISOString()
       }));
       if (行.length > 0) {
@@ -14561,6 +14578,7 @@ export default function VocalTracker({
         .upsert({
           org_id: orgId, event_id: eventId, student_id: studentId,
           judge_id: userId, body: review || "",
+          judge_name_at: 私の名,
           updated_at: new Date().toISOString()
         }, { onConflict: "event_id,student_id,judge_id" })
         .select("id");
@@ -17627,7 +17645,11 @@ export default function VocalTracker({
                   nameOf={(id) => orgDisplayName(id) || ""}
                   teacherNameOf={(id) => orgDisplayName(id) || ""}
                   posting={renrakuPosting}
-                  onPost={(body) => handlePostRenraku(opsOrgId, openStudio, body)}
+                  onPost={(body) => handlePostRenraku(opsOrgId, openStudio, body, null, {
+                    author: (orgProfileNames[userId] && orgProfileNames[userId].displayName) || null,
+                    teacher: (openStudio && orgProfileNames[openStudio]
+                      && orgProfileNames[openStudio].displayName) || null
+                  })}
                   // ★★★できこと を 渡します（★2026-09-18・裁定 その87 Q2）。
                   //   ★★門下を 読める 役職の 方 ご本人に、★いちばん 上で 断ります。
                   //   ★★`gate` は 帯の 門と 同じ もの です。★2度 数えません。
@@ -22953,7 +22975,11 @@ export default function VocalTracker({
                         // ★★その門下の 教室に 書きます（★2026-09-10・直し）。
                         //   ★myOrgs[0] では、★教室を 2つ 持つ方で ずれます。
                         const st = renrakuStudios.find((x) => x.teacherId === openStudio);
-                        return handlePostRenraku(st && st.orgId, openStudio, body);
+                        return handlePostRenraku(st && st.orgId, openStudio, body, null, {
+                          author: (orgProfileNames[userId] && orgProfileNames[userId].displayName) || null,
+                          teacher: (openStudio && orgProfileNames[openStudio]
+                            && orgProfileNames[openStudio].displayName) || null
+                        });
                       }}
                       /* ★★★開いた 記録は、★先生・学生の 画面に 出しません
                            （★台帳 08-14・2026-09-22）。★`reads` を 渡しません。
