@@ -121,6 +121,7 @@ import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu
 import { mayUseMatching } from "@/lib/matchingGate";
 import MatchingSearch from "@/components/MatchingSearch";
 import PostingForm from "@/components/PostingForm";
+import ApplyForm from "@/components/ApplyForm";
 import DailyAskPicker from "@/components/DailyAskPicker";
 import RangeCalendar from "@/components/RangeCalendar";
 import WheelPicker from "@/components/WheelPicker";
@@ -7660,6 +7661,10 @@ export default function VocalTracker({
   const [postingOpen, setPostingOpen] = useState(false);
   const [postingBusy, setPostingBusy] = useState(false);
   const [postingError, setPostingError] = useState("");
+  // ★★応募する（★裁定 その94 §4）。★開いて いる 募集 1件 だけ。
+  const [applyTo, setApplyTo] = useState(null);
+  const [applyBusy, setApplyBusy] = useState(false);
+  const [applyError, setApplyError] = useState("");
   // ★★★さがす（マッチング）の 門（★2026-09-21）。★既定は 閉 です。
   //   ★★9画面が 揃うまで、★名簿に 並べた 方 だけに 出します。
   const matchingOn = mayUseMatching(userId, {
@@ -11429,6 +11434,56 @@ export default function VocalTracker({
       err: 出.error ? "いま 読めませんでした。" : ""
     };
   }, [userId]);
+
+  /**
+   * ★募集を 1件 開きます（★応募する ため）。
+   *
+   *   ★★一覧の 行を そのまま 使いません。★一覧は 少ない 列 しか 持ちません。
+   *   ★★`get_posting_detail()` を 通します。★条件は 一覧と 同じ です。
+   */
+  async function handleOpenPosting(p) {
+    setApplyError("");
+    const supabase = createClient();
+    const r = await runQueryWithAuthRetry(supabase, () =>
+      supabase.rpc("get_posting_detail", { p_posting_id: p.id }), "応募する（募集の 中身）");
+    const 中 = (r.data && r.data[0]) || null;
+    if (r.error || !中) {
+      console.error("★募集を 開けませんでした:", r.error);
+      setMatchingError("いま 開けませんでした。");
+      return;
+    }
+    setApplyTo(中);
+  }
+
+  /**
+   * ★応募します（★裁定 その94 §4「定型文 のみ」）。
+   *
+   *   ★★自由文を 送りません。★送るのは `template_key` だけ です。
+   *   ★★`org_id` は ここで 入れます。★台帳の 門が、★募集の 学校かを 見ます。
+   */
+  async function handleApply(row) {
+    const orgId = matching && matching.orgId;
+    if (!applyTo || !orgId) { setApplyError("いま 出せませんでした。"); return; }
+    setApplyBusy(true);
+    setApplyError("");
+    const supabase = createClient();
+    const { error } = await supabase.from("applications").insert({
+      ...row, posting_id: applyTo.id, org_id: orgId, applicant_user_id: userId
+    });
+    setApplyBusy(false);
+    if (error) {
+      console.error("★応募できませんでした:", error);
+      // ★★同じ 募集に 2度は 出せません（★台帳の `applications_unique`）。
+      setApplyError(error.code === "23505"
+        ? "この 募集には、もう 応募して います。"
+        : "いま 出せませんでした。");
+      return;
+    }
+    setApplyTo(null);
+    const r = await fetchMatching();
+    setMatching(r);
+    setMatchingError(r.err);
+  }
 
   /**
    * ★募集を 出します（★裁定 その94 §4g・その130）。
@@ -26902,7 +26957,28 @@ export default function VocalTracker({
                     ★★字も 決めも lib/matchingSearch.js が 持ちます。
                     ★★★押した 先の 8画面は、★まだ ありません。
                       ★★渡さない ことで 出しません（★押せない 札を 置きません）。 */}
-                {layoutV2 && matchingOn && moreSection === "さがす" && postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && applyTo ? (
+                  <div data-v2-apply="1">
+                    <ApplyForm
+                      posting={applyTo}
+                      portfolio={portfolioOk ? {
+                        ...portfolio,
+                        entries: portfolioEntries,
+                        recordings: portfolioRecordings,
+                        // ★★★レパートリーの 名は `repertoire_tessitura` の 鍵 です。
+                        //   ★★はじめ `repertoireItems` と 書き、★`no-undef` が 止めました。
+                        //   ★★その 名の 値は この 画面に ありません。
+                        repertoire: Object.keys(repertoireTessituraMap || {})
+                      } : null}
+                      busy={applyBusy}
+                      error={applyError}
+                      onGoPortfolio={() => { setApplyTo(null); setMoreSection("経歴"); }}
+                      onSubmit={(row) => { void handleApply(row); }}
+                      onClose={() => { setApplyTo(null); setApplyError(""); }} />
+                  </div>
+                ) : null}
+
+                {layoutV2 && matchingOn && moreSection === "さがす" && !applyTo && postingOpen ? (
                   <div data-v2-posting="1">
                     <PostingForm
                       busy={postingBusy}
@@ -26912,10 +26988,11 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
-                {layoutV2 && matchingOn && moreSection === "さがす" && !postingOpen ? (
+                {layoutV2 && matchingOn && moreSection === "さがす" && !applyTo && !postingOpen ? (
                   <div data-v2-matching="1">
                     <MatchingSearch
                       onNewPosting={() => { setPostingOpen(true); setPostingError(""); }}
+                      onOpenPosting={(p) => { void handleOpenPosting(p); }}
                       postings={(matching && matching.postings) || []}
                       myPostings={(matching && matching.mine) || []}
                       cuts={(matching && matching.cuts) || []}

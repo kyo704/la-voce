@@ -24,7 +24,10 @@ function 自由文の列(表) {
 /** ★画面や lib が、★応募の 表を 直に 引いて いないか。 */
 function 直に引く(src) {
   const code = stripComments(src);
-  return /from\(\s*["'`]applications["'`]\s*\)/.test(code);
+  // ★★★裁定 その122 が 言うのは「**引かない**」です（2026-09-21 に 直しました）。
+  //   ★★出す（insert）のは 別 です。★門（RLS）が 在籍と 募集の 学校を 見ます。
+  //   ★★`postings` の 見張りでも 同じ 直しを しました。
+  return /from\(\s*["'`]applications["'`]\s*\)\s*\n?\s*\.select\(/.test(code);
 }
 
 function main() {
@@ -108,6 +111,8 @@ function main() {
   t(!自由文の列("  template_key text not null,\n"), "★template_key では 当たらない");
   t(!自由文の列("  status text not null default 'sent',\n"), "★status では 当たらない");
   t(直に引く('await sb.from("applications").select("id")'), "★直に 引く 書き方を 見つける");
+  t(!直に引く('await sb.from("applications").insert({ posting_id: id })'),
+    "★出す 書き方では 当たらない（★門が 見ます）");
   t(!直に引く('await sb.rpc("get_applications", { p_posting_id: id })'), "★関数を 呼ぶ 形は 当たらない");
 
   console.log(`\n${pass} 通り ／ ${fail} 落ち`);

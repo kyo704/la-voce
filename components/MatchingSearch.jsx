@@ -45,8 +45,8 @@ function 太く(t, 太たち) {
 }
 
 // ★★★NOT_YET ── ★ここから 行く 先が、★まだ ありません（★2026-09-21）。
-//   ★★`応募する` ／ `応募を 選ぶ` ／ `応募した 募集` ／ `もどす`
-//   ★★（`募集を 出す` は 2026-09-21 に できました）
+//   ★★`応募を 選ぶ` ／ `応募した 募集` ／ `もどす`
+//   ★★（`募集を 出す` と `応募する` は 2026-09-21 に できました）
 //   ★★★札を 置いて、★押しても 何も 起きない 形に しません（★§8⑤）。
 //     ★★だから 受け取る 口（prop）も 作りません。
 //     ★★口だけ 作ると、★見張り（no-dead-props）が 毎回 5件 数えます。
@@ -54,7 +54,7 @@ function 太く(t, 太たち) {
 //   ★★★when（外す 条件）── ★その 画面が できた 日。★1つずつ 戻します。
 export default function MatchingSearch({
   postings = [], myPostings = [], cuts = [], portfolio,
-  onGoPortfolio, onNewPosting, loadError = ""
+  onGoPortfolio, onNewPosting, onOpenPosting, loadError = ""
 }) {
   const pf = portfolioState(portfolio);
 
@@ -117,9 +117,11 @@ export default function MatchingSearch({
         <Card>
           {postings.map((p, i) => {
             const 行 = postingLine(p);
-            // ★★押しても 開く 先が まだ ありません。★押せる 形に しません。
+            // ★★2026-09-21、★応募する 画面が できたので 押せる ように しました。
             return (
-              <Li key={p.id} last={i === postings.length - 1}>
+              <Li key={p.id} last={i === postings.length - 1}
+                onClick={onOpenPosting ? () => onOpenPosting(p) : undefined}
+                right={onOpenPosting ? <span style={小}>›</span> : null}>
                 <span>
                   {行.head}
                   {行.when ? <span style={{ display: "block", ...TYPE.mini, color: C.inkSoft }}>{行.when}</span> : null}
