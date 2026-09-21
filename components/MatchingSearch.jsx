@@ -8,7 +8,7 @@ import {
   PF_HEAD, PF_DONE, PF_EMPTY, PF_GO_DONE, PF_GO_EMPTY,
   SECTION_OPEN, SECTION_MINE, SECTION_CUT,
   EMPTY_HEAD, EMPTY_SUB, EMPTY_NOTES,
-  GO_NEW, GO_NEW_MINE, CUT_EMPTY,
+  GO_NEW, GO_NEW_MINE, GO_APPLIED, CUT_EMPTY,
   CUT_NOTES, CUT_NOTES_BOLD, NOTES,
   applicationWord, postingLine, portfolioState, SODAN_LINE
 } from "@/lib/matchingSearch";
@@ -45,8 +45,8 @@ function 太く(t, 太たち) {
 }
 
 // ★★★NOT_YET ── ★ここから 行く 先が、★まだ ありません（★2026-09-21）。
-//   ★★`応募を 選ぶ` ／ `応募した 募集` ／ `もどす`
-//   ★★（`募集を 出す` と `応募する` は 2026-09-21 に できました）
+//   ★★`応募を 選ぶ` ／ `もどす`
+//   ★★（`募集を 出す`・`応募する`・`応募した 募集` は 2026-09-21 に できました）
 //   ★★★札を 置いて、★押しても 何も 起きない 形に しません（★§8⑤）。
 //     ★★だから 受け取る 口（prop）も 作りません。
 //     ★★口だけ 作ると、★見張り（no-dead-props）が 毎回 5件 数えます。
@@ -54,7 +54,7 @@ function 太く(t, 太たち) {
 //   ★★★when（外す 条件）── ★その 画面が できた 日。★1つずつ 戻します。
 export default function MatchingSearch({
   postings = [], myPostings = [], cuts = [], portfolio,
-  onGoPortfolio, onNewPosting, onOpenPosting, loadError = ""
+  onGoPortfolio, onNewPosting, onOpenPosting, onGoApplied, loadError = ""
 }) {
   const pf = portfolioState(portfolio);
 
@@ -190,6 +190,11 @@ export default function MatchingSearch({
         ))}
       </Note>
 
+
+      {/* ★★2026-09-21、★応募した 募集の 画面が できたので 札に 戻しました。 */}
+      {onGoApplied ? (
+        <Btn ghost onClick={onGoApplied} style={{ marginTop: rem(9) }}>{GO_APPLIED}</Btn>
+      ) : null}
 
       <Note>
         {NOTES.map((t) => (
