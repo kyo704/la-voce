@@ -2090,24 +2090,11 @@ function stPeople(){
  +'<div class="note">大きい学校では、全員を 出しても 探せません。学部・学科・分野・役職で 絞れます。<br>'
  +'<b>未確認</b>＝ご本人が 自分で 選んだままの方です。確かめると 消えます。<br>'
  +'ご本人が 選ぶ → 学校が 確かめる、の 2段にしています（2,570人を 学校が 全員 入力するのは できません）。</div>'}
-/* ★裁定160：役職の「できること」を変えた記録（引き金が台帳に残す）。見本は3件の作りもの */
-var PERMLOG=[['坂本 響（学長）','9月20日 11:05','事務長','＋ 名簿'],
- ['坂本 響（学長）','9月14日 16:40','課長','− お金'],
- ['田村 まこと（事務長）','9月2日 09:12','先生','＋ 門下に 書く']];
-function P_permLog(){return bk('ひとと 役職')+'<h2>役職を 変えた 記録</h2>'
- +'<div class="sub">できること を 足した・切った 記録　／　'+S.post+'</div>'
- +'<div style="max-width:760px"><table class="tb"><tr><th class="stick">変えた人</th><th>いつ</th><th>どの 役職</th><th>何を</th></tr>'
- +PERMLOG.map(function(x){return '<tr><td class="stick">'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td><td>'+x[3]+'</td></tr>'}).join('')
- +'</table>'
- +'<div class="note">役職の <b>できること</b>を 足した・切った ときに、台帳が 自動で 残します。<b>消せません</b>。<br>'
- +'見られるのは、役職を 変えられる方（post）と 学校の 形を 直せる方（master）です。<br>'
- +'人に 役職を 渡した 記録は べつに 残ります（「ひとと 役職」の 各人）。</div></div>'}
 function P_setPost(i){var p=PEOPLE[i];
  return bk('ひとと 役職')+'<h2>'+p[0]+'</h2><div class="sub">'+p[5]+'　／　'+[p[2],p[3],p[4]].filter(function(x){return x&&x!=='—'}).join('　')+'</div>'
  +'<div style="max-width:700px">'
  +(p[6]?'':'<div class="warn">この方は <b>ご自分で 選んだまま</b>です。合っていれば「確かめる」を 押してください。'
    +'<div style="margin-top:8px"><span class="btn g sm" onclick="PEOPLE['+i+'][6]=1;draw();toast(\'確かめました\')">確かめる</span></div></div>')
- +(can('post')||can('master')?'<div style="margin:2px 0 10px"><span class="btn g sm" onclick="push(\'役職を変えた記録\')">役職を 変えた 記録　'+PERMLOG.length+'件</span></div>':'')
  +'<div class="fl">役職</div><div class="card p0">'
  +POSTS.map(function(x){var ok=canChange(p[5])&&canBecome(x.n);
    return '<div class="li" style="'+(ok?'':'color:var(--ink4)')+'" onclick="'+(ok?'setPost('+i+',\''+esc(x.n)+'\')':'toast(\'あなたが 持っていない できることは 渡せません\')')+'">'
@@ -3477,8 +3464,7 @@ function P_saiten(a){
  +'<div style="flex:1;min-width:230px">'
  +'<div class="card"><div class="h3" style="margin-top:0">審査員</div>'
  +(g.ju||[]).map(function(x){return '<div class="li"><span>'+x+'</span><s>'+nin+'人 ›</s></div>'}).join('')
- +'<div style="margin-top:9px"><span class="btn g sm" onclick="push(\'審査員を足す\','+k+')">＋ 審査員を 足す</span></div>'
- +'<div class="usu" style="margin-top:7px">点を 入れられるのは、ここに 組まれた 方だけです。</div></div>'
+ +'<div style="margin-top:9px"><span class="btn g sm">＋ 審査員を 足す</span></div></div>'
  +'<div class="card"><div class="h3" style="margin-top:0">集計</div>'
  +'<div class="usu" style="margin-bottom:9px">まとめ方：合計（貴学の お決め）</div>'
  +[[g.gr[0]+' 山田','27 / 35'],[g.gr[0]+' 佐藤','30 / 35'],
@@ -4440,25 +4426,6 @@ function planAsk(next,n){var t=planAskText(next,n);
  setTimeout(function(){var no=document.querySelector('[onclick^="askNo"]');if(no&&PLAN_DONE)no.setAttribute('onclick','askNo();planNo()')},0)}
 function P_orgPlan(){return bk('設定')+'<h2>プラン</h2><div class="sub">教室・学校の プラン　／　'+S.post+'</div>'
  +'<div style="max-width:720px">'+planBody()+'</div>'}
-/* ★裁定165：審査員として「組む」。組まれた人だけが 点を 入れられる（台帳でも 同じ） */
-function P_addJudge(k){var g=GYOJI[k]||GYOJI[0];var ju=g.ju||[];
- var cand=PEOPLE.filter(function(p){return p[1]==='先生'||p[5]==='学部長'||p[5]==='教授'});
- return bk('採点')+'<h2>審査員を 足す</h2><div class="sub">'+g.t+'　／　'+S.post+'</div>'
- +'<div style="max-width:720px">'
- +'<div class="h3" style="margin-top:0">いま 組まれている方</div><div class="card p0">'
- +(ju.length?ju.map(function(x){return '<div class="li"><span>'+x+'</span><s><span class="btn g sm" onclick="gyojiJudge('+k+',\''+esc(x)+'\',0)">外す</span></s></div>'}).join('')
-   :'<div class="li plain"><span class="usu">まだ ひとりも 組まれていません</span></div>')+'</div>'
- +'<div class="h3">足せる方（この学校の 先生）</div><div class="card p0">'
- +cand.map(function(p){var on=ju.indexOf(p[0])>=0;
-   return '<div class="li'+(on?' plain':'')+'"'+(on?'':' onclick="gyojiJudge('+k+',\''+esc(p[0])+'\',1)"')+'><span>'+p[0]+'<div class="usu">'+p[5]+'</div></span><s>'+(on?'組まれています':'足す')+'</s></div>'}).join('')+'</div>'
- +'<div class="note">組めるのは <b>採点の 札（saiten）</b>を お持ちの方だけです。<br>'
- +'組んだ方だけが、その回の 点と 講評を 入れられます。組まれていない 先生は、点も 講評も 入れられません（台帳で 止めます）。<br>'
- +'外しても、その方が すでに 入れた 点は 消えません。</div></div>'}
-function gyojiJudge(k,name,on){var g=GYOJI[k]||GYOJI[0];g.ju=g.ju||[];
- if(on){if(g.ju.indexOf(name)<0)g.ju.push(name)}else{g.ju=g.ju.filter(function(x){return x!==name})}
- draw();toast(on?name+'を 組みました':name+'を 外しました')}
-SC['審査員を足す']=P_addJudge;
-SC['役職を変えた記録']=P_permLog;
 SC['プランを選ぶ']=P_orgPlan;
 var TAB={'ホーム':P_home,'日程':P_nittei,'名簿':P_meibo,'門下':P_monka,'行事':P_gyoji,
  '連絡':P_renraku,'設定':P_settei};

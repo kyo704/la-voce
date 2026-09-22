@@ -53,14 +53,13 @@ begin
   end loop;
 end $$;
 
--- 保存の期間: ★90日（坂本さんの決定・2026-09-23）。古い行は毎日、運営が消す（サーバの仕事）
--- ★消す処理は「90日より古い行だけ」。それ以外は消さない
--- ※門下を開いた記録（monka_read_log）・役職の変更（org_post_perm_log）など「消せない」記録は、この対象外（消さない）
+-- 保存の期間（大学の確認票に答えるため）: 2年。古い行は毎月、運営が消す（サーバの仕事）
+-- ★消す処理は「2年より古い行だけ」。それ以外は消さない
 create or replace function public.purge_ops_audit_log()
 returns integer language plpgsql security definer set search_path to 'public' as $$
 declare n integer;
 begin
-  delete from public.ops_audit_log where created_at < now() - interval '90 days';
+  delete from public.ops_audit_log where created_at < now() - interval '2 years';
   get diagnostics n = row_count; return n;
 end $$;
 revoke all on function public.purge_ops_audit_log() from public, anon, authenticated;
@@ -70,4 +69,3 @@ revoke all on function public.purge_ops_audit_log() from public, anon, authentic
 -- detail に値（名前・メール）が入っていないこと
 -- master も post も持たない人 → 0行／別の学校の行は見えない
 -- 体調の記録（entries）には引き金が付いていないこと
--- purge_ops_audit_log: 91日前の行が消え、89日前の行は残る

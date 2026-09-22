@@ -232,13 +232,12 @@
     "159": {
       "mock": "yes",
       "ruled": "2026-09-21",
-      "reflected": "design-v24",
+      "reflected": "design-v21",
       "present": {
         "mobile": [
           "なぜ 開きますか",
           "HIRAITA_M",
-          "monkaOpenM",
-          "門下を開いた記録"
+          "monkaOpenM"
         ],
         "ops": [
           "MR_REASONS",
@@ -258,16 +257,9 @@
       "note": "S3 の見本：他人の門下は理由を選ぶまで中身を出さない。記録は運営の中だけ（見本の食い違いを直した）"
     },
     "160": {
-      "mock": "yes",
-      "note": "役職の中身に「変えた記録」（見本・design-v24）",
-      "ruled": "2026-09-21",
-      "reflected": "design-v24",
-      "present": {
-        "ops": [
-          "PERMLOG",
-          "役職を 変えた 記録"
-        ]
-      }
+      "mock": "no",
+      "note": "台帳の作業が先。見本の「役職の中身」に変えた記録を足すのは台帳ができてから（次の版）",
+      "ruled": "2026-09-21"
     },
     "161": {
       "mock": "no",
@@ -290,16 +282,9 @@
       "note": "本番の書き込みポリシーの穴3件"
     },
     "165": {
-      "mock": "yes",
+      "mock": "no",
       "ruled": "2026-09-21",
-      "reflected": "design-v24",
-      "present": {
-        "ops": [
-          "gyojiJudge",
-          "審査員を 足す"
-        ]
-      },
-      "note": "審査員を組む画面。台帳は sql/README の束3"
+      "note": "台帳に審査員の表を足す。見本は既に「審査員を足す」がある"
     },
     "166": {
       "mock": "yes",

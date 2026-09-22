@@ -17,18 +17,11 @@
   ★関数の露出は anon・authenticated（auth の欄）・呼び出し元（サーバの service_role か）の3つで判断する。anon だけで結論を出さない（裁定162 §8）
   A5 本番の移行の名前に seed／test／demo／screenshot／furniture（本番に試しのデータ）
   A6 TRUNCATE を持つ表（REST からは出せないが、権限でも閉じる）
-  A7 entries を読む security definer の関数が許可リストの外（先生が生徒の記録を見る道を作らない。裁定167）
-  A8 表ごと（列を絞らない）の UPDATE・INSERT を authenticated が持っている表（裁定164 W2 の型。列ごとに絞るべきか見る）（先生が生徒の記録を見る道を作らない。裁定167）"""
+  A7 entries を読む security definer の関数が許可リストの外（先生が生徒の記録を見る道を作らない。裁定167）"""
 import json, sys, os, re
 HERE=os.path.dirname(os.path.abspath(__file__))
 OWN_ONLY_LOGS={'email_change_log'}                 # 本人の操作の記録。退会で消えてよい
 ANON_OK={'accept_guardian_consent(p_token text)'}   # 保護者はログインしない（合言葉で）
-TABLE_WRITE_OK={'entries','notes','events','cycle_periods','performances','performance_results','portfolios','portfolio_entries','portfolio_recordings',
-  'article_notes','article_progress','chapter_state','matching_cuts','matching_reports','postings','applications','application_messages','org_message_drafts',
-  'my_periods','my_timetable','lesson_prefs','lesson_ng_dates','koen_kids','consent_records','minor_billing_consents','link_consents','org_message_reads',
-  'enrollments','memberships','assignments','lessons','org_events','org_places','org_periods','org_invitations','org_billing','roster_drafts','lesson_presets','lesson_targets',
-  'evaluation_scores','evaluation_reviews','evaluation_judge_done','evaluation_items','org_messages','user_notices','notice_targets','timetable_nudges','repertoire_tessitura',
-  'koen','koen_members','koen_rows','koen_slots','koen_cells','koen_sessions','koen_session_changes','lesson_rounds','page_types_owned'}   # 見て「列ごとに絞る必要が無い」と決めた表
 ENTRIES_READERS_OK={'admin_entry_stats(p_user_id uuid)','character_unlock_summary(p_user_id uuid)'}   # 裁定167 D2。足すときは裁定にする
 def load(p): return json.load(open(p,encoding='utf-8'))
 def audit(S,env='prod'):
@@ -44,8 +37,6 @@ def audit(S,env='prod'):
         tbl=k.split('_fkey')[0]
         if 'auth.users' in v and 'ON DELETE CASCADE' in v and not any(tbl.startswith(o) for o in OWN_ONLY_LOGS):
             out.append(('A3',k,'退会で記録が消える（ON DELETE CASCADE）'))
-    for t,g in (S.get('table_level_writes') or {}).items():
-        if t not in TABLE_WRITE_OK: out.append(('A8',t,f'表ごとの {g} を authenticated が持っている（列ごとに絞れないか見る。裁定164 W2）'))
     for k,v in (S.get('functions') or {}).items():
         if v.get('sd') and v.get('anon') and k not in ANON_OK: out.append(('A4',k,'security definer を anon が実行できる'))
         if v.get('sd') and v.get('e') and k not in ENTRIES_READERS_OK: out.append(('A7',k,'entries（体調の記録）を読む security definer の関数が許可リストの外（裁定167 D2）'))
@@ -108,8 +99,6 @@ def selftest():
         if c not in got: print('SELFTEST FAIL: 見つけられない',c); ok=False
     if any('email_change_log' in r[1] for r in audit(S)): print('SELFTEST FAIL: 本人だけの記録まで拾った'); ok=False
     if any('accept_guardian_consent' in r[1] for r in audit(S)): print('SELFTEST FAIL: 許可リストの関数を拾った'); ok=False
-    if not any(r[0]=='A8' for r in audit({'table_level_writes':{'zzz_new_table':'UPDATE'}})): print('SELFTEST FAIL: A8'); ok=False
-    if any(r[0]=='A8' for r in audit({'table_level_writes':{'entries':'UPDATE,INSERT'}})): print('SELFTEST FAIL: A8 の許可リスト'); ok=False
     A={'functions':{'f()':{'h':'1'}},'migrations':['m1']}; B={'functions':{'f()':{'h':'2'}},'migrations':['m1']}
     ch,newm=drift(A,B)
     if not ch or newm: print('SELFTEST FAIL: 記録漏れの型'); ok=False

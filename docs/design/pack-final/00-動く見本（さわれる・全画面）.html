@@ -1755,8 +1755,23 @@ SC['設定']=function(){
  +'<div class="li"><span>ダークモード</span><div class="sw"><i></i></div></div>'
  +'<div class="li"><span>羊の 動き</span><div class="sw on"><i></i></div></div>'
  +'<div class="li" onclick="openSheet(\'tsuchi\')"><span>お知らせ</span><s>連絡だけ ›</s></div>'
- +'<div class="li"><span>ことば</span><s>日本語 ›</s></div></div>'
+ +'<div class="li"><span>ことば</span><s>日本語 ›</s></div>'
+ +(S.dm.zaiseki?'<div class="li" onclick="push(\'門下を開いた記録\')"><span>門下を 開いた 記録<div class="usu">学校の 運営が あなたの 門下を 開いた 日</div></span><s>'+HIRAITA_S.length+'件 ›</s></div>':'')+'</div>'
  +'<div class="note">記録の 催促は、お知らせに 入れません（設けていません）。<br>羊の 動きは、酔う方の ために 止められます。</div>'};
+/* ★学生の 側の「門下を 開いた 記録」── 裁定159 §8・S3 仕様 §3b
+   ★いつ・どの門下 だけ。誰が・理由は 出さない。知らせ・帯・印では 出さず、自分で 見に 来たときだけ */
+var HIRAITA_S=[['9月9日 10:22','斎藤先生の 門下'],['9月2日 14:05','斎藤先生の 門下']];
+SC['門下を開いた記録']=function(){
+ return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>門下を 開いた 記録</h2></div>'
+ +(HIRAITA_S.length
+   ?'<div class="box">'+HIRAITA_S.map(function(x){
+      return '<div class="li" style="cursor:default"><span>'+x[1]+'</span><s>'+x[0]+'</s></div>'}).join('')+'</div>'
+   :'<div class="box"><div class="li plain"><span class="usu">まだ 1度も 開かれていません</span></div></div>')
+ +'<div class="note">学校の 運営が、あなたの 門下の やりとりを 開いた 日です。<br>'
+ +'<b>誰が 開いたか・理由は、ここには 出しません。</b>知りたい ときは 学校に 求めてください（30日以内に お見せします）。<br>'
+ +'先生が ふだん 門下を 読むことは、ここに 出ません（先生は もともと 読める 方です）。<br>'
+ +'門下を やめた あとも、この 記録は 残ります。<br>お知らせや 帯では お伝えしません。ここで だけ ご覧いただけます。</div>'};
+
 SC['聞いてほしいこと']=function(){
  S.ask=S.ask||['のどの 調子','声の 出来','昨夜の 睡眠','起きたときの むくみ','声を使った 時間'];
  var CAND=['食べ終えてから 寝るまで','部屋の しめり','運動','水を 飲んだ量','肩の こわばり','鼻の つまり','薬','生理'];

@@ -24,8 +24,7 @@ async def collect(f):
             for k in keys:
                 try:
                     t=await pg.evaluate("""([k,m])=>{if(m==='o'){dmPost('学長');S.mode='o'}else{S.mode='p'}S.stack=[];push(k,0);
-                        var bd=document.getElementById('bd')||document.body;
-                        return (SC[k].length>0?'[ARG]':'')+bd.textContent}""",[k,mode])
+                        var bd=document.getElementById('bd')||document.body;return bd.textContent}""",[k,mode])
                 except Exception as e: t='ERR:'+str(e)[:60]
                 out[(mode,k)]=norm(t)
             # タブのトップも
@@ -43,25 +42,13 @@ def compare(a,b):
             ex='; '.join(f"{op[0]} 全「{ta[key][op[1]:op[2]][:30]}」 iP「{tb[key][op[3]:op[4]][:30]}」" for op in ops)
             rows.append((f'文字が違う（{"運営" if key[0]=="o" else "個人"}・一致 {r:.0%}）',key[1],ex))
     return rows
-BAD=re.compile(r'undefined|\[objectObject\]|NaN|\{\{|i18n\.|t\(\'')
-def leaks(t):
-    """★ことばの出し分け（裁定119）：辞書の鍵や作りかけの印が画面に出ていないか"""
-    return sorted({m.group(0) for (k,v) in t.items() for m in [BAD.search(v)] if m})
 def main():
     a=asyncio.run(collect(A)); b=asyncio.run(collect(B)); rows=compare(a,b)
     if rows and any('文字が違う' in r[0] for r in rows):   # ★重い時の読み込みの揺れを除くため、食い違いが出たらもう一度だけ取り直す
         a=asyncio.run(collect(A)); b=asyncio.run(collect(B)); rows=compare(a,b)
     print(f'MOBILE_PARITY 食い違い {len(rows)}件')
     for r in rows: print('  ',' | '.join(r))
-    bad=[]
-    for name,(t,_k) in (('全画面',a),('iPhone',b)):
-        for key,v in t.items():
-            if v.startswith('[ARG]'): continue      # ★引数が要る画面は、道具が渡した 0 で文字が崩れるため見ない
-            m=BAD.search(v)
-            if m: bad.append((name,key[1],m.group(0)))
-    print(f'  画面に出てはいけない文字（裁定119 ほか）: {len(bad)}件')
-    for x in bad[:20]: print('   ',' | '.join(x))
-    return 0 if not rows and not bad else 1
+    return 0 if not rows else 1
 def selftest():
     a=({('p','x'):'あいう',('p','y'):'同じ'},{'x','y','z'}); b=({('p','x'):'あいえ',('p','y'):'同じ'},{'x','y'})
     rows=compare(a,b); ok=len(rows)==2 and any('全画面にだけ' in r[0] for r in rows) and any('文字が違う' in r[0] and r[1]=='x' for r in rows)
