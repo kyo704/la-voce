@@ -4,7 +4,6 @@
 --   子（org_events ほか）が消えるときに引き金が動き、すでに消えた学校の id で1行 書こうとして 外部キー違反になる
 -- 直し: 記録は 親より 長生きする → 外部キーを外す。学校の名前は そのときの値を写して残す
 -- ★本番に sql/14 を当てたあとなら、この1本で直る（冪等）
--- ★2026-09-23 現在の本番には ops_audit_log が無い（Code が戻した）。本番は 14（修正版）だけでよい。この 15 は、古い 14 を当てた環境（試し）のため
 
 alter table public.ops_audit_log drop constraint if exists ops_audit_log_org_id_fkey;
 alter table public.ops_audit_log add column if not exists org_name_at text;
@@ -15,9 +14,6 @@ declare v_org uuid; v_id text; v_cols jsonb; v_post text;
 begin
   v_org := case when tg_op = 'DELETE' then (to_jsonb(old) ->> 'org_id')::uuid else (to_jsonb(new) ->> 'org_id')::uuid end;
   v_id  := case when tg_op = 'DELETE' then to_jsonb(old) ->> 'id' else to_jsonb(new) ->> 'id' end;
-  if tg_op = 'DELETE' and v_org is not null and not exists (select 1 from public.organizations o where o.id = v_org) then
-    return old;     -- ★学校ごと消えるときは残さない（数千行になるため）
-  end if;
   if tg_op = 'UPDATE' then
     select jsonb_agg(key) into v_cols
       from jsonb_each(to_jsonb(new)) n where n.value is distinct from (to_jsonb(old) -> n.key);
@@ -26,8 +22,7 @@ begin
   select q.name into v_post from public.memberships m left join public.org_posts q on q.id = m.post_id
    where m.org_id = v_org and m.user_id = auth.uid();
   insert into public.ops_audit_log(org_id, org_name_at, actor_id, actor_post_at, action, target_kind, target_id, detail)
-  -- 学校が消えていれば org_name_at は null になる
-  values (v_org, (select o.name from public.organizations o where o.id = v_org),
+  values (v_org, (select o.name from public.organizations o where o.id = v_org),   -- 学校が消えていれば null
           auth.uid(), v_post, lower(tg_op), tg_table_name, v_id, jsonb_build_object('columns', v_cols));
   if tg_op = 'DELETE' then return old; end if;
   return new;

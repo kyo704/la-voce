@@ -10,6 +10,8 @@
 //   ③学校が 消えて いる
 //   ④ぶら下がって いた ものも 消えて いる
 //   ⑤記録（ops_audit_log）は **残る**・★そのときの 学校の 名前が 読める
+//   ⑥★門下を 開いた 記録（monka_read_log）が、★学校を 閉じても **残る**（★裁定172）
+//   ⑦その 記録から、★そのときの 学校の 名前が 読める
 const fs = require("fs"), path = require("path");
 const { execFileSync } = require("child_process");
 const ROOT = path.resolve(__dirname, "..");
@@ -54,6 +56,15 @@ const 順 = (() => {
   台(`insert into public.org_billing (org_id) values ('${ORG}')`, true);
   台(`insert into public.enrollments (org_id, student_id, status)
       values ('${ORG}', '${MOTO}', 'active')`, true);
+  // ★★★門下を 開いた 記録を 1行（★裁定172 の 確かめ）。
+  //   ★★`org_name_at` は sql/16 が 入れます。★ここでは 入れません。
+  //     ★★入れて しまうと、★「入って いる」ことしか 確かめられません。
+  台(`insert into public.monka_read_log (org_id, viewer_user_id, target_monka_id, reason, reason_kind, name_at)
+      values ('${ORG}', '${MOTO}', '${MOTO}', '★ためし', 'jiko', '★くらべ用 たろう')`, true);
+  // ★★いまの 行に 名前を 入れる のは sql/16 の ② です。★同じ ことを ここで します
+  //   （★sql/16 は もう 当たって いるので、★あとから 入った 行には 入りません）。
+  台(`update public.monka_read_log l set org_name_at = o.name
+        from public.organizations o where o.id = l.org_id and l.org_name_at is null`, true);
 
   const 前 = {};
   for (const t of ["org_posts", "org_events", "org_places", "org_billing",
@@ -89,6 +100,19 @@ const 順 = (() => {
                   where org_id = '${ORG}' and org_name_at is not null`);
   みる("⑥そのときの 学校の 名前が 読める",
     /^\s*[1-9]\d*\s*$/m.test(名), 名.replace(/\s+/g, " ").slice(0, 40));
+
+  console.log("\n=== 五 門下を 開いた 記録は、★学校を 閉じても 残る（裁定172）===");
+  {
+    const 残 = 数える(`select count(*) from public.monka_read_log where viewer_user_id = '${MOTO}'`);
+    みる("⑥記録が 残って いる", 残 > 0, `${残}行`);
+    const 名 = 数える(`select count(*) from public.monka_read_log
+                        where viewer_user_id = '${MOTO}' and org_name_at is not null`);
+    みる("⑦そのときの 学校の 名前が 読める", 名 > 0, `${名}行`);
+    const 空 = 数える(`select count(*) from public.monka_read_log
+                        where viewer_user_id = '${MOTO}' and org_id is null`);
+    みる("⑧学校の id は 空に なって いる（★連鎖で 消えて いない）", 空 > 0, `${空}行`);
+    台(`delete from public.monka_read_log where viewer_user_id = '${MOTO}'`, true);
+  }
 
   console.log(`\n  ${数 - 落} / ${数}`);
   process.exit(落 ? 1 : 0);

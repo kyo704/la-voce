@@ -35,11 +35,6 @@ declare v_org uuid; v_id text; v_cols jsonb; v_post text;
 begin
   v_org := case when tg_op = 'DELETE' then (to_jsonb(old) ->> 'org_id')::uuid else (to_jsonb(new) ->> 'org_id')::uuid end;
   v_id  := case when tg_op = 'DELETE' then to_jsonb(old) ->> 'id' else to_jsonb(new) ->> 'id' end;
-  -- ★学校ごと消えるとき（organizations が既に無い DELETE）は残さない。
-  --   1つの学校を閉じるだけで数百〜数千行になり、読めない記録になるため。閉じたこと自体は closeOrg の側で1行残す
-  if tg_op = 'DELETE' and v_org is not null and not exists (select 1 from public.organizations o where o.id = v_org) then
-    return old;
-  end if;
   if tg_op = 'UPDATE' then
     select jsonb_agg(key) into v_cols
       from jsonb_each(to_jsonb(new)) n where n.value is distinct from (to_jsonb(old) -> n.key);
@@ -48,8 +43,7 @@ begin
   select q.name into v_post from public.memberships m left join public.org_posts q on q.id = m.post_id
    where m.org_id = v_org and m.user_id = auth.uid();
   insert into public.ops_audit_log(org_id, org_name_at, actor_id, actor_post_at, action, target_kind, target_id, detail)
-  -- 学校が消えていれば org_name_at は null になる
-  values (v_org, (select o.name from public.organizations o where o.id = v_org),
+  values (v_org, (select o.name from public.organizations o where o.id = v_org),   -- 学校が消えていれば null
           auth.uid(), v_post, lower(tg_op), tg_table_name, v_id, jsonb_build_object('columns', v_cols));
   if tg_op = 'DELETE' then return old; end if;
   return new;

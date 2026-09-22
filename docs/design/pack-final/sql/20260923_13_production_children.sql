@@ -5,13 +5,27 @@
 create table if not exists public.koen_kids (
   id                uuid primary key default gen_random_uuid(),
   koen_id           uuid not null references public.koen(id) on delete cascade,
-  guardian_user_id  uuid not null references auth.users(id) on delete cascade,   -- 持ち主は保護者
+  guardian_user_id  uuid references auth.users(id) on delete set null,          -- 持ち主は保護者。★退会しても 公演の 枠は 消さない（名前は残す）
   nickname          text not null check (length(nickname) between 1 and 20),     -- 呼び名だけ。年齢・学校・写真は持たない
   dismiss_at        timestamptz,                                                 -- 解散の時刻（当日の運びに使う）
   created_at        timestamptz not null default now(),
   left_at           timestamptz
 );
 create index if not exists koen_kids_koen_idx on public.koen_kids(koen_id) where left_at is null;
+
+-- ★保護者が 退会したら（guardian_user_id が null に なったら）、緊急の連絡先は 消す
+create or replace function public.drop_kid_contact_when_orphan()
+returns trigger language plpgsql security definer set search_path to 'public' as $$
+begin
+  if new.guardian_user_id is null and old.guardian_user_id is not null then
+    delete from public.koen_kid_contacts where kid_id = new.id;
+  end if;
+  return new;
+end $$;
+revoke all on function public.drop_kid_contact_when_orphan() from public, anon, authenticated;
+drop trigger if exists koen_kids_orphan on public.koen_kids;
+create trigger koen_kids_orphan after update of guardian_user_id on public.koen_kids
+  for each row execute function public.drop_kid_contact_when_orphan();
 
 -- 緊急の連絡先は別の表。★select のポリシーを作らない（誰も直接は読めない）
 create table if not exists public.koen_kid_contacts (
@@ -23,8 +37,11 @@ create table if not exists public.koen_kid_contacts (
 -- 見た記録（消せない）。保護者には「いつ・どの役割が見たか」だけ見せる（名前は出さない）
 create table if not exists public.koen_kid_contact_reads (
   id           uuid primary key default gen_random_uuid(),
-  kid_id       uuid not null references public.koen_kids(id) on delete cascade,
-  koen_id      uuid not null references public.koen(id) on delete cascade,
+  -- ★子どもの枠や公演を消しても、見た記録は消さない（「消せません」の約束。裁定147・172）
+  kid_id       uuid references public.koen_kids(id) on delete set null,
+  kid_name_at  text,                                                   -- そのときの呼び名
+  koen_id      uuid references public.koen(id) on delete set null,
+  koen_title_at text,                                                  -- そのときの公演の題
   viewer_user_id uuid references auth.users(id) on delete set null,   -- 退会しても記録は残す
   viewer_role_at text not null,                                       -- 「運営」「主催」など。名前は残さない
   reason_kind  text not null check (reason_kind in ('todays_call','emergency','guardian_request')),
@@ -92,8 +109,12 @@ begin
 
   select case when k.org_id is not null then '運営' else '主催' end into v_role from public.koen k where k.id = v_koen;
 
-  insert into public.koen_kid_contact_reads(kid_id, koen_id, viewer_user_id, viewer_role_at, reason_kind)
-  values (p_kid, v_koen, auth.uid(), v_role, p_reason_kind);       -- ★先に記録。失敗したらここで止まり、下は返らない
+  insert into public.koen_kid_contact_reads(kid_id, kid_name_at, koen_id, koen_title_at, viewer_user_id, viewer_role_at, reason_kind)
+  values (p_kid,
+          (select k.nickname from public.koen_kids k where k.id = p_kid),
+          v_koen,
+          (select k.title from public.koen k where k.id = v_koen),
+          auth.uid(), v_role, p_reason_kind);       -- ★先に記録。失敗したらここで止まり、下は返らない
 
   select c.contact into v_contact from public.koen_kid_contacts c where c.kid_id = p_kid;
   return v_contact;
@@ -108,3 +129,5 @@ grant execute on function public.read_kid_contact(uuid, text) to authenticated;
 -- 関係のない人: read_kid_contact → NOT_STAFF
 -- 保護者: koen_kid_contact_reads に「いつ・どの役割」だけ見える（名前の列が無い）
 -- 記録の update・delete のポリシーが無いこと／退会しても記録が残る（viewer_user_id が null に）
+-- ★子どもの枠を消す・公演を消す → 見た記録は残る（id が null・呼び名と題が残る）
+-- ★保護者が退会 → 子どもの枠は残る（呼び名も残る）／緊急の連絡先は消える／その公演を閉じるところまで通る

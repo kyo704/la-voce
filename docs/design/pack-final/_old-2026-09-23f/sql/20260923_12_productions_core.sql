@@ -66,8 +66,7 @@ create table if not exists public.koen_sessions (
   canceled_at timestamptz,
   created_at  timestamptz not null default now()
 );
--- 「変わったもの」（消さずに残す）
-create table if not exists public.koen_session_changes (
+create table if not exists public.koen_session_changes (          -- 「変わったもの」（消さずに残す）
   id         uuid primary key default gen_random_uuid(),
   session_id uuid not null references public.koen_sessions(id) on delete cascade,
   what       text not null,
@@ -120,24 +119,13 @@ create policy koen_update on public.koen for update to authenticated
 do $$
 declare t text;
 begin
-  foreach t in array array['koen_members','koen_rows','koen_slots'] loop
+  foreach t in array array['koen_members','koen_rows','koen_slots','koen_sessions'] loop
     execute format('drop policy if exists %I_select on public.%I', t, t);
     execute format('create policy %I_select on public.%I for select to authenticated using (public.koen_can_see(koen_id))', t, t);
     execute format('drop policy if exists %I_write on public.%I', t, t);
     execute format('create policy %I_write on public.%I for all to authenticated using (public.koen_can_manage(koen_id)) with check (public.koen_can_manage(koen_id))', t, t);
   end loop;
 end $$;
-
--- ★稽古・本番は「消さない」。取り消しは canceled_at を入れる（消すと「変わったもの」の履歴ごと消えるため）
-drop policy if exists koen_sessions_select on public.koen_sessions;
-create policy koen_sessions_select on public.koen_sessions for select to authenticated using (public.koen_can_see(koen_id));
-drop policy if exists koen_sessions_insert on public.koen_sessions;
-create policy koen_sessions_insert on public.koen_sessions for insert to authenticated with check (public.koen_can_manage(koen_id));
-drop policy if exists koen_sessions_update on public.koen_sessions;
-create policy koen_sessions_update on public.koen_sessions for update to authenticated
-  using (public.koen_can_manage(koen_id)) with check (public.koen_can_manage(koen_id));
--- delete のポリシーは作らない（消せない）
-revoke delete on public.koen_sessions from authenticated;
 
 drop policy if exists koen_cells_select on public.koen_cells;
 create policy koen_cells_select on public.koen_cells for select to authenticated
@@ -172,5 +160,4 @@ create trigger koen_sessions_log_change after update on public.koen_sessions for
 -- 出演者: 自分の公演だけ見える・変えられない／運営（can_manage）: 変えられる／学校の行事の札（gyoji）: その学校の公演を見て変えられる
 -- 関係のない人: koen が0行・koen_rows も0行
 -- 稽古の時間を変える → koen_session_changes に1行（誰が・何を）
--- 稽古を消そうとする → できない（取り消しは canceled_at）。「変わったもの」の履歴が消えないこと
 -- 出演者が抜けた（left_at）→ 表の名前（name_at）は残る
