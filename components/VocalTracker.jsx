@@ -164,7 +164,7 @@ import TellTeacher from "@/components/TellTeacher";
 import AnnouncementCompose from "@/components/AnnouncementCompose";
 // ★`shouldLogRead` は 使わなく なりました（★2026-09-22・台帳 08-14）。
 //   ★★書くのは `open_monka_thread` だけ です。★画面は 書きません。
-import { readErrorLine, READ_LOG_COLUMNS,
+import { readErrorLine, READ_LOG_COLUMNS, mayListAllStudios, needsReadReason,
   STUDENT_READ_HEAD, STUDENT_READ_EMPTY, STUDENT_READ_NOTES,
   studioName as studioNameOf, whenWord as whenWordJa } from "@/lib/renraku";
 import OpsShell from "@/components/OpsShell";
@@ -10251,10 +10251,28 @@ export default function VocalTracker({
     const { data, error } = orgId ? await q.eq("org_id", orgId) : await q;
     if (error) { console.error("門下を読めませんでした:", error); return; }
     const rows = data || [];
+    // ★★★`monka_read` を 持つ 方には、★その 学校の 門下を ぜんぶ 並べます。
+    //   ★★★尋ねる 先は **台帳** です（`has_can`）。★画面で 判じません。
+    //     ★★画面の 門と 台帳の 門が ずれない ように、★同じ ものに 聞きます（★台帳 08-1）。
+    //   ★★聞けなかった ときは 広げません。★閉じる 側に 倒します。
+    let 学校ぜんぶ = false;
+    if (orgId) {
+      const { data: c } = await supabase.rpc("has_can",
+        { p_org_id: orgId, p_perm: "monka_read" });
+      学校ぜんぶ = c === true;
+    }
     // ★自分が 関わる 門下（★学生として／先生として）
+    //   ★★★`学校ぜんぶ` の とき …… ★その 学校の 門下を **ぜんぶ** 並べます
+    //     （★`monka_read` を 持つ 方。★決めは `lib/renraku.js` の `mayListAllStudios`）。
+    //   ★★わけ …… きょうまで、★よその 門下の 行が 出ません でした。
+    //     ★★理由を たずねる 流れ（S2・S3）に **入口が ありません** でした。
+    //     ★★道も 画面も 作った のに、★押す ところが 無い、という 形 です。
+    //   ★★出すのは 名前と 最終更新 だけ です。★中身は ここで 引きません。
     const mine = new Map();
     rows.forEach((r) => {
-      if (r.student_id === userId || r.teacher_id === userId) mine.set(r.teacher_id, r.org_id);
+      if (学校ぜんぶ || r.student_id === userId || r.teacher_id === userId) {
+        mine.set(r.teacher_id, r.org_id);
+      }
     });
     const counts = new Map();
     rows.forEach((r) => counts.set(r.teacher_id, (counts.get(r.teacher_id) || 0) + 1));
@@ -17631,6 +17649,21 @@ export default function VocalTracker({
                        ★★開けなければ 開いた ことに しません。★空の 画面に しません。 */
                   onOpenStudio={(tid, kind, note) => {
                     if (!tid) { setOpenStudio(null); return; }
+                    // ★★★ご自分の 門下は、★いままで どおり そのまま 読みます。
+                    //   ★★仕様シート §2 …… 「`monka_read` を 持ち、★かつ
+                    //     ★その 門下の 先生で ない ときだけ、この 流れ」。
+                    //   ★★§5 ⑥ …… 「先生 ご本人が 自分の 門下を 押す → 理由を 聞かれない」。
+                    //   ★★★2026-09-22 まで、★ここは **ぜんぶ** 道を 通して いました。
+                    //     ★★ご自分の 門下でも 理由が 無いので 道が 断り、
+                    //       ★★`if (!ok) return` で **何も 起きません** でした。
+                    //     ★★実機で 通して 見つけました（`tools/s3_monka_read_shot.py`）。
+                    //   ★★決めは `lib/renraku.js` の `needsReadReason` が 1つ 持ちます。
+                    //     ★ここで 判じません。★同じ 問いを 2か所で 答えません。
+                    if (!needsReadReason({ perms: gate, teacherId: tid, meId: userId })) {
+                      setOpenStudio(tid);
+                      void fetchRenraku(opsOrgId, tid);
+                      return;
+                    }
                     void (async () => {
                       const ok = await openMonkaThread(opsOrgId, tid, kind, note);
                       if (!ok) return;
