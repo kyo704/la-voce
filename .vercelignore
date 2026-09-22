@@ -22,15 +22,23 @@ supabase/.temp/
 #     ★★すでに 積もって いる 39.89GB は 減りません。
 #     ★★古い デプロイを 消すのは、★Vercel の 画面から（★坂本さん）。
 
-docs/design
-docs/opus/*
-!docs/opus/items.json
-docs/reference
-docs/reports
-docs/records
-docs/ledgers
-docs/rulings
-docs/legal
-docs/decisions
-assets
-ios
+# ★★★2026-09-23、★ビルドを 壊しました。★書いて おきます。
+#   ★★`assets` と だけ 書くと、★**どの 深さの `assets` にも** 当たります。
+#     ★★`docs/assets/` まで 除いて しまい、
+#       ★`lib/sheepItems.js` の `@/docs/assets/sheep-items-index.json` が 見つからなく なりました。
+#   ★★★頭に `/` を 付けると、★いちばん 上の `assets` だけ に なります。
+#     ★★`.gitignore` と 同じ 決め です ── ★斜線の 無い 形は、どこにでも 当たります。
+#   ★★私の 確かめの 道具も、★頭から 合わせる 形で 書いて いました。★同じ 誤り です。
+
+/docs/design
+/docs/opus/*
+!/docs/opus/items.json
+/docs/reference
+/docs/reports
+/docs/records
+/docs/ledgers
+/docs/rulings
+/docs/legal
+/docs/decisions
+/assets
+/ios
