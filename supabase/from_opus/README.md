@@ -1,0 +1,51 @@
+# sql/ ── Opus が書いた台帳の移行（Code が当てる）
+
+## ★事前確認の結果（2026-09-22・Opus が本番を読み取りだけで）
+
+```yaml
+した:
+  - 参照している列 78個が本番に全部あるか → 足りない列 0
+  - 呼んでいる関数（has_can・has_can_user・matching_visible・matching_suspended）が同じ引数の形であるか → 4つともある
+  - 作る名前（索引6・引き金4・制約3）が既存とぶつからないか → ★制約1つがぶつかった（下の直し①）
+  - 消すポリシー（performances_own・3つの _insert）が本番にあるか → 4つともある
+  - 一意にする列に今の重複が無いか（purchases の payment_intent・assignments・org_billing）→ 0件
+  - 関数・ポリシーの中の select の部分を「行を返さない形（where false）」で本番に流す → 文法・列・型のエラー 0
+    （my_entitlements の集計・公開ページの組み立て・performances の条件・請求の変更の列の並べ方・YouTube の正規表現・導入期間の式）
+  - 導入期間の式を6通りで流す → 期待どおり（うるう年 2028-02-29 を含む）
+見つけて直した:
+  ① 01: purchases_status_check が本番に既にある（status in ('active','expired')）。if not exists で飛ばされ、'ended_early' を入れると違反になるところだった
+     → 作り直して ('active','expired','ended_early')。'expired' は既存の値として残した
+  ② 03: date_trunc に date を渡すと timestamptz になり、immutable と書いた関数が本当は immutable でなかった → p_start::timestamp に
+できない（Opus は書き込みをしないため）:
+  - create table・create function・create trigger・grant をじっさいに通すこと（plpgsql の本文の文法は、作るときに初めて確かめられる）
+  → 試しの環境で流すのは Code。エラーは直さず Opus に
+```
+
+
+- 作成: Opus（本番の構造を読み取りで確かめて書いた。2026-09-22）
+- 当て方: 試しに当てる → 各ファイルの「確かめ」を実在の試しの利用者で → tools/権限変更の型.md → decision_needed_check.py → 坂本さんの承認 → ★apply_migration（直接の SQL にしない）
+- ★Opus の SQL は動かすまで正しいと言えない。エラー・食い違いが出たら、直さずに Opus に返してよい（Opus が直す）
+- すべて冪等（if not exists・create or replace・drop policy if exists）
+
+| ファイル | 中身 | 根拠 | 先に確かめること |
+|---|---|---|---|
+| 01_billing_foundation | subscription_items・stripe_events・purchases の列・my_entitlements() | 裁定166・169・167 A2 | サーバが「使えるか」を my_entitlements に寄せる |
+| 02_student_price_consents | 学生の値段の同意の表と関数3本 | 裁定166 R2 | ― |
+| 03_org_contracts_free_period | 学校の契約・導入期間の計算 | 裁定156・166 R4 | 36通りの試験を足す |
+| 04_profile_consent_guards | LINE の連携・登録日をサーバ専用に／同意の日時を台帳が入れる | 裁定167 A3・A4 | ★画面が line_* ・created_at を直接書いていないか |
+| 05_uniques | 有効な担当・学校の請求の重複を止める | 裁定169 | ― |
+| 06_logs_written_by_ledger | 役職の変更・請求の変更は引き金で、書き出しは record_export で記録。利用者の直接の insert をやめる／★changed_by の NOT NULL と SET NULL の食い違い（退会が止まる）を直す | 裁定161 FX8 | ★画面・サーバの3表への insert を先に消す |
+| 07_ops_alerts | 起きた失敗を全部残す ops_alerts・raise_alert()・契約者の移し替えの知らせの失敗を残す | 裁定168 ★5・F2 | サーバのメールの仕組み（notified_at を入れる） |
+| 08_portfolio_performance | 録画は YouTube だけ・公開ページは get_public_portfolio だけ・本番の記録は在籍する学校の行事だけ | 裁定167 B1・B2・C3 | ―（出す列は名指しにした） |
+| 09_drop_org_message_reads | 古い表を消す | 裁定159 §8 | リポジトリに呼び出し0件 |
+
+## まだ書いていない（新しい機能の台帳。裁定171 の週の順に Opus が書く）
+
+| 何 | 中身 | いつまでに Opus が出すか |
+|---|---|---|
+| レッスン割 | 希望（◎△×）・組み・公開・あいていない方（裁定139・152 R4） | 9/27 |
+| ホームページ | 15型の設定・お問い合わせの転送（裁定128・146） | 9/27 |
+| 公演の本体 | 公演・8種類・行×枠・稽古・変わったもの・カレンダーの住所・入り・楽屋・雛形（裁定141〜152） | 10/2（承認 10/5） |
+| 公演の子ども | 保護者が持ち主の子どもの枠・緊急の連絡先を記録してから見せる RPC（裁定147・167 C） | 10/2（画面は出発の後） |
+| 管理の操作の記録 | 学校の管理の操作をまとめて残す（裁定169 #8） | 10/9 |
+| 本番の試しデータを消す | FX9（坂本さんの判断のあと） | 10/6 |

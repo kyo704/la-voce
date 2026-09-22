@@ -95,7 +95,7 @@ def check_stale(files=None,P=P,baseline=None):
         for sp in P['stale_patterns']:
             for m in re.finditer(sp['re'],t):
                 ctx=t[max(0,m.start()-30):m.end()+30].replace('\n',' ')
-                if re.search(r'廃止|改める|前は|置き換え|使わない|置かない|置いていません|扱わない|扱っていません|削除|B案|撤回|ではなく|使えない|→',ctx): continue
+                if re.search(r'廃止|改める|前は|置き換え|使わない|置かない|置いていません|扱わない|扱っていません|削除|B案|撤回|ではなく|→',ctx): continue
                 ls=t.rfind('\n',0,m.start())+1
                 if re.match(r'\s*design-v\d+',t[ls:ls+20]): continue
                 hid=_hit_id(rel,sp['why'],ctx)

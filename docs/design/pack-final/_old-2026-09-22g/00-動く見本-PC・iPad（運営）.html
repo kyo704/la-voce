@@ -1420,7 +1420,7 @@ var PAY={
  mail:'keiri@example.ac.jp',tno:'T1234567890123',
  hikitsugi:null,
  log:[['9月1日 10:22','田村 まこと（事務長）','領収書を 出しました（8月ぶん）'],
-      ['4月2日 14:03','坂本 響（学長）','支払い方法を 変えました（銀行振込 → クレジットカード）'],
+      ['4月2日 14:03','坂本 響（学長）','支払い方法を 変えました（口座振替 → クレジットカード）'],
       ['4月1日 9:10','坂本 響（学長）','ご請求の 宛先に なりました']]};
 var RYO={span:'月ごと',month:'2026年8月',fy:'2026年度',nm:'',tada:'Woolsong 利用料として',fmt:'PDF'};
 var RYO_LIST=[['2026年8月','75,000円','9月25日 引き落とし','出しました'],
@@ -1445,9 +1445,10 @@ function P_pay(){
   +'<div class="warn"><b>あなたは 見るだけです。</b>支払い方法を 変えられるのは　<b>'+whoCan('bill_pay')+'</b></div>'
   +'<div class="card p0"><div class="li plain"><span>いまの 支払い方法</span><s>'+PAY.way+'</s></div></div>';
  var W=[['クレジットカード','毎月 '+PAY.day+'に 引き落とし　／　カード会社の 画面で 入れます'],
-        ['銀行振込（請求書）','毎月・年払い　／　請求書を お送りします。振込先は 請求書ごとに 書いてあります']];  /* ★口座振替は Stripe で日本では使えない（2026-09-22 Code の調べ）。確定文書 第4版 */
+        ['口座振替','毎月 '+PAY.day+'に 引き落とし　／　用紙 または ネットで 手続き（1〜2か月 かかります）'],
+        ['銀行振込（請求書）','年払い・自治体・学校法人 向け　／　請求書を お送りします']];
  return bk('ご請求')+'<h2>支払い方法を 変える</h2>'
- +'<div class="sub">いま　<b>'+PAY.way+'</b>　／　'+(PAY.way==='クレジットカード'?PAY.card:'請求書　'+PAY.mail)+'</div>'
+ +'<div class="sub">いま　<b>'+PAY.way+'</b>　／　'+(PAY.way==='クレジットカード'?PAY.card:(PAY.way==='口座振替'?PAY.bank:'請求書　'+PAY.mail))+'</div>'
  +'<div class="warn"><b>カード番号は Woolsong に 入りません。</b>カード会社の 画面で 入れていただきます。<br>'
  +'　うちに 残るのは <b>下4けたと 有効期限だけ</b>です。<br>'
  +'<b>口座番号も Woolsong に 入りません。</b>金融機関の 画面で 手続きします。<br>'
@@ -1460,6 +1461,10 @@ function P_pay(){
  +(PAY.way==='クレジットカード'?'<div class="h3">いまの カード</div>'
    +'<div class="card"><div style="font-family:ui-monospace,monospace;font-size:15.5px">'+PAY.card+'</div>'
    +'<div style="margin-top:11px"><span class="btn" onclick="toast(\'見本です。本番では カード会社の 画面が 開きます（Woolsong に 番号は 入りません）\')">カードを 変える（カード会社の 画面へ）</span></div></div>':'')
+ +(PAY.way==='口座振替'?'<div class="h3">いまの 口座</div>'
+   +'<div class="card"><div style="font-size:14.5px">'+PAY.bank+'</div>'
+   +'<div style="margin-top:11px"><span class="btn" onclick="toast(\'見本です。本番では 金融機関の 画面が 開きます\')">口座を 変える（金融機関の 画面へ）</span>　'
+   +'<span class="btn g sm" onclick="toast(\'見本です。用紙（PDF）が 出ます\')">用紙で 手続きする</span></div></div>':'')
  +(PAY.way==='銀行振込（請求書）'?'<div class="h3">請求書の 送り先</div>'
    +'<div class="card p0"><div class="li plain"><span>宛名</span><s>'+PAY.nm+'　'+PAY.bu+'</s></div>'
    +'<div class="li plain"><span>ご担当</span><s>'+PAY.tanto+'</s></div>'

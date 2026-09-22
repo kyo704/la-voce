@@ -4229,8 +4229,7 @@ SC['支払い方法']=function(){
   +'<div class="warn"><b>あなたは 見るだけです。</b>変えられるのは　<b>'+whoCan('bill_pay')+'</b></div>'
   +'<div class="box"><div class="li" style="cursor:default"><span>いまの 支払い方法</span><s>'+PAY.way+'</s></div></div>';
  var W=[['クレジットカード','毎月 '+PAY.day+'に 引き落とし　／　カード会社の 画面で 入れます'],
-        ['口座振替','毎月 '+PAY.day+'に 引き落とし　／　手続きに 1〜2か月 かかります'],
-        ['銀行振込（請求書）','年払い・学校法人 向け']];
+        ['銀行振込（請求書）','毎月・年払い　／　請求書を お送りします']];  /* ★口座振替は Stripe で日本では使えない（2026-09-22）。確定文書 第4版 */
  return bk('設定')+'<div class="hd" style="padding-top:2px"><h2>支払い方法を 変える</h2></div>'
  +'<div class="usu" style="margin:-2px 0 9px">いま　<b>'+PAY.way+'</b></div>'
  +'<div class="warn"><b>カード番号は Woolsong に 入りません。</b>カード会社の 画面で 入れます。<br>'
@@ -4243,9 +4242,6 @@ SC['支払い方法']=function(){
  +(PAY.way==='クレジットカード'?'<div class="h3">いまの カード</div>'
    +'<div class="card"><div style="font-family:ui-monospace,monospace;font-size:14.5px">'+PAY.card+'</div>'
    +'<div class="btn" style="margin-top:10px" onclick="toast(\'見本です。本番では カード会社の 画面が 開きます\')">カードを 変える（カード会社の 画面へ）</div></div>':'')
- +(PAY.way==='口座振替'?'<div class="h3">いまの 口座</div>'
-   +'<div class="card"><div style="font-size:13.5px">'+PAY.bank+'</div>'
-   +'<div class="btn" style="margin-top:10px" onclick="toast(\'見本です。金融機関の 画面が 開きます\')">口座を 変える</div></div>':'')
  +(PAY.way==='銀行振込（請求書）'?'<div class="h3">請求書の 送り先</div>'
    +'<div class="box"><div class="li" style="cursor:default"><span>宛名</span><s>'+PAY.nm+'</s></div>'
    +'<div class="li" style="cursor:default"><span>ご担当</span><s>'+PAY.tanto+'</s></div>'

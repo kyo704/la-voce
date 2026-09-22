@@ -64,7 +64,13 @@ ABUNAI = [
 
 
 def 何度でも同じか(sql):
-  """★註と 括りを 落としてから 見ます（★説明を 処理と 読まない・台帳 08-10）。"""
+  """★註と 括りを 落としてから 見ます（★説明を 処理と 読まない・台帳 08-10）。
+
+    ★★★`do $$ … if not exists (select 1 from pg_constraint …) … end $$` は、
+      ★★すでに あれば 飛ばす 形 です。★何度 流しても 同じに なります。
+      ★★2026-09-22、★この 形を「対に なって いない」と 読んで、
+        ★★Opus の SQL 2本に 誤った NG を 出しました。★見分けます。
+  """
   s = re.sub(r"'[^']*'", "''", sql)
   s = "\n".join(re.sub(r"--.*$", "", 行) for 行 in s.split("\n"))
   s = re.sub(r"/\*.*?\*/", " ", s, flags=re.S)
@@ -81,7 +87,12 @@ def 何度でも同じか(sql):
     わけ.append("create policy が %d、drop policy if exists が %d。★対に して ください" % (作, 消))
   # ★`add constraint` は、★`drop constraint if exists` と 対に なって いれば よい です。
   #   ★★`add constraint if not exists` は PostgreSQL に ありません。★対で 守ります。
-  足c = len(re.findall(r"add\s+constraint", s, re.I))
+  # ★`pg_constraint` を 見て 飛ばす 塊の 中の `add constraint` は、★数えません。
+  守られた = 0
+  for m in re.finditer(r"if\s+not\s+exists\s*\(\s*select[^;]*?pg_constraint[^;]*?\)\s*then(.*?)end\s+if", s,
+                       re.I | re.S):
+    守られた += len(re.findall(r"add\s+constraint", m.group(1), re.I))
+  足c = len(re.findall(r"add\s+constraint", s, re.I)) - 守られた
   消c = len(re.findall(r"drop\s+constraint\s+if\s+exists", s, re.I))
   if 足c > 消c:
     わけ.append("add constraint が %d、drop constraint if exists が %d。★対に して ください" % (足c, 消c))
