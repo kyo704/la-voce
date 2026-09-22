@@ -72,14 +72,21 @@ async function 見る非同期(名, f) { await f(); 数 += 1; console.log("  ○
     assert.ok(i > 0, "★書き出しの 手が ありません");
     const 次 = vt.indexOf("async function ", i + 20);
     const 中 = vt.slice(i, 次 > i ? 次 : vt.length);
-    const 記 = 中.indexOf('from("export_log")');
+    // ★★★2026-09-23、★記録の 書き方が 変わりました（★sql/06 の 前提）。
+    //   ★★前 …… 画面が `export_log` に 直に insert。
+    //   ★★いま … 道（`record_export`）を 呼びます。★中で 在籍を 確かめてから 書きます。
+    //   ★★★見る ところは 同じ です ── ★「記録が **先**、★落としが **後**」。
+    const 記 = 中.indexOf('rpc("record_export"');
     const 落 = 中.indexOf("URL.createObjectURL");
     assert.ok(記 > 0 && 落 > 0, "★記録か 落としが ありません");
     assert.ok(記 < 落, "★先に 落として います（★記録の 無い 持ち出し）");
-    assert.ok(/data\.length === 0\) throw/.test(中.slice(0, 落)),
-      "★0行でも 出して います");
+    // ★★★道が 断ったら、★落としへ 進みません。
+    //   ★前 …… `data.length === 0` を 見て いました（★直の insert の とき）。
+    //   ★いま … 道は 何も 返しません。★`error` を 見て 投げます。
+    assert.ok(/if \(error\) throw error;/.test(中.slice(0, 落)),
+      "★断られても 出して います");
     // ★★較正 ── ★字だけ 書いて 済ませて いない こと。
-    assert.ok(/insert\(/.test(中.slice(0, 落)), "★記録して いません");
+    assert.ok(/rpc\("record_export", \{/.test(中.slice(0, 落)), "★記録して いません");
   });
 
   見る("④記録の 表は 消せない", () => {
