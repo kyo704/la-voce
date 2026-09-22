@@ -114,19 +114,3 @@ steps:
 never: 書き込み・DDL・利用者の中身を読むこと（目録だけ）
 note: リポジトリの SQL ファイルとの数の突き合わせは、Code から一覧（ls supabase/migrations）を受け取って行う。Opus はリポジトリを見られない
 ```
-
-## 6. 追記（2026-09-22・束2 の報告を Opus が本番で独立に確かめた）
-
-```yaml
-効いている（本番）:
-  164 W2: org_messages の authenticated の表ごとの権限は INSERT・SELECT だけ。UPDATE は列 withdrawn_at だけ ✓
-  164 W1: applications_update_own の with check に status in ('sent','withdrawn') ✓
-  FX2: monka_read_log の insert のポリシー0本・authenticated は SELECT だけ ✓
-  167 A1: character_inventory の authenticated は SELECT だけ ✓
-★記録漏れ（3回目）: 本番の schema_migrations は 2026-09-18 の31本のまま。束2 も移行の履歴に無い
-  → S2・裁定160・束2 の3回とも、apply_migration ではなく直接の SQL で当てている見込み
-  決まり（再掲・強める）: 本番の台帳を変えるのは apply_migration だけ。直接の SQL で変えたら、その日のうちに同じ中身の移行を apply_migration で「記録だけ」当てる
-  Opus の見張り: 毎日1回 ledger_inventory drift（目録が変わったのに移行が増えていなければ、その日のうちに Code に）
-★本番に試しの学校10件（名前に「50通り」。報告では「★50通り-01〜10」）: 本番にある（organizations で10件）。FX9 の一覧に足す（坂本さんの判断 10/5 まで）
-未着手の確認: evaluation_judges は本番に無い（束3 は試しだけ。報告どおり）
-```
