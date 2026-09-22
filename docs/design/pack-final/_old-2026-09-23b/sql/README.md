@@ -12,13 +12,9 @@
   - 関数・ポリシーの中の select の部分を「行を返さない形（where false）」で本番に流す → 文法・列・型のエラー 0
     （my_entitlements の集計・公開ページの組み立て・performances の条件・請求の変更の列の並べ方・YouTube の正規表現・導入期間の式）
   - 導入期間の式を6通りで流す → 期待どおり（うるう年 2028-02-29 を含む）
-  - ★10〜14（2026-09-23 追加）も同じ事前確認: 新しい表の名前11個はぶつからない／引き金を付ける7表の id と org_id の有無を確認（org_invitations に id 無し）／jsonb の差分の取り方を本番で試した
   - ★10・11（2026-09-23 追加）も同じ事前確認: 参照する列 16個すべてあり／新しい表の名前6つはぶつからない／
     my_timetable.weekday は smallint・period_id は uuid（slot_key の作り方をそれに合わせた）／メールの正規表現・日本時間の日付・住所の作り方を本番で流して確認
 見つけて直した:
-  ③ 10: rotate_calendar_token の中で gen_random_bytes が見つからない（pgcrypto が extensions スキーマにあり、関数は search_path='public' で固定しているため）
-     → extensions.gen_random_bytes(24) と名指しにした（search_path を広げる㋐は採らない。security definer の関数の search_path は狭いまま保つ）
-     ※列の既定値は insert のときの search_path で解けるので動いていた。同じ理由で既定値も名指しに直した
   ① 01: purchases_status_check が本番に既にある（status in ('active','expired')）。if not exists で飛ばされ、'ended_early' を入れると違反になるところだった
      → 作り直して ('active','expired','ended_early')。'expired' は既存の値として残した
   ② 03: date_trunc に date を渡すと timestamptz になり、immutable と書いた関数が本当は immutable でなかった → p_start::timestamp に
@@ -45,15 +41,14 @@
 | 08_portfolio_performance | 録画は YouTube だけ・公開ページは get_public_portfolio だけ・本番の記録は在籍する学校の行事だけ | 裁定167 B1・B2・C3 | ―（出す列は名指しにした） |
 | 09_drop_org_message_reads | 古い表を消す | 裁定159 §8 | リポジトリに呼び出し0件 |
 
-| 10_lesson_allocation（★2026-09-23 修正） | レッスン割：回・希望（◎△×）・だめな日・カレンダーの住所・地図・授業コマの自動× | 裁定139・152 R4 | 見本の「日程を組む」と slot_key の作り方を合わせる。★rotate_calendar_token は extensions.gen_random_bytes に直した（pgcrypto は extensions スキーマ） |
+| 10_lesson_allocation | レッスン割：回・希望（◎△×）・だめな日・カレンダーの住所・地図・授業コマの自動× | 裁定139・152 R4 | 見本の「日程を組む」と slot_key の作り方を合わせる |
 | 11_portfolio_homepage | 節（kind）を15種に・形を「持つ」・選び直しの無料/480円・お問い合わせの受け口 | 裁定127・128・129・146 | 型の鍵（type_key）の名前を見本と揃える |
-
-| 12_productions_core | 公演：公演・出演者と運営・表（行×枠）・稽古と本番・変わったもの | 裁定141〜152 | 見本の枠の作りと突き合わせ |
-| 13_production_children | 子ども（保護者が持ち主）・緊急の連絡先は RPC だけ（記録を先に書く）・見た記録 | 裁定147・167 C | 画面は出発の後 |
-| 14_ops_audit_log | 学校の管理の操作の記録（列の名前だけ・値は残さない）・2年で消す | 裁定169 #8 | org_invitations に id 列が無い（target_id は null になる） |
 
 ## まだ書いていない（裁定171 の週の順に Opus が書く）
 
 | 何 | 中身 | いつまでに Opus が出すか |
 |---|---|---|
+| 公演の本体 | 公演・8種類・行×枠・稽古・変わったもの・カレンダーの住所・入り・楽屋・雛形（裁定141〜152） | 10/2（承認 10/5） |
+| 公演の子ども | 保護者が持ち主の子どもの枠・緊急の連絡先を記録してから見せる RPC（裁定147・167 C） | 10/2（画面は出発の後） |
+| 管理の操作の記録 | 学校の管理の操作をまとめて残す（裁定169 #8） | 10/9 |
 | 本番の試しデータを消す | FX9（坂本さんの判断のあと） | 10/6 |

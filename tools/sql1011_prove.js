@@ -7,7 +7,11 @@
 //   ③締切の 過ぎた 回には 書けない
 //   ④`pref_map` は **数だけ** 返す（★名前の 列が 無い）
 //   ⑤カレンダーの 住所を 作り直せる（★前と ちがう ものに なる）
-//   ⑥`set_web_type` …… 14日の あいだは ただ
+//   ⑥`set_web_type` …… 4つの 枝を ぜんぶ 通します
+//     ⑥-1 持って いる 形へ …… `ok_owned`（★いつでも ただ）
+//     ⑥-2 14日の あいだ ……… `ok_trial`
+//     ⑥-3 分野ごとに 1つ …… `ok_field_free`
+//     ⑥-4 それ以外 ………… `need_payment`
 //   ⑦紙の 型は いつでも 変えられる
 //   ⑧公開して いない slug への 問い合わせ → false（★理由を 返さない）
 //   ⑨公開して いる slug → true・1行 増える
@@ -97,9 +101,54 @@ const みる = (名, ok, 註) => { 数 += 1; if (!ok) 落 += 1;
 
   console.log("\n=== 二 ポートフォリオ／ホームページ（sql/11）===");
   {
-    const { data, error } = await sb.rpc("set_web_type", { p_type_key: "shinpuru" });
-    みる("⑥set_web_type が 答えを 返す", !error && typeof data === "string",
-      error ? String(error.message).slice(0, 46) : String(data));
+    // ★★4つの 枝を 1つずつ 作って 通します。
+    //   ★★★試しの 行を 直して から 呼びます。★呼ぶ 順で 答えが 変わります。
+    const 直す = (sql) => 台(sql, true);
+    const 消す = () => 直す(`delete from public.page_types_owned where user_id = '${私のid}'`);
+
+    // ⑥-4 それ以外（★14日でも 無く、★分野も 空）
+    消す();
+    直す(`update public.portfolios set trial_until = null, field = null, web_type = null
+            where user_id = '${私のid}'`);
+    const a = await sb.rpc("set_web_type", { p_type_key: "kata-a" });
+    みる("⑥-4 それ以外 → need_payment", !a.error && a.data === "need_payment",
+      a.error ? String(a.error.message).slice(0, 46) : String(a.data));
+
+    // ⑥-3 分野ごとに 1つ ただ
+    直す(`update public.portfolios set field = 'seigaku' where user_id = '${私のid}'`);
+    const b = await sb.rpc("set_web_type", { p_type_key: "kata-b" });
+    みる("⑥-3 分野ごとに 1つ → ok_field_free", !b.error && b.data === "ok_field_free",
+      b.error ? String(b.error.message).slice(0, 46) : String(b.data));
+
+    // ⑥-1 持って いる 形へ 戻る（★いま `kata-b` を 持って います）
+    const c = await sb.rpc("set_web_type", { p_type_key: "kata-b" });
+    みる("⑥-1 持って いる 形へ → ok_owned", !c.error && c.data === "ok_owned",
+      c.error ? String(c.error.message).slice(0, 46) : String(c.data));
+
+    // ★2つ目の 分野ただは 使えない（★1回 きり）
+    const d = await sb.rpc("set_web_type", { p_type_key: "kata-c" });
+    みる("⑥-3-2 分野ただは 1回 きり → need_payment", !d.error && d.data === "need_payment",
+      d.error ? String(d.error.message).slice(0, 46) : String(d.data));
+
+    // ⑥-2 14日の あいだ
+    消す();
+    直す(`update public.portfolios set trial_until = now() + interval '7 days'
+            where user_id = '${私のid}'`);
+    const e = await sb.rpc("set_web_type", { p_type_key: "kata-d" });
+    みる("⑥-2 14日の あいだ → ok_trial", !e.error && e.data === "ok_trial",
+      e.error ? String(e.error.message).slice(0, 46) : String(e.data));
+
+    // ★期限が 過ぎたら もう ただでは ない
+    直す(`update public.portfolios set trial_until = now() - interval '1 day'
+            where user_id = '${私のid}'`);
+    消す();
+    直す(`update public.portfolios set field = null where user_id = '${私のid}'`);
+    const f = await sb.rpc("set_web_type", { p_type_key: "kata-e" });
+    みる("⑥-2-2 期限が 過ぎたら → need_payment", !f.error && f.data === "need_payment",
+      f.error ? String(f.error.message).slice(0, 46) : String(f.data));
+    消す();
+    直す(`update public.portfolios set trial_until = null, field = null, web_type = null
+            where user_id = '${私のid}'`);
   }
   {
     const { data, error } = await sb.from("portfolios")

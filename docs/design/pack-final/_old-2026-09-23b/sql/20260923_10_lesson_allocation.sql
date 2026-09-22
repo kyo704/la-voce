@@ -36,7 +36,7 @@ create table if not exists public.lesson_ng_dates (
 -- 1人1つのカレンダーの住所（裁定139 ics・152 R1）。漏れたら作り直せる
 create table if not exists public.calendar_tokens (
   user_id    uuid primary key references auth.users(id) on delete cascade,
-  token      text not null unique default encode(extensions.gen_random_bytes(24), 'hex'),   -- ★pgcrypto は extensions スキーマ（2026-09-23 本番で確認）
+  token      text not null unique default encode(gen_random_bytes(24), 'hex'),
   created_at timestamptz not null default now(),
   rotated_at timestamptz
 );
@@ -147,7 +147,7 @@ returns text language plpgsql security definer set search_path to 'public' as $$
 declare v_token text;
 begin
   if auth.uid() is null then raise exception 'NOT_AUTHENTICATED'; end if;
-  v_token := encode(extensions.gen_random_bytes(24), 'hex');   -- ★スキーマを名指し。search_path は 'public' のまま狭く保つ（㋑を採った）
+  v_token := encode(gen_random_bytes(24), 'hex');
   insert into public.calendar_tokens(user_id, token) values (auth.uid(), v_token)
     on conflict (user_id) do update set token = excluded.token, rotated_at = now();
   return v_token;
