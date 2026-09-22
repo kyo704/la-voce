@@ -12140,8 +12140,11 @@ export default function VocalTracker({
       }
       if (error || !data || data.length === 0) throw error || new Error("0行でした");
       setOrgBilling((prev) => ({ ...prev, [orgId]: { ...(prev[orgId] || {}), ...行, id: data[0].id } }));
-      await supabase.from("org_billing_log")
-        .insert({ org_id: orgId, actor_id: userId, what: logWordForName(changedLabels) });
+      // ★★★2026-09-23、★画面から 記録を 書くのを やめました（★sql/06 の 前提）。
+      //   ★★記録は 台帳の 引き金（`org_billing_log_change`）が 書きます。
+      //   ★★★画面から 書くと、★「呼ばなければ 残らない」に なります。
+      //     ★★S2 の 一件と 同じ 形 です。★書く 人を 1つに します。
+      //   ★★`logWordForName` は まだ 使います …… ★画面に 出す 字 です。
       await fetchBillingLog(orgId);
       return true;
     } catch (err) {
@@ -12180,8 +12183,7 @@ export default function VocalTracker({
       if (error || !data || data.length === 0) throw error || new Error("0行でした");
       setOrgBilling((prev) => ({
         ...prev, [orgId]: { ...(prev[orgId] || {}), ...patch, id: data[0].id } }));
-      await supabase.from("org_billing_log")
-        .insert({ org_id: orgId, actor_id: userId, what: logWordForMethod(choice.label) });
+      // ★★引き金が 書きます（★上と 同じ・sql/06）。
       await fetchBillingLog(orgId);
       return true;
     } catch (err) {
@@ -12751,12 +12753,16 @@ export default function VocalTracker({
       const 中身 = sets.map((s) => ({
         set: s, rows: exportRowsFor(s.key, exportDataFor(orgId, opts.dateFmt))
       }));
-      const { data, error } = await supabase.from("export_log")
-        .insert(中身.map((x) => ({
-          org_id: orgId, user_id: userId, what: x.set.label, rows: x.rows.length
-        })))
-        .select("id");
-      if (error || !data || data.length === 0) throw error || new Error("0行でした");
+      // ★★★2026-09-23、★表に 直に 入れるのを やめました（★sql/06 の 前提）。
+      //   ★★道（`record_export`）を 通ります。★中で 在籍を 確かめてから 書きます。
+      //   ★★★「先に 記録し、★残せなければ 出さない」は そのまま です。
+      //     ★1つでも 残せなければ、★下の 書き出しへ 進みません。
+      for (const x of 中身) {
+        const { error } = await supabase.rpc("record_export", {
+          p_org_id: orgId, p_what: x.set.label, p_rows: x.rows.length
+        });
+        if (error) throw error;
+      }
 
       中身.forEach((x) => {
         const csv = buildCsv({
