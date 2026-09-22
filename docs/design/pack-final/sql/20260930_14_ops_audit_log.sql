@@ -1,9 +1,17 @@
 -- 20260930_14 管理の操作の記録（裁定169 #8）。大学の確認票の「操作の記録」に答えるため
 -- 何を残すか: 学校の管理の操作（名簿・役職・招待・請求・レッスン割の確定）。中身（体調の記録）は残さない
+--
+-- ★★org_id に 外部キーを 付けてはいけない（2026-09-23 の事故。Opus の誤り）
+--   PostgreSQL は 親（organizations）の行を 先に 消し、そのあとで 子（org_events ほか）を 連鎖で消す。
+--   子が消えるときに この引き金が動き、すでに 消えた 学校の id で 1行 書こうとするため、外部キー違反で
+--   ★「学校を閉じる」処理そのものが 失敗する。
+--   記録は 親より 長生きするもの（学校が消えても、誰が何をしたかは残す）。だから 外部キーを 持たせない。
+--   ※連鎖で消えてよい 他の記録の表（monka_read_log ほか）とは 考え方が違う。ここは 消さない側
 
 create table if not exists public.ops_audit_log (
   id            uuid primary key default gen_random_uuid(),
-  org_id        uuid references public.organizations(id) on delete set null,
+  org_id        uuid,                       -- ★外部キーを付けない（記録は 親より 長生きする）。理由は下の注記
+  org_name_at   text,                        -- そのときの学校の名前（学校が消えても読めるように）
   actor_id      uuid references auth.users(id) on delete set null,
   actor_post_at text,
   action        text not null,                 -- 'insert' | 'update' | 'delete'
@@ -34,8 +42,9 @@ begin
   end if;
   select q.name into v_post from public.memberships m left join public.org_posts q on q.id = m.post_id
    where m.org_id = v_org and m.user_id = auth.uid();
-  insert into public.ops_audit_log(org_id, actor_id, actor_post_at, action, target_kind, target_id, detail)
-  values (v_org, auth.uid(), v_post, lower(tg_op), tg_table_name, v_id, jsonb_build_object('columns', v_cols));
+  insert into public.ops_audit_log(org_id, org_name_at, actor_id, actor_post_at, action, target_kind, target_id, detail)
+  values (v_org, (select o.name from public.organizations o where o.id = v_org),   -- 学校が消えていれば null
+          auth.uid(), v_post, lower(tg_op), tg_table_name, v_id, jsonb_build_object('columns', v_cols));
   if tg_op = 'DELETE' then return old; end if;
   return new;
 end $$;
@@ -71,3 +80,4 @@ revoke all on function public.purge_ops_audit_log() from public, anon, authentic
 -- master も post も持たない人 → 0行／別の学校の行は見えない
 -- 体調の記録（entries）には引き金が付いていないこと
 -- purge_ops_audit_log: 91日前の行が消え、89日前の行は残る
+-- ★学校を閉じる（organizations の delete）が 最後まで通ること。閉じたあとも ops_audit_log の行が残ること

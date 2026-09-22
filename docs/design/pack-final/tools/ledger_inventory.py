@@ -18,11 +18,14 @@
   A5 本番の移行の名前に seed／test／demo／screenshot／furniture（本番に試しのデータ）
   A6 TRUNCATE を持つ表（REST からは出せないが、権限でも閉じる）
   A7 entries を読む security definer の関数が許可リストの外（先生が生徒の記録を見る道を作らない。裁定167）
+     ★判定は「from / join / update / into のあとに entries が来るとき」だけ。文字列としての 'entries' では拾わない
   A8 表ごと（列を絞らない）の UPDATE・INSERT を authenticated が持っている表（裁定164 W2 の型。列ごとに絞るべきか見る）（先生が生徒の記録を見る道を作らない。裁定167）"""
 import json, sys, os, re
 HERE=os.path.dirname(os.path.abspath(__file__))
 OWN_ONLY_LOGS={'email_change_log'}                 # 本人の操作の記録。退会で消えてよい
-ANON_OK={'accept_guardian_consent(p_token text)'}   # 保護者はログインしない（合言葉で）
+ANON_OK={'accept_guardian_consent(p_token text)',                 # 保護者はログインしない（合言葉で）
+  'get_public_portfolio(p_slug text)',                             # 公開ページは未ログインで見る（裁定167 B1）
+  'submit_inquiry(p_slug text, p_name text, p_email text, p_body text)'}   # 公開ページのお問い合わせ（裁定128）
 TABLE_WRITE_OK={'entries','notes','events','cycle_periods','performances','performance_results','portfolios','portfolio_entries','portfolio_recordings',
   'article_notes','article_progress','chapter_state','matching_cuts','matching_reports','postings','applications','application_messages','org_message_drafts',
   'my_periods','my_timetable','lesson_prefs','lesson_ng_dates','koen_kids','consent_records','minor_billing_consents','link_consents','org_message_reads',
