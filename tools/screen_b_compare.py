@@ -133,7 +133,9 @@ def 見本の中身(key):
       # ★`var なにか=[ { … } ]` の 中の 字
       for m in re.finditer(r"var\s+\w+\s*=\s*\[[\s\S]{0,12000}?\]\s*;", 本):
         blk = m.group(0)
-        if "{" not in blk: continue
+        # ★★`[{…},{…}]` だけで なく、★`[['4月','先生 6',…],[…]]` の 形も 中身 です。
+        #   ★見本は 表の 中身を 手で 並べて います。★実装は 台帳から 引きます。
+        if "{" not in blk and "[" not in blk[blk.index("[") + 1:]: continue
         for mm in re.finditer(r"'([^']{2,})'", blk):
           中.add(字だけ(mm.group(1)))
       # ★★`<textarea>…</textarea>` の 中の 字は、★その方が 書いた もの です。
