@@ -174,6 +174,11 @@ def くらべる(見, 実, key, 中身, 本文):
     w = t.strip()
     if len(字だけ(w)) < 4: continue          # ★短すぎる 字は 数えません
     if not re.search(r"[ぁ-んァ-ヶ一-龠]", w): continue
+    # ★★★見本の もとの かけら が 混ざる ことが あります。
+    #   ★`askShow('…<br>…',false,function(){…})` の ように、★字の 中に `<br>` が あると、
+    #     ★札を 外す ところで 切れて、★後ろの JavaScript が くっついて 出ます。
+    #   ★★それは「見える 字」では ありません。★落とします。
+    if re.search(r"(?:function\s*\(|curP\(\)|\bdraw\(\)|',\s*(?:true|false)\b|\}\)\s*\")", w): continue
     if w not in 語: 語.append(w)
   在, 無, 除, 데 = [], [], [], []
   実字 = 字だけ(実)
