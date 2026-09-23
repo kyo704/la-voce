@@ -97,7 +97,7 @@ insert into public.page_type_catalog(type_key, name, note, fields, sort_order) v
  ('t11','ボイス','声の サンプルが 最上部','{voice}',11),
  ('t12','収録','持ち役を 作品ごとに','{voice}',12),
  ('t13','宣材','写真が 主役・身長と できること','{stage}',13),
- ('t14','器楽','使っている 楽器の 札・協奏曲／室内楽／リサイタル','{music}',14),
+ ('t14','器楽','楽器の 札・協奏曲／室内楽／リサイタル','{music}',14),
  ('t15','指揮・作曲','作品目録と 指揮した 団体','{music}',15)
 on conflict (type_key) do update set name = excluded.name, note = excluded.note, fields = excluded.fields, sort_order = excluded.sort_order;
 

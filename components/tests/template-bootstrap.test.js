@@ -25,7 +25,9 @@ const code = readCode("app", "api", "org", "posts", "route.js");
 console.log("① 行き止まりが 直っていること");
 t(/insert\(rows\)\.select\("id, name"\)/.test(code), "★作った 役職の id を 受け取っている");
 t(/TEMPLATE_POSTS\[0\]\.name/.test(code), "★いちばん 上の 役職を 探している");
-t(/\.update\(\{ post_id: top\.id \}\)/.test(code), "★作った方に 付けている");
+// ★★2026-09-23、★道を 通す 形に しました（★裁定173）。
+t(/rpc\("set_member_post", \{[\s\S]{0,140}p_post_id: top\.id/.test(code),
+  "★作った方に 付けている");
 t(/made: rows\.length, mine/.test(code), "★付いたかどうかを 返している");
 
 console.log("\n② 上書きしないこと（★黙って 消さない）");
@@ -33,7 +35,8 @@ t(/!member\.post_id/.test(code), "★すでに 役職が ある 方には 付け
 
 console.log("\n③ 自分にだけ 付けること（★他人に 付けない）");
 const seg = raw.slice(raw.indexOf('action === "template"'), raw.indexOf('action === "add"'));
-t(/\.eq\("user_id", user\.id\)/.test(seg), "★付け先は 自分（user.id）");
+// ★★道の 引数で 渡します（★`.eq` では ありません）。
+t(/p_user_id: user\.id/.test(seg), "★付け先は 自分（user.id）");
 t(!/body\.userId/.test(seg), "★要求の 中の 誰かに 付けない");
 t(/\.eq\("org_id", orgId\)/.test(seg), "★その学校の 名簿に 限っている");
 

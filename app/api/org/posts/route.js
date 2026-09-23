@@ -158,8 +158,14 @@ export async function POST(request) {
     const top = (made || []).find((r) => r.name === TEMPLATE_POSTS[0].name);
     let mine = null;
     if (top && !member.post_id) {
-      const { error: e2 } = await admin.from("memberships")
-        .update({ post_id: top.id }).eq("org_id", orgId).eq("user_id", user.id);
+      // ★★★2026-09-23、★道を 通す 形に しました（★裁定173 ／ 3点セットの ㋑-2）。
+      //   ★★`set_member_post` が、★同じ 取引の 中で 印（`app.actor_id`）を 置いてから 変えます。
+      //   ★★★直に `update` すると、★引き金の 中の `actor_id()` が **null** に なります。
+      //     ★★`supabase-js` は 1つの 呼びを 1つの 取引で 走らせます。
+      //       ★別の 呼びで `set_config` を しても、★印は もう 消えて います（2026-09-23 に 確かめました）。
+      const { error: e2 } = await admin.rpc("set_member_post", {
+        p_org_id: orgId, p_user_id: user.id, p_post_id: top.id, p_actor: user.id
+      });
       // ★★付けられなくても、★10は できています。★そこは 巻き戻しません。
       //   ★★返事で はっきり お伝えします（★mine が null のまま）。
       if (!e2) mine = top.name;
@@ -200,11 +206,14 @@ export async function POST(request) {
       }
     }
     // ★★`assign` と 同じ 形に します（★2026-09-18）。★片方だけ 直しません。
-    const { data: done, error } = await admin.from("memberships")
-      .update({ post_id: null }).eq("org_id", orgId).eq("user_id", targetUser)
-      .select("user_id");
+    // ★★道を 通します（★上と 同じ・裁定173）。★返りは「1行 当たったか」です。
+    const { data: done, error } = await admin.rpc("set_member_post", {
+      p_org_id: orgId, p_user_id: targetUser, p_post_id: null, p_actor: user.id
+    });
     if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
-    if (!done || done.length === 0) {
+    // ★★★道は「1行 当たったか」を **真偽** で 返します（★配列では ありません）。
+    //   ★★`done.length` を 見ると、★いつも 0行 だと 読んで しまいます。
+    if (done !== true) {
       console.error("★役職を 外せません でした（0行）:", { orgId, targetUser });
       return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
     }
@@ -288,11 +297,14 @@ export async function POST(request) {
     //   ★★いまは 直前に その 行を 引いて いる ので、★実害は 出て いません。
     //     ★★けれど「引いた あと、★書く 前に 消えた」ことは ありえます。
     //     ★★2026-09-16、★教室を やめる が まさに これで 黙って 失敗しました。
-    const { data: done, error } = await admin.from("memberships")
-      .update({ post_id: postId }).eq("org_id", orgId).eq("user_id", targetUser)
-      .select("user_id");
+    // ★★道を 通します（★上と 同じ・裁定173）。
+    const { data: done, error } = await admin.rpc("set_member_post", {
+      p_org_id: orgId, p_user_id: targetUser, p_post_id: postId, p_actor: user.id
+    });
     if (error) return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
-    if (!done || done.length === 0) {
+    // ★★★道は「1行 当たったか」を **真偽** で 返します（★配列では ありません）。
+    //   ★★`done.length` を 見ると、★いつも 0行 だと 読んで しまいます。
+    if (done !== true) {
       console.error("★役職を 付けられません でした（0行）:", { orgId, targetUser, postId });
       return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
     }

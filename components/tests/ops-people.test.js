@@ -68,11 +68,15 @@ t("★付ける ときは assign", /action: "assign", postId, userId/.test(vt));
 t("★外す ときは unassign", /action: "unassign", userId/.test(vt));
 
 console.log("\n=== ⑥ 0行を 成功に しない ===");
-t("★★assign が 行数を 見て いる",
-  /update\(\{ post_id: postId \}\)[\s\S]{0,120}\.select\("user_id"\)/.test(api));
-t("★★unassign も 行数を 見て いる",
-  /update\(\{ post_id: null \}\)[\s\S]{0,120}\.select\("user_id"\)/.test(api));
-t("★0行なら 断る", (api.match(/done\.length === 0/g) || []).length >= 2);
+// ★★★2026-09-23、★道を 通す 形に しました（★裁定173 ／ ㋑-2）。
+//   ★★前 …… `.update({ post_id: … }).select("user_id")` で 行数を 見て いました。
+//   ★★いま … `set_member_post(…)` が **真偽** を 返します。
+//   ★★★見る ところは 同じ です ── ★「当たらなかった ときに 断る」。
+t("★★assign が 道を 通って いる",
+  /rpc\("set_member_post", \{[\s\S]{0,140}p_post_id: postId/.test(api));
+t("★★unassign も 道を 通って いる",
+  /rpc\("set_member_post", \{[\s\S]{0,140}p_post_id: null/.test(api));
+t("★当たらなかったら 断る", (api.match(/done !== true/g) || []).length >= 2);
 
 console.log("\n=== ⑦ 見本と くらべる（★較正）===");
 t("★見本に stPeople が ある", mihon.includes("function stPeople("));

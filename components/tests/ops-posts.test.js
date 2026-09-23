@@ -88,7 +88,18 @@ ok(/mayChangePerson\(perms, cur\)/.test(api), "★② いま 付いている 役
 // ★★②が 無いと、★自分より 強い 方を 降ろせて しまいます。
 ok((api.match(/mayChangePerson\(perms, cur\)/g) || []).length === 2,
   "★付けるときも 外すときも、両方で 確かめている");
-ok(/update\(\{ post_id: null \}\)/.test(api), "★外すのは 役職だけ（★人を 消さない）");
+// ★★★2026-09-23、★道を 通す 形に しました（★裁定173 ／ ㋑-2）。
+//   ★★前 …… `.update({ post_id: null })` を 直に。
+//   ★★いま … `set_member_post(… p_post_id: null …)` を 呼びます。
+//   ★★★見る ところは 同じ です ── ★「外すのは **役職だけ**」。
+//     ★人（`memberships` の 行）を 消して いない こと。
+ok(/rpc\("set_member_post", \{[\s\S]{0,120}p_post_id: null/.test(api),
+  "★外すのは 役職だけ（★人を 消さない）");
+ok(!/from\("memberships"\)[\s\S]{0,80}\.delete\(/.test(api),
+  "★人の 行を 消して いない");
+// ★★★直に `update({ post_id` を 書いて いない こと（★㋑-3 の 見張り）。
+//   ★★直に 書くと、★引き金の `actor_id()` が null に なり、★「誰が」が 黙って 消えます。
+ok(!/\.update\(\{ post_id/.test(api), "★post_id を 直に 書いて いない（★裁定173）");
 const roster = readCode("components", "OpsRoster.jsx");
 ok(/mayGrantPost\(myPerms, p\)/.test(roster), "★画面も lib に 尋ねている");
 ok(/mayChangePerson\(myPerms, mine\)/.test(roster), "★触れるかも lib に 尋ねている");
