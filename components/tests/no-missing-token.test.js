@@ -89,7 +89,14 @@ const files = [];
 const bad = [];
 files.forEach((rel) => {
   if (rel === path.join("lib", "tokens.js")) return;
-  const code = readCode(...rel.split(path.sep));
+  // ★★★字の 中は 見ません（2026-09-23）。
+  //   ★`lib/worksSearch.js` に 作曲家「C.T.スミス」が あり、★`C.T` と 読まれて いました。
+  //   ★★人の 名前です。★色の 名前では ありません。
+  //   ★★★`C.なにか` が 字の 中に ある ことは ありません。★落として よい ものです。
+  const code = readCode(...rel.split(path.sep))
+    .replace(/"(?:[^"\\]|\\.)*"/g, '""')
+    .replace(/'(?:[^'\\]|\\.)*'/g, "''")
+    .replace(/`(?:[^`\\]|\\.)*`/g, "``");
   // ★★C.◯◯ の 形だけを 見ます。★C は tokens の 色の 束です。
   [...code.matchAll(/\bC\.([a-zA-Z][a-zA-Z0-9]*)\b/g)].forEach((m) => {
     if (!known.has(m[1])) bad.push(`${rel} → C.${m[1]}`);
