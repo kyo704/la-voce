@@ -82,6 +82,12 @@ import LessonRoundArea from "@/components/LessonRoundArea";
 //   ★★★「もっと」から 行けます。★行けない 画面を 作らない ため です
 //     （★2026-09-23、★レッスン割の 4画面が どこからも 呼ばれて いませんでした）。
 import ClassTimeShare from "@/components/ClassTimeShare";
+// ★★★学校の 設定の 中の 3画面（★裁定183 P3・P4 ／ 裁定186・2026-09-24）。
+//   ★★見本では どれも 設定の 1節 です（`stYousu` ／ `stMonkaWay`）。
+//     ★★別の タブに しません。★毎日 見る ものでは ありません。
+import OrgSummary from "@/components/OrgSummary";
+import OrgFirstWeek from "@/components/OrgFirstWeek";
+import MonkaWaySetting from "@/components/MonkaWaySetting";
 import MonkaPickTeacher from "@/components/MonkaPickTeacher";
 import { COLS_SETTINGS as MONKA_COLS, studentCanChoose } from "@/lib/monkaWay";
 import { loadFeatures } from "@/lib/featureOn";
@@ -17931,6 +17937,30 @@ export default function VocalTracker({
                           error={divisionError}
                           onAdd={(row) => handleAddDivision(opsOrgId, row)}
                           onRemove={(row) => handleRemoveDivision(opsOrgId, row)} />
+                      ) : null,
+                      /* ★★★学校の ようす（★見本 `stYousu`・裁定183 P3・P4／2026-09-24）。
+                           ★★2つ です ── ★半年の まとめ と、★はじめの 1週間。
+                           ★★★どちらも **数だけ** です。★体調の ことは 1つも 入りません。
+                             ★5人 未満の 月は「―」。★順位も 比べも 点数も 出しません。
+                           ★★「はじめの 1週間」は、★4つ 終わると **消えます**。
+                             ★★消えた あとも まとめは 残ります。★別の ものです。 */
+                      yousu: canOps(gate, "master") ? (
+                        <div style={{ marginTop: 16 }}>
+                          <OrgSummary supabase={featureClient} orgId={opsOrgId}
+                            orgName={(myOrgs.find((mm) => mm.org_id === opsOrgId) || {}).org
+                              ? myOrgs.find((mm) => mm.org_id === opsOrgId).org.name : ""} />
+                          <div style={{ marginTop: 22 }}>
+                            <OrgFirstWeek supabase={featureClient} orgId={opsOrgId} />
+                          </div>
+                        </div>
+                      ) : null,
+                      /* ★★★門下の 決め方（★見本 `stMonkaWay`・裁定186／2026-09-24）。
+                           ★★学校が 3つから 選びます。★既定は「先生が 招く」。
+                           ★★★書くのは 台帳の `set_monka_way` です。★記録が 残ります。 */
+                      monkaway: canOps(gate, "master") ? (
+                        <div style={{ marginTop: 16 }}>
+                          <MonkaWaySetting supabase={featureClient} orgId={opsOrgId} />
+                        </div>
                       ) : null,
                       /* ★★★時間の 割り方（★見本 `stKoma`・2026-09-20）。
                            ★★学校の 方は 見えます。★直せるのは `koma` だけ です。 */

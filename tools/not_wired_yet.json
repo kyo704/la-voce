@@ -19,7 +19,5 @@
   "ScoreEntry": "★採点の 機能は 台帳の 鍵（`scoring`）が off です。★いつ つなぐ …… `scoring` を 開ける 前。★`featureOn(features,'scoring')` の 中に 入れます",
   "JuryPanel": "★採点の 機能は 台帳の 鍵（`scoring`）が off です。★いつ つなぐ …… `scoring` を 開ける 前。★`featureOn(features,'scoring')` の 中に 入れます",
   "JuryLayout": "★採点の 機能は 台帳の 鍵（`scoring`）が off です。★いつ つなぐ …… `scoring` を 開ける 前。★`featureOn(features,'scoring')` の 中に 入れます",
-  "OrgSummary": "★学校の 画面です。★いつ つなぐ …… 学校の「もっと」に 入れる とき（★裁定183 の 3画面を まとめて）",
-  "OrgFirstWeek": "★学校の 画面です。★いつ つなぐ …… 学校の「もっと」に 入れる とき（★裁定183 の 3画面を まとめて）",
   "RoundStart": "★レッスン割の 機能は 台帳の 鍵（`lesson_rounds`）が off です。★いつ つなぐ …… `lesson_rounds` を 開ける 前。★`LessonRoundArea` と 同じ ところに 入れます"
 }
