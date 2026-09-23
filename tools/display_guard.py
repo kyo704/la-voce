@@ -108,20 +108,24 @@ def selftest():
   print("★★当たり合わせ")
   ok = True
   # ㋐ ある はずの 印を 1つ 足した 行 …… ★無い 印を 混ぜると 落ちる
+  #   ★★★2026-09-23 …… ★`hadPerformanceOrLesson` を やめました。
+  #     ★裁定111追補 で レーンが 無く なり、★この 名も 消えました。
+  #     ★★当たり合わせの「必ず ある もの」が 消えると、★道具の ほうが 落ちます。
+  #     ★★★だから、★いま 確かに ある 名を 使います（★`function Metric(`）。
   行 = {"ruling": "test", "screen": "ためし", "shows": "ためし",
-        "markers": ["hadPerformanceOrLesson", "konna_namae_wa_nai"],
+        "markers": ["function Metric(", "konna_namae_wa_nai"],
         "must": "ある", "where": ["components/LineUpChart.jsx"]}
   よ, 言 = 見る(行)
   print("   ㋐ 無い 印を 混ぜる → %s（%s）" % ("★見つけました" if not よ else "★★見のがし", 言))
   ok = ok and not よ
   # ㋑ ある 印だけ なら 通る
-  行["markers"] = ["hadPerformanceOrLesson"]
+  行["markers"] = ["function Metric("]
   よ, 言 = 見る(行)
   print("   ㋑ ある 印だけ → %s（%s）" % ("★通りました" if よ else "★★落ちました", 言))
   ok = ok and よ
   # ㋒「ない」の 行 …… ★本当に ある ものを 挙げると 落ちる
   行 = {"ruling": "test", "screen": "ためし", "shows": "ためし",
-        "markers": ["hadPerformanceOrLesson"], "must": "ない",
+        "markers": ["function Metric("], "must": "ない",
         "where": ["components/LineUpChart.jsx"]}
   よ, 言 = 見る(行)
   print("   ㋒「ない」に ある ものを 挙げる → %s" % ("★見つけました" if not よ else "★★見のがし"))

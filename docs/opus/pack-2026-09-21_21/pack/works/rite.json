@@ -1,0 +1,172 @@
+{
+  "title": "春の祭典",
+  "title_original": "Le Sacre du printemps",
+  "aliases": [
+    "ハルサイ",
+    "Sacre"
+  ],
+  "composer": "ストラヴィンスキー",
+  "composer_sort": "Stravinsky, Igor",
+  "kind": "dance",
+  "year_written": 1913,
+  "duration_min": 35,
+  "source": "hand",
+  "source_id": "stravinsky-rite",
+  "roles": [
+    {
+      "label": "いけにえの乙女"
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 大地礼賛 序奏",
+      "group_label": "第1部",
+      "roles": [
+        "群舞"
+      ]
+    },
+    {
+      "label": "第1部 春のきざし・乙女たちの踊り",
+      "group_label": "第1部",
+      "roles": [
+        "群舞"
+      ]
+    },
+    {
+      "label": "第1部 誘拐の遊戯／春のロンド",
+      "group_label": "第1部",
+      "roles": [
+        "群舞"
+      ]
+    },
+    {
+      "label": "第1部 大地への口づけ／大地の踊り",
+      "group_label": "第1部",
+      "roles": [
+        "群舞"
+      ]
+    },
+    {
+      "label": "第2部 いけにえ 序奏",
+      "group_label": "第2部",
+      "roles": [
+        "群舞"
+      ]
+    },
+    {
+      "label": "第2部 乙女たちの神秘的な集い",
+      "group_label": "第2部",
+      "roles": [
+        "いけにえの乙女",
+        "群舞"
+      ]
+    },
+    {
+      "label": "第2部 いけにえの賛美／祖先の呼び出し",
+      "group_label": "第2部",
+      "roles": [
+        "群舞"
+      ]
+    },
+    {
+      "label": "第2部 いけにえの踊り",
+      "group_label": "第2部",
+      "roles": [
+        "いけにえの乙女"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 5,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 5,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 8,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 5,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 6,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

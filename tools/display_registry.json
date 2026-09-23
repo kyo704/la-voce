@@ -25,60 +25,17 @@
   {
    "ruling": "111",
    "screen": "くらべる（ならべる）",
-   "shows": "本番・レッスンの 日の 帯",
-   "markers": [
-    "hadPerformanceOrLesson"
-   ],
-   "must": "ある",
-   "where": [
-    "components/LineUpChart.jsx"
-   ],
-   "added": "2026-09-23"
-  },
-  {
-   "ruling": "111",
-   "screen": "くらべる（ならべる）",
-   "shows": "レーンの 構造（★7つの うち 5つまで・1つは 残す）",
-   "markers": [
-    "LANES",
-    "LANE_DEFAULT",
-    "toggleLane",
-    "LANE_MIN_REASON",
-    "LANE_MAX_REASON"
-   ],
-   "must": "ある",
-   "where": [
-    "components/LookBackV2.jsx"
-   ],
-   "added": "2026-09-23"
-  },
-  {
-   "ruling": "111",
-   "screen": "くらべる（ならべる）",
-   "shows": "◎○△ の 凡例と 帯の 説明",
-   "markers": [
-    "laneWord",
-    "◎＝出た／よい・ない",
-    "たての 帯"
-   ],
-   "must": "ある",
-   "where": [
-    "components/LookBackV2.jsx"
-   ],
-   "added": "2026-09-23"
-  },
-  {
-   "ruling": "111",
-   "screen": "くらべる（ならべる）",
    "shows": "色は 2系統だけ（★えんじ＝◎○△ の もの／みどり＝量の もの。★良し悪しでは ない）",
    "markers": [
-    "tone === \"midori\" ? C.sage : C.curtain"
+    "tint = C.curtain",
+    "tint={C.sage}"
    ],
    "must": "ある",
    "where": [
     "components/LineUpChart.jsx"
    ],
-   "added": "2026-09-23"
+   "added": "2026-09-23",
+   "why": "★裁定111追補 §2 …「2系統の 色（えんじ・みどり）は ★指標の 系統を 分ける もの（良い・悪いでは ない）→ ★残す」。★いまの 図では `tint` で 分けて います ──★`C.curtain`（えんじ＝◎○△ の もの）／ `C.sage`（みどり＝量の もの）。"
   },
   {
    "ruling": "119",
@@ -202,6 +159,36 @@
     "components/VocalTracker.jsx"
    ],
    "why": "★入れる 負担を 下げるのが この 品の 考え方 です。★3つ 揃わないと 保存できない のは 重すぎます（★Opus・2026-09-23）。",
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "111追補",
+   "screen": "くらべる（ならべる）",
+   "shows": "★1つの 指標＝1枚の カード。★中は 横棒",
+   "markers": [
+    "Metric(",
+    "horizontal"
+   ],
+   "must": "ある",
+   "where": [
+    "components/LineUpChart.jsx"
+   ],
+   "why": "★裁定111追補（2026-09-23・design-v31）。★レーン・帯・凡例は もう ありません。★見本（woolsong-2026-09-21.zip・aaa791aa）が 正 と 決まりました。",
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "111追補",
+   "screen": "くらべる（ならべる）",
+   "shows": "★「原因かどうかは 分かりません」を いつも 出す",
+   "markers": [
+    "原因かどうかは 分かりません"
+   ],
+   "must": "ある",
+   "where": [
+    "components/LookBackV2.jsx",
+    "lib/lineUp.js"
+   ],
+   "why": "★裁定111 の まま（★追補 §2）。★消してよい ものでは ありません。",
    "added": "2026-09-23"
   }
  ]

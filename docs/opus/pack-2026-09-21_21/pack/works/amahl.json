@@ -1,0 +1,179 @@
+{
+  "title": "アマールと夜の訪問者",
+  "composer": "メノッティ",
+  "composer_sort": "Menotti, Gian Carlo",
+  "kind": "opera",
+  "year_written": 1951,
+  "source": "hand",
+  "source_id": "menotti-amahl",
+  "roles": [
+    {
+      "label": "アマール（少年）"
+    },
+    {
+      "label": "母"
+    },
+    {
+      "label": "カスパール王"
+    },
+    {
+      "label": "メルキオール王"
+    },
+    {
+      "label": "バルタザール王"
+    },
+    {
+      "label": "小姓"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "導入（羊飼いの笛）",
+      "group_label": "全1幕",
+      "roles": [
+        "アマール（少年）"
+      ]
+    },
+    {
+      "label": "母とアマール",
+      "group_label": "全1幕",
+      "roles": [
+        "アマール（少年）",
+        "母"
+      ]
+    },
+    {
+      "label": "三人の王の到着",
+      "group_label": "全1幕",
+      "roles": [
+        "カスパール王",
+        "メルキオール王",
+        "バルタザール王",
+        "小姓",
+        "母",
+        "アマール（少年）"
+      ]
+    },
+    {
+      "label": "羊飼いたちの踊りと合唱",
+      "group_label": "全1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "母のアリア（あの子のために）",
+      "group_label": "全1幕",
+      "roles": [
+        "母"
+      ]
+    },
+    {
+      "label": "盗みと許し",
+      "group_label": "全1幕",
+      "roles": [
+        "母",
+        "小姓",
+        "カスパール王",
+        "メルキオール王",
+        "バルタザール王"
+      ]
+    },
+    {
+      "label": "奇跡とアマールの旅立ち",
+      "group_label": "全1幕",
+      "roles": [
+        "アマール（少年）",
+        "母",
+        "カスパール王",
+        "メルキオール王",
+        "バルタザール王",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "ティンパニ・小太鼓・タンブリン・グロッケン"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

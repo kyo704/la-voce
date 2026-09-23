@@ -1,0 +1,204 @@
+{
+  "title": "アルバート・ヘリング",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1947,
+  "source": "hand",
+  "source_id": "britten-albert",
+  "roles": [
+    {
+      "label": "アルバート"
+    },
+    {
+      "label": "ビロウズ夫人"
+    },
+    {
+      "label": "ミス・ワーズワース"
+    },
+    {
+      "label": "ゲッジ牧師"
+    },
+    {
+      "label": "アップフォールド市長"
+    },
+    {
+      "label": "バッド巡査"
+    },
+    {
+      "label": "シド"
+    },
+    {
+      "label": "ナンシー"
+    },
+    {
+      "label": "ハーバート夫人（アルバートの母）"
+    },
+    {
+      "label": "エミー"
+    },
+    {
+      "label": "シシー"
+    },
+    {
+      "label": "ハリー"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 第1場（ビロウズ夫人の家・委員会）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビロウズ夫人",
+        "ミス・ワーズワース",
+        "ゲッジ牧師",
+        "アップフォールド市長",
+        "バッド巡査",
+        "ハーバート夫人（アルバートの母）"
+      ]
+    },
+    {
+      "label": "第1幕 第2場（八百屋の店先）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルバート",
+        "シド",
+        "ナンシー",
+        "ハーバート夫人（アルバートの母）",
+        "エミー",
+        "シシー",
+        "ハリー"
+      ]
+    },
+    {
+      "label": "第2幕 第1場（戴冠の祝宴）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルバート",
+        "ビロウズ夫人",
+        "ミス・ワーズワース",
+        "ゲッジ牧師",
+        "アップフォールド市長",
+        "バッド巡査",
+        "シド",
+        "ナンシー",
+        "ハーバート夫人（アルバートの母）",
+        "エミー",
+        "シシー",
+        "ハリー"
+      ]
+    },
+    {
+      "label": "第2幕 第2場（アルバートの決心）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルバート",
+        "シド",
+        "ナンシー"
+      ]
+    },
+    {
+      "label": "第3幕（失踪と嘆きの九重唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "ビロウズ夫人",
+        "ミス・ワーズワース",
+        "ゲッジ牧師",
+        "アップフォールド市長",
+        "バッド巡査",
+        "シド",
+        "ナンシー",
+        "ハーバート夫人（アルバートの母）",
+        "エミー",
+        "シシー",
+        "ハリー"
+      ]
+    },
+    {
+      "label": "第3幕 フィナーレ（アルバートの帰還）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルバート",
+        "シド",
+        "ナンシー",
+        "ハーバート夫人（アルバートの母）",
+        "ビロウズ夫人",
+        "エミー",
+        "シシー",
+        "ハリー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind",
+      "doubling": "ピッコロ・アルトフルート"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion",
+      "note": "1人で多数"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings"
+    }
+  ],
+  "title_original": "Albert Herring",
+  "aliases": [
+    "アルバートヘリング"
+  ],
+  "duration_min": 150,
+  "language": "en"
+}

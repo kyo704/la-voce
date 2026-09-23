@@ -1,0 +1,106 @@
+{
+  "title": "ホルン協奏曲第1番 変ホ長調",
+  "title_original": "Hornkonzert Nr. 1",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "orchestra",
+  "year_written": 1883,
+  "source": "hand",
+  "source_id": "strauss-horn1",
+  "duration_min": 16,
+  "roles": [
+    {
+      "label": "ホルン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "ホルン独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アンダンテ",
+      "group_label": "全曲",
+      "roles": [
+        "ホルン独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 ロンド アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "ホルン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

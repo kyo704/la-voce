@@ -92,8 +92,12 @@ function ok(cond, label) {
   ok(L.LINE_UP_STACK_NOTE[0] === "同じ 日付の 軸に、書いたことを 縦に 並べます（鏡です）。",
     "★1行目は 見本の まま");
   ok(/LINE_UP_STACK_NOTE\.map/.test(ui), "★画面が それを 出している");
-  ok(/たての 帯　本番・レッスンの あった日/.test(ui), "★帯が 何かを 書いてある");
-  ok(/◎＝出た／よい・ない/.test(ui), "★◎○△ が 何かを 書いてある");
+  // ★★★2026-09-23・裁定111追補（design-v31）── ★帯・レーン・凡例は 無く なりました。
+  //   ★見本（woolsong-2026-09-21.zip・aaa791aa）が 正 と 決まりました。
+  //   ★★代わりに 守る ものは、★追補 §2 の もの です ──
+  //     ★「原因かどうかは 分かりません」を いつも 出す
+  ok(/原因かどうかは 分かりません/.test(ui) || /原因かどうかは 分かりません/.test(readCode("lib", "lineUp.js")),
+    "★「原因かどうかは 分かりません」を 出して いる");
 
   console.log("⑤ 出さないもの");
   // ★★但し書き そのものを 数えない こと。
@@ -118,35 +122,50 @@ function ok(cond, label) {
   console.log("⑥ 図の 決まり（★見本 stackSVG）");
   const chart = readCode("components", "LineUpChart.jsx");
   // ★★本番・レッスンの 日は、★縦の 帯が 全部の レーンを 貫きます（★裁定 §1-2）。
-  ok(/hadPerformanceOrLesson/.test(chart), "★本番・レッスンの 日を 見ている");
-  ok(/height=\{bot - pt\}/.test(chart), "★帯が 全部の レーンを 貫く");
-  // ★★色は 2系統だけ（★裁定 §1-3）。
-  ok(/tone === "midori" \? C\.sage : C\.curtain/.test(chart), "★えんじ と みどり の 2つだけ");
+  // ★★★裁定111追補 …… ★1つの 指標＝1枚の カード。★中は 横棒。
+  ok(/function Metric\(/.test(chart), "★1つの 指標＝1枚の カード（Metric）");
+  ok(/horizontal/.test(chart), "★14日・4週は 横棒、★3か月は 縦棒");
+  // ★★色は 2系統だけ（★追補 §2 で そのまま 残る）。
+  ok(/tint = C\.curtain/.test(chart) && /tint=\{C\.sage\}/.test(chart),
+    "★えんじ と みどり の 2つだけ（★tint で 分ける）");
   ok(!/#[0-9a-fA-F]{6}/.test(chart.replace(/#FFFDF8/g, "")), "★色を べた書きしていない");
   // ★★書いていない 日で 線を つながない こと。
   //   ★つなぐと、★書いていない 日にも 値が あったように 見えます。
-  ok(/if \(v == null\) \{ if \(cur\.length > 1\) segs\.push\(cur\); cur = \[\]; return; \}/.test(chart),
-    "★書いていない 日で 線を 切る");
-  // ★★見本の 数を 変えていない こと。
-  ok(/W = 880, pl = 66, pr = 16, pt = 10, laneH = 46, gap = 17, pb = 28/.test(chart),
-    "★見本の 寸法の まま");
+  // ★★★裁定111追補 ── ★線が 無く なりました。★棒 です。
+  //   ★★「書いて いない 日で 線を つながない」は、★棒では **起こりえません**。
+  //     ★守る 中身は 変わりません ── ★書いて いない 日に 何も 出さない こと。
+  ok(/value == null \? 0/.test(chart) || /value != null &&/.test(chart),
+    "★書いて いない 日には 何も 出さない");
+  // ★★★裁定111追補 ── ★SVG の 寸法は 無く なりました（★レーンが 無い ため）。
+  //   ★代わりに、★期間の 分かれ目を 見ます（★14日・4週は 横棒／3か月は 縦棒）。
+  ok(/dates\.length <= 28/.test(chart), "★28日を 境に 見せ方を 変える（★見本の とおり）");
 
   console.log("⑥-2 ★消したつもりの なかった もの（★2026-09-11 に 戻しました）");
   // ★★5本レーンに 作り直した とき、★2つを 巻き込んで 消していました。
   //   ★★静止画 A04 の 札は「こえの ちょうし／歌った 時間／気になったこと」です。
   //   ★どちらも ご本人が 書いた ものです。★消しません。
-  ok(/<Bars title=\{tx\("歌った 時間"\)\}/.test(ui), "★歌った 時間 が 出ている");
-  ok(/<Symptoms entries=\{entries\} dates=\{dates\} \/>/.test(ui), "★気になったこと が 出ている");
-  ok(/function Symptoms/.test(ui) && /function Bars/.test(ui), "★部品も 残っている");
+  // ★★★2026-09-23 ── ★「歌った 時間」は、★いまの 見本に ありません（★0件）。
+  //   ★正式な zip（woolsong-2026-09-21.zip・aaa791aa）で 数えました。
+  //   ★★だから ここでは 求めません。★「気になったこと」は 見本に 8件 あります。★残します。
+  ok(/気になったこと/.test(ui), "★気になったこと が 出ている");
+  ok(/function Symptoms/.test(ui), "★部品も 残っている");
   // ★★2つは 別の ものです。★1つに まとめないこと。
-  ok(/sungMinutes/.test(ui), "★歌った 時間 は 活動の 合計");
+  // ★★★「歌った 時間」は いまの 見本に ありません。★この 確かめも 外します。
+  //   ★`lib/lineUp.js` の `sungMinutes` は 残して あります（★消して いません）。
+  ok(/sungMinutes/.test(readCode("lib", "lineUp.js")), "★数え方は lib に 残して ある");
   ok(L.LANES.some((x) => x.field === "nonPerformanceSpeechMinutes"),
     "★声を 使った 時間 は 別の 欄");
 
   console.log("⑦ 画面は 並べるだけ");
-  ok(/LANES\.map/.test(ui), "★札を lib から 出している");
-  ok(/toggleLane\(laneKeys, lane\.key\)/.test(ui), "★出し入れの 決めも lib");
-  ok(/laneSummary\(entries, dates, k\)/.test(ui), "★数えるのも lib");
+  // ★★★裁定111追補 ── ★レーンの 札（「並べるもの」）は 無く なりました。
+  //   ★見本（aaa791aa）に「並べるもの」は 0件 です。
+  //   ★★`lib/lineUp.js` の LANES・toggleLane・laneSummary は **消して いません**。
+  //     ★裁定111 §1-2 が まだ 生きて いる ぶん が あるか、★Opus の お決め 待ち です。
+  //     ★★ここでは「★lib に 残って いる こと」だけ を 見ます。
+  const lineUpLib = readCode("lib", "lineUp.js");
+  ok(/LANES/.test(lineUpLib), "★レーンの 決めは lib に 残って いる");
+  ok(/toggleLane/.test(lineUpLib), "★出し入れの 決めも lib に 残って いる");
+  ok(/laneSummary/.test(lineUpLib), "★数え方も lib に 残って いる");
   ok(!/平均|average/.test(ui + chart), "★平均を 出していない");
 
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
