@@ -1,0 +1,33 @@
+{
+  "title": "シランクス",
+  "title_original": "Syrinx",
+  "aliases": [],
+  "composer": "ドビュッシー",
+  "composer_sort": "Debussy, Claude",
+  "kind": "chamber",
+  "year_written": 1913,
+  "source": "hand",
+  "source_id": "debussy-syrinx",
+  "duration_min": 3,
+  "roles": [
+    {
+      "label": "フルート独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": [
+        "フルート独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}

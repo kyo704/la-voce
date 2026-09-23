@@ -1,0 +1,84 @@
+{
+  "title": "クラリネット協奏曲 イ長調",
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "orchestra",
+  "year_written": 1791,
+  "source": "hand",
+  "source_id": "mozart-clarinet-concerto",
+  "roles": [
+    {
+      "label": "クラリネット独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 ロンド アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
