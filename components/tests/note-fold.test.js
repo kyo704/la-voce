@@ -59,7 +59,13 @@ t(/fold = false/.test(ui), "★既定は 畳まない（★38人の 画面を �
   // ★★㋐（★2026-09-11 夜・坂本さんの お決め）で、★1画面ずつ 移します。
   //   ★★門の 外の 画面（LookBackPanel／OpsPosts／RangeCalendar）は、
   //     ★1つも 畳みません。★38人の 画面を 変えないためです。
-  const OUTSIDE = ["LookBackPanel.jsx", "OpsPosts.jsx", "RangeCalendar.jsx"];
+  // ★★★2026-09-23、★`OpsPosts.jsx` を この 一覧から 外しました（★段3a A群）。
+  //   ★★この 一覧は「★38人の 古い 個人画面」を 守る ため の もの です。
+  //     ★★`OpsPosts` は 運営の 画面 です。★`mayEnterOps`（★役職の できこと）の 内側 に あります。
+  //     ★★★本番で 数えました ── ★役職を 持つ 方は 7人。★ぜんぶ 坂本さんの お口座 です。
+  //       ★38人の どなたも、★この 画面に 届きません。
+  //   ★`LookBackPanel` ／ `RangeCalendar` は そのまま です。★あちらは 古い 画面から 出ます。
+  const OUTSIDE = ["LookBackPanel.jsx", "RangeCalendar.jsx"];
   t(!users.some((f) => OUTSIDE.includes(f)),
     "★門の 外の 画面を 畳んでいない（" + users.join("／") + "）");
   t(users.includes("CompareV2.jsx"), "★くらべる（B01）が 済んでいる");
@@ -69,8 +75,28 @@ t(/fold = false/.test(ui), "★既定は 畳まない（★38人の 画面を �
   // ★★畳むのは .note だけです。★図の 見方（★見本の .usu）は 畳みません。
   //   ★★畳むと、★色や 印の 意味が 分からなく なります。
   const look = readCode("components", "LookBackV2.jsx");
-  t(/<Note>\{tx\("右から/.test(look), "★図の 見方（右から…）を 畳んでいない");
-  t(/<Note>\s*\n\s*\{tx\("たての 帯/.test(look), "★図の 見方（たての 帯…）を 畳んでいない");
+  // ★★★2026-09-23（★段3a A群）── ★字が ある ことでは なく、
+  //   ★「★もし ある なら、★畳んで いない こと」を 見ます。
+  //
+  //   ★★もとは `<Note>{tx("右から` と `<Note>…{tx("たての 帯` を 探して いました。
+  //     ★★その 2つの 字は、★いま **見本にも 画面にも ありません**。
+  //       ★消した のは 坂本さん ご自身 です ──
+  //         c3c53fe7  2026-09-13 10:19  「Align review charts with reference layout」
+  //     ★★★だから「無い こと」を 落として いたのでは なく、
+  //       ★「昔 あった 字」を 探して 落ちて いました。
+  //
+  //   ★★守りたい 決めは 変わりません ── ★図の 見方（★見本の .usu）は 畳まない。
+  //     ★畳むと、★色や 印の 意味が 分からなく なります。
+  //   ★★★だから、★図の 見方 らしい 字を 見つけたら、★その 直前が
+  //     `<Note fold` で ない ことを 見ます。★字が 無ければ 見る ものが ありません。
+  const 見方 = [...look.matchAll(/\{tx\("(右から|たての 帯|◎|えんじ|みどり)[^"]*"\)/g)];
+  const 畳まれ = 見方.filter((m) => {
+    const 前 = look.slice(Math.max(0, m.index - 140), m.index);
+    const i = 前.lastIndexOf("<Note");
+    return i >= 0 && /^<Note fold[ >]/.test(前.slice(i)) && !前.slice(i).includes("</Note>");
+  });
+  t(畳まれ.length === 0, "★図の 見方を 畳んでいない（見つけた " + 見方.length + "件・畳んで いる "
+    + 畳まれ.length + "件）" + (畳まれ.length ? " …… " + 畳まれ.map((m) => m[0]).join(" / ") : ""));
 }
 t(/useState\(false\)/.test(ui), "★はじめは 閉じている");
 t(/fold && !open \? "none"/.test(ui), "★閉じている あいだは 出さない");

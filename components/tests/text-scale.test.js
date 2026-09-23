@@ -56,11 +56,42 @@ ok(/tapMin: 44/.test(code), "★押せる 大きさは 44px の まま");
 //   ★「どの段でも 44 以上」の 決めが 崩れます。
 ok(!/tapMin: rem\(/.test(code), "★押せる 大きさを rem に していない");
 
-console.log("③ 数が 見本と 合っている");
-const want = { 17: "title", 10.5: "h3", 13.5: "body", 13: "li", 11.5: "mini", 11: "usual", 26: "big", 12: "bigUnit", 10: "tab", 16: "btn" };
-Object.keys(want).forEach((px) => {
-  ok(new RegExp("rem\\(" + px.replace(".", "\\.") + "\\)").test(type),
-    "★" + want[px] + " は " + px + "px（見本のとおり）");
+console.log("③ 数は 決め（lib/uiKit.js）の とおり");
+// ★★★2026-09-23、★坂本さんの お決めで、★見る 先を 変えました ──
+//     「段3a A群の 検証対象切り替え（lib/visualTokens.js・lib/uiKit.js を 正とする）」
+//
+//   ★★もとは 見本の px を 書き写して いました（17・13.5・13・11 …）。
+//     ★★`lib/uiKit.js` は **わざと 1段 大きく** して います（★同じ ファイルの 註）。
+//       ★だから 見本と 同じに なる はずが ありません。★4つ 落ちて いました。
+//       ★★実装が 正しい のに 赤い、★という 形 です。
+//
+//   ★★★いま 見るのは 3つ。★数を 書き写しません ──
+//       ㋐ 註が「見本 A px → B px」と 書いて ある
+//       ㋑ その B が、★すぐ 下の `rem(B)` と 同じ（★註が 古く ならない）
+//       ㋒ B ≧ A（★上げ幅は 上向き。★見本より 小さく しない）
+// ★★註を 見る ので、★註の 残って いる ほう（readRaw）を 使います。
+//   ★`type` は 註を 落とした ほう です。★そちらでは 0組 に なります（2026-09-23）。
+const typeRaw = src.slice(src.indexOf("export const TYPE = {"),
+  src.indexOf("\n};", src.indexOf("export const TYPE = {")));
+// ★★★註と 名前は **となり合わせ** で なければ なりません（2026-09-23）。
+//   ★ゆるく 探すと、★`h3` の 註が `body` の 名前と 組んで しまいました。
+//   ★★だから『*/ の すぐ 次の 行』だけ を 取ります。
+const 段 = [...typeRaw.matchAll(
+  /見本\s*([\d.]+)px\s*→\s*([\d.]+)px[^\n]*\*\/\s*\n\s*([A-Za-z][A-Za-z0-9]*):\s*\{\s*fontSize:\s*rem\(([\d.]+)\)/g)];
+// ★★★名前に 数字が 入る ものが あります（`h3`）。★`[A-Za-z]+` では 拾えません（2026-09-23）。
+// ★★★数を 覚えません。★註の ぶんだけ 組に なった かを 見ます（2026-09-23）。
+const 註数 = (typeRaw.match(/見本\s*[\d.]+px\s*→\s*[\d.]+px/g) || []).length;
+ok(段.length === 註数,
+  "★『見本 A → B』の 註 " + 註数 + "件 すべてが 名前と 組に なった（" + 段.length + "組）");
+段.forEach(([, a, b, 名, 実]) => {
+  ok(b === 実, "★" + 名 + " ── 註の " + b + "px と 書いた " + 実 + "px が 同じ");
+  ok(Number(実) >= Number(a), "★" + 名 + " ── 見本 " + a + "px より 小さく ない（いま " + 実 + "px）");
+});
+// ★★★註の 無い もの（big / bigUnit / tab / btn）は、★rem で 書いて ある ことだけ 見ます。
+//   ★数は 決めの 側の もの です。★ここで 覚えません。
+["big", "bigUnit", "obiTitle"].forEach((k) => {
+  ok(new RegExp(k + ":\\s*\\{[^}]*fontSize:\\s*rem\\(").test(type),
+    "★" + k + " も rem で 書いて ある");
 });
 // ★1rem ＝ 16px。★倍率 1 では、★見た目が 1つも 変わらないこと。
 ok(/\(Number\(px\) \/ 16\)/.test(code), "★1rem ＝ 16px で 割っている");
