@@ -122,6 +122,21 @@ function ok(cond, label) {
   const secs = moreSections({ hasOrgRole: false });
   ok(!secs.some((x) => x.group === "教室"), "★役職が 無ければ、★小見出しごと 出ない");
 
+  console.log("⑧ ★2026-09-24 に 足した 2行");
+  // ★★授業の 時間を 出す …… ★学校と つながって いる 方 だけ（★裁定183 P2）
+  ok(mayShowMoreRow("授業の時間", { isEnrolled: true }) === true, "★在籍して いれば 出る");
+  ok(mayShowMoreRow("授業の時間", { isEnrolled: false }) === false, "★して いなければ 出ない");
+  ok(mayShowMoreRow("授業の時間", {}) === false, "★★分からない ときは 出さない");
+  // ★★担当の 先生を 選ぶ …… ★学校が そう して いる ときだけ（★裁定186）
+  ok(mayShowMoreRow("担当の先生", { canPickTeacher: true }) === true, "★学校が そう して いれば 出る");
+  ok(mayShowMoreRow("担当の先生", { canPickTeacher: false }) === false, "★して いなければ 出ない");
+  ok(mayShowMoreRow("担当の先生", {}) === false, "★★分からない ときは 出さない");
+  // ★★★この 2行を「いつも 出る」に して しまわない こと
+  const 何も = moreSections({ hasOrgRole: true });
+  const 行 = 何も.flatMap((x) => x.rows.map((r) => r.key));
+  ok(!行.includes("授業の時間"), "★★条件を 渡さなければ、★授業の 時間は 出ない");
+  ok(!行.includes("担当の先生"), "★★条件を 渡さなければ、★担当の 先生は 出ない");
+
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
   process.exit(failed === 0 ? 0 : 1);
 })();

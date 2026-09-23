@@ -77,6 +77,13 @@ import { osOf, installGuidePlatform } from "@/lib/platform";
 //     ★作って あって、★見張りも 通って いて、★誰も たどり着けない ── という 形 です。
 //   ★★★鍵が 閉じて いる あいだ、★入口ごと 出ません（★`LessonRoundArea` が 中で 判じます）。
 import LessonRoundArea from "@/components/LessonRoundArea";
+// ★★★学校と つながって いる 方 だけ の 2画面（★裁定183 P2 ／ 裁定186・2026-09-24）。
+//   ★★どちらも **機能の 鍵の 外** です。★台帳の 設定と 在籍で 決まります。
+//   ★★★「もっと」から 行けます。★行けない 画面を 作らない ため です
+//     （★2026-09-23、★レッスン割の 4画面が どこからも 呼ばれて いませんでした）。
+import ClassTimeShare from "@/components/ClassTimeShare";
+import MonkaPickTeacher from "@/components/MonkaPickTeacher";
+import { COLS_SETTINGS as MONKA_COLS, studentCanChoose } from "@/lib/monkaWay";
 import { loadFeatures } from "@/lib/featureOn";
 import ReauthGate from "@/components/ReauthGate";
 import RecoveryCodeCard from "@/components/RecoveryCodeCard";
@@ -5688,6 +5695,11 @@ export default function VocalTracker({
   //   ★★描くたびに `createClient()` を 呼ぶと、★毎回 ちがう ものに なります。
   //     ★★受け取った 側の `useEffect` が それを 見て いると、★止まりません。
   const featureClient = useMemo(() => createClient(), []);
+
+  // ★★★学校の「門下の 決め方」（★裁定186）。
+  //   ★★判じるのは `lib/monkaWay.js` です。★ここでは 読む だけ です。
+  //   ★★読めなかった ときは null の まま ＝ ★出しません（★迷ったら 閉じる）。
+  const [monkaSetting, setMonkaSetting] = useState(null);
   useEffect(() => {
     let 生きている = true;
     (async () => {
@@ -14260,6 +14272,18 @@ export default function VocalTracker({
       console.error("★在籍を読めませんでした:", enrollError);
     }
     setMyEnrollments(enrollments || []);
+    // ★★★門下の 決め方（★裁定186）── ★在籍して いる 学校の 設定を 読みます。
+    //   ★★「学生が 選ぶ」に して いる 学校が 1つでも あれば、
+    //     ★★「もっと」に「担当の 先生を 選ぶ」が 出ます。
+    //   ★★読めなかった ときは null の まま ＝ ★出しません。
+    if (enrollments && enrollments.length > 0) {
+      const { data: 設 } = await supabase.from("org_settings")
+        .select(MONKA_COLS)
+        .in("org_id", [...new Set(enrollments.map((e) => e.org_id).filter(Boolean))]);
+      setMonkaSetting((設 || []).find(studentCanChoose) || null);
+    } else {
+      setMonkaSetting(null);
+    }
     if (enrollments && enrollments.length > 0) {
       // ★教室の名前は、別に取ります（埋め込みにしない）。
       //   読めなくても、在籍そのものは消えません。
@@ -27469,7 +27493,15 @@ export default function VocalTracker({
                       // ★★★さがす（★2026-09-21・坂本さんの お決め）。
                       //   ★★9画面の うち 1枚 しか ありません。★名簿の 方 だけに 出します。
                       //   ★★決めるのは `lib/matchingGate.js` です。★ここで 決めません。
-                      mayMatch: matchingOn
+                      mayMatch: matchingOn,
+                      // ★★★2026-09-24 に 足した 2行（★裁定183 P2 ／ 裁定186）。
+                      //   ★★どちらも 決めるのは 別の ところ です。
+                      //     ★在籍 …… `isEnrolledInOrg`
+                      //     ★門下の 決め方 …… `studentCanChoose()`（`lib/monkaWay.js`）
+                      //   ★★ここでは `monka_way === "student"` と 書きません。
+                      //     ★書くと、★決めが 2か所に なります。
+                      isEnrolled: isEnrolledInOrg,
+                      canPickTeacher: studentCanChoose(monkaSetting)
                     }).map((sec) => (
                       <div key={sec.group || "top"}>
                         {sec.group ? <H3>{sec.group}</H3> : null}
@@ -27502,6 +27534,13 @@ export default function VocalTracker({
                                     // ★★プロフィール（★2026-09-16・裁定 B-3）。
                                     //   ★★設定の 中から 出しました。★1行で 着きます。
                                     if (r.key === "プロフィール") { setActiveTab("profile"); return; }
+                                    // ★★★2026-09-24 に 足した 2行。★節を 開きます。
+                                    //   ★★どちらも「もっと」の 中の 1節 です。★別の タブに しません。
+                                    //     ★毎日 押す ものでは ありません。★帯を 増やしません。
+                                    if (r.key === "授業の時間" || r.key === "担当の先生") {
+                                      setMoreSection(r.key);
+                                      return;
+                                    }
                                     // ★★生徒を 招待する（★2026-09-15・裁定 ㋒／No.025）。
                                     //   ★★しくみは 壊れて いませんでした。★道だけが 無く なって いました。
                                     //     ★`handleGenerateTeacherInvite` も、
@@ -27602,6 +27641,27 @@ export default function VocalTracker({
                 {layoutV2 && moreSection === "聞く" ? (
                   <DailyAskPicker value={dailyAsk}
                     onChange={(next) => setDailyAsk(writeAsk(next))} />
+                ) : null}
+                {/* ★★★授業の 時間を 出す（★裁定183 P2・2026-09-24）。
+                    ★★既定は 出しません。★いつでも やめられます。
+                    ★★学校に 見えるのは「授業」の 2文字 だけ です。
+                    ★★★在籍して いる 学校 1つ ぶん です。★2つ 以上の 方は、
+                      ★はじめの 1つ に なります ── ★学校ごとに 分ける 形は
+                      ★まだ 決まって いません（`docs/ledgers/08-保留している決め.md`）。 */}
+                {layoutV2 && moreSection === "授業の時間" && myEnrollments.length > 0 ? (
+                  <ClassTimeShare supabase={featureClient} userId={userId}
+                    orgId={myEnrollments[0].org_id} />
+                ) : null}
+                {/* ★★★担当の 先生を 選ぶ（★裁定186・2026-09-24）。
+                    ★★学校が「学生が 選ぶ」に して いる ときだけ です。
+                    ★★★画面の 中でも もう 一度 判じます（`studentCanChoose`）──
+                      ★行の 出し分けと、★画面の 出し分けは 別 です。
+                      ★★行を 通り抜けて 来ても、★学校が そう して いなければ 出ません。 */}
+                {layoutV2 && moreSection === "担当の先生" && monkaSetting ? (
+                  <MonkaPickTeacher supabase={featureClient}
+                    orgId={monkaSetting.org_id}
+                    orgLabel={(myEnrollments.find((e) => e.org_id === monkaSetting.org_id) || {}).org
+                      ? myEnrollments.find((e) => e.org_id === monkaSetting.org_id).org.name : ""} />
                 ) : null}
                 {/* ★★ここから区切りをつける（★記録の 画面から 引っ越し・2026-09-11）。
                     ★★坂本さんの お決め 10 ㋑。★消していません。★場所だけ 変わりました。
