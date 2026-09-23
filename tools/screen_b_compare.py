@@ -110,10 +110,23 @@ def 見本の中身(key):
     path = os.path.join(PACK, f)
     if not os.path.exists(path): continue
     s = open(path, encoding="utf-8").read()
-    for 頭 in ("SC['%s']=function" % key, "SC['%s']=" % key):
-      i = s.find(頭)
-      if i < 0: continue
-      j = s.find("\nSC[", i + 5)
+    # ★★★見本は 2つの 書き方を します ──
+    #   ① `SC['作品をさがす']=function(){…}`（★その場に 書く）
+    #   ② `SC['配役を決める']=P_haiyaku`     （★別の ところの 関数を 指す）
+    #   ★★②の とき、★指した 先を 読まないと **本文が 空** に なります。
+    #     ★★そうすると「見本の もとに 無い」＝ ④中身 と 数えて しまい、
+    #       ★本物の 抜けが 見えなく なります（★2026-09-23、★目盛りが 合いませんでした）。
+    場 = []
+    m2 = re.search(r"SC\['" + re.escape(key) + r"'\]\s*=\s*(\w+)", s)
+    if m2 and m2.group(1) != "function":
+      j2 = s.find("function %s(" % m2.group(1))
+      if j2 >= 0: 場.append(j2)
+    場 += [s.find("SC['%s']=function" % key), s.find("SC['%s']=" % key)]
+    for i in 場:
+      if i is None or i < 0: continue
+      j = s.find("\nfunction ", i + 5)
+      j2 = s.find("\nSC[", i + 5)
+      if j < 0 or (0 < j2 < j): j = j2
       if j < 0: j = min(len(s), i + 20000)
       本 = s[i:j]
       中 = set()
@@ -122,6 +135,11 @@ def 見本の中身(key):
         blk = m.group(0)
         if "{" not in blk: continue
         for mm in re.finditer(r"'([^']{2,})'", blk):
+          中.add(字だけ(mm.group(1)))
+      # ★★その場に 書いた 並びも 中身 です ── ★`['井上 かなで','村上 ひかる',…].map(`
+      #   ★見本は 人の 名前を 手で 書いて います。★実装は 招いた 方から 引きます。
+      for m in re.finditer(r"\[((?:'[^']*'\s*,\s*){2,}'[^']*')\]\s*\.map", 本):
+        for mm in re.finditer(r"'([^']{2,})'", m.group(1)):
           中.add(字だけ(mm.group(1)))
       return 中, 本
   return set(), ""
@@ -161,6 +179,11 @@ def くらべる(見, 実, key, 中身, 本文):
   実字 = 字だけ(実)
   for w in 語:
     if 字だけ(w) in 実字: 在.append(w)
+    # ★★全角の あきで つないだ 字は、★実装では 分かれて います
+    #   （★見本「役　パミーナ」＝ 実装 `tx("役") + "　" + tx("パミーナ")`）。
+    #   ★★片方でも 欠けたら ②に 出ます。★そろって いれば ①です。
+    elif "　" in w and all(字だけ(x) in 実字 for x in w.split("　") if 字だけ(x)):
+      在.append(w)
     elif w in ex or 字だけ(w) in [字だけ(x) for x in ex]: 除.append((w, ex.get(w, "")))
     elif 中身か(w, 中身, 本文): 데.append(w)
     else: 無.append(w)
