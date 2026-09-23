@@ -1,0 +1,92 @@
+{
+  "title": "弦楽四重奏曲第17番「狩」",
+  "title_original": "Streichquartett KV 458",
+  "aliases": [
+    "狩"
+  ],
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "chamber",
+  "year_written": 1784,
+  "source": "hand",
+  "source_id": "mozart-hunt",
+  "duration_min": 26,
+  "roles": [
+    {
+      "label": "第1ヴァイオリン"
+    },
+    {
+      "label": "第2ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "第1ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

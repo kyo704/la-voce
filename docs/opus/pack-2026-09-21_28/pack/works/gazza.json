@@ -1,0 +1,176 @@
+{
+  "title": "泥棒かささぎ",
+  "title_original": "La gazza ladra",
+  "aliases": [
+    "ガッザ・ラードラ"
+  ],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1817,
+  "source": "hand",
+  "source_id": "rossini-gazza",
+  "duration_min": 190,
+  "language": "it",
+  "roles": [
+    {
+      "label": "ニネッタ"
+    },
+    {
+      "label": "ジャンネット"
+    },
+    {
+      "label": "ファブリツィオ"
+    },
+    {
+      "label": "ルチーア"
+    },
+    {
+      "label": "ポデスタ"
+    },
+    {
+      "label": "フェルナンド"
+    },
+    {
+      "label": "ピッポ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 農場（息子の帰還）",
+      "group_label": "第1幕",
+      "roles": [
+        "ニネッタ",
+        "ジャンネット",
+        "ファブリツィオ",
+        "ルチーア",
+        "ピッポ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 父の逃亡と銀のスプーン",
+      "group_label": "第1幕",
+      "roles": [
+        "フェルナンド",
+        "ニネッタ",
+        "ポデスタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 牢獄と裁判",
+      "group_label": "第2幕",
+      "roles": [
+        "ニネッタ",
+        "ジャンネット",
+        "ポデスタ",
+        "ピッポ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 かささぎの発見とフィナーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "ニネッタ",
+        "ピッポ",
+        "フェルナンド",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

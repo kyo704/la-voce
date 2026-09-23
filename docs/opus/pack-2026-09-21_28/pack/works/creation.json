@@ -1,0 +1,195 @@
+{
+  "title": "天地創造",
+  "composer": "ハイドン",
+  "composer_sort": "Haydn, Joseph",
+  "kind": "chorus",
+  "year_written": 1798,
+  "source": "hand",
+  "source_id": "haydn-creation",
+  "roles": [
+    {
+      "label": "ガブリエル／エヴァ（ソプラノ）"
+    },
+    {
+      "label": "ウリエル（テノール）"
+    },
+    {
+      "label": "ラファエル／アダム（バス）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序奏（混沌の描写）",
+      "group_label": "第1部",
+      "roles": []
+    },
+    {
+      "label": "はじめに神は天と地を創り",
+      "group_label": "第1部",
+      "roles": [
+        "ラファエル／アダム（バス）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "今や消え去りぬ（アリアと合唱）",
+      "group_label": "第1部",
+      "roles": [
+        "ウリエル（テノール）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "大波は荒れ狂い（第2日・第3日）",
+      "group_label": "第1部",
+      "roles": [
+        "ラファエル／アダム（バス）",
+        "ガブリエル／エヴァ（ソプラノ）"
+      ]
+    },
+    {
+      "label": "天は神の栄光を語り（合唱）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱",
+        "ガブリエル／エヴァ（ソプラノ）",
+        "ウリエル（テノール）",
+        "ラファエル／アダム（バス）"
+      ]
+    },
+    {
+      "label": "鳥の創造（優雅な姿で）",
+      "group_label": "第2部",
+      "roles": [
+        "ガブリエル／エヴァ（ソプラノ）"
+      ]
+    },
+    {
+      "label": "獣の創造（大地は生き物を生み）",
+      "group_label": "第2部",
+      "roles": [
+        "ラファエル／アダム（バス）"
+      ]
+    },
+    {
+      "label": "人の創造（威厳と気高さをもって）",
+      "group_label": "第2部",
+      "roles": [
+        "ウリエル（テノール）"
+      ]
+    },
+    {
+      "label": "主なる神は大いなるかな（合唱と三重唱）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱",
+        "ガブリエル／エヴァ（ソプラノ）",
+        "ウリエル（テノール）",
+        "ラファエル／アダム（バス）"
+      ]
+    },
+    {
+      "label": "アダムとエヴァの二重唱（園を歩む）",
+      "group_label": "第3部",
+      "roles": [
+        "ガブリエル／エヴァ（ソプラノ）",
+        "ラファエル／アダム（バス）"
+      ]
+    },
+    {
+      "label": "終結の合唱（主をたたえよ）",
+      "group_label": "第3部",
+      "roles": [
+        "合唱",
+        "ウリエル（テノール）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Die Schöpfung",
+  "aliases": [],
+  "duration_min": 105,
+  "language": "de"
+}

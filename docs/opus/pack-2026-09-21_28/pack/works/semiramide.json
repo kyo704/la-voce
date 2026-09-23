@@ -1,0 +1,183 @@
+{
+  "title": "セミラーミデ",
+  "title_original": "Semiramide",
+  "aliases": [],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1823,
+  "duration_min": 210,
+  "language": "it",
+  "source": "hand",
+  "source_id": "rossini-semiramide",
+  "roles": [
+    {
+      "label": "セミラーミデ"
+    },
+    {
+      "label": "アルサーチェ"
+    },
+    {
+      "label": "アッスール"
+    },
+    {
+      "label": "イドレーノ"
+    },
+    {
+      "label": "オーエ"
+    },
+    {
+      "label": "ニーノの亡霊"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 バール神殿",
+      "group_label": "第1幕",
+      "roles": [
+        "オーエ",
+        "イドレーノ",
+        "アッスール",
+        "アルサーチェ",
+        "セミラーミデ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 セミラーミデのカヴァティーナ（麗しい光が）",
+      "group_label": "第1幕",
+      "roles": [
+        "セミラーミデ"
+      ]
+    },
+    {
+      "label": "第1幕 二重唱と亡霊の出現",
+      "group_label": "第1幕",
+      "roles": [
+        "セミラーミデ",
+        "アルサーチェ",
+        "ニーノの亡霊",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 セミラーミデとアッスールの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "セミラーミデ",
+        "アッスール"
+      ]
+    },
+    {
+      "label": "第2幕 墓所・フィナーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "アルサーチェ",
+        "セミラーミデ",
+        "アッスール",
+        "オーエ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true,
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
