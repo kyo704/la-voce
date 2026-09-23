@@ -95,5 +95,9 @@
   "回を始める": [
     "components/RoundStart.jsx",
     "lib/roundStart.js"
+  ],
+  "担当の先生を選ぶ": [
+    "components/MonkaPickTeacher.jsx",
+    "lib/monkaWay.js"
   ]
 }
