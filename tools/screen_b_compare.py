@@ -151,6 +151,21 @@ def 見本の中身(key):
   return set(), ""
 
 
+def 数だけちがう(w, 実字):
+  """★数 を 外すと、★残りが ぜんぶ 実装に ある か。
+
+     ★★見本「審査員4人」── ★実装は `審査員{judges}人`。
+       ★数が ちがう だけ で、★言葉は そろって います。★これは 中身 です。
+     ★★見本「2人で 回します」── ★実装は `{n}人で 回します`。★同じ 形 です。
+     ★★★「小ホール」の ような **数を 含まない** 名前は ここに 落ちません。
+       ★数が 無ければ この 道は 通りません。★②の まま です。
+  """
+  if not re.search(r"[0-9０-９]", w): return False
+  片 = [x for x in re.split(r"[0-9０-９]+", w) if 字だけ(x)]
+  if not 片: return False
+  return all(字だけ(x) in 実字 for x in 片)
+
+
 def 中身か(w, 中, 本):
   """★その 字は「手で 書いた 中身」から 出て いるか。
 
@@ -196,6 +211,7 @@ def くらべる(見, 実, key, 中身, 本文):
     elif "　" in w and all(字だけ(x) in 実字 for x in w.split("　") if 字だけ(x)):
       在.append(w)
     elif w in ex or 字だけ(w) in [字だけ(x) for x in ex]: 除.append((w, ex.get(w, "")))
+    elif 数だけちがう(w, 実字): 데.append(w)
     elif 中身か(w, 中身, 本文): 데.append(w)
     else: 無.append(w)
   return 語, 在, 無, 除, 데
