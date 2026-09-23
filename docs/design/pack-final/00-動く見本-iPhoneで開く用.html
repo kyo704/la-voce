@@ -1674,7 +1674,7 @@ SC['Woolsong']=function(){   /* ★名前は「つたえる」（裁定155。製
  +'・見た目を 選べます。英語にも できます<br>'
  +'・いっしょに 演奏した 記録が、ずっと 残ります<br>'
  +'・募集の 下書きを しまっておけます</div></div>'
- +'<div class="box"><div class="li"><span>1年ぶん</span><s>3,600円（税込）</s></div></div>'
+ +'<div class="box"><div class="li"><span>1年ぶん</span><s>6,000円（税込）</s></div></div>'
  +'<div class="wl"><b>さがす は、これからも 無料です。</b><br>'
  +'募集を 出すこと、応募すること、切ること、お知らせいただくこと。<br>'
  +'どれにも お金を いただきません。<br>'
@@ -1969,7 +1969,7 @@ SC['伴奏をさがす']=function(){return bk('もっと')
    ★★マッチングは ★永久に 無料（★人数が 価値だから）
    ★課金した人が ★他人との 関係で 有利に なりません
      （★お金を 出せるのは、★さがす 学生より、★それを 狙う 年長者）  */
-var PAID = false;            /* ★つたえる（年3,600円）に 入っているか */
+var PAID = false;            /* ★つたえる（年6,000円）に 入っているか */
 var IS_ORG = false;          /* ★団体として 登録しているか */
 
 /* ★ポートフォリオの 見た目 ── 裁定その95 §5 */
@@ -1978,7 +1978,7 @@ var PF_ORDER = ['本番の 順','曲目の 順','自分で 並べる'];
 
 SC['見た目を選ぶ']=function(){
  return bk('経歴')+'<div class="hd" style="padding-top:2px"><h2>見た目を 選ぶ</h2></div>'
- +(PAID?'':'<div class="warn">ここは <b>つたえる（年3,600円）</b>の 中です。<br>'
+ +(PAID?'':'<div class="warn">ここは <b>つたえる（年6,000円）</b>の 中です。<br>'
    +'いまは ひとつめだけ お使いいただけます。</div>')
  +'<div class="sh3" style="margin-top:0">組み方</div><div class="box">'
  +PF_LOOK.map(function(v,k){
@@ -2187,7 +2187,9 @@ SC['公演']=function(){
 
  +((KP.chg||[]).length?'<div class="sh3" style="margin-top:0">変わったもの</div><div class="box">'
    +KP.chg.map(function(c){return '<div class="li plain"><span>'+c[0]+'<div class="usu">'+c[1]+'</div></span><s>'+c[2]+'</s></div>'}).join('')+'</div>':'')
- +'<div class="box" style="margin-bottom:11px"><div class="li" onclick="push(\'カレンダーにつなぐ\')"><span>カレンダーに つなぐ<div class="usu">変わると 数分で 入ります</div></span><s>›</s></div></div>'
+ +'<div class="box" style="margin-bottom:11px">'
+ +'<div class="li" onclick="push(\'公演の自分の予定\')"><span>自分の 予定<div class="usu">あなたが 呼ばれている ところだけ</div></span><s>›</s></div>'
+ +'<div class="li" onclick="push(\'カレンダーにつなぐ\')"><span>カレンダーに つなぐ<div class="usu">変わると 数分で 入ります</div></span><s>›</s></div></div>'
  +'<div class="sh3" style="'+((KP.chg||[]).length?'':'margin-top:0;')+'display:flex;justify-content:space-between;align-items:center">'
  +'<span>'+(KP.all?'すべての 稽古':'呼ばれている 稽古')+'</span>'
  +'<span class="pill sm" onclick="KP.all=!KP.all;draw()">'+(KP.all?'自分の だけ':'全部 見る')+'</span></div>'
@@ -2223,6 +2225,19 @@ SC['公演']=function(){
  +'<div class="pills" style="margin-top:10px"><span class="usu" style="align-self:center">見本：</span>'
  +[['opera','オペラ'],['orch','オーケストラ'],['gala','ガラ']].map(function(k){
    return '<span class="pill sm'+(KP_KIND===k[0]?' on':'')+'" onclick="kpUse(\''+k[0]+'\');draw()">'+k[1]+'</span>'}).join('')+'</div>'};
+
+SC['公演の自分の予定']=function(){
+ var mine=KP_K.filter(kpCalled);
+ return bk('公演')+'<h2>自分の 予定</h2>'
+ +'<div class="usu" style="margin-bottom:10px">'+KP.title+'\u3000'+KP.role+'</div>'
+ +(mine.length?'<div class="box">'+mine.map(function(r){
+    return '<div class="li plain"><span><b>'+r[0]+'</b>\u3000'+kpLab(r[4])
+     +'<div class="usu">'+r[1]+' 集合\u3000／\u3000'+r[2]+'〜'+r[3]+'</div>'
+     +'<div class="usu">'+r[5]+'</div></span><s></s></div>'}).join('')+'</div>'
+   :'<div class="box"><div class="li plain"><span class="usu">いまは 呼ばれている 稽古が ありません</span></div></div>')
+ +'<div class="box" style="margin-top:11px"><div class="li" onclick="toast(\'見本です。実物は 紙に 出せます\')"><span>紙に 出す<div class="usu">入りと 出番だけの 1枚</div></span><s>›</s></div></div>'
+ +'<div class="note">ここに 出るのは <b>あなたが 呼ばれている ところだけ</b>です。<br>'
+ +'ほかの 出演者の 予定は 出ません。<b>体調の ことも 出ません</b>。</div>'};
 
 SC['香盤表を見る']=function(){
  /* ★自分の 列を いちばん 左に（横に ずらさなくても 見える） */
@@ -2405,7 +2420,7 @@ SC['ページの型']=function(){
  var L=(WEB_BY[FIELD]||WEB_BY.music).concat(PF_TEACH?WEB_BY.teacher:[]);
  return bk('あなたのページ')
  +'<div class="hd" style="padding-top:2px"><h2>ページの 形</h2></div>'
- +(PAID?'':'<div class="warn">ページを 出すには <b>つたえる（年3,600円）</b>が 要ります。<br>形は、いまのままでも <b>お試しで 全部 見られます</b>。</div>')
+ +(PAID?'':'<div class="warn">ページを 出すには <b>つたえる（年6,000円）</b>が 要ります。<br>形は、いまのままでも <b>お試しで 全部 見られます</b>。</div>')
  +(PF_TRIAL?'<div class="warn"><b>'+PF_TRIAL+'までは、何度でも 無料で 選び直せます</b>。<br>その日に 使っている 形が、あなたの 形に なります。</div>':'')
  +(pfFieldFreeAvail()?'<div class="warn">お仕事を 変えられたので、<b>この 中から 1つ 無料で</b> 選べます。</div>':'')
 
@@ -3675,7 +3690,7 @@ SC['もっと']=function(){
  +(featOn('koen')?'<div class="li" onclick="push(\'公演\')"><span>公演<div class="usu">フィガロの結婚　バジリオ 役</div></span><s>›</s></div>':'')
  +(featOn('koen')?'<div class="li" onclick="push(\'公演に入る\')"><span>公演の 合言葉で 入る</span><s>›</s></div>':'')
  +'<div class="li" onclick="push(\'あなたのページ\')"><span>あなたの ページ<div class="usu">経歴・紙'+(featOn('portfolio_public')?'・公開':'')+'</div></span><s>'+(featOn('portfolio_public')&&PF_PUB?'公開中':pfCount()+'件')+' ›</s></div>'
- +'<div class="li" onclick="push(\'Woolsong\')"><span>つたえる<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
+ +'<div class="li" onclick="push(\'Woolsong\')"><span>つたえる<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'6,000円／年')+' ›</s></div>'
  +'<div class="li" onclick="push(\'お仕事を選ぶ\')"><span>お仕事<div class="usu">画面の ことばが 変わります</div></span><s>'+VOCAB[FIELD].field+' ›</s></div>'
  +'<div class="li" onclick="push(\'保護者の画面\')"><span>保護者の 方の 画面<div class="usu">見本だけ。実際は メールから</div></span><s>›</s></div>'
  +'<div class="li" onclick="push(\'しらべていること\')"><span>しらべている こと</span><s>1組 ›</s></div>'
@@ -3761,7 +3776,7 @@ SC['プラン']=function(){   /* ★裁定155。個人が 最初に 見る 段�
  +'</div>'
  +(stu?'<div class="usu" style="margin:-4px 0 11px">学生の 値段は、<b>あなたが 同意した ときだけ</b> 在籍を 確かめて 決めます。学校には 伝わりません。</div>':'')
  +'<div class="sh3">ひとつだけ</div><div class="box">'
- +[['つたえる','公開ページ・紙・英語','年3,600円','Woolsong'],['しらべる','声の 分析','月580円／年4,800円','調べる'],['よそおい','ひつじの 服','月580円／年5,800円','']].map(function(x){
+ +[['つたえる','公開ページ・紙・英語（学校の名簿に いる 学生は 年3,000円）','年6,000円','Woolsong'],['しらべる','声の 分析','月580円／年4,800円','調べる'],['よそおい','ひつじの 服','月580円／年5,800円','']].map(function(x){
    return '<div class="li"'+(x[3]?' onclick="push(\''+x[3]+'\')"':'')+'><span style="font-size:14px">'+x[0]+'<div class="usu">'+x[1]+'</div></span><s style="font-size:13px">'+x[2]+'</s></div>'}).join('')+'</div>'
  +(paid()?'<div class="btn g" style="margin-top:11px" onclick="S.dm.pay=0;draw();toast(\'やめました\')">やめる</div>':'')
  +'<div class="usu" style="margin:-4px 0 11px">日本に お住まいの 方 向けです。はじめの <b>14日は 0円</b>で ためせます（カード 不要・自動で 有料に なりません）。</div>'
@@ -4975,6 +4990,7 @@ SC['曲を足す']=function(){
  return bk('レパートリー')+'<div class="hd" style="padding-top:2px"><h2>曲を 足す</h2></div>'
  +'<div class="warn">レパートリーは <b>曲の 台帳</b>です。稽古の メモとは 別の 項目を 聞きます。<br>'
  +'打ったものは、ほかを 押しても <b>消えません</b>。</div>'
+ +'<div class="note">曲名・作曲家・役の <b>どれか 1つ</b> あれば 入ります。ぜんぶ 揃わなくて かまいません。<br>ただし <b>ぜんぶ 空のままでは 入りません</b>（どの 曲か 分からなくなるため）。<br>あとで 曲名を 変えても、<b>記録は ついてきます</b>（名前では なく 中で つないでいます）。</div>'
  +'<div class="fl">曲名</div>'+f('t','れい：ラ・ボエーム')
  +'<div class="fl">作曲家</div>'+f('c','れい：プッチーニ')
  +'<div class="fl">役・曲集の中の 位置（あれば）</div>'+f('yaku','れい：ミミ／第3幕')

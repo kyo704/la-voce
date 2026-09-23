@@ -3837,7 +3837,9 @@ function P_koen(){
  +'<span class="pill" onclick="push(\'稽古の一覧\')">稽古の 一覧</span>'
  +'<span class="pill" onclick="push(\'出演者\')">出演者</span>'
  +'<span class="pill" onclick="push(\'公演の出欠\')">出欠</span>'
- +'<span class="pill" onclick="push(\'配る\')">配る</span></div>'
+ +'<span class="pill" onclick="push(\'配る\')">配る</span>'
+ +'<span class="pill" onclick="push(\'書き出す（香盤表）\')">書き出す</span>'
+ +'<span class="pill" onclick="push(\'前の公演から写す\')">前の公演から 写す</span></div>'
  +'<div class="card"><div class="h3" style="margin-top:0">つぎに すること</div>'
  +[[ROLES.length,kw().cast+'を 決める','配役を決める'],[x.n>1,'出演者を 招く','出演者を招く'],
    [SCENES.length,kw().tbl+'を 作る','香盤表'],[KEIKO.length,'稽古を 組む','稽古を組む']]
@@ -3980,6 +3982,7 @@ function P_koenAtt(){
  var k=KEIKO[0],need=needed(k.sc,k.line,k.only);
  return bk(PROD.title)+'<h2>出欠</h2><div class="sub">'+k.d+'　'+k.t+'　'+k.k+'　'+scLab(k.sc)+'</div>'
  +'<div class="warn">はじめから <b>全員「来た」</b>です。来ていない方だけ 押してください。</div>'
+ +(Object.keys(KATT).some(function(x){return KATT[x]})?'<div class="card" style="margin-bottom:10px"><div class="li" onclick="push(\'代役を 立てる\')"><span>代役を 立てる<div class="usu">休みの 方の 枠を 継ぐ 方</div></span><s>›</s></div></div>':'')
  +'<div class="card p0">'+need.map(function(p){var off=KATT[p[0]];
    return '<div class="li" onclick="KATT[\''+p[0]+'\']=!KATT[\''+p[0]+'\'];draw()"><span>'+p[0]+'<div class="usu">'+p[1]+'</div></span>'
     +'<s>'+(off?'<span style="color:var(--ink3)">休み</span>':'来た')+'</s></div>'}).join('')+'</div>'
@@ -3993,7 +3996,40 @@ function P_haifu(){
  +'<div class="note"><b>読んだかどうか、読んだ 数は 出しません</b>。<br>'
  +'楽譜は 配りません（著作権の ため）。配れるのは 香盤表・稽古予定・演出ノート・進行表です。</div>'}
 
+SC['書き出す（香盤表）']=function(){
+ return bk(PROD.title)+'<h2>書き出す</h2>'
+ +'<div class="usu" style="margin-bottom:10px">紙で 配る ときの ためです。'
+ +'<b>体調の ことは、1文字も 入りません</b>。</div>'
+ +'<div class="card"><div class="h3" style="margin-top:0">何を 出しますか</div>'
+ +['香盤表（'+kw().row+' × '+kw().col+'）','稽古の 一覧','出欠の まとめ（★率は 出しません）','当日の 進行','呼ぶ方の 一覧']
+   .map(function(v){return '<div class="li" onclick="toast(\'見本です。実物は PDF で 出ます\')"><span>'+v+'</span><s>PDF ›</s></div>'}).join('')
+ +'</div>'
+ +'<div class="note">出した ものは、<b>その ときの 姿</b>です。あとで 変えても、出した 紙は 変わりません。</div>'};
+
+SC['前の公演から写す']=function(){
+ return bk(PROD.title)+'<h2>前の 公演から 写す</h2>'
+ +'<div class="warn">写すのは <b>'+kw().row+'と '+kw().col+'の 形だけ</b>です。<br>'
+ +'★人・配役・稽古・出欠・呼び出し・期限は 写りません。</div>'
+ +'<div class="card"><div class="h3" style="margin-top:0">どの 公演から</div>'
+ +PRODS.map(function(x,i){return '<div class="li" onclick="toast(\'見本です。形だけ 写します\')"><span>'+x.p.title
+   +'<div class="usu">'+x.p.hon+'　'+(x.roles?x.roles.length:0)+'の 役・'+(x.scenes?x.scenes.length:0)+'の '+kw().row+'</div></span><s>写す ›</s></div>'}).join('')
+ +'<div class="li plain"><span class="usu">去年の 公演は、ここに 並びます</span></div></div>'
+ +'<div class="note">毎年 同じ 演目を 出す 学校・市民オペラの ための 道です。<br>'
+ +'<b>新しい 公演として 作ります</b>。前の 公演は そのまま 残り、期限も 延びません。</div>'};
+
 SC['公演の運営']=P_koen; SC['香盤表']=P_kouban; SC['稽古を組む']=P_keikoKumu;
+SC['代役を 立てる']=function(){
+ var need=[['パミーナ（A）','井上 かなで','村上 ひかる'],['夜の女王','菊地 せな',null]];
+ return bk('公演の出欠')+'<h2>代役を 立てる</h2>'
+ +'<div class="usu" style="margin-bottom:10px">休みの 方の 枠と、その 枠を 継ぐ 代役です。'
+ +'<b>自動では 呼びません</b>。押した ときだけ、その日の 呼び出しに 入ります。</div>'
+ +'<div class="card">'+need.map(function(r){
+   return '<div class="li"'+(r[2]?' onclick="toast(\''+r[2]+'さんを 呼び出しに 入れました\')"':'')+'>'
+   +'<span>'+r[0]+'<div class="usu">休み：'+r[1]+'</div></span>'
+   +'<s>'+(r[2]?r[2]+' を 呼ぶ ›':'<span class="usu">代役が いません</span>')+'</s></div>'}).join('')+'</div>'
+ +'<div class="note">誰を 立てるかは、その日の 判断です（声の 調子・演出の 意向）。<br>'
+ +'だから <b>こちらでは 決めません</b>。</div>'};
+
 SC['公演の出欠']=P_koenAtt; SC['配る']=P_haifu;
 
 /* ══ ★公演を 作る ／ 料金 ── 裁定その143（2026-09-21）══
