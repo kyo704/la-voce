@@ -14056,7 +14056,21 @@ export default function VocalTracker({
     setMyOrgPosts(postsById);
     setMyOrgs(mine);
     // ★自分が作った教室のうち、自分の membership が無いものを拾います。
-    //   organizations_select_own_created（created_by = auth.uid()）で読めます。
+    // ★★★2026-09-23、★読める 決まりが 変わりました（★裁定177 R1）。
+    //   ★もと …… organizations_select_own_created（created_by = auth.uid()）
+    //   ★いま …… organizations_select_bootstrap
+    //             （created_by = auth.uid() ★かつ 名簿が 1行も 無い）
+    //
+    //   ★★だから ここで 拾えるのは **2つの うち 1つ** に なりました ──
+    //     ㋐ 作った けれど 名簿が 空の 教室 …… ★拾えます（★直せます）
+    //     ㋑ 作った あと 自分だけ 抜けた 教室 … ★拾えません
+    //
+    //   ★★★㋑ を 拾わないのが、★この 直しの ねらい です。
+    //     ★ほかの 方が 名簿に いる 教室は、★もう その 方たちの もの です。
+    //     ★★作った という だけで 中が 見えるのは、★退会の 意味が ありません。
+    //     ★★★直す 必要も ありません ── ★教室は 生きて います。
+    //
+    //   ★本番で 数えました（2026-09-23）…… ㋐㋑ とも ★0件。
     const { data: created, error: createdError } = await supabase
       .from("organizations").select(COLS_ORGANIZATIONS).eq("created_by", userId);
     if (createdError) {
