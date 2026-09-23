@@ -45,7 +45,7 @@ function 行({ label, value }) {
 }
 
 export default function LessonRoundDone({
-  round, total = 0, placed = {}, notPlaced = [], onPlace, onConfirm, busy = false
+  round, total = 0, placed = {}, notPlaced = [], onPlace, onConfirm, busy = false, onBack
 }) {
   if (!round) return null;
   const 数 = placedCount(placed, total);
@@ -53,6 +53,14 @@ export default function LessonRoundDone({
 
   return (
     <div>
+      {onBack ? (
+        <button type="button" onClick={onBack}
+          style={{
+            minHeight: 44, padding: `0 ${rem(11)}`, borderRadius: 999, marginBottom: rem(6),
+            border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
+            fontFamily: FONT_STACK, ...TYPE.usual
+          }}>‹ {tx("レッスン割")}</button>
+      ) : null}
       <h2 style={{ ...TYPE.title, margin: `${rem(2)} 0 ${rem(4)}` }}>
         {tx("確定して 配る")}
       </h2>

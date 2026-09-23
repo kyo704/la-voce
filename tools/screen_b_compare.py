@@ -235,8 +235,23 @@ def main(key, paths):
   # ★★いちばん 長い 言葉で 試します。★短い 字は ほかの 言葉の 中に 紛れ込みます。
   #   ★★くらべるのは `字だけ()` に した 形 なので、★そちらから 消します
   #     （★実装では `‹ {tx("公演を作る")}` の ように 割れて いる ことが あります）。
-  試 = sorted(在0, key=lambda x: -len(字だけ(x)))[0]
-  実偽 = 字だけ(実).replace(字だけ(試), "")
+  # ★★いちばん 長い 言葉で 試します。★短い 字は ほかの 言葉の 中に 紛れ込みます。
+  #   ★★★ただし、★消しても **ほかの 言葉の 一部として 残る** ことが あります
+  #     （★「先生が レッスンを 1件 打刻する」は `ONBOARD_WORDS` の 中に 1度、
+  #       ★でも 見本の 側で 2度 出て きます）。
+  #     ★★★消して なお 残る ものは 目盛りに なりません。★次に 長い ものを 試します。
+  #   ★★★中身（④）に 落ちる 字も 目盛りに なりません ── ★消しても ②に 来ません。
+  #     ★見本が 自分の 並びの 中に 持って いる 字 です（★「先生が レッスンを 1件 打刻する」）。
+  試 = None
+  for 候 in sorted(在0, key=lambda x: -len(字だけ(x))):
+    実偽 = 字だけ(実).replace(字だけ(候), "")
+    if 字だけ(候) in 実偽: continue
+    if 中身か(候, 中身, 本文): continue
+    if 数だけちがう(候, 実偽): continue
+    試 = 候
+    break
+  if 試 is None:
+    print("★止まりました ── 目盛りに 使える 字が ありません"); return 2
   _, _, 無偽, _, _ = くらべる(見, 実偽, key, 中身, 本文)
   if 試 not in 無偽:
     print("★止まりました ── 目盛りが 合いません（「%s」を 消しても ②に 出ない）" % 試[:20])
@@ -263,6 +278,35 @@ def main(key, paths):
   return 0 if not 無 else 1
 
 
+def 対応表():
+  """★`tools/screen_impl.json`。★`at_risk_screens.py` と 同じ 紙 です。"""
+  p = os.path.join(ROOT, "tools", "screen_impl.json")
+  if not os.path.exists(p): return {}
+  try: d = json.load(open(p, encoding="utf-8"))
+  except Exception: return {}
+  return {k: v for k, v in d.items() if not k.startswith("_")}
+
+
+def ぜんぶ():
+  """★対応表の 画面を ぜんぶ くらべます。★1つでも ②が あれば 1 で 終わります。"""
+  表 = 対応表()
+  if not 表:
+    print("★止まりました ── 対応表が 読めません"); return 2
+  悪 = []
+  for k, paths in 表.items():
+    有 = [p for p in paths if os.path.exists(os.path.join(ROOT, p))]
+    if not 有:
+      print("  ★紙が ない  ", k); 悪.append(k); continue
+    r = main(k, 有)
+    if r != 0: 悪.append(k)
+    print()
+  print("SCREEN_B_ALL", len(表), "画面 ／ ★差の ある もの", len(悪))
+  for k in 悪: print("   ", k)
+  print("RESULT:", "OK" if not 悪 else "DIFF（%d画面）" % len(悪))
+  return 0 if not 悪 else 1
+
+
 if __name__ == "__main__":
+  if "--all" in sys.argv: sys.exit(ぜんぶ())
   if len(sys.argv) < 3: print(__doc__); sys.exit(2)
   sys.exit(main(sys.argv[1], sys.argv[2:]))

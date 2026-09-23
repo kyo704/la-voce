@@ -6,7 +6,7 @@ import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { DAYS } from "@/lib/myTimetable";
 import {
   slotKey, prefWeight, densityPercent, isDarkCell, cellWord,
-  MAP_NOTE, MAP_EMPTY_HEAD, MAP_EMPTY_HOW
+  MAP_NOTE, MAP_NOTE_LINES, MAP_EMPTY_HEAD, MAP_EMPTY_HOW
 } from "@/lib/lessonRound";
 import { tx } from "@/lib/t";
 
@@ -34,7 +34,7 @@ import { tx } from "@/lib/t";
 const 小 = { ...TYPE.usual, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function LessonPrefMap({
-  round, periods = [], counts = {}, namesOf, placed = {}, busy = {}
+  round, periods = [], counts = {}, namesOf, placed = {}, busy = {}, onBack
 }) {
   const [選, set選] = useState(null);
   if (!round) return null;
@@ -50,6 +50,14 @@ export default function LessonPrefMap({
 
   return (
     <div>
+      {onBack ? (
+        <button type="button" onClick={onBack}
+          style={{
+            minHeight: 44, padding: `0 ${rem(11)}`, borderRadius: 999, marginBottom: rem(6),
+            border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
+            fontFamily: FONT_STACK, ...TYPE.usual
+          }}>‹ {tx("レッスン割")}</button>
+      ) : null}
       <h2 style={{ ...TYPE.title, margin: `${rem(2)} 0 ${rem(4)}` }}>
         {tx("希望の 地図")}
       </h2>
@@ -155,6 +163,15 @@ export default function LessonPrefMap({
             </div>
           )}
         </div>
+      </div>
+
+      {/* ★★★見本の 但し書き。★1字 も 足しません。
+          ★3行目が かなめ です ── ★◎の 多い方から 順に 並べません。
+          ★★並べ替えると、★上に 出た 方が 先に 置かれます。 */}
+      <div style={{ ...小, marginTop: rem(12) }}>
+        {MAP_NOTE_LINES.map((l) => (
+          <span key={l} style={{ display: "block" }}>{tx(l)}</span>
+        ))}
       </div>
     </div>
   );

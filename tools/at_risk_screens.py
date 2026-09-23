@@ -88,6 +88,24 @@ def 字だけ(s):
   return re.sub(r"[\s\u3000]+", "", s or "")
 
 
+def 対応表():
+  """★見本の 画面 → ★作った ファイル（`tools/screen_impl.json`）。
+
+     ★★★名前で 探す だけ では 足りません。
+       ★見本 `SC['スタッフの自分の予定']` の 見出しは「自分の 予定」です。
+       ★★画面の 名前が そのまま コードに 出る とは かぎりません
+         （★2026-09-24、★作って ある 7画面を「無い」と 出しました）。
+     ★★だから、★対応を 1枚の 紙に 書きます。★2つの 道具が 同じ 紙を 読みます。
+  """
+  p = os.path.join(ROOT, "tools", "screen_impl.json")
+  if not os.path.exists(p): return {}
+  try:
+    d = json.load(open(p, encoding="utf-8"))
+  except Exception:
+    return {}
+  return {k: v for k, v in d.items() if not k.startswith("_")}
+
+
 def 実装を探す(語):
   """★その 字が 実装の **註では ない ところ** に あるか。★あった 行を 返します。
 
@@ -156,6 +174,10 @@ def main():
 
   A, B, C = [], [], []   # ★見本無し ／ 見本あり実装無し ／ 見本あり足がかりあり
 
+  # ★★見本の 画面 → 作った ファイルの 対応（★2つの 道具が 同じ 紙を 読みます）
+  表 = 対応表()
+  表字 = {字だけ(k): v for k, v in 表.items()}
+
   for 名, 群 in sorted(ルート.items()):
     n = 字だけ(名)
     候 = [k for k in 鍵 if n and (n in 字だけ(k) or n in 字だけ(鍵[k][0]))]
@@ -163,6 +185,12 @@ def main():
       A.append((名, 群, "見本 無し"))
       continue
     k = 候[0]
+    # ★★対応表に 書いて あれば、★それが 答え です（★名前で 探しません）。
+    紙表 = 表.get(k) or 表字.get(字だけ(k))
+    if 紙表:
+      有 = [f for f in 紙表 if os.path.exists(os.path.join(ROOT, f))]
+      (C if 有 else B).append((名, 群, k, k, 有[:2]))
+      continue
     題 = 鍵[k][0] or k
     # ★★★探すのは **見本の 鍵**（画面の 名）です。★h2 では ありません。
     #   ★h2 は「自分の 予定」「書き出す」の ように 短く、★どこにでも あります。
@@ -176,6 +204,7 @@ def main():
   隠 = []
   for k, (h2, f) in sorted(鍵.items()):
     if not any(字だけ(w) in 字だけ(k) or 字だけ(w) in 字だけ(h2) for w in KAKUSU): continue
+    if 表.get(k) or 表字.get(字だけ(k)): continue
     紙 = 実装を探す(h2 or k)
     if not 紙: 隠.append((k, h2, f))
 
