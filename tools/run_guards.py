@@ -22,6 +22,7 @@ def main(引):
   みな = "--all" in 引
   本 = sorted(f for f in os.listdir(置場) if f.endswith(".test.js"))
   落ち = []
+  止め = []
   for f in 本:
     r = subprocess.run(["node", os.path.join(置場, f)], capture_output=True, text=True, cwd=ROOT)
     出 = (r.stdout or "") + (r.stderr or "")
@@ -29,10 +30,18 @@ def main(引):
     if r.returncode != 0:
       落ち.append((f, r.returncode, しっぽ[0][:110]))
       print("  ★NG(%d) %-44s %s" % (r.returncode, f[:-8], しっぽ[0][:110]))
+    elif "RESULT: PAUSED" in 出:
+      # ★★★止めて いる 見張りは、★緑とも 赤とも 数えません（★2026-09-23）。
+      #   ★★0 で 終わる ので、★これまでは 緑に 見えて いました。
+      #   ★★★1つも 確かめて いない ものを「通った」と 数えません。
+      止め.append(f)
+      print("  ★止め   %-44s %s" % (f[:-8], "★作り直し 待ち"))
     elif みな:
       print("  ok      %-44s %s" % (f[:-8], しっぽ[0][:80]))
   print()
-  print("★見張り %d 本 ／ ★落ちた %d 本" % (len(本), len(落ち)))
+  print("★見張り %d 本 ／ ★落ちた %d 本 ／ ★止めて いる %d 本" % (len(本), len(落ち), len(止め)))
+  if 止め:
+    print("★★止めて いる もの …… " + "／".join(x[:-8] for x in 止め))
   if 落ち:
     print("RESULT: NG")
     return 1

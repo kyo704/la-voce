@@ -283,7 +283,12 @@ export default function LookBackV2({ entries, todayISO, notOutDays, performanceD
                   aria-pressed={on}
                   style={{
                     minHeight: 44, padding: `0 ${rem(11)}`, borderRadius: 999,
-                    whiteSpace: "nowrap", fontSize: rem(10.5),
+                    // ★★★2026-09-23 …… ★10.5 → 12.5（★Opus の お決め・裁定179 の あと）。
+                    //   ★★裁定179 で 戻した ときに、★2026-09-13 の 字の 大きさも
+                    //     ★そのまま 戻って きました。★10.5px は 小さすぎます。
+                    //   ★★★老眼・暗い 画面への 手当ては、★裁定で 決めた 表示 です
+                    //     （★字 4段・44px 以上）。★見本は 12.5px です。
+                    whiteSpace: "nowrap", fontSize: rem(12.5),
                     border: `1px solid ${on ? C.curtain : C.line}`,
                     background: on ? C.curtain : C.card,
                     color: on ? "#FFFDF8" : C.inkSoft, fontFamily: FONT_STACK

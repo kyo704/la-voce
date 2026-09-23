@@ -42,13 +42,29 @@ function ok(cond, 名) {
     process.exit(1);
   }
   const 見本 = fs.readFileSync(見本の道, "utf8");
-  const i = 見本.indexOf("function billPlans(");
-  assert.ok(i > 0, "★止まりました ── 見本に billPlans が ありません。");
+  // ★★★2026-09-23 ── ★見本の 名が 変わりました。
+  //   ★もと `function billPlans(…)`（★段の 一覧を 返す）
+  //   ★いま `function gakkoYen(n)`（★答えだけ を 返す）＋ `billPlan()`（★プランの 種）
+  //   ★★段の 率は `gakkoYen` の 式の 中に あります ──
+  //       Math.max(12800, Math.min(n*400, Math.max(n,100)*350, Math.max(n,300)*250))
+  //   ★★★だから 率は そこから 読みます。★書き写しません。
+  const i = 見本.indexOf("function gakkoYen(");
+  assert.ok(i > 0, "★止まりました ── 見本に gakkoYen が ありません。");
   const 見本の本体 = 見本.slice(i, i + 300);
 
-  // ★★率は 見本から 引きます。
-  const 見本の率 = [...見本の本体.matchAll(/×\s*(\d+)円/g)].map((m) => Number(m[1]));
+  // ★★率は 見本から 引きます（★`n*400` ／ `…*350` ／ `…*250`）。
+  const 見本の率 = [...見本の本体.matchAll(/\*\s*(\d{3})\b/g)].map((m) => Number(m[1]));
   assert.ok(見本の率.length >= 3, "★止まりました ── 見本の 率を 読めません。");
+
+  // ★★★9月10日の 食いちがいの 確かめ（★Opus の お指図・2026-09-23）──
+  //   ★「100人以上 350円」「300人以上 250円」の **条件**が 見本の 式に あるか。
+  //   ★★もとは `n*350` と 書いて あり、★20人の 教室でも 350円の 段が 当たって いました。
+  assert.ok(/Math\.max\(\s*n\s*,\s*100\s*\)\s*\*\s*350/.test(見本の本体),
+    "★止まりました ── 見本の 350円に「100人以上」の 条件が ありません（★2026-09-10 の 食いちがい）");
+  assert.ok(/Math\.max\(\s*n\s*,\s*300\s*\)\s*\*\s*250/.test(見本の本体),
+    "★止まりました ── 見本の 250円に「300人以上」の 条件が ありません");
+  assert.ok(/Math\.max\(\s*12800\s*,/.test(見本の本体),
+    "★止まりました ── 見本に 下限 12,800円が ありません");
 
   const R = await loadLib("lib", "orgRoster.js");
 

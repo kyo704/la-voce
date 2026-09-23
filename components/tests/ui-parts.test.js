@@ -117,7 +117,7 @@ const CHECKS = [
   // ★★★2026-09-19 ── ★大きさの 決めが `lib/visualTokens.js` に 移りました
   //   （★お決め D63(b)・★門の 中だけ 6段）。★部品は 数を 書きません。
   //   ★★見るのは「いまの 大きさが 見本と 同じか」── ★そこは 変えて いません。
-  [".fl", "font-size:10.5px", /FieldLabel: \{ いま: 10\.5/, "fl は 10.5px", "決め"],
+  [".fl", "font-size:12.5px", /FieldLabel: \{ いま: 10\.5, 六段: 12\.5/, "fl は 12.5px（★六段・2026-09-23 に 見本へ 追いつき）", "決め"],
   [".fl", "letter-spacing:.08em", /letterSpacing: "0\.08em"/, "fl の 字間"],
   [".sht", "font-size:16px", /fontSize: rem\(16\), fontWeight: 700/, "sht は 16px・700"],
   [".empty", "border:1pxdashed", /1px dashed/, "empty の 枠は 破線"],
@@ -129,7 +129,7 @@ const CHECKS = [
   [".btn.g", "padding:12px0", /"12px 0"/, "btn.g の 内側"],
   [".btn.sm", "padding:10px0", /"10px 0"/, "btn.sm の 内側"],
   [".btn.sm", "font-size:12.5px", /small \? 12\.5/, "btn.sm は 12.5px"],
-  [".tag", "font-size:10px", /Tag: \{ いま: 10,/, "tag は 10px", "決め"]
+  [".tag", "font-size:12.5px", /Tag: \{ いま: 10, 六段: 12\.5/, "tag は 12.5px（★六段・2026-09-23 に 見本へ 追いつき）", "決め"]
 ];
 // ★★★見本が 動いた ものの 一覧（★2026-09-16・裁定その62 の トークン層）。
 //
@@ -152,8 +152,6 @@ const MOVED_BY_TOKENS = {
   //   ★★引き金 …… ★見た目の 通し直し（★裁定その62 の トークンを 当てる とき）。
   //     ★★字の 大きさは 6段の 決め（lib/visualTokens.js）に 入って います。
   //       ★1つだけ 動かすと、★段の あいだが ちぐはぐに なります。★まとめて 動かします。
-  ".fl font-size:10.5px": "10.5px → 12.5px",
-  ".tag font-size:10px": "10px → 12.5px",
   ".btn.sm font-size:12.5px": "12.5px → 13.5px",
   ".sw background:#DFD4BE": "#DFD4BE → var(--line) ＝ #E4DAC4"
 };
