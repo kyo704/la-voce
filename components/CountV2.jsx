@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { TYPE, rem } from "@/lib/uiKit";
+// ★★★2026-09-23、★`TYPE.h2` と `TYPE.lead` を 直しました（★段3a A群）。
+//   ★★どちらも `lib/uiKit.js` に **ありません**。★undefined を 展開しても JS は 落ちず、
+//     ★字の 大きさも 色も 1つも 効かない まま、★親の 字を 継いで いました。
+//   ★★★`TYPE.note` で 同じ ことが 起きて、★`no-missing-token` の 見張りが できました。
+//     ★その 見張りが、★今度は これを 捕まえました。
+//   ★入れ替え …… TYPE.h2 → TYPE.title（★画面の 題・h2）／ TYPE.lead → TYPE.li（★カードの 中の 1文）
 import { H3, Card, Kv, Note, Li, Back, Btn } from "@/components/UiV2";
 import { USUAL_ROWS, usualOf, writtenDays, histogramOf, detailedCountsOf } from "@/lib/countView";
 // ★★`isAlwaysFree` と `viewerOf` は 読み込みません（★2026-09-15）。
@@ -146,9 +152,9 @@ export default function CountV2({ entries, dates, todayISO, profile, userEmail, 
     return (
       <div>
         <Back onClick={() => setDetail(null)}>かぞえる</Back>
-        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>調べる</h2>
+        <h2 style={{ ...TYPE.title, margin: "5px 0 10px" }}>調べる</h2>
         <Card>
-          <div style={{ ...TYPE.lead }}>くらべる・かぞえるを、<br />もっと こまかく 見られます。</div>
+          <div style={{ ...TYPE.li }}>くらべる・かぞえるを、<br />もっと こまかく 見られます。</div>
           <div style={{ ...TYPE.usual, marginTop: 9, lineHeight: 1.9 }}>
             ・本番の 前の3日だけを 数える<br />
             ・出づらかった日の 普段<br />
@@ -195,9 +201,9 @@ export default function CountV2({ entries, dates, todayISO, profile, userEmail, 
     return (
       <div>
         <Back onClick={() => setDetail(null)}>かぞえる</Back>
-        <h2 style={{ ...TYPE.h2, margin: "5px 0 10px" }}>詳しい決まり</h2>
+        <h2 style={{ ...TYPE.title, margin: "5px 0 10px" }}>詳しい決まり</h2>
         <Card>
-          <div style={{ ...TYPE.lead }}>記録と利用の 決まり</div>
+          <div style={{ ...TYPE.li }}>記録と利用の 決まり</div>
           <div style={{ ...TYPE.usual, marginTop: 9, lineHeight: 1.95 }}>
             ・通信の失敗等で 記録を 勝手に消しません<br />
             ・基本機能（記録・並べる・さかのぼる・ノート・ひつじ・受診用の1枚）は これからも永久無料です<br />

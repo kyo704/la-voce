@@ -1706,10 +1706,10 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'通っているところ\')"><span>通っている ところ</span><s>'+ORGS.length+'つ ›</s></div>'
  +'<div class="li" onclick="openSheet(\'account\')"><span>アカウント</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'プラン\')"><span>プラン</span><s>'+(paid()?'調べる':'無料')+' ›</s></div>'
- +(hasSearch()?'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>':'')
- +'<div class="li" onclick="push(\'公演\')"><span>公演<div class="usu">フィガロの結婚　バジリオ 役</div></span><s>›</s></div>'
- +'<div class="li" onclick="push(\'公演に入る\')"><span>公演の 合言葉で 入る</span><s>›</s></div>'
- +'<div class="li" onclick="push(\'あなたのページ\')"><span>あなたの ページ<div class="usu">経歴・紙・公開</div></span><s>'+(PF_PUB?'公開中':pfCount()+'件')+' ›</s></div>'
+ +(featOn('matching')&&hasSearch()?'<div class="li" onclick="push(\'伴奏をさがす\')"><span>さがす<div class="usu">いっしょに 演奏する人</div></span><s>›</s></div>':'')
+ +(featOn('koen')?'<div class="li" onclick="push(\'公演\')"><span>公演<div class="usu">フィガロの結婚　バジリオ 役</div></span><s>›</s></div>':'')
+ +(featOn('koen')?'<div class="li" onclick="push(\'公演に入る\')"><span>公演の 合言葉で 入る</span><s>›</s></div>':'')
+ +'<div class="li" onclick="push(\'あなたのページ\')"><span>あなたの ページ<div class="usu">経歴・紙'+(featOn('portfolio_public')?'・公開':'')+'</div></span><s>'+(featOn('portfolio_public')&&PF_PUB?'公開中':pfCount()+'件')+' ›</s></div>'
  +'<div class="li" onclick="push(\'Woolsong\')"><span>つたえる<div class="usu">公開ページ・紙・英語</div></span><s>'+(PAID?'入っています':'3,600円／年')+' ›</s></div>'
  +'<div class="li" onclick="push(\'お仕事を選ぶ\')"><span>お仕事<div class="usu">画面の ことばが 変わります</div></span><s>'+VOCAB[FIELD].field+' ›</s></div>'
  +'<div class="li" onclick="push(\'保護者の画面\')"><span>保護者の 方の 画面<div class="usu">見本だけ。実際は メールから</div></span><s>›</s></div>'
@@ -1717,7 +1717,9 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'学ぶ\')"><span>学ぶ</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'書き出す\')"><span>書き出す（CSV・JSON）</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'同意\')"><span>同意を とりけす</span><s>›</s></div>'
- +'<div class="li" onclick="push(\'退会\')"><span>退会する</span><s>›</s></div></div>'
+ +'<div class="li" onclick="push(\'退会\')"><span>退会する</span><s>›</s></div>'
+ +(S.dm.internal===1?'<div class="li" onclick="push(\'切ってある機能\')"><span>切ってある 機能<div class="usu">運営だけに 出ます</div></span><s>'+Object.keys(FEAT).filter(function(k){return FEAT[k]!=='on'}).length+'件 ›</s></div>':'')
+ +'</div>'
   /* ★2026-09-15、「教室」の かたまりを 足しました（★裁定 ㋒・Opus）。
     ★この行が 無いために、★先生の 側の 入口が 1つも 無く なって いました。
       ★札は「レッスン」の 画面の 中に しか なく、
@@ -6397,6 +6399,36 @@ function specHTML(){
  +tb('⑤ 作りの 決まり（事故の 元）',SPEC_UI,['何を','決まり'])
  +'<div class="usu" style="margin-top:10px">この5つは <b>画面を 見ても 分かりません</b>。'
  +'実装のとき、この表を 1行ずつ 確かめてください。</div>'}
+/* ══ ★機能の 切り替え（裁定176）── 「作り終えて、本番に 隠して 置く」 ══
+   off=誰にも 見えない ／ internal=運営だけ ／ on=全員。★無い鍵は off と同じ */
+var FEAT={koen:'off', lesson_rounds:'off', portfolio_public:'off', homepage:'off',
+          works_catalog:'off', pricing:'off', student_price:'off', matching:'off', scoring:'off'};
+var FEAT_NAME={koen:'公演', lesson_rounds:'レッスン割', portfolio_public:'あなたのページ（公開）',
+  homepage:'ホームページ（15型）', works_catalog:'作品の雛形', pricing:'値段・お支払い',
+  student_price:'学生の値段', matching:'さがす', scoring:'採点'};
+var FEAT_WHY={koen:'画面と 証明が 済んでから', lesson_rounds:'証明が 済んでから',
+  portfolio_public:'切った相手・止められている方を 出さない 証明が 済んでから',
+  homepage:'型の 鍵の 突き合わせが 済んでから', works_catalog:'データの 確かめが 済んでから',
+  pricing:'★販売開始まで 開けない', student_price:'同意の 仕組みの 証明が 済んでから',
+  matching:'★電気通信事業の 届出の あと', scoring:'審査員の 表が 入ってから'};
+function featOn(k){var v=FEAT[k]; if(v==='on')return true;
+  if(v==='internal')return S.dm.internal===1;   /* 運営（内輪）だけ */
+  return false}                                  /* ★無い鍵・off は false */
+function featSet(k,v){FEAT[k]=v;draw()}
+
+SC['切ってある機能']=function(){
+ var ks=Object.keys(FEAT).filter(function(k){return FEAT[k]!=='on'});
+ return bk('もっと')+'<div class="hd" style="padding-top:2px"><h2>切ってある 機能</h2></div>'
+ +'<div class="warn">この一覧は <b>運営だけ</b>が 見ます。利用者の 画面には 出ません。<br>'
+ +'出発の 朝に、ここを 見て「切ってあること」を 確かめます。</div>'
+ +(ks.length?'<div class="box">'+ks.map(function(k){
+    return '<div class="li" style="cursor:default"><span>'+FEAT_NAME[k]
+      +'<div class="usu">'+FEAT_WHY[k]+'</div></span><s>'+(FEAT[k]==='off'?'切':'運営だけ')+'</s></div>'}).join('')+'</div>'
+  :'<div class="box"><div class="li plain"><span class="usu">すべて 開いています</span></div></div>')
+ +'<div class="note">開ける 条件は 4つです。<br>'
+ +'① その機能の 確かめが 全部 通っている<br>② 画面と 見本が 一致している<br>'
+ +'③ 記録が 要る 機能は、記録が 残ることを 確かめてある<br>④ 書類が 要る 機能は、書類が 公開されている</div>'};
+
 function drawDemo(){
  var r=function(l,opts,cur,k){return '<div class="r"><span class="l">'+l+'</span>'+opts.map(function(o){
   var v=Array.isArray(o)?o[1]:o, t=Array.isArray(o)?o[0]:o;   /* 文字列も 添字で 引けてしまうので Array で 判定 */
@@ -6406,6 +6438,14 @@ function drawDemo(){
  +r('本番の前後',[['ふつう',0],['静かにする期間',1]],S.dm.q,'q')
  +r('調べる',[['入っていない',0],['入っている',1]],S.dm.pay,'pay')
  +r('くらべる',[['まだ 出ていない',0],['1文が 出た',1]],S.dm.bun||0,'bun')
+ +r('内輪（運営）',[['ふつうの方',0],['内輪の方',1]],S.dm.internal||0,'internal')
+ +'<div class="r"><span class="l">機能の 切り替え</span>'
+ +Object.keys(FEAT).map(function(k){
+   var nx=FEAT[k]==='off'?'internal':(FEAT[k]==='internal'?'on':'off');
+   return '<span class="pill sm '+(FEAT[k]!=='off'?'on':'')+'" onclick="featSet(\''+k+'\',\''+nx+'\')">'
+     +FEAT_NAME[k]+'：'+(FEAT[k]==='off'?'切':FEAT[k]==='internal'?'運営だけ':'全員')+'</span>'}).join('')+'</div>'
+ +'<div class="usu" style="margin:2px 0 8px">★押すたびに 切→運営だけ→全員 と 変わります。'
+ +'切ってあるときは <b>入口ごと 出ません</b>（「近日公開」も 出しません）。</div>'
  +'<div class="r"><span class="l">役職</span>'
  +[['なし','なし']].concat(POSTS.map(function(x){return [x.n,x.n]})).map(function(o){
    return '<span class="pill sm '+(S.dm.post===o[1]?'on':'')+'" onclick="dmPost(\''+esc(o[1])+'\')">'+o[0]+'</span>'}).join('')+'</div>'

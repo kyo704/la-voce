@@ -52,7 +52,19 @@ function ok(cond, label) {
     ok(!all.includes(w), "★「" + w + "」の 欄が 無い");
   });
   const ui = readCode("components", "NotesV2.jsx");
-  ok(!/点数|出来ばえ|評価/.test(ui), "★画面にも 無い");
+  // ★★★2026-09-23、★この 見張りが 自分の 約束の 字を 捕まえて いました（★段3a A群）。
+  //   ★★画面には こう 書いて あります ── 「出来や 点数は 出しません。」
+  //     ★★これは **判定が 無い** という お約束の 字 です。★判定の 欄では ありません。
+  //   ★★★だから「出て こない こと」では なく、★「★打ち消しの 中に しか 出て こない こと」
+  //     ★を 見ます。★30字の うちに 打ち消しが 無ければ、★それは 欄 です。
+  const 打消 = /(出しません|出さない|ではありません|では ありません|ではない|しません)/;
+  const 欄 = [];
+  for (const m of ui.matchAll(/点数|出来ばえ|評価/g)) {
+    const 後 = ui.slice(m.index, m.index + 40);
+    if (!打消.test(後)) 欄.push(m[0] + "「" + 後.replace(/\s+/g, " ").slice(0, 28) + "」");
+  }
+  ok(欄.length === 0, "★画面には 判定の 欄が 無い（★打ち消しの 中だけ）" +
+    (欄.length ? " …… " + 欄.join(" / ") : ""));
 
   console.log("③ 「みた曲」は えらぶ もの");
   ok(PRACTICE_FIELDS.find((f) => f.key === "repertoire_name").kind === "repertoire",

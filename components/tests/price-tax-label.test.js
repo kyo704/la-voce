@@ -26,7 +26,14 @@ function t(名, 条件) {
   t("★★空で ない", Boolean(lib.PRICE_TAX_LABEL) && Boolean(lib.PRICE_TAX_ROW_LABEL));
 
   console.log("\n=== ② 見本と 同じ 字 ===");
-  t("★見本に「税別」が ある", mihon.includes("'税別'"));
+  // ★★★2026-09-23、★字を 覚えるのを やめました（★台帳 …… 見張りは 数えるもの・覚えるものでは ない）。
+  //   ★★もとは `mihon.includes("'税別'")` と 書いて ありました。
+  //     ★見本は 昔から 「税込」です（★5か所・入れ替えの 前も 後も）。
+  //     ★`lib` も 「税込」です。★★2つは 合って いて、★見張りだけが 古い 字を 覚えて いました。
+  //   ★★★いまは `lib` の 字を **そのまま** 見本に 探します。
+  //     ★どちらかが 変われば、★ここが 赤く なります。★字を 書き写しません。
+  t("★見本に「" + lib.PRICE_TAX_LABEL + "」が ある（★lib から 引いて 探す）",
+    mihon.includes("'" + lib.PRICE_TAX_LABEL + "'"));
   t("★見本に「表示」が ある", mihon.includes("'表示'"));
   t("★★lib の 字が 見本と 同じ", mihon.includes("'" + lib.PRICE_TAX_LABEL + "'"));
 
