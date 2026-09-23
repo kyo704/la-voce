@@ -1,0 +1,103 @@
+{
+  "title": "ジュリアス・シーザー",
+  "title_original": "Julius Caesar",
+  "aliases": [],
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1599,
+  "source": "hand",
+  "source_id": "shakespeare-julius-caesar",
+  "duration_min": 150,
+  "language": "en",
+  "roles": [
+    {
+      "label": "ブルータス"
+    },
+    {
+      "label": "カシアス"
+    },
+    {
+      "label": "アントニー"
+    },
+    {
+      "label": "シーザー"
+    },
+    {
+      "label": "ポーシャ"
+    },
+    {
+      "label": "キャルパーニア"
+    },
+    {
+      "label": "オクテイヴィアス"
+    },
+    {
+      "label": "市民",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ルペルカーリア祭",
+      "group_label": "第1幕",
+      "roles": [
+        "シーザー",
+        "アントニー",
+        "ブルータス",
+        "カシアス",
+        "市民"
+      ]
+    },
+    {
+      "label": "第2幕 陰謀の夜",
+      "group_label": "第2幕",
+      "roles": [
+        "ブルータス",
+        "ポーシャ",
+        "カシアス",
+        "シーザー",
+        "キャルパーニア"
+      ]
+    },
+    {
+      "label": "第3幕 暗殺と葬送演説",
+      "group_label": "第3幕",
+      "roles": [
+        "シーザー",
+        "ブルータス",
+        "カシアス",
+        "アントニー",
+        "市民"
+      ]
+    },
+    {
+      "label": "第4幕 陣営の口論",
+      "group_label": "第4幕",
+      "roles": [
+        "ブルータス",
+        "カシアス"
+      ]
+    },
+    {
+      "label": "第5幕 フィリッパイの戦い",
+      "group_label": "第5幕",
+      "roles": [
+        "ブルータス",
+        "カシアス",
+        "アントニー",
+        "オクテイヴィアス",
+        "市民"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "title": "タメルラーノ",
+  "title_original": "Tamerlano",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1724,
+  "duration_min": 190,
+  "language": "it",
+  "source": "hand",
+  "source_id": "handel-tamerlano",
+  "roles": [
+    {
+      "label": "タメルラーノ"
+    },
+    {
+      "label": "バヤゼット"
+    },
+    {
+      "label": "アステリア"
+    },
+    {
+      "label": "アンドロニコ"
+    },
+    {
+      "label": "イレーネ"
+    },
+    {
+      "label": "レオーネ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 捕虜バヤゼット",
+      "group_label": "第1幕",
+      "roles": [
+        "バヤゼット",
+        "アンドロニコ",
+        "タメルラーノ",
+        "アステリア"
+      ]
+    },
+    {
+      "label": "第2幕 婚礼の企てと対立",
+      "group_label": "第2幕",
+      "roles": [
+        "タメルラーノ",
+        "アステリア",
+        "アンドロニコ",
+        "イレーネ",
+        "バヤゼット"
+      ]
+    },
+    {
+      "label": "第3幕 毒杯",
+      "group_label": "第3幕",
+      "roles": [
+        "バヤゼット",
+        "アステリア",
+        "タメルラーノ"
+      ]
+    },
+    {
+      "label": "第3幕 バヤゼットの死とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "バヤゼット",
+        "アステリア",
+        "タメルラーノ",
+        "アンドロニコ",
+        "イレーネ",
+        "レオーネ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

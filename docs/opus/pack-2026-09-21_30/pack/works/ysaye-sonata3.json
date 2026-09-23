@@ -1,0 +1,35 @@
+{
+  "title": "無伴奏ヴァイオリンソナタ第3番「バラード」",
+  "title_original": "Sonate No. 3 \"Ballade\"",
+  "aliases": [
+    "バラード"
+  ],
+  "composer": "イザイ",
+  "composer_sort": "Ysaye, Eugene",
+  "kind": "chamber",
+  "year_written": 1923,
+  "source": "hand",
+  "source_id": "ysaye-sonata3",
+  "duration_min": 8,
+  "roles": [
+    {
+      "label": "ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

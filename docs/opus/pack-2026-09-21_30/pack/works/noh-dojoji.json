@@ -1,0 +1,111 @@
+{
+  "title": "道成寺",
+  "title_original": "道成寺",
+  "aliases": [
+    "鐘入り"
+  ],
+  "composer": "能（四番目（雑））",
+  "composer_sort": "Noh 四番目（雑）",
+  "kind": "drama",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "noh-dojoji-kanze",
+  "duration_min": 100,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（白拍子・蛇体）"
+    },
+    {
+      "label": "ワキ（住僧）"
+    },
+    {
+      "label": "ワキツレ（従僧）",
+      "is_group": true
+    },
+    {
+      "label": "アイ（能力）",
+      "is_group": true
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "鐘供養の触れ",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（住僧）",
+        "アイ（能力）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "白拍子の登場と乱拍子",
+      "group_label": "前段",
+      "roles": [
+        "シテ（白拍子・蛇体）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "★急ノ舞と鐘入り",
+      "group_label": "前段",
+      "roles": [
+        "シテ（白拍子・蛇体）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "アイの語り",
+      "group_label": "中入",
+      "roles": [
+        "アイ（能力）",
+        "ワキ（住僧）"
+      ]
+    },
+    {
+      "label": "蛇体の出現と祈り",
+      "group_label": "後段",
+      "roles": [
+        "シテ（白拍子・蛇体）",
+        "ワキ（住僧）",
+        "ワキツレ（従僧）",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "note": "★鐘の吊り込みと鐘後見が要る。稽古と当日の段取りが特別／★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う",
+  "school": "観世流"
+}

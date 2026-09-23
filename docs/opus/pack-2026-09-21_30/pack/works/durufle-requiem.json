@@ -1,0 +1,172 @@
+{
+  "title": "レクイエム 作品9（デュリュフレ）",
+  "composer": "デュリュフレ",
+  "composer_sort": "Durufle, Maurice",
+  "kind": "chorus",
+  "year_written": 1947,
+  "source": "hand",
+  "source_id": "durufle-requiem",
+  "roles": [
+    {
+      "label": "メゾソプラノ独唱"
+    },
+    {
+      "label": "バリトン独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 入祭唱",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "II キリエ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III 奉献唱",
+      "group_label": "全曲",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV サンクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "V ピエ・イエズ",
+      "group_label": "全曲",
+      "roles": [
+        "メゾソプラノ独唱"
+      ]
+    },
+    {
+      "label": "VI アニュス・デイ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VII 永遠の光を",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VIII リベラ・メ",
+      "group_label": "全曲",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "IX 楽園にて",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "note": "版により オルガンのみ・室内楽版もある"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -10,6 +10,8 @@
 //   ★★守る こと
 //     ① 決めを 画面で 作って いない
 //     ② ★既定は 出さない。★何を 出すかを 選ばせない
+//     ②b ★学校ごとに 決める・★混ぜない（★裁定140・sql/71・2026-09-24）
+//     ②c ★1校 だけの 方には 学校の 名を 出さない（★裁定73）
 //     ③ ★学校に 見えるのは「授業」の 2文字 だけ
 //     ④ ★代役を 自動で 呼ばない。★おすすめも 並べ替えも しない
 //     ⑤ ★体の 記録を 1つも 読んで いない
@@ -47,11 +49,33 @@ function t(cond, label) {
   t(T.isSharing(null) === false, "★行が 無ければ 出して いない");
   t(T.isSharing({ shares: true }) === true && T.isSharing({ shares: false }) === false, "★真偽の 見方");
   t(T.shareWord(null) === "出さない" && T.shareWord({ shares: true }) === "出す", "★札の 字");
+
+  console.log("\n②b 学校ごとに 決める・混ぜない");
+  const 校 = T.shareRows([{ org_id: "a", name: "A大学", shares: true },
+                          { org_id: "b", name: "B教室", shares: false }]);
+  t(校.length === 2, "★2校 とも 出す");
+  t(校[0].shares === true && 校[1].shares === false, "★★混ざって いない");
+  t(/rpc\(\s*"my_timetable_share"/.test(時), "★読むのは 台帳の 道");
+  t(/rpc\(\s*"set_timetable_share"/.test(時), "★書くのも 台帳の 道");
+  t(!/from\("timetable_share"\)/.test(時), "★表を 直に 読んで いない");
+  // ★★★どの 学校かを **呼ぶ 側から** 渡して いない こと（★決めが 2か所に ならない）。
+  //   ★`r.orgId` は 台帳が 返した 行の もの です。★それは 使って よい ものです。
+  //   ★★見るのは **受け取り口**（props）です。
+  const 受 = 時.slice(時.indexOf("export default function ClassTimeShare"),
+                      時.indexOf("export default function ClassTimeShare") + 120);
+  t(!/orgId/.test(受), "★★`orgId` を 受け取って いない（★台帳が 決める）── " + 受.slice(0, 60));
+  t(!/userId/.test(受), "★`userId` も 受け取って いない（★`auth.uid()` が 決める）");
+  t(/学校を またいで 混ざることは ありません。/.test(T.TT_MANY_NOTE[1]), "★★約束の 字が ある");
+
+  console.log("\n②c 1校 だけの 方には 名を 出さない");
+  t(T.showsOrgName(校) === true, "★2校 なら 名を 出す");
+  t(T.showsOrgName([校[0]]) === false, "★★1校 なら 出さない（★裁定73）");
+  t(T.showsOrgName([]) === false, "★0校 でも 出さない");
+  t(/名を出す \? r\.name : tx\(TT_ONE_LABEL\)/.test(時), "★画面も その とおり");
+  t(/\{名を出す \? \(/.test(時), "★2校 以上の 註も、★1校には 出さない");
   // ★★何を 出すかを 選ぶ 欄が 無い こと
-  t(!/科目|教室|先生の 名前/.test(時.replace(/TT_NOTE|TT_WARN/g, "")),
-    "★何を 出すかを 選ばせて いない");
   t((時.match(/<input|<select/g) || []).length === 0, "★打ち込む 欄も 選ぶ 欄も ない");
-  t(/upsert\(/.test(時) && /shares: nextShares\(row\)/.test(時), "★真偽 1つ だけ 書く");
+  t(/p_shares: nextShares\(r\)/.test(時), "★真偽 1つ だけ 書く");
 
   console.log("\n③ 見えるのは「授業」だけ");
   t(T.VISIBLE_WORD === "授業", "★2文字");

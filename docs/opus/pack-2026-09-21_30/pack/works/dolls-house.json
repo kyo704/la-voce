@@ -1,0 +1,85 @@
+{
+  "title": "人形の家",
+  "composer": "イプセン",
+  "composer_sort": "Ibsen, Henrik",
+  "kind": "drama",
+  "year_written": 1879,
+  "source": "hand",
+  "source_id": "ibsen-dolls-house",
+  "roles": [
+    {
+      "label": "ノラ"
+    },
+    {
+      "label": "ヘルメル"
+    },
+    {
+      "label": "クログスタ"
+    },
+    {
+      "label": "リンデ夫人"
+    },
+    {
+      "label": "ランク医師"
+    },
+    {
+      "label": "乳母"
+    },
+    {
+      "label": "子どもたち",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 クリスマスの前日",
+      "group_label": "第1幕",
+      "roles": [
+        "ノラ",
+        "ヘルメル",
+        "リンデ夫人",
+        "クログスタ",
+        "ランク医師",
+        "乳母",
+        "子どもたち"
+      ]
+    },
+    {
+      "label": "第2幕 タランテラの稽古",
+      "group_label": "第2幕",
+      "roles": [
+        "ノラ",
+        "ヘルメル",
+        "リンデ夫人",
+        "クログスタ",
+        "ランク医師"
+      ]
+    },
+    {
+      "label": "第3幕 手紙と別れ",
+      "group_label": "第3幕",
+      "roles": [
+        "ノラ",
+        "ヘルメル",
+        "リンデ夫人",
+        "クログスタ",
+        "ランク医師"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "第2幕のタランテラ（ピアノ）"
+    }
+  ],
+  "title_original": "Et dukkehjem / A Doll’s House",
+  "aliases": [
+    "ノラ"
+  ],
+  "duration_min": 150,
+  "language": "no"
+}

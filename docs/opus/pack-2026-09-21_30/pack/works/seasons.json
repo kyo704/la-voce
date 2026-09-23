@@ -1,0 +1,235 @@
+{
+  "title": "四季",
+  "composer": "ハイドン",
+  "composer_sort": "Haydn, Joseph",
+  "kind": "chorus",
+  "year_written": 1801,
+  "source": "hand",
+  "source_id": "haydn-seasons",
+  "roles": [
+    {
+      "label": "ハンネ（ソプラノ）"
+    },
+    {
+      "label": "ルーカス（テノール）"
+    },
+    {
+      "label": "ジーモン（バス）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "春 序奏（冬から春へ）",
+      "group_label": "春",
+      "roles": []
+    },
+    {
+      "label": "春 合唱（来たれ、やさしい春よ）",
+      "group_label": "春",
+      "roles": [
+        "合唱",
+        "ハンネ（ソプラノ）",
+        "ルーカス（テノール）",
+        "ジーモン（バス）"
+      ]
+    },
+    {
+      "label": "春 ジーモンのアリア（農夫はいそいそと）",
+      "group_label": "春",
+      "roles": [
+        "ジーモン（バス）"
+      ]
+    },
+    {
+      "label": "春 三重唱と合唱（恵み深き神よ）",
+      "group_label": "春",
+      "roles": [
+        "ハンネ（ソプラノ）",
+        "ルーカス（テノール）",
+        "ジーモン（バス）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "夏 序奏と日の出",
+      "group_label": "夏",
+      "roles": [
+        "ジーモン（バス）",
+        "ルーカス（テノール）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "夏 ハンネのレチタティーヴォとアリア（ああ、なんという暑さ）",
+      "group_label": "夏",
+      "roles": [
+        "ハンネ（ソプラノ）",
+        "ルーカス（テノール）"
+      ]
+    },
+    {
+      "label": "夏 雷雨の合唱",
+      "group_label": "夏",
+      "roles": [
+        "合唱",
+        "ハンネ（ソプラノ）",
+        "ルーカス（テノール）",
+        "ジーモン（バス）"
+      ]
+    },
+    {
+      "label": "秋 収穫の合唱",
+      "group_label": "秋",
+      "roles": [
+        "合唱",
+        "ハンネ（ソプラノ）",
+        "ルーカス（テノール）",
+        "ジーモン（バス）"
+      ]
+    },
+    {
+      "label": "秋 ハンネとルーカスの二重唱（愛の喜び）",
+      "group_label": "秋",
+      "roles": [
+        "ハンネ（ソプラノ）",
+        "ルーカス（テノール）"
+      ]
+    },
+    {
+      "label": "秋 狩りの合唱（ホルンつき）",
+      "group_label": "秋",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "秋 葡萄酒の合唱",
+      "group_label": "秋",
+      "roles": [
+        "合唱",
+        "ジーモン（バス）"
+      ]
+    },
+    {
+      "label": "冬 序奏と霧の情景",
+      "group_label": "冬",
+      "roles": [
+        "ハンネ（ソプラノ）",
+        "ジーモン（バス）"
+      ]
+    },
+    {
+      "label": "冬 ハンネの糸紡ぎの歌",
+      "group_label": "冬",
+      "roles": [
+        "ハンネ（ソプラノ）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "冬 ジーモンのアリア（冬は過ぎ去り）と終結の合唱",
+      "group_label": "冬",
+      "roles": [
+        "ジーモン（バス）",
+        "ハンネ（ソプラノ）",
+        "ルーカス（テノール）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Die Jahreszeiten",
+  "aliases": [
+    "四季 ハイドン"
+  ],
+  "duration_min": 135,
+  "language": "de"
+}

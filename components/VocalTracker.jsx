@@ -27675,12 +27675,13 @@ export default function VocalTracker({
                 {/* ★★★授業の 時間を 出す（★裁定183 P2・2026-09-24）。
                     ★★既定は 出しません。★いつでも やめられます。
                     ★★学校に 見えるのは「授業」の 2文字 だけ です。
-                    ★★★在籍して いる 学校 1つ ぶん です。★2つ 以上の 方は、
-                      ★はじめの 1つ に なります ── ★学校ごとに 分ける 形は
-                      ★まだ 決まって いません（`docs/ledgers/08-保留している決め.md`）。 */}
+                    ★★★学校ごとに 決められます（★裁定140・sql/71・2026-09-24）。
+                      ★★どの 学校に いるかは 台帳が 返します（`my_timetable_share()`）。
+                      ★★★だから ここから `orgId` を 渡しません。★渡すと、
+                        ★「どの 学校か」の 決めが 2か所に なります。
+                      ★★1校 だけの 方には、★学校の 名も 註も 出ません（★裁定73）。 */}
                 {layoutV2 && moreSection === "授業の時間" && myEnrollments.length > 0 ? (
-                  <ClassTimeShare supabase={featureClient} userId={userId}
-                    orgId={myEnrollments[0].org_id} />
+                  <ClassTimeShare supabase={featureClient} />
                 ) : null}
                 {/* ★★★担当の 先生を 選ぶ（★裁定186・2026-09-24）。
                     ★★学校が「学生が 選ぶ」に して いる ときだけ です。
