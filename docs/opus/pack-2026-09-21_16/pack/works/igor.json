@@ -1,0 +1,206 @@
+{
+  "title": "イーゴリ公",
+  "title_original": "Князь Игорь / Prince Igor",
+  "aliases": [
+    "ダッタン人の踊り",
+    "ポロヴェツ"
+  ],
+  "composer": "ボロディン",
+  "composer_sort": "Borodin, Alexander",
+  "kind": "opera",
+  "year_written": 1890,
+  "duration_min": 195,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "borodin-igor",
+  "roles": [
+    {
+      "label": "イーゴリ公"
+    },
+    {
+      "label": "ヤロスラーヴナ"
+    },
+    {
+      "label": "ウラジーミル"
+    },
+    {
+      "label": "コンチャーク汗"
+    },
+    {
+      "label": "コンチャコーヴナ"
+    },
+    {
+      "label": "ガリツキー公"
+    },
+    {
+      "label": "スクラとエローシカ",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "プロローグ 出陣（日食）",
+      "group_label": "プロローグ",
+      "roles": [
+        "イーゴリ公",
+        "ヤロスラーヴナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ガリツキー公の館",
+      "group_label": "第1幕",
+      "roles": [
+        "ガリツキー公",
+        "スクラとエローシカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ヤロスラーヴナの嘆き",
+      "group_label": "第1幕",
+      "roles": [
+        "ヤロスラーヴナ",
+        "ガリツキー公",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ポロヴェツ人の陣営",
+      "group_label": "第2幕",
+      "roles": [
+        "コンチャコーヴナ",
+        "ウラジーミル",
+        "イーゴリ公",
+        "コンチャーク汗",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ダッタン人の踊り",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 脱出",
+      "group_label": "第3幕",
+      "roles": [
+        "イーゴリ公",
+        "コンチャーク汗",
+        "ウラジーミル",
+        "コンチャコーヴナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 帰還とフィナーレ",
+      "group_label": "第4幕",
+      "roles": [
+        "ヤロスラーヴナ",
+        "イーゴリ公",
+        "スクラとエローシカ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

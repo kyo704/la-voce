@@ -1,0 +1,284 @@
+{
+  "title": "リゴレット",
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1851,
+  "source": "hand",
+  "source_id": "verdi-rigoletto",
+  "roles": [
+    {
+      "label": "リゴレット"
+    },
+    {
+      "label": "ジルダ"
+    },
+    {
+      "label": "マントヴァ公爵"
+    },
+    {
+      "label": "スパラフチーレ"
+    },
+    {
+      "label": "マッダレーナ"
+    },
+    {
+      "label": "ジョヴァンナ"
+    },
+    {
+      "label": "モンテローネ"
+    },
+    {
+      "label": "マルッロ"
+    },
+    {
+      "label": "ボルサ"
+    },
+    {
+      "label": "チェプラーノ伯爵"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "導入（宮廷の宴・あれかこれか）",
+      "group_label": "第1幕",
+      "roles": [
+        "マントヴァ公爵",
+        "ボルサ",
+        "マルッロ",
+        "チェプラーノ伯爵",
+        "リゴレット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "モンテローネの呪い",
+      "group_label": "第1幕",
+      "roles": [
+        "モンテローネ",
+        "リゴレット",
+        "マントヴァ公爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "リゴレットとスパラフチーレ（われらは同じ）",
+      "group_label": "第1幕",
+      "roles": [
+        "リゴレット",
+        "スパラフチーレ"
+      ]
+    },
+    {
+      "label": "リゴレットとジルダの二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "リゴレット",
+        "ジルダ",
+        "ジョヴァンナ"
+      ]
+    },
+    {
+      "label": "公爵とジルダの二重唱（愛はこころの太陽）",
+      "group_label": "第1幕",
+      "roles": [
+        "マントヴァ公爵",
+        "ジルダ"
+      ]
+    },
+    {
+      "label": "慕わしい人の名は（ジルダのアリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジルダ"
+      ]
+    },
+    {
+      "label": "誘拐の場（第1幕フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "リゴレット",
+        "マルッロ",
+        "ボルサ",
+        "チェプラーノ伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "公爵のアリア（頬の涙が）",
+      "group_label": "第2幕",
+      "roles": [
+        "マントヴァ公爵"
+      ]
+    },
+    {
+      "label": "廷臣の合唱と「悪魔め、鬼め」",
+      "group_label": "第2幕",
+      "roles": [
+        "リゴレット",
+        "マルッロ",
+        "ボルサ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "父と娘の二重唱（復讐だ）",
+      "group_label": "第2幕",
+      "roles": [
+        "リゴレット",
+        "ジルダ",
+        "モンテローネ"
+      ]
+    },
+    {
+      "label": "女心の歌（風の中の羽のように）",
+      "group_label": "第3幕",
+      "roles": [
+        "マントヴァ公爵"
+      ]
+    },
+    {
+      "label": "四重唱（美しい恋の娘よ）",
+      "group_label": "第3幕",
+      "roles": [
+        "マントヴァ公爵",
+        "マッダレーナ",
+        "ジルダ",
+        "リゴレット"
+      ]
+    },
+    {
+      "label": "嵐の三重唱と殺害",
+      "group_label": "第3幕",
+      "roles": [
+        "スパラフチーレ",
+        "マッダレーナ",
+        "ジルダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "フィナーレ（ジルダの死・呪い）",
+      "group_label": "第3幕",
+      "roles": [
+        "リゴレット",
+        "ジルダ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チンバッソ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "第1幕の宴"
+    },
+    {
+      "part": "舞台裏の合唱",
+      "count": 0,
+      "section": "banda",
+      "note": "第3幕の嵐"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Rigoletto",
+  "aliases": [],
+  "duration_min": 120,
+  "language": "it"
+}

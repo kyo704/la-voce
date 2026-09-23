@@ -37,23 +37,28 @@ drop policy if exists org_contacts_write on public.org_contacts;
 create policy org_contacts_write on public.org_contacts for all to authenticated
   using (public.has_can(org_id,'master')) with check (public.has_can(org_id,'master'));
 
+-- ★学校を閉じるときの印（2026-09-23 に試しの環境で確かめて足した）
+--   これが無いと、連鎖の削除で 下の見張りが働き、★学校を閉じられなくなる（実際に止まった）
+create or replace function public.mark_closing_org()
+returns trigger language plpgsql security definer set search_path to 'public' as $$
+begin
+  perform set_config('app.closing_org', old.id::text, true);   -- ★この取引の中だけ
+  return old;
+end $$;
+revoke all on function public.mark_closing_org() from public, anon, authenticated;
+drop trigger if exists organizations_mark_closing on public.organizations;
+create trigger organizations_mark_closing before delete on public.organizations
+  for each row execute function public.mark_closing_org();
+
 -- ★障害の宛先を 0件にさせない（最後の1件は消せない・用途を変えられない）
 create or replace function public.org_contacts_keep_incident()
 returns trigger language plpgsql security definer set search_path to 'public' as $$
 declare v_org uuid; v_left integer;
 begin
   v_org := case when tg_op = 'DELETE' then old.org_id else new.org_id end;
-  -- ★★★2026-09-23（Code）── ★学校ごと 閉じる ときは 見ません。
-  --   ★★試しの 台帳で 確かめました ── ★この 1行が 無いと
-  --     ★`delete from public.organizations` が NEED_ONE_INCIDENT_CONTACT で 止まります。
-  --     ★★連鎖で 最後の 1件が 消える とき、★引き金が「0件に なる」と 読む ため です。
-  --   ★★★sql/14 が 本番で 起こした 事故と **同じ 形** です（2026-09-23・戻しました）。
-  --     ★直し方は Opus ご自身の 字 です（sql/24 ④ `audit_row`）──
-  --       「if tg_op = 'DELETE' and … not exists (select 1 from public.organizations …) then return old」
-  --   ★★引き金の 中から 親が 見えるか も 確かめました …… ★連鎖の 最中は 0件 でした。
-  if tg_op = 'DELETE'
-     and not exists (select 1 from public.organizations o where o.id = v_org) then
-    return old;
+  -- ★学校を閉じている最中は 止めない（止めると 学校を閉じられなくなる）
+  if coalesce(current_setting('app.closing_org', true),'') = v_org::text then
+    return case when tg_op = 'DELETE' then old else new end;
   end if;
   if tg_op = 'DELETE' and old.kind <> 'incident' then return old; end if;
   if tg_op = 'UPDATE' and old.kind <> 'incident' then return new; end if;
@@ -101,9 +106,13 @@ select b.org_id, 'billing', btrim(b.atesaki_email), nullif(btrim(coalesce(b.ates
  where coalesce(btrim(b.atesaki_email),'') <> ''
 on conflict do nothing;
 
+-- ★試しの環境で実際に動かして確かめた（2026-09-23・新しい試し環境）
+--   最後の1件は消せない／2件あれば消せる／変なメールは弾く／★学校を閉じられる（連鎖で連絡先も消える）
+
 -- 確かめ（試しの環境で）
 -- master の札を持つ人: 3つの用途を足せる／請求の札だけの人: billing だけ見える・変えられない
 -- 障害の宛先が1件のとき、それを消す → NEED_ONE_INCIDENT_CONTACT（用途を general に変えるのも同じく止まる）
 -- ★退会した人・学校の外の人: 0行（ポリシーは has_can。security definer の中で数えるので、見え方に左右されない）
 -- orgs_without_incident_contact(): 宛先の無い学校が並ぶ（★いまの本番は7学校とも並ぶはず）
+-- ★学校を閉じる: 連絡先も一緒に消える。見張りで止まらない（2026-09-23 に確認）
 -- incident_recipients(): 画面から呼ぶと権限エラー

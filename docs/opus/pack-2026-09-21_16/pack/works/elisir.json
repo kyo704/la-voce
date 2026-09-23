@@ -1,0 +1,261 @@
+{
+  "title": "愛の妙薬",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1832,
+  "source": "hand",
+  "source_id": "donizetti-elisir",
+  "roles": [
+    {
+      "label": "アディーナ"
+    },
+    {
+      "label": "ネモリーノ"
+    },
+    {
+      "label": "ベルコーレ"
+    },
+    {
+      "label": "ドゥルカマーラ"
+    },
+    {
+      "label": "ジャンネッタ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "導入の合唱（なんと暑い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャンネッタ",
+        "ネモリーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "カヴァティーナ（なんと彼女は美しい）",
+      "group_label": "第1幕",
+      "roles": [
+        "ネモリーノ"
+      ]
+    },
+    {
+      "label": "アディーナの読み聞かせ（トリスタンとイゾルデの話）",
+      "group_label": "第1幕",
+      "roles": [
+        "アディーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ベルコーレの登場（麗しのアディーナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベルコーレ",
+        "アディーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "二重唱（ひとことだけ、アディーナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ネモリーノ",
+        "アディーナ"
+      ]
+    },
+    {
+      "label": "ドゥルカマーラの登場（聞け、村人よ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドゥルカマーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "二重唱（妙薬を買う）",
+      "group_label": "第1幕",
+      "roles": [
+        "ネモリーノ",
+        "ドゥルカマーラ"
+      ]
+    },
+    {
+      "label": "フィナーレ（第1幕）",
+      "group_label": "第1幕",
+      "roles": [
+        "アディーナ",
+        "ネモリーノ",
+        "ベルコーレ",
+        "ジャンネッタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "婚礼の合唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ドゥルカマーラ",
+        "アディーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "舟歌の二重唱（私は金持ちで、お前は美人）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドゥルカマーラ",
+        "アディーナ"
+      ]
+    },
+    {
+      "label": "二重唱（入隊の契約）",
+      "group_label": "第2幕",
+      "roles": [
+        "ネモリーノ",
+        "ベルコーレ"
+      ]
+    },
+    {
+      "label": "ジャンネッタと娘たちの合唱（遺産の噂）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャンネッタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "人知れぬ涙（ネモリーノのロマンツァ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ネモリーノ"
+      ]
+    },
+    {
+      "label": "二重唱（受け取って、あなたは自由）",
+      "group_label": "第2幕",
+      "roles": [
+        "アディーナ",
+        "ネモリーノ"
+      ]
+    },
+    {
+      "label": "フィナーレ（第2幕）",
+      "group_label": "第2幕",
+      "roles": [
+        "アディーナ",
+        "ネモリーノ",
+        "ベルコーレ",
+        "ドゥルカマーラ",
+        "ジャンネッタ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "L'elisir d'amore",
+  "aliases": [
+    "Elisir"
+  ],
+  "duration_min": 135,
+  "language": "it"
+}
