@@ -13,6 +13,11 @@ import LessonPrefs from "./LessonPrefs";
 import LessonPrefMap from "./LessonPrefMap";
 import LessonRoundDone from "./LessonRoundDone";
 import LessonPlaceSlots from "./LessonPlaceSlots";
+// ★★★回が 1つも 無い ときの 画面（★裁定185・2026-09-24）。
+//   ★★これが 無いと、★先生は **回を 始められません**。
+//     ★★2026-09-23 は「回が 無ければ 何も 出さない」で 止めて いました。
+//       ★見た目は きれい ですが、★そこから 先へ 進めません。
+import RoundStart from "./RoundStart";
 import { tx } from "@/lib/t";
 
 // ============================================================================
@@ -67,6 +72,9 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  // ★★★回を 始める ための もの（★回が 1つも 無い ときだけ 使います）。
+  const [myOrg, setMyOrg] = useState(null);
+  const [orgTeachers, setOrgTeachers] = useState([]);
 
   const 教 = role === "teach";
 
@@ -85,7 +93,30 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
         const r = (rs || [])[0] || null;
         if (!生きている) return;
         setRound(r);
-        if (!r) return;
+
+        // ★★★回が 1つも 無い とき ── ★先生なら「始める」ところを 出します。
+        //   ★★学校が 分からないと 始められません。★在籍から 引きます。
+        //   ★★先生の 一覧は `get_org_member_names`（★学校の 方 だけ が 引けます）。
+        //     ★★学生の 行は 外します。★学生の 回は ありません。
+        if (!r) {
+          if (!教) return;
+          const { data: ms } = await supabase.from("memberships")
+            .select("org_id, role").eq("user_id", userId).neq("role", "student").limit(1);
+          const org = (ms || [])[0] || null;
+          if (!生きている) return;
+          setMyOrg(org);
+          if (org) {
+            const { data: nm } = await supabase.rpc("get_org_member_names",
+              { p_org_id: org.org_id });
+            if (!生きている) return;
+            // ★★自分は 必ず 入れます。★先生は 自分の 回を 始められます。
+            const 先 = (nm || []).filter((x) => x && x.role !== "student")
+              .map((x) => ({ id: x.user_id, name: x.display_name || tx("お名前が まだ です") }));
+            setOrgTeachers(先.length > 0 ? 先
+              : [{ id: userId, name: tx("自分") }]);
+          }
+          return;
+        }
 
         // ★★コマ ── ★学生は 自分の もの、★先生・事務は 学校の もの。
         const { data: ps } = 教
@@ -285,12 +316,27 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
   // ---- 出す --------------------------------------------------------------
   // ★★★閉じて いる ときは、★何も 出しません（★入口も 出しません）。
   if (!開) return null;
-  // ★★回が 無い ときも 出しません。★空の 表を 置くと、★壊れて 見えます。
-  if (!round) return null;
 
   const 枠 = {
     borderTop: `1px solid ${C.line}`, marginTop: rem(16), paddingTop: rem(16)
   };
+
+  // ★★★回が 1つも 無い とき（★2026-09-24 に 直しました）。
+  //   ★★前は ここで `return null` で した。★見た目は きれい ですが、
+  //     ★★先生は **始める ところに たどり着けません** でした。
+  //   ★★学生には 出しません ── ★始めるのは 先生か 事務 です（★裁定185）。
+  if (!round) {
+    if (!教 || !myOrg) return null;
+    return (
+      <div style={枠}>
+        <RoundStart
+          supabase={supabase} orgId={myOrg.org_id}
+          teachers={orgTeachers} today={new Date().toISOString().slice(0, 10)}
+          monkaCount={monka.length}
+          onStarted={() => { setRound(null); setMyOrg(null); }} />
+      </div>
+    );
+  }
 
   if (!教) {
     return (

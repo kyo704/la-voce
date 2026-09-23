@@ -92,7 +92,14 @@ const 判行 = area.indexOf("featureOn(features, LESSON_ROUND_KEY)");
 const 戻 = area.indexOf("if (!開) return null;");
 t(判行 >= 0, "★鍵を 見て いる");
 t(戻 > 判行, "★閉じて いれば null を 返す");
-t(/if \(!round\) return null;/.test(area), "★回が 無い ときも 出さない");
+// ★★★2026-09-24 に 変えました。
+//   ★前は「回が 無ければ 何も 出さない」でした。★見た目は きれい ですが、
+//     ★★先生は **始める ところに たどり着けません** でした（★裁定185）。
+//   ★★いまは ── ★学生には 出さない ／ ★先生には「回を 始める」を 出す。
+t(/if \(!round\) \{/.test(area), "★回が 無い ときの 分かれ道が ある");
+const 無 = area.slice(area.indexOf("if (!round) {"), area.indexOf("if (!round) {") + 500);
+t(/if \(!教 \|\| !myOrg\) return null;/.test(無), "★★学生には 出さない（★始めるのは 先生か 事務）");
+t(/<RoundStart/.test(無), "★先生には 始める ところを 出す");
 // ★★中身を 描く ところ より、★返す 方が 先に 並んで いる こと
 t(戻 < area.indexOf("<LessonPrefs"), "★null は 画面を 組み立てる 前");
 
