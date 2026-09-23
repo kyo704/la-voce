@@ -114,10 +114,19 @@ console.log("\n=== ★役職を 決める 1枚（見本 P_setPost）===");
   t("★役職の 名も 残す（番号だけ だと 消えた とき 読めません）",
     /from_post_name/.test(紙) && /to_post_name/.test(紙));
   const 道 = readCode("app/api/org/posts/route.js");
-  // ★★★`記録する(admin` は **作った ところ** にも 当たります。
-  //   ★★3 と 出て 落ちました。★呼ぶ ところ だけ を 数えます。
-  t("★付けた とき・外した とき の 2か所で 記録を 書いて いる",
-    (道.match(/await 記録する\(admin/g) || []).length === 2);
+  // ★★★2026-09-23、★書く ところを **台帳の 引き金** に 移しました（★お決め「A 承認」）。
+  //   ★★もとは ここで「2か所で 書いて いる」ことを 見て いました。
+  //     ★★画面の 側と 台帳の 側の 両方が 書くと、★1回の 変更で 2行 残ります。
+  //   ★★★だから いまは **逆** を 見ます ── ★画面の 側は 書かない こと。
+  //     ★★「書かない」だけ だと、★誰も 書かなく なった ときに 気づけません。
+  //       ★★だから 引き金が ある ことも、★同じ 見張りで 見ます。
+  t("★画面の 側は post_change_log に 直に 書いて いない",
+    !/from\(["']post_change_log["']\)/.test(道) && !/await 記録する\(admin/.test(道));
+  const 引 = readRaw("supabase/migrations/20260923200000_opus_06_1_2_triggers.sql");
+  t("★台帳の 引き金が 書く（memberships_log_post_change）",
+    /create trigger memberships_log_post_change[\s\S]{0,160}execute function public\.log_post_change\(\)/.test(引));
+  t("★役職が 変わった ときだけ 走る（after update of post_id）",
+    /after update of post_id on public\.memberships/.test(引));
   t("★記録は 直せない（update も delete も 渡して いない）",
     !/grant[^;]*update[^;]*post_change_log|grant[^;]*delete[^;]*post_change_log/i.test(紙));
   t("★ご本人も 読める（黙って 変えられない）", /target_user_id = auth\.uid\(\)/.test(紙));

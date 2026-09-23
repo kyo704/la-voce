@@ -1,0 +1,183 @@
+{
+  "title": "ディドとエネアス",
+  "composer": "パーセル",
+  "composer_sort": "Purcell, Henry",
+  "kind": "opera",
+  "year_written": 1689,
+  "source": "hand",
+  "source_id": "purcell-dido",
+  "roles": [
+    {
+      "label": "ディド"
+    },
+    {
+      "label": "エネアス"
+    },
+    {
+      "label": "ベリンダ"
+    },
+    {
+      "label": "魔女"
+    },
+    {
+      "label": "第2の女"
+    },
+    {
+      "label": "水夫"
+    },
+    {
+      "label": "精霊"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "ベリンダのアリアと合唱（悲しみを追い払って）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベリンダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ディドのアリア（重荷から解き放たれ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ディド",
+        "ベリンダ"
+      ]
+    },
+    {
+      "label": "エネアスの登場と合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "エネアス",
+        "ディド",
+        "ベリンダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "魔女の場（呪いの計略）",
+      "group_label": "第2幕",
+      "roles": [
+        "魔女",
+        "第2の女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "狩りの場（そよ風に）",
+      "group_label": "第2幕",
+      "roles": [
+        "ディド",
+        "エネアス",
+        "ベリンダ",
+        "第2の女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "嵐と偽りの神の命令",
+      "group_label": "第2幕",
+      "roles": [
+        "精霊",
+        "エネアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "水夫の歌と魔女たちの喜び",
+      "group_label": "第3幕",
+      "roles": [
+        "水夫",
+        "魔女",
+        "第2の女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ディドとエネアスの別れ",
+      "group_label": "第3幕",
+      "roles": [
+        "ディド",
+        "エネアス",
+        "ベリンダ"
+      ]
+    },
+    {
+      "label": "ディドの嘆き（私が土に横たえられるとき）",
+      "group_label": "第3幕",
+      "roles": [
+        "ディド",
+        "ベリンダ"
+      ]
+    },
+    {
+      "label": "終結の合唱（キューピッドよ、薔薇をまけ）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "通奏低音"
+    },
+    {
+      "part": "テオルボ／リュート",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "踊りの場"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

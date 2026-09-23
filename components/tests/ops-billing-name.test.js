@@ -108,5 +108,23 @@ const 素 = fs.readFileSync(SQL, "utf8")
     assert.ok(r > 0 && g > r, "★渡しが 先に なって います");
   });
 
+  // ★★★2026-09-23、★記録を 書く ところを **台帳の 引き金** に 移しました
+  //   （★坂本さんの お決め「A 承認」）。
+  //   ★★もとは 画面が `org_billing_log` に 直に 入れて いました。
+  //     ★★引き金も 付けた ので、★両方 だと 1回の 変更で 2行 残ります。
+  //   ★★★「書かない」だけ を 見ると、★誰も 書かなく なった ときに 気づけません。
+  //     ★★だから 引き金が ある ことも、★同じ 見張りで 見ます。
+  見る("★画面の 側は org_billing_log に 直に 入れて いない", () => {
+    assert.ok(!/from\(["']org_billing_log["']\)[\s\S]{0,80}\.insert/.test(蔵),
+      "★画面が まだ 直に 入れて います");
+  });
+  見る("★台帳の 引き金が 書く（org_billing_log_change）", () => {
+    const 引 = fs.readFileSync(path.join(__dirname, "..", "..",
+      "supabase/migrations/20260923200000_opus_06_1_2_triggers.sql"), "utf8");
+    assert.ok(/create trigger org_billing_log_change[\s\S]{0,160}execute function public\.log_org_billing_change\(\)/.test(引),
+      "★引き金が ありません");
+    assert.ok(/on public\.org_billing\b/.test(引), "★付ける 先が ちがいます");
+  });
+
   console.log("\n★" + 数 + "つ 通りました。");
 })().catch((e) => { console.error("★止まりました ──", e.message); process.exit(1); });

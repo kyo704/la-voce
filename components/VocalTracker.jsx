@@ -12219,8 +12219,12 @@ export default function VocalTracker({
       if (error || !data || data.length === 0) throw error || new Error("0行でした");
       setOrgBilling((prev) => ({
         ...prev, [orgId]: { ...(prev[orgId] || {}), ...patch, id: data[0].id } }));
-      await supabase.from("org_billing_log")
-        .insert({ org_id: orgId, actor_id: userId, what: logWordForAtesaki(名) });
+      // ★★★2026-09-23、★ここで 書くのを やめました（★坂本さんの お決め「A 承認」）。
+      //   ★★台帳の 引き金（`org_billing_log_change`）が 1行 残します。
+      //     ★`org_billing` の 7つの 列（宛名・宛先のメール・宛先の人・支払い方法・
+      //       部署・ご担当・インボイス）の うち、★変わった ものだけ を 書きます。
+      //   ★★★両方 やると、★1回の 変更で **2行** 残ります。
+      //   ★★字は 引き金が 作ります（★`logWordForAtesaki` と 同じ 形 では ありません）。
       await fetchBillingLog(orgId);
       return true;
     } catch (err) {

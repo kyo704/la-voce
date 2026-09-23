@@ -1,0 +1,159 @@
+{
+  "title": "レクイエム 作品48",
+  "composer": "フォーレ",
+  "composer_sort": "Faure, Gabriel",
+  "kind": "chorus",
+  "year_written": 1890,
+  "source": "hand",
+  "source_id": "faure-requiem",
+  "instrumentation": [
+    "管弦楽",
+    "混声合唱",
+    "独唱2人"
+  ],
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "バリトン独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 入祭唱とキリエ Introït et Kyrie",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "II 奉献唱 Offertoire",
+      "group_label": "全曲",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "III サンクトゥス Sanctus",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV ピエ・イエズ Pie Jesu",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "V アニュス・デイ Agnus Dei",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI リベラ・メ Libera me",
+      "group_label": "全曲",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VII 楽園にて In paradisum",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass",
+      "is_optional": true
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -58,35 +58,24 @@ function mayTouchPosts(member, perms) {
 }
 
 /**
- * ★役職を 変えた 記録を 1行 残します（★坂本さんの お決め・2026-09-18）。
+ * ★★★役職を 変えた 記録は、★台帳の 引き金が 残します（★2026-09-23・お決め「A 承認」）。
  *
- *   ★★お金の 宛先（`atesaki_changed_at` / `atesaki_changed_by`）と 同じ 考え です。
- *   ★★★役職の **名** も 残します。★番号だけ だと、★その 役職が 消えた とき
- *     ★★何から 何に 変わったのかが 読めなく なります。
- *   ★★★書けなくても、★役職の 変更は 止めません。
- *     ★★止めると、★記録の 都合で 人の 仕事が 止まります。
- *     ★★けれど **黙りません**。★誤りは 必ず 書き出します。
- *     ★★（★`monka_read` の ときは 逆 です ── ★あちらは 記録が 先 です。
- *       ★★読むのは 調べる ため で、★記録の 無い 閲覧は 作らない、と 決めました）
+ *   ★★もとは ここに `記録する()` が あり、★`post_change_log` に 直に 入れて いました。
+ *     ★★台帳の 側にも 引き金を 付ける ことに した ので、★2行 残って しまいます。
+ *     ★★★書く ところを 1つに します（★同じ 決めを 2か所に 置かない）。
+ *
+ *   ★★「誰が」は `set_member_post` が 置きます ──
+ *     ★同じ 取引の 中で `set_config('app.actor_id', …, true)` を してから 変えます。
+ *     ★★引き金の 中の `actor_id()` が それを 読みます。
+ *     ★★★別の 呼びで 置いても 消えます（★2026-09-23 に 確かめました）。
+ *
+ *   ★★役職の **名** も、★引き金が `org_posts` から 引いて 残します。
+ *     ★番号だけ だと、★その 役職が 消えた とき 何から 何に 変わったか 読めません。
+ *
+ *   ★★書けなかった とき ── ★引き金の 中で 落ちると、★役職の 変更ごと 止まります。
+ *     ★★`changed_by` の NOT NULL は 外して あります（sql/34 ②）。
+ *     ★★★`monka_read` とは 逆 です ── ★あちらは 記録が 先 です。
  */
-async function 記録する(admin, { orgId, targetUser, fromId, toId, by }) {
-  const 名 = {};
-  const ids = [fromId, toId].filter(Boolean);
-  if (ids.length > 0) {
-    const { data } = await admin.from("org_posts").select("id, name").in("id", ids);
-    (data || []).forEach((x) => { 名[x.id] = x.name; });
-  }
-  const { error } = await admin.from("post_change_log").insert({
-    org_id: orgId,
-    target_user_id: targetUser,
-    from_post_id: fromId || null,
-    from_post_name: fromId ? (名[fromId] || null) : null,
-    to_post_id: toId || null,
-    to_post_name: toId ? (名[toId] || null) : null,
-    changed_by: by
-  });
-  if (error) console.error("★役職を 変えた 記録を 残せません でした:", error);
-}
 
 export async function POST(request) {
   const supabase = createClient();
@@ -217,9 +206,9 @@ export async function POST(request) {
       console.error("★役職を 外せません でした（0行）:", { orgId, targetUser });
       return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
     }
-    await 記録する(admin, {
-      orgId, targetUser, fromId: them.post_id, toId: null, by: user.id
-    });
+    // ★★★2026-09-23、★ここで 書くのを やめました（★坂本さんの お決め「A 承認」）。
+    //   ★★台帳の 引き金（`memberships_log_post_change`）が 1行 残します。
+    //   ★★★両方 やると、★1回の 変更で **2行** 残ります。
     return NextResponse.json({ ok: true });
   }
 
@@ -308,9 +297,9 @@ export async function POST(request) {
       console.error("★役職を 付けられません でした（0行）:", { orgId, targetUser, postId });
       return NextResponse.json({ error: tx("いま、つながりません。") }, { status: 503 });
     }
-    await 記録する(admin, {
-      orgId, targetUser, fromId: them.post_id, toId: postId, by: user.id
-    });
+    // ★★★2026-09-23、★ここで 書くのを やめました（★上と 同じ）。
+    //   ★★台帳の 引き金が 残します。★`set_member_post` が 同じ 取引の 中で
+    //     ★印（`app.actor_id`）を 置く ので、★「誰が」も 残ります。
     return NextResponse.json({ ok: true });
   }
 
