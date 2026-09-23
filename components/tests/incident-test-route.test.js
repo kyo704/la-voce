@@ -11,6 +11,7 @@
 //     ⑤ ★「訓練」と はっきり 書く
 //     ⑥ ★毎日 送らない（★時計に 載せない ／ ★`ops/` に 置く）
 //     ⑦ ★**実際に 走らせて** 確かめる（★台帳と 送り口を 差し替えて）
+//     ⑧ ★走らせた ことが 記録に 残る（★裁定176 §1 の 3）
 // ============================================================================
 const fs = require("fs");
 const path = require("path");
@@ -78,14 +79,18 @@ function t(cond, label) {
       'from "file://' + path.join(__dirname, "..", "..", "lib", "incidentNotice.js") + '"');
   const R = await import("data:text/javascript;base64," + Buffer.from(走).toString("base64"));
 
-  function 台帳(rows) {
-    const 記 = { 更新: [] };
+  function 台帳(rows, 記録だめ) {
+    const 記 = { 更新: [], 記録: [] };
     globalThis.__台帳 = {
       rpc: async () => ({ data: rows, error: null }),
-      from: () => ({
+      from: (表) => ({
         update: (v) => ({ eq: () => ({ in: async (col, list) => {
-          記.更新.push({ v, list }); return { error: null };
-        } }) })
+          記.更新.push({ v, list, 表 }); return { error: null };
+        } }) }),
+        insert: async (v) => {
+          記.記録.push({ v, 表 });
+          return { error: 記録だめ ? { message: "だめ" } : null };
+        }
       })
     };
     return 記;
@@ -141,6 +146,22 @@ function t(cond, label) {
   t(typeof 記2.更新[0].v.verified_at === "string" && 記2.更新[0].v.verified_at.length > 10,
     "★入れた のは 日（" + String(記2.更新[0].v.verified_at).slice(0, 10) + "）");
 
+  console.log("\n⑧ 走らせた ことが 記録に 残る");
+  t(記2.記録.length === 1, "★1回 走って 1行（" + 記2.記録.length + "行）");
+  t(記2.記録[0].表 === "ops_audit_log", "★残す 先は ops_audit_log");
+  t(記2.記録[0].v.action === "incident_drill_sent", "★何を したか が 書いて ある");
+  t(記2.記録[0].v.detail.sent === 2 && 記2.記録[0].v.detail.orgs === 3,
+    "★何通・何校 かが 書いて ある（sent=" + 記2.記録[0].v.detail.sent + "）");
+  t(答2.logged === true, "★残せた ことが 答えに 出る");
+
+  const 記だめ = 台帳([{ org_name: "あ", email: "a@x.test" }], true);
+  送り口();
+  const 答だめ = await (await R.GET(呼("Bearer aikotoba-test"))).json();
+  t(答だめ.sent === 1, "★記録が 書けなくても、★送信は 取り消さない");
+  t(答だめ.logged === false, "★★書けなかった ことが 答えに 出る");
+  t(記だめ.更新.length === 1, "★日は 入って いる");
+
+  console.log("");
   const 記3 = 台帳([
     { org_name: "あ学校", email: "a@x.test" },
     { org_name: "う学校", email: "b@x.test" }

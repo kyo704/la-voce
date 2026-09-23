@@ -103,6 +103,27 @@ export async function GET(req) {
       .eq("kind", "incident").in("email", 送れた);
     if (e2) console.error("★確かめた 日を 残せませんでした:", e2);
   }
+
+  // ★★★走らせた ことを、★記録に 残します。
+  //
+  //   ★★2026-09-23 の 訓練で 分かった こと ──
+  //     ★便りは 届いた のに、★`ops_audit_log` に 1行も 残って いませんでした。
+  //     ★残って いたのは `verified_at` の 時こく だけ です。
+  //   ★★★裁定176 §1 の 3 …… 「記録が 要る 機能は、★記録が 残る ことを 確かめて ある」。
+  //     ★契約先へ 便りを 出す 操作 です。★誰が いつ 何通 出したかは、★残す べき です。
+  //   ★★落ちても 送信を 取り消しません（★便りは もう 出て います）。
+  //     ★記録が 書けなかった ことは、★答えの `logged` で 分かる ように します。
+  const { error: e3 } = await admin.from("ops_audit_log").insert({
+    action: "incident_drill_sent",
+    target_kind: "org_contacts",
+    detail: {
+      why: "障害のお知らせの道が 通るかを 確かめた（訓練）",
+      orgs: 結.orgs, addresses: 結.addresses, sent: 結.sent, failed: 結.failed
+    }
+  });
+  if (e3) console.error("★走らせた 記録を 残せませんでした:", e3);
+  結.logged = !e3;
+
   結.ok = 結.failed === 0;
   return Response.json(結);
 }
