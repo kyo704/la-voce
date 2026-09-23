@@ -1,0 +1,165 @@
+{
+  "title": "展覧会の絵（ラヴェル編曲）",
+  "composer": "ムソルグスキー",
+  "composer_sort": "Mussorgsky, Modest",
+  "kind": "orchestra",
+  "year_written": 1874,
+  "source": "hand",
+  "source_id": "mussorgsky-pictures",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "プロムナード",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "小人（グノーム）",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "古城",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "テュイルリーの庭",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "ビドロ（牛車）",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "卵の殻をつけた雛の踊り",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "サムエル・ゴールデンベルクとシュムイレ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "リモージュの市場",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "カタコンブ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "バーバ・ヤガーの小屋",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "キエフの大門",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 1,
+      "section": "woodwind",
+      "note": "アルト・古城"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion",
+      "note": "鐘・シロフォン・チェレスタ・大太鼓・シンバル ほか"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

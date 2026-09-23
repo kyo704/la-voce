@@ -1,0 +1,156 @@
+{
+  "_source": "確定-学校の値段.md（第3版・2026-09-21）／裁定155。★値段を変えたら、まずこのファイルを変える。裁定166（lookup_key・公演の段・導入期間）",
+  "version": "2026-09-22-v4",
+  "org": {
+    "free_max_students": 5,
+    "kyoshitsu": {
+      "max_students": 30,
+      "monthly": 2980,
+      "annual": 29800
+    },
+    "gakko": {
+      "floor": 12800,
+      "tiers": [
+        [
+          0,
+          400
+        ],
+        [
+          100,
+          350
+        ],
+        [
+          300,
+          250
+        ]
+      ],
+      "annual_months": 10,
+      "setup_fee": 100000,
+      "setup_fee_min_students": 100
+    }
+  },
+  "individual": {
+    "zenbu": {
+      "monthly": 980,
+      "annual": 12800,
+      "refund_per_month": 400
+    },
+    "gakusei": {
+      "monthly": 490,
+      "annual": 6400,
+      "refund_per_month": 200
+    },
+    "tsutaeru": {
+      "annual": 3600,
+      "refund_per_month": 300
+    },
+    "shiraberu": {
+      "monthly": 580,
+      "annual": 4800,
+      "refund_per_month": 400
+    },
+    "yosooi": {
+      "monthly": 580,
+      "annual": 5800,
+      "refund_per_month": 490
+    },
+    "page_type": 480
+  },
+  "kyoshitsu_refund_per_month": 2490,
+  "check_points": [
+    5,
+    6,
+    30,
+    31,
+    32,
+    50,
+    60,
+    88,
+    95,
+    100,
+    150,
+    216,
+    300,
+    500,
+    800
+  ],
+  "stale_patterns": [
+    {
+      "re": "下限\\s*(月\\s*)?9,?800",
+      "why": "下限9,800円は裁定155で廃止"
+    },
+    {
+      "re": "税別",
+      "why": "表示は税込（裁定155）"
+    },
+    {
+      "re": "よそおい[^\\n]{0,20}年\\s*12,?800",
+      "why": "よそおい単品の年は5,800円（裁定155）"
+    },
+    {
+      "re": "導入支援（?50人以上",
+      "why": "導入支援は100人以上（裁定155 Q4）"
+    },
+    {
+      "re": "(人を\\s*超える|人以上)[^\\n]{0,20}ご相談",
+      "why": "「ご相談」を置かない（裁定141 C3・155）"
+    },
+    {
+      "re": "日割りでのお返しはありません",
+      "why": "年払いはB案（裁定155 C1）"
+    },
+    {
+      "re": "月\\s*300\\s*円",
+      "why": "「月300円相当」を使わない（裁定157 T4）"
+    },
+    {
+      "re": "口座振替",
+      "why": "口座振替は Stripe で日本では使えない（確定文書 第4版）"
+    }
+  ],
+  "stale_scan_exclude": [
+    "_old-*/**",
+    "**/_old-*/**"
+  ],
+  "koen_tiers": [
+    [
+      15,
+      0
+    ],
+    [
+      40,
+      20000
+    ],
+    [
+      120,
+      50000
+    ],
+    [
+      300,
+      100000
+    ],
+    [
+      600,
+      150000
+    ]
+  ],
+  "stripe_lookup_keys": {
+    "ind_zenbu_m": 980,
+    "ind_zenbu_y": 12800,
+    "ind_gakusei_m": 490,
+    "ind_gakusei_y": 6400,
+    "ind_tsutaeru_y": 3600,
+    "ind_shiraberu_m": 580,
+    "ind_shiraberu_y": 4800,
+    "ind_yosooi_m": 580,
+    "ind_yosooi_y": 5800,
+    "ind_page_type": 480,
+    "kyo_m": 2980,
+    "kyo_y": 29800
+  },
+  "gakko_free_period": {
+    "pilot_free_until": "2027-09-30",
+    "free_months": 3,
+    "cap": "前日 of next April 1"
+  }
+}

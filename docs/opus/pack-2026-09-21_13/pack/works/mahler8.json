@@ -1,0 +1,255 @@
+{
+  "title": "交響曲第8番 変ホ長調「千人の交響曲」",
+  "composer": "マーラー",
+  "composer_sort": "Mahler, Gustav",
+  "kind": "chorus",
+  "year_written": 1907,
+  "source": "hand",
+  "source_id": "mahler-sym8",
+  "roles": [
+    {
+      "label": "ソプラノ独唱I"
+    },
+    {
+      "label": "ソプラノ独唱II"
+    },
+    {
+      "label": "ソプラノ独唱III"
+    },
+    {
+      "label": "アルト独唱I"
+    },
+    {
+      "label": "アルト独唱II"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バリトン独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱I",
+      "is_group": true
+    },
+    {
+      "label": "合唱II",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 来たれ、創造主なる聖霊よ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱I",
+        "ソプラノ独唱II",
+        "アルト独唱I",
+        "アルト独唱II",
+        "テノール独唱",
+        "バリトン独唱",
+        "バス独唱",
+        "合唱I",
+        "合唱II",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "第2部 ファウスト 終幕の場（前奏と隠者たちの合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "第2部 法悦の教父・瞑想の教父",
+      "group_label": "全曲",
+      "roles": [
+        "バリトン独唱",
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "第2部 天使たちと祝福された少年たち",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱I",
+        "ソプラノ独唱II",
+        "アルト独唱I",
+        "児童合唱",
+        "合唱I"
+      ]
+    },
+    {
+      "label": "第2部 マリア崇敬の博士",
+      "group_label": "全曲",
+      "roles": [
+        "テノール独唱",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "第2部 罪の女たち・栄光の聖母",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱I",
+        "ソプラノ独唱II",
+        "ソプラノ独唱III",
+        "アルト独唱I",
+        "アルト独唱II"
+      ]
+    },
+    {
+      "label": "第2部 神秘の合唱（すべて移ろいゆくものは）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱I",
+        "合唱II",
+        "児童合唱",
+        "ソプラノ独唱I",
+        "ソプラノ独唱II",
+        "ソプラノ独唱III",
+        "アルト独唱I",
+        "アルト独唱II",
+        "テノール独唱",
+        "バリトン独唱",
+        "バス独唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 5,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 5,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 7,
+      "section": "woodwind",
+      "doubling": "バスクラリネット・エスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 5,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 8,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 8,
+      "section": "brass",
+      "note": "うち4本は別働隊"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 7,
+      "section": "brass",
+      "note": "うち3本は別働隊"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion",
+      "note": "2人"
+    },
+    {
+      "part": "打楽器",
+      "count": 6,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・タムタム・鐘・グロッケン ほか"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ハルモニウム",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "マンドリン",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "別働の金管隊",
+      "count": 0,
+      "section": "banda",
+      "note": "トランペット4・トロンボーン3"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

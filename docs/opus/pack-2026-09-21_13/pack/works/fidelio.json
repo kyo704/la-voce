@@ -1,0 +1,247 @@
+{
+  "title": "フィデリオ",
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "opera",
+  "year_written": 1814,
+  "source": "hand",
+  "source_id": "beethoven-fidelio",
+  "roles": [
+    {
+      "label": "レオノーレ（フィデリオ）"
+    },
+    {
+      "label": "フロレスタン"
+    },
+    {
+      "label": "ロッコ"
+    },
+    {
+      "label": "マルツェリーネ"
+    },
+    {
+      "label": "ヤキーノ"
+    },
+    {
+      "label": "ドン・ピツァロ"
+    },
+    {
+      "label": "ドン・フェルナンド"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1番 二重唱（マルツェリーネとヤキーノ）",
+      "group_label": "第1幕",
+      "roles": [
+        "マルツェリーネ",
+        "ヤキーノ"
+      ]
+    },
+    {
+      "label": "第2番 アリア（ああ、あなたと一緒になれたら）",
+      "group_label": "第1幕",
+      "roles": [
+        "マルツェリーネ"
+      ]
+    },
+    {
+      "label": "第3番 四重唱（なんと不思議な気持ち）",
+      "group_label": "第1幕",
+      "roles": [
+        "マルツェリーネ",
+        "レオノーレ（フィデリオ）",
+        "ロッコ",
+        "ヤキーノ"
+      ]
+    },
+    {
+      "label": "第4番 アリア（金がなければ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロッコ"
+      ]
+    },
+    {
+      "label": "第5番 三重唱（勇気を持って）",
+      "group_label": "第1幕",
+      "roles": [
+        "レオノーレ（フィデリオ）",
+        "ロッコ",
+        "マルツェリーネ"
+      ]
+    },
+    {
+      "label": "第6番 行進曲とピツァロのアリア（ああ、なんという瞬間）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・ピツァロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第9番 レチタティーヴォとアリア（悪者よ、どこへ急ぐ〜来たれ、希望よ）",
+      "group_label": "第1幕",
+      "roles": [
+        "レオノーレ（フィデリオ）"
+      ]
+    },
+    {
+      "label": "囚人の合唱（おお、なんという喜び）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱",
+        "レオノーレ（フィデリオ）",
+        "ロッコ"
+      ]
+    },
+    {
+      "label": "第1幕フィナーレ",
+      "group_label": "第1幕",
+      "roles": [
+        "レオノーレ（フィデリオ）",
+        "ロッコ",
+        "ドン・ピツァロ",
+        "マルツェリーネ",
+        "ヤキーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "フロレスタンのアリア（神よ、なんという暗さ）",
+      "group_label": "第2幕",
+      "roles": [
+        "フロレスタン"
+      ]
+    },
+    {
+      "label": "墓掘りの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "レオノーレ（フィデリオ）",
+        "ロッコ"
+      ]
+    },
+    {
+      "label": "四重唱（殺すがいい）とトランペットの合図",
+      "group_label": "第2幕",
+      "roles": [
+        "レオノーレ（フィデリオ）",
+        "フロレスタン",
+        "ロッコ",
+        "ドン・ピツァロ"
+      ]
+    },
+    {
+      "label": "二重唱（名状しがたい喜び）",
+      "group_label": "第2幕",
+      "roles": [
+        "レオノーレ（フィデリオ）",
+        "フロレスタン"
+      ]
+    },
+    {
+      "label": "フィナーレ（ドン・フェルナンドの到着・妻をたたえよ）",
+      "group_label": "第2幕",
+      "roles": [
+        "レオノーレ（フィデリオ）",
+        "フロレスタン",
+        "ドン・フェルナンド",
+        "ロッコ",
+        "ドン・ピツァロ",
+        "マルツェリーネ",
+        "ヤキーノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "舞台裏のトランペット",
+      "count": 1,
+      "section": "banda",
+      "note": "第2幕の合図"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
