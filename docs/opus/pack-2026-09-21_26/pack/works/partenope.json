@@ -1,0 +1,132 @@
+{
+  "title": "パルテノーペ",
+  "title_original": "Partenope",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1730,
+  "source": "hand",
+  "source_id": "handel-partenope",
+  "duration_min": 180,
+  "language": "it",
+  "roles": [
+    {
+      "label": "パルテノーペ"
+    },
+    {
+      "label": "アルサーチェ"
+    },
+    {
+      "label": "ロズミーラ"
+    },
+    {
+      "label": "アルミンド"
+    },
+    {
+      "label": "エミーリオ"
+    },
+    {
+      "label": "オルモンテ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ナポリの女王",
+      "group_label": "第1幕",
+      "roles": [
+        "パルテノーペ",
+        "アルサーチェ",
+        "アルミンド",
+        "ロズミーラ",
+        "エミーリオ",
+        "オルモンテ"
+      ]
+    },
+    {
+      "label": "第2幕 戦いと嫉妬",
+      "group_label": "第2幕",
+      "roles": [
+        "パルテノーペ",
+        "アルサーチェ",
+        "ロズミーラ",
+        "エミーリオ"
+      ]
+    },
+    {
+      "label": "第3幕 決闘の申し込みとフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ロズミーラ",
+        "アルサーチェ",
+        "パルテノーペ",
+        "アルミンド",
+        "エミーリオ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "title": "トリスタンとイゾルデ",
+  "title_original": "Tristan und Isolde",
+  "aliases": [
+    "トリスタン"
+  ],
+  "composer": "ワーグナー",
+  "composer_sort": "Wagner, Richard",
+  "kind": "opera",
+  "year_written": 1865,
+  "duration_min": 235,
+  "language": "de",
+  "source": "hand",
+  "source_id": "wagner-tristan",
+  "roles": [
+    {
+      "label": "トリスタン"
+    },
+    {
+      "label": "イゾルデ"
+    },
+    {
+      "label": "ブランゲーネ"
+    },
+    {
+      "label": "クルヴェナール"
+    },
+    {
+      "label": "マルケ王"
+    },
+    {
+      "label": "メロート"
+    },
+    {
+      "label": "牧童"
+    },
+    {
+      "label": "若い水夫"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕への前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "第1幕 船上（若い水夫の歌・イゾルデの怒り）",
+      "group_label": "第1幕",
+      "roles": [
+        "イゾルデ",
+        "ブランゲーネ",
+        "若い水夫",
+        "クルヴェナール"
+      ]
+    },
+    {
+      "label": "第1幕 媚薬",
+      "group_label": "第1幕",
+      "roles": [
+        "トリスタン",
+        "イゾルデ",
+        "ブランゲーネ",
+        "クルヴェナール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 夜の庭（愛の二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "トリスタン",
+        "イゾルデ",
+        "ブランゲーネ"
+      ]
+    },
+    {
+      "label": "第2幕 マルケ王の嘆きと決闘",
+      "group_label": "第2幕",
+      "roles": [
+        "マルケ王",
+        "トリスタン",
+        "メロート",
+        "クルヴェナール"
+      ]
+    },
+    {
+      "label": "第3幕 前奏曲と牧童の笛",
+      "group_label": "第3幕",
+      "roles": [
+        "牧童",
+        "クルヴェナール",
+        "トリスタン"
+      ]
+    },
+    {
+      "label": "第3幕 トリスタンの幻想と死",
+      "group_label": "第3幕",
+      "roles": [
+        "トリスタン",
+        "クルヴェナール",
+        "イゾルデ"
+      ]
+    },
+    {
+      "label": "第3幕 イゾルデの愛の死",
+      "group_label": "第3幕",
+      "roles": [
+        "イゾルデ",
+        "マルケ王",
+        "ブランゲーネ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "イングリッシュホルン",
+      "count": 1,
+      "section": "woodwind",
+      "note": "第3幕の牧童の笛"
+    },
+    {
+      "part": "舞台裏のホルン",
+      "count": 6,
+      "section": "banda"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

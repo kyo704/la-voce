@@ -1,0 +1,173 @@
+{
+  "title": "イオランタ",
+  "title_original": "Иоланта",
+  "aliases": [],
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr",
+  "kind": "opera",
+  "year_written": 1892,
+  "duration_min": 90,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "tchaikovsky-iolanta",
+  "roles": [
+    {
+      "label": "イオランタ"
+    },
+    {
+      "label": "ヴォデモン"
+    },
+    {
+      "label": "ロベルト"
+    },
+    {
+      "label": "ルネ王"
+    },
+    {
+      "label": "エブン・ハキア"
+    },
+    {
+      "label": "マルタ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序奏と庭の場",
+      "group_label": "全1幕",
+      "roles": [
+        "イオランタ",
+        "マルタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ルネ王と医師の対話",
+      "group_label": "全1幕",
+      "roles": [
+        "ルネ王",
+        "エブン・ハキア"
+      ]
+    },
+    {
+      "label": "ロベルトのアリア（誰がマティルダに比べられよう）",
+      "group_label": "全1幕",
+      "roles": [
+        "ロベルト",
+        "ヴォデモン"
+      ]
+    },
+    {
+      "label": "イオランタとヴォデモンの二重唱",
+      "group_label": "全1幕",
+      "roles": [
+        "イオランタ",
+        "ヴォデモン"
+      ]
+    },
+    {
+      "label": "治癒とフィナーレ",
+      "group_label": "全1幕",
+      "roles": [
+        "イオランタ",
+        "ルネ王",
+        "ヴォデモン",
+        "ロベルト",
+        "エブン・ハキア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

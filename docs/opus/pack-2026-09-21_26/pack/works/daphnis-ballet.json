@@ -1,0 +1,186 @@
+{
+  "title": "ダフニスとクロエ（全曲・バレエ）",
+  "title_original": "Daphnis et Chloé",
+  "aliases": [
+    "ダフニス 全曲"
+  ],
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "dance",
+  "year_written": 1912,
+  "duration_min": 55,
+  "source": "hand",
+  "source_id": "ravel-daphnis-ballet",
+  "roles": [
+    {
+      "label": "ダフニス"
+    },
+    {
+      "label": "クロエ"
+    },
+    {
+      "label": "リュセイオン"
+    },
+    {
+      "label": "ドルコン"
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 聖なる森",
+      "group_label": "第1部",
+      "roles": [
+        "ダフニス",
+        "クロエ",
+        "ドルコン",
+        "群舞",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1部 ダフニスとドルコンの踊り比べ",
+      "group_label": "第1部",
+      "roles": [
+        "ダフニス",
+        "ドルコン",
+        "群舞"
+      ]
+    },
+    {
+      "label": "第2部 海賊の陣営",
+      "group_label": "第2部",
+      "roles": [
+        "クロエ",
+        "群舞",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3部 夜明け",
+      "group_label": "第3部",
+      "roles": [
+        "ダフニス",
+        "クロエ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3部 無言劇と全員の踊り",
+      "group_label": "第3部",
+      "roles": [
+        "ダフニス",
+        "クロエ",
+        "リュセイオン",
+        "群舞",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ウインドマシーン",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

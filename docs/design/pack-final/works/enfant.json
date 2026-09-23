@@ -1,0 +1,292 @@
+{
+  "title": "こどもと魔法",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "opera",
+  "year_written": 1925,
+  "source": "hand",
+  "source_id": "ravel-enfant",
+  "roles": [
+    {
+      "label": "こども"
+    },
+    {
+      "label": "母"
+    },
+    {
+      "label": "ひじ掛け椅子"
+    },
+    {
+      "label": "安楽椅子"
+    },
+    {
+      "label": "大時計"
+    },
+    {
+      "label": "ティーポット"
+    },
+    {
+      "label": "中国茶碗"
+    },
+    {
+      "label": "火／お姫さま／うぐいす"
+    },
+    {
+      "label": "羊飼いの男女"
+    },
+    {
+      "label": "小さな老人（算数）"
+    },
+    {
+      "label": "牝猫"
+    },
+    {
+      "label": "牡猫"
+    },
+    {
+      "label": "とんぼ"
+    },
+    {
+      "label": "こうもり"
+    },
+    {
+      "label": "りす"
+    },
+    {
+      "label": "かえる"
+    },
+    {
+      "label": "木"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "こどもの部屋（勉強したくない）",
+      "group_label": "第1部",
+      "roles": [
+        "こども",
+        "母"
+      ]
+    },
+    {
+      "label": "椅子の二重唱",
+      "group_label": "第1部",
+      "roles": [
+        "ひじ掛け椅子",
+        "安楽椅子",
+        "こども"
+      ]
+    },
+    {
+      "label": "大時計の嘆き",
+      "group_label": "第1部",
+      "roles": [
+        "大時計",
+        "こども"
+      ]
+    },
+    {
+      "label": "ティーポットと中国茶碗の二重唱",
+      "group_label": "第1部",
+      "roles": [
+        "ティーポット",
+        "中国茶碗",
+        "こども"
+      ]
+    },
+    {
+      "label": "火のアリア",
+      "group_label": "第1部",
+      "roles": [
+        "火／お姫さま／うぐいす",
+        "こども"
+      ]
+    },
+    {
+      "label": "羊飼いたちの合唱",
+      "group_label": "第1部",
+      "roles": [
+        "羊飼いの男女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "お姫さまの場",
+      "group_label": "第1部",
+      "roles": [
+        "火／お姫さま／うぐいす",
+        "こども"
+      ]
+    },
+    {
+      "label": "小さな老人と数字の合唱",
+      "group_label": "第1部",
+      "roles": [
+        "小さな老人（算数）",
+        "児童合唱",
+        "こども"
+      ]
+    },
+    {
+      "label": "猫の二重唱",
+      "group_label": "第1部",
+      "roles": [
+        "牝猫",
+        "牡猫",
+        "こども"
+      ]
+    },
+    {
+      "label": "庭の場（虫と動物たち）",
+      "group_label": "第2部",
+      "roles": [
+        "とんぼ",
+        "こうもり",
+        "りす",
+        "かえる",
+        "木",
+        "合唱",
+        "こども"
+      ]
+    },
+    {
+      "label": "りすとの場",
+      "group_label": "第2部",
+      "roles": [
+        "りす",
+        "こども"
+      ]
+    },
+    {
+      "label": "フィナーレ（ママ）",
+      "group_label": "第2部",
+      "roles": [
+        "こども",
+        "合唱",
+        "児童合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "エスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion",
+      "note": "多数（ウインドマシーン・チーズおろし器・ムチ ほか）"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard",
+      "note": "ルーテアルつきの指定"
+    },
+    {
+      "part": "スライドホイッスル",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "L'enfant et les sortilèges",
+  "aliases": [
+    "Enfant"
+  ],
+  "duration_min": 45,
+  "language": "fr"
+}

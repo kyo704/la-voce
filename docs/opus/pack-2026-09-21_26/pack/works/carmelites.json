@@ -1,0 +1,199 @@
+{
+  "title": "カルメル会修道女の対話",
+  "title_original": "Dialogues des Carmélites",
+  "aliases": [
+    "カルメル"
+  ],
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "opera",
+  "year_written": 1957,
+  "duration_min": 150,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "poulenc-carmelites",
+  "roles": [
+    {
+      "label": "ブランシュ"
+    },
+    {
+      "label": "リドワーヌ夫人"
+    },
+    {
+      "label": "クロワシー夫人"
+    },
+    {
+      "label": "コンスタンス"
+    },
+    {
+      "label": "マリー修道女"
+    },
+    {
+      "label": "騎士"
+    },
+    {
+      "label": "侯爵"
+    },
+    {
+      "label": "修道女たち",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 侯爵家（ブランシュの決意）",
+      "group_label": "第1幕",
+      "roles": [
+        "ブランシュ",
+        "侯爵",
+        "騎士"
+      ]
+    },
+    {
+      "label": "第1幕 修道院の入会",
+      "group_label": "第1幕",
+      "roles": [
+        "ブランシュ",
+        "クロワシー夫人",
+        "マリー修道女"
+      ]
+    },
+    {
+      "label": "第1幕 院長の死",
+      "group_label": "第1幕",
+      "roles": [
+        "クロワシー夫人",
+        "ブランシュ",
+        "マリー修道女",
+        "修道女たち"
+      ]
+    },
+    {
+      "label": "第2幕 コンスタンスとの対話",
+      "group_label": "第2幕",
+      "roles": [
+        "ブランシュ",
+        "コンスタンス",
+        "修道女たち"
+      ]
+    },
+    {
+      "label": "第2幕 革命の脅威と新院長",
+      "group_label": "第2幕",
+      "roles": [
+        "リドワーヌ夫人",
+        "マリー修道女",
+        "ブランシュ",
+        "修道女たち"
+      ]
+    },
+    {
+      "label": "第3幕 殉教の誓い",
+      "group_label": "第3幕",
+      "roles": [
+        "リドワーヌ夫人",
+        "マリー修道女",
+        "コンスタンス",
+        "修道女たち"
+      ]
+    },
+    {
+      "label": "第3幕 断頭台（サルヴェ・レジーナ）",
+      "group_label": "第3幕",
+      "roles": [
+        "修道女たち",
+        "ブランシュ",
+        "コンスタンス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

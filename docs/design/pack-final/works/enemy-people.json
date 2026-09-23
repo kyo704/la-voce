@@ -1,0 +1,111 @@
+{
+  "title": "民衆の敵",
+  "title_original": "En folkefiende",
+  "aliases": [],
+  "composer": "イプセン",
+  "composer_sort": "Ibsen, Henrik",
+  "kind": "drama",
+  "year_written": 1882,
+  "source": "hand",
+  "source_id": "ibsen-enemy",
+  "duration_min": 150,
+  "language": "no",
+  "roles": [
+    {
+      "label": "ストックマン医師"
+    },
+    {
+      "label": "ペテル市長"
+    },
+    {
+      "label": "カトリーネ"
+    },
+    {
+      "label": "ペトラ"
+    },
+    {
+      "label": "ホヴスタ"
+    },
+    {
+      "label": "アスラクセン"
+    },
+    {
+      "label": "ビリング"
+    },
+    {
+      "label": "モルテン・キール"
+    },
+    {
+      "label": "市民",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 医師の家",
+      "group_label": "第1幕",
+      "roles": [
+        "ストックマン医師",
+        "カトリーネ",
+        "ペトラ",
+        "ホヴスタ",
+        "ビリング",
+        "ペテル市長"
+      ]
+    },
+    {
+      "label": "第2幕 圧力",
+      "group_label": "第2幕",
+      "roles": [
+        "ストックマン医師",
+        "ペテル市長",
+        "モルテン・キール",
+        "ホヴスタ",
+        "アスラクセン"
+      ]
+    },
+    {
+      "label": "第3幕 新聞社",
+      "group_label": "第3幕",
+      "roles": [
+        "ホヴスタ",
+        "ビリング",
+        "アスラクセン",
+        "ストックマン医師",
+        "ペテル市長",
+        "カトリーネ"
+      ]
+    },
+    {
+      "label": "第4幕 市民集会",
+      "group_label": "第4幕",
+      "roles": [
+        "ストックマン医師",
+        "ペテル市長",
+        "アスラクセン",
+        "ホヴスタ",
+        "市民"
+      ]
+    },
+    {
+      "label": "第5幕 翌朝",
+      "group_label": "第5幕",
+      "roles": [
+        "ストックマン医師",
+        "カトリーネ",
+        "ペトラ",
+        "モルテン・キール",
+        "ペテル市長"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}

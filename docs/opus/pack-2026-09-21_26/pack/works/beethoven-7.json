@@ -1,0 +1,99 @@
+{
+  "title": "交響曲第7番 イ長調",
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "orchestra",
+  "year_written": 1812,
+  "source": "hand",
+  "source_id": "beethoven-sym7",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "第1楽章 ポコ・ソステヌート〜ヴィヴァーチェ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第2楽章 アレグレット",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第3楽章 プレスト",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第4楽章 アレグロ・コン・ブリオ",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""価格の4か所の突き合わせ（裁定155・確定-学校の値段 §9）。作成 Opus／実行 Code。
+"""価格の突き合わせ（裁定155・確定-学校の値段 §9）。作成 Opus／実行 Code。
+★2026-09-23: ⑤個人の値段の突き合わせを足した（それまで ★学校の値段しか見ていなかった）。
 正は tools/prices.json（確定文書から写したもの）。これと次を比べる:
   ① 確定文書の早見表（§2）   ② 見本3本の billYen()（ブラウザで実際に計算させる）
   ③ 実装 lib/orgRoster.js の monthlyFee(n)（--impl で渡したときだけ）
@@ -86,6 +87,32 @@ def _scan_files():
 
 def _hit_id(rel,why,ctx): return hashlib.sha1((rel+'|'+why+'|'+re.sub(r'\s+','',ctx)).encode()).hexdigest()[:12]
 
+def check_individual(P=P):
+    """★個人の値段（ぜんぶ・学生・しらべる・よそおい・つたえる・型）が、見本に そのまま出ているか。
+    いままで この道具は ★学校の値段しか見ていなかった（2026-09-23 に 壊して確かめて分かった）。
+    見るもの: 正の値段が ★少なくとも1本の見本に出ていること／★古い値段が どの見本にも出ていないこと"""
+    import re as _re
+    out=[]
+    ind=P['individual']
+    def yen(v): return format(int(v), ',')
+    want=[]
+    for key,label in [('zenbu','ぜんぶ'),('gakusei','学生'),('shiraberu','しらべる'),
+                      ('yosooi','よそおい'),('tsutaeru','つたえる')]:
+        d=ind.get(key) or {}
+        for k2 in ('monthly','annual','gakusei_annual'):
+            if d.get(k2): want.append((label+'/'+k2, yen(d[k2])))
+    if ind.get('page_type'): want.append(('型','%d'%ind['page_type']))
+    texts={}
+    for m in MOCKS:
+        p=os.path.join(PACK,m)
+        if os.path.exists(p): texts[m]=open(p,encoding='utf-8').read()
+    for label,v in want:
+        # ★「777」のような数字は 色の指定などに紛れる。★「円」が付いた形だけを見る
+        pat=_re.compile(r'(?<![\d,])(' + _re.escape(v) + r'|' + _re.escape(v.replace(',','')) + r')\s*円')
+        if not any(pat.search(t) for t in texts.values()):
+            out.append(('⑤個人の値段', label, '正 %s円 が どの見本にも 出ていない'%v))
+    return out
+
 def check_stale(files=None,P=P,baseline=None):
     """④ 古い数字。★基準線（stale_baseline.json）にある既知の当たりは出さない。新しい当たりだけを出す"""
     out=[]; files=files or _scan_files()
@@ -117,7 +144,7 @@ def update_baseline(reason):
     print(f'BASELINE: {len(new)}件を既知に（理由: {reason}）。合計 {len(d["hits"])}件'); return 0
 
 def run(impl=None,fn='monthlyFee'):
-    pts=P['check_points']; rows=check_doc()+check_mocks(pts)+check_stale()
+    pts=P['check_points']; rows=check_doc()+check_mocks(pts)+check_individual()+check_stale()
     if impl: rows+=check_impl(impl,fn,pts)
     print('PRICE_CHECK', P['version'])
     print('  ③実装:', 'checked' if impl else 'SKIPPED（--impl で lib/orgRoster.js を渡す）')
@@ -133,6 +160,10 @@ def selftest():
     bad=copy.deepcopy(P); bad['org']['gakko']['floor']=9800
     if not check_doc(bad): print('SELFTEST FAIL: 確定文書の食い違いを見つけられない'); ok=False
     if not check_mocks([31],bad): print('SELFTEST FAIL: 見本の食い違いを見つけられない'); ok=False
+    import copy as _copy
+    bad2=_copy.deepcopy(P); bad2['individual']['shiraberu']['monthly']=777
+    if not check_individual(bad2): print('SELFTEST FAIL: ★個人の値段の食い違いを見つけられない'); ok=False
+    if check_individual(P): print('SELFTEST FAIL: 正しい個人の値段で食い違いが出る'); ok=False
     tmp=os.path.join(HERE,'_selftest.md'); open(tmp,'w',encoding='utf-8').write('教室の 下限 9,800円 です\n表示は 税別\n')
     hits=check_stale([tmp],baseline={})
     hid=hits[0][3] if hits else None

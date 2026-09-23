@@ -1,0 +1,319 @@
+{
+  "title": "カルミナ・ブラーナ",
+  "composer": "オルフ",
+  "composer_sort": "Orff, Carl",
+  "kind": "chorus",
+  "year_written": 1936,
+  "source": "hand",
+  "source_id": "orff-carmina",
+  "instrumentation": [
+    "管弦楽",
+    "混声合唱",
+    "児童合唱",
+    "独唱3人"
+  ],
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バリトン独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "おお、運命の女神よ（O Fortuna）",
+      "group_label": "運命の女神",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "運命の女神の痛手を（Fortune plango vulnera）",
+      "group_label": "運命の女神",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "春の愉しい面ざしが（Veris leta facies）",
+      "group_label": "春に",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "万物を太陽は整え（Omnia sol temperat）",
+      "group_label": "春に",
+      "roles": [
+        "バリトン独唱"
+      ]
+    },
+    {
+      "label": "ようこそ、喜ばしい春よ（Ecce gratum）",
+      "group_label": "春に",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "踊り（Tanz）",
+      "group_label": "芝生の上で",
+      "roles": []
+    },
+    {
+      "label": "森は花咲き（Floret silva）",
+      "group_label": "芝生の上で",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "小間物屋さん、色紅をください（Chramer, gip die varwe mir）",
+      "group_label": "芝生の上で",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "輪舞（Reie）",
+      "group_label": "芝生の上で",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "たとえこの世界が（Were diu werlt alle min）",
+      "group_label": "芝生の上で",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "胸の中で燃えあがる（Estuans interius）",
+      "group_label": "居酒屋で",
+      "roles": [
+        "バリトン独唱"
+      ]
+    },
+    {
+      "label": "白鳥の歌（Olim lacus colueram）",
+      "group_label": "居酒屋で",
+      "roles": [
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "わしは僧院長さまだ（Ego sum abbas）",
+      "group_label": "居酒屋で",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "居酒屋にいるときは（In taberna quando sumus）",
+      "group_label": "居酒屋で",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "愛の神はどこもかしこも飛び回る（Amor volat undique）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "ソプラノ独唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "昼も夜も、何もかもが（Dies, nox et omnia）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "バリトン独唱"
+      ]
+    },
+    {
+      "label": "おとめが立っていた（Stetit puella）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "私の胸の中は（Circa mea pectora）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "もし若者が娘と（Si puer cum puellula）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "来たれ、来たれ（Veni, veni, venias）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "天秤ばかりに心をかけて（In trutina）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "今こそ愉悦の季節（Tempus est iocundum）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "ソプラノ独唱",
+        "バリトン独唱",
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "この上なく甘美な人よ（Dulcissime）",
+      "group_label": "愛の誘い",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "アヴェ、世界で最も美しい人よ（Ave formosissima）",
+      "group_label": "ブランツィフロールとヘレナ",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "おお、運命の女神よ（再び）",
+      "group_label": "運命の女神",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット・エスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion",
+      "note": "多数（鐘・シロフォン・チェレスタ ほか）"
+    },
+    {
+      "part": "ピアノ",
+      "count": 2,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Carmina Burana",
+  "aliases": [
+    "カルミナ"
+  ],
+  "duration_min": 60,
+  "language": "la"
+}

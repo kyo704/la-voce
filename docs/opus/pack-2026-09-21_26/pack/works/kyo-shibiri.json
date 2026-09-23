@@ -1,0 +1,58 @@
+{
+  "title": "痺",
+  "title_original": "痺",
+  "aliases": [],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "drama",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "kyogen-shibiri-okura",
+  "duration_min": 20,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "太郎冠者"
+    },
+    {
+      "label": "主人"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "使いを言いつかる",
+      "group_label": "全",
+      "roles": [
+        "主人",
+        "太郎冠者"
+      ]
+    },
+    {
+      "label": "痺れの仮病",
+      "group_label": "全",
+      "roles": [
+        "太郎冠者",
+        "主人"
+      ]
+    },
+    {
+      "label": "見破られる",
+      "group_label": "全",
+      "roles": [
+        "主人",
+        "太郎冠者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による（笛・小鼓・大鼓・太鼓）"
+    }
+  ],
+  "school": "大蔵流",
+  "note": "★大蔵流で書いた。和泉流では 曲名や科白の運びが違うことがある"
+}
