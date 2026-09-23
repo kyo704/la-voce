@@ -1207,6 +1207,54 @@ SC['曲']=function(i){var r=REP[i];if(!r)return bk('レパートリー')+'<div c
  +'<div class="h3">この曲の メモ</div>'
  +'<div class="nt" onclick="push(\'ノート本文\',2)"><div class="t">3幕の pp。息を 止めない。</div><div class="m">8月25日（月）</div></div>'
  +'<div class="note">曲と 記録が つながっています。出来や 点数は 出しません。<br>数えるのは 日数と 回数だけ。<b>ひつじの「たな」</b>からも、ここに 来られます。</div>'};
+/* ══ ★担当の 先生を 選ぶ ── 裁定186（2026-09-23）══
+   ★学校が「学生が 選ぶ」に していると、ここが 出ます。
+   ★出すのは 名前と 担当している 人数だけ。★空き・人気は 出しません
+   ★選んだあとは、学校の 決め方によって「待ち」か「決まり」に なります            */
+var SENSEI=[['斎藤 めぐみ',12],['高橋 のぞみ',9],['中村 ゆか',11],['小林 たくみ',7],['森 あきら',14]];
+var MYSENSEI={pick:'', state:'', ask:''};   /* state: ''／'waiting'／'done' */
+var SCH_OK=true;                    /* ★学校が 先生の承認を もらう ことにしているか */
+function senseiPick(n){
+ /* ★スマホの 見本には askShow が ありません。★確かめは この画面の中で 出します
+    （2026-09-23: 運営の見本の 書き方を そのまま 持ってきて 落ちました）        */
+ MYSENSEI.ask=n; draw()}
+function senseiYes(){
+ MYSENSEI.pick=MYSENSEI.ask; MYSENSEI.ask=''; MYSENSEI.state=SCH_OK?'waiting':'done';
+ draw(); toast(SCH_OK?'伝えました':'決まりました')}
+function senseiNo(){MYSENSEI.ask=''; draw()}
+
+SC['担当の先生を選ぶ']=function(){
+ if(MYSENSEI.state==='done')
+  return bk('もっと')+'<h2>担当の 先生</h2>'
+   +'<div class="card"><div class="li plain"><span><b>'+MYSENSEI.pick+'</b> 先生<div class="usu">あなたの 担当です</div></span><s></s></div></div>'
+   +'<div class="note">変えたいときは、<b>学校か 先生に 言ってください</b>。<br>'
+   +'ここからは 外せません（レッスンの 途中で 外れると、先生の 予定が 崩れます）。</div>';
+ if(MYSENSEI.state==='waiting')
+  return bk('もっと')+'<h2>担当の 先生</h2>'
+   +'<div class="card"><div class="li plain"><span><b>'+MYSENSEI.pick+'</b> 先生<div class="usu">お返事を 待っています</div></span><s>待ち</s></div></div>'
+   +'<div class="card" style="margin-top:11px"><div class="li" onclick="MYSENSEI.state=\'\';MYSENSEI.pick=\'\';draw();toast(\'取り消しました\')">'
+   +'<span>取り消して 選び直す</span><s>›</s></div></div>'
+   +'<div class="note">お返事が 来るまで、<b>ふつうに 使えます</b>。<br>'
+   +'レッスンの 希望も、待っている あいだに 出せます。<br><b>こちらからは 急かしません</b>。</div>';
+ if(MYSENSEI.ask)
+  return bk('もっと')+'<h2>この 先生に しますか</h2>'
+   +'<div class="card"><div class="li plain"><span><b>'+MYSENSEI.ask+'</b> 先生</span><s></s></div></div>'
+   +'<div class="note">'+(SCH_OK
+     ?'<b>'+MYSENSEI.ask+'先生に お願いします</b>と 伝わります。<br>先生が 受けたら、門下に なります。<br>'
+      +'<b>急かしません</b>。待っているあいだも、ほかの ことは いつもどおり 使えます。'
+     :'<b>'+MYSENSEI.ask+'先生の 門下に なります</b>。<br>学校が「担当は もう 決まっている」と している ためです。')+'</div>'
+   +'<div class="btn" onclick="senseiYes()">これで いい</div>'
+   +'<div class="btn g" style="margin-top:8px" onclick="senseiNo()">えらび直す</div>';
+ return bk('もっと')+'<h2>担当の 先生を 選ぶ</h2>'
+ +'<div class="usu" style="margin-bottom:10px">○○音楽大学　声楽科</div>'
+ +'<div class="card p0">'+SENSEI.map(function(t){
+   return '<div class="li" onclick="senseiPick(\''+t[0]+'\')"><span>'+t[0]
+    +'<div class="usu">担当 '+t[1]+'人</div></span><s>えらぶ ›</s></div>'}).join('')+'</div>'
+ +'<div class="note">担当の 先生は、<b>もう 知らされている</b>はずです。その先生を 選んでください。<br>'
+ +'分からないときは、<b>学校に 聞いてから</b>で かまいません。急ぎません。<br>'
+ +'ここに 出るのは <b>お名前と 担当している 人数だけ</b>です。'
+ +'空いている・人気などは <b>出しません</b>。</div>'};
+
 SC['門下']=function(name){
  UNREAD['monka-'+S.oc]=0;   /* 中身が 出たので 既読 */
  return bk('連絡')+'<div class="hd" style="padding-top:2px"><h2 style="font-size:16px">'+name+'</h2><span class="role">12人</span></div>'
@@ -1704,6 +1752,7 @@ SC['もっと']=function(){
  +'<div class="li" onclick="push(\'設定\')"><span>設定</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'聞いてほしいこと\')"><span>毎日、聞いてほしいこと</span><s>5つまで ›</s></div>'
  +'<div class="li" onclick="push(\'通っているところ\')"><span>通っている ところ</span><s>'+ORGS.length+'つ ›</s></div>'
+ +'<div class="li" onclick="push(\'担当の先生を選ぶ\')"><span>担当の 先生<div class="usu">'+(MYSENSEI.state==='done'?MYSENSEI.pick+' 先生':(MYSENSEI.state==='waiting'?'お返事を 待っています':'まだ 決まっていません'))+'</div></span><s>›</s></div>'
  +'<div class="li" onclick="push(\'授業の時間を出す\')"><span>授業の 時間を 出す<div class="usu">学校には 「授業」と だけ</div></span><s>'+(S.tts?'出す':'出さない')+' ›</s></div>'
  +'<div class="li" onclick="openSheet(\'account\')"><span>アカウント</span><s>›</s></div>'
  +'<div class="li" onclick="push(\'プラン\')"><span>プラン</span><s>'+(paid()?'調べる':'無料')+' ›</s></div>'

@@ -136,6 +136,10 @@ def 見本の中身(key):
         if "{" not in blk: continue
         for mm in re.finditer(r"'([^']{2,})'", blk):
           中.add(字だけ(mm.group(1)))
+      # ★★`<textarea>…</textarea>` の 中の 字は、★その方が 書いた もの です。
+      #   ★見本は 例として 1文 入れて います。★実装は 台帳から 読みます。
+      for m in re.finditer(r"<textarea[^>]*>([^<]{2,})</textarea>", 本):
+        中.add(字だけ(m.group(1)))
       # ★★その場に 書いた 並びも 中身 です ── ★`['井上 かなで','村上 ひかる',…].map(`
       #   ★見本は 人の 名前を 手で 書いて います。★実装は 招いた 方から 引きます。
       for m in re.finditer(r"\[((?:'[^']*'\s*,\s*){2,}'[^']*')\]\s*\.map", 本):

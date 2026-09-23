@@ -80,7 +80,10 @@ def _scan_files():
     for f in glob.glob(os.path.join(PACK,'**','*.*'),recursive=True):
         rel=os.path.relpath(f,PACK).replace(os.sep,'/')
         if not f.endswith(('.md','.html')): continue
-        if '/legal/' in '/'+rel or os.path.basename(f).startswith('ruling-'): continue  # 裁定と法務の調査は当時の記録
+        # ★裁定・法務・★報告／査読／進捗の共有は「当時の記録」なので 見ません
+        #   2026-09-23: 報告の束を 見てしまい ★366件 出ました（直すものでは ありません）
+        if '/legal/' in '/'+rel or os.path.basename(f).startswith('ruling-'): continue
+        if '/reports/' in '/'+rel: continue
         if any(fnmatch.fnmatch(rel,g) for g in ex): continue
         out.append(f)
     return out

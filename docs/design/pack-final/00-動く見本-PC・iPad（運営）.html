@@ -1312,6 +1312,30 @@ function misouOpen(i){var m=MISOU[i];
 function misouDel(i){var t=MISOU[i].t;MISOU.splice(i,1);draw();toast('「'+t+'」を 消しました')}
 
 /* ══════════ ⑦ 設定・ご請求 ══════════ */
+/* ★門下の 決め方 ── 裁定186（2026-09-23） */
+var MONKA_WAY='invite', MONKA_OK=true;
+function stMonkaWay(){
+ var W=[['jimu','事務が 決める','名簿から 組みます。学生も 先生も 触りません'],
+        ['invite','先生が 招く','先生が 招き、学生が 受けます'],
+        ['student','学生が 選ぶ','学生が 一覧から 担当の 先生を 選びます']];
+ return '<div class="h3" style="margin-top:0">門下の 決め方</div>'
+ +'<div class="usu" style="margin-bottom:9px">学校の やり方に 合わせて 選びます。あとから 変えられます。</div>'
+ +'<div class="card p0">'+W.map(function(w){
+   return '<div class="li" onclick="MONKA_WAY=\''+w[0]+'\';draw()"><span>'+w[1]
+    +'<div class="usu">'+w[2]+'</div></span><s>'+(MONKA_WAY===w[0]?'●':'')+'</s></div>'}).join('')+'</div>'
+ +(MONKA_WAY==='student'
+   ?'<div class="card" style="margin-top:11px"><div class="li" onclick="MONKA_OK=!MONKA_OK;draw()">'
+    +'<span>先生の 承認を もらう<div class="usu">'+(MONKA_OK?'選ばれた 先生に「受けますか」が 出ます':'選んだ 時点で 門下に なります')+'</div></span>'
+    +'<s>'+(MONKA_OK?'もらう':'もらわない')+'</s></div></div>'
+    +'<div class="note">承認は <b>拒むため ではなく、気づくため</b>です。1タップで、理由は 聞きません。<br>'
+    +'<b>保留の ままでも 学生は 希望を 出せます</b>。<br>'
+    +'担当が 入学時に 決まっている 学校は、<b>「もらわない」で かまいません</b>。</div>'
+   :'')
+ +'<div class="note">どの やり方でも、<b>先生は 学生の 体調の 記録を 見られません</b>。<br>'
+ +'学生に 見えるのは <b>先生の 名前と 担当している 人数</b>だけです。'
+ +'<b>空き・人気は 出しません</b>。<br>'
+ +'学生が 自分で 門下を <b>外すことは できません</b>（外すのは 事務か 先生）。</div>'}
+
 function stYousu(){
  return '<div class="h3" style="margin-top:0">学校の ようす</div>'
  +'<div class="usu" style="margin-bottom:9px">毎月 1日に、こちらで 作ります。<b>数だけ</b>です。</div>'
@@ -1336,11 +1360,12 @@ function P_settei(){
  if(can('master'))items.push('採点');
  if(can('master'))items.push('学校の形');
  if(can('master'))items.push('学校のようす');
+ if(can('master'))items.push('門下の 決め方');
  if(can('post')||can('master'))items.push('役職');
  if(can('post')||can('master'))items.push('ひと');
  if(items.indexOf(S.st2)<0)S.st2=items[0]||'ご請求';
  var body={'見やすさ':stMiyasu,'ご請求':stBill,'時間':stKoma,'場所':stPlace,'自分の予定':stMine,
-  '学校の形':stOrg,'学校のようす':stYousu,'採点':stSaiten,'授業':stJugyo,'読み込み':stImport,'役職':stPost,'ひと':stPeople,'書き出し':stExport}[S.st2];
+  '学校の形':stOrg,'学校のようす':stYousu,'門下の 決め方':stMonkaWay,'採点':stSaiten,'授業':stJugyo,'読み込み':stImport,'役職':stPost,'ひと':stPeople,'書き出し':stExport}[S.st2];
  return '<h2>設定'+(can('bill')||can('bill_pay')?'・ご請求':'')+'</h2><div class="sub">'+S.post+'　／　'+permLine(myPost())+'</div>'
  +'<div class="col2" style="align-items:flex-start">'
  +'<div style="flex:0 0 210px"><div class="card p0">'
@@ -3638,6 +3663,89 @@ function wariPut(i,K){PLACED[K]={i:i,pl:MST.place[2],len:45,rp:'毎週',to:PERIO
  toast(MONKA[i][0]+' さんを 置きました');draw()}
 function wariOff(K){delete PLACED[K];toast('外しました');draw()}
 
+/* ══ ★回を 始める ── 裁定185（2026-09-23）══
+   ★機能を開けても lesson_rounds が 0行だと 何も出ません。★ここが 入口です
+   ★決めるのは 4つだけ（名前・期間・締切・回数）＋ 置き方
+   ★日付は ここでは 決めません（希望を 集める前に 決めたら 集める意味が ありません）  */
+var RS={name:'',from:'',to:'',due:'',n:12,mode:'weekly',wd:1,hhmm:'14:00',teachers:['斎藤 めぐみ'],open:false};
+function rsTog(t){var i=RS.teachers.indexOf(t); if(i<0)RS.teachers.push(t); else RS.teachers.splice(i,1); draw()}
+function rsDef(k){
+ var t=new Date(); var iso=function(d){return d.toISOString().slice(0,10)};
+ if(k==='from'){var a=new Date(t); a.setDate(a.getDate()+21); return iso(a)}
+ if(k==='to'){var b=new Date(t); b.setMonth(b.getMonth()+4); return iso(b)}
+ if(k==='due'){var c=new Date(t); c.setDate(c.getDate()+14); return iso(c)}
+ return ''}
+function rsV(k){return RS[k]||rsDef(k)}
+function rsSet(k,v){RS[k]=v; draw()}
+function rsBad(){
+ var f=rsV('from'), d=rsV('due');
+ if(d>=f)return '★締切は、期間の はじまりより 前に してください';
+ if(rsV('to')<=f)return '★期間の 終わりが、はじまりより 前です';
+ if(!(RS.n>0&&RS.n<=60))return '★回数は 1〜60 の あいだで';
+ return ''}
+function rsStart(){
+ var e=rsBad(); if(e){toast(e);return}
+ if(!RS.teachers.length){toast('先生を 選んでください');return}
+ if(RS.open){toast('選んだ 先生に、開いている 回が あります。先に 確定してください');return}
+ askShow('始めますか', RS.teachers.length+'人の 先生の 回',
+  '<b>'+RS.teachers.join('・')+'</b><br>それぞれの 門下に、希望を 聞きます。<br>'
+  +'締切は <b>'+jp(rsV('due'))+'</b> です。<br>'
+  +'<b>お知らせは 送りません</b>（学生が 開いたときに 見えます）。', false,
+  function(){RS.open=true; draw(); toast(RS.teachers.length+'人ぶん 始めました')})}
+function jp(iso){if(!iso)return '—'; var p=iso.split('-'); return (+p[1])+'月'+(+p[2])+'日'}
+
+SC['回を始める']=function(){
+ var e=rsBad();
+ return bk('レッスン割')+'<h2>回を 始める</h2>'
+ +'<div class="sub">希望を 集めて、レッスンを 置く 1回ぶんの まとまりです</div>'
+ +(RS.open?'<div class="warn">この先生には、<b>開いている 回が あります</b>。'
+    +'先に 確定するか、閉じてください。<span class="pill sm" onclick="RS.open=false;draw()">見本：閉じたことにする</span></div>':'')
+ +'<div class="col2" style="align-items:flex-start">'
+ +'<div class="card" style="flex:1.2;min-width:300px"><div class="h3" style="margin-top:0">決めること</div>'
+ +'<div class="fl">だれの 回</div>'
+ +'<div class="pills">'+['斎藤 めぐみ','高橋 のぞみ','中村 ゆか','小林 たくみ','森 あきら'].map(function(t){
+    return '<span class="pill sm'+(RS.teachers.indexOf(t)>=0?' on':'')+'" onclick="rsTog(\''+t+'\')">'+t+'</span>'}).join('')
+ +'<span class="pill sm" onclick="RS.teachers=[\'斎藤 めぐみ\',\'高橋 のぞみ\',\'中村 ゆか\',\'小林 たくみ\',\'森 あきら\'];draw()">ぜんぶ</span></div>'
+ +'<div class="usu">★いくつでも 選べます（'+RS.teachers.length+'人）。期間・締切・回数は 同じで、'
+ +'<b>先生ごとに 回が 1つずつ</b> できます。<br>回数が 先生で 違うときは、<b>始めたあと 一覧で 直せます</b>。</div>'
+ +'<div class="fl" style="margin-top:9px">名前</div>'
+ +'<input class="inp" placeholder="れい：2026年度 後期" value="'+(RS.name||'')+'" oninput="RS.name=this.value">'
+ +'<div class="fl">レッスンを 置く 期間</div>'
+ +'<div style="display:flex;gap:8px;align-items:center">'
+ +'<input class="inp" type="date" style="margin:0" value="'+rsV('from')+'" onchange="rsSet(\'from\',this.value)">'
+ +'<span class="usu">〜</span>'
+ +'<input class="inp" type="date" style="margin:0" value="'+rsV('to')+'" onchange="rsSet(\'to\',this.value)"></div>'
+ +'<div class="fl" style="margin-top:9px">希望の 締切</div>'
+ +'<input class="inp" type="date" style="max-width:200px" value="'+rsV('due')+'" onchange="rsSet(\'due\',this.value)">'
+ +'<div class="usu">★期間の はじまりより 前に。既定は 2週間後です</div>'
+ +'<div class="fl" style="margin-top:9px">回数</div>'
+ +'<div style="display:flex;gap:8px;align-items:center">'
+ +'<input class="inp" type="number" min="1" max="60" style="margin:0;width:90px;text-align:right" value="'+RS.n+'" oninput="RS.n=parseInt(this.value||0,10)||0">'
+ +'<span class="usu">回</span>'
+ +['年間 30回','前期 12回','月2回 8回'].map(function(p,i){var v=[30,12,8][i];
+    return '<span class="pill sm'+(RS.n===v?' on':'')+'" onclick="RS.n='+v+';draw()">'+p+'</span>'}).join('')+'</div>'
+ +'<div class="usu">★型から 選ぶか、打ち込みます</div>'
+ +'</div>'
+ +'<div class="card" style="flex:1;min-width:260px"><div class="h3" style="margin-top:0">置き方</div>'
+ +'<div class="li'+(RS.mode==='weekly'?'':'')+'" onclick="rsSet(\'mode\',\'weekly\')"><span>毎週 同じ 曜日・時刻'
+ +'<div class="usu">学期の レッスンは ほとんど これです</div></span><s>'+(RS.mode==='weekly'?'●':'')+'</s></div>'
+ +'<div class="li" onclick="rsSet(\'mode\',\'each\')"><span>1回ずつ 置く'
+ +'<div class="usu">不定期・隔週・本番の前だけ 詰める</div></span><s>'+(RS.mode==='each'?'●':'')+'</s></div>'
+ +(RS.mode==='weekly'?'<div class="fl" style="margin-top:9px">目安の 曜日・時刻</div>'
+   +'<div class="pills">'+['月','火','水','木','金','土'].map(function(w,i){
+      return '<span class="pill sm'+(RS.wd===i+1?' on':'')+'" onclick="RS.wd='+(i+1)+';draw()">'+w+'</span>'}).join('')+'</div>'
+   +'<input class="inp" type="time" step="300" style="max-width:130px;margin-top:8px" value="'+RS.hhmm+'" onchange="RS.hhmm=this.value;draw()">'
+   +'<div class="usu">★目安です。★実際の日は 希望を 見てから 決めます</div>':'')
+ +'<div class="note" style="margin-top:10px">★日付は ここでは 決めません。<br>'
+ +'学生の「出られない日」を <b>集める前に 決めたら、集める意味が ありません</b>。</div>'
+ +'</div></div>'
+ +(e?'<div class="warn" style="margin-top:11px">'+e+'</div>':'')
+ +'<div style="margin-top:12px"><span class="btn'+(e||RS.open?' g':'')+'" onclick="rsStart()">この形で 始める（'+RS.teachers.length+'人ぶん）</span></div>'
+ +'<div class="note">始めると、門下の <b>'+MONKA.length+'人</b>の 画面に「希望を 出してください」が 出ます。<br>'
+ +'<b>お知らせは 送りません</b>。催促も しません。<br>'
+ +'希望が 1件も 入っていない あいだは、<b>この回を 消せます</b>。1件でも 入ったら 消せません。<br>'
+ +'締切を 過ぎても <b>自動では 閉じません</b>（集まらないまま 閉じると 困るのは 先生です）。</div>'};
+
 function P_wari(){
  var n=MONKA.length,a=wariAns(),put=Object.keys(PLACED).length;
  return bk('門下')+'<h2>レッスン割</h2>'
@@ -3648,6 +3756,7 @@ function P_wari(){
    +'学生の 希望を 見ながら 置き、確定すると 全員の カレンダーに 届きます。</div>')
  +'<div class="col2" style="align-items:flex-start">'
  +'<div class="card" style="flex:1;min-width:260px"><div class="h3" style="margin-top:0">いまの ようす</div>'
+ +'<div class="li" onclick="push(\'回を始める\')"><span>回を 始める<div class="usu">新しい 学期・前期後期</div></span><s>›</s></div>'
  +'<div class="li plain"><span>希望を 出した方</span><s>'+a+' / '+n+'人</s></div>'
  +'<div class="li'+(n-a?'':' plain')+'"'+(n-a?' onclick="push(\'希望がまだの方\')"':'')+'>'
  +'<span>まだの方</span><s>'+(n-a)+'人'+(n-a?' ›':'')+'</s></div>'
@@ -3959,6 +4068,28 @@ function kCnt(d){var c=S.kcell,x=SCENES[c[0]],R=ROLES[c[1]];x[5]=x[5]||{};x[6]=x
 function kOff(n){var c=S.kcell,x=SCENES[c[0]],R=ROLES[c[1]];x[6]=x[6]||{};var o=offOf(x,c[1]).slice(),p=o.indexOf(n);
  if(p>=0)o.splice(p,1);else{if(o.length>=R[4].length-cntOf(x,c[1])){toast('降り番は '+(R[4].length-cntOf(x,c[1]))+'人です');return}o.push(n)}
  x[6][c[1]]=o;draw()}
+/* ★稽古の 日と 時間 ── ★打ち込みを やめ、カレンダーと 時計から 選ぶ（2026-09-23 坂本さんの指摘）
+   ★「10月17日（金）」の 形は こちらで 作ります（★曜日も 自動）。
+   ★台帳には 日付と 時刻で 持ちます（koen_sessions.starts_at／ends_at）        */
+var WD=['日','月','火','水','木','金','土'];
+function ksDateVal(){
+ if(KS.iso)return KS.iso;
+ var d=new Date(); d.setDate(d.getDate()+7);
+ KS.iso=d.toISOString().slice(0,10); if(!KS.d)KS.d=ksLabel(KS.iso); return KS.iso}
+function ksLabel(iso){var p=iso.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]);
+ return (+p[1])+'月'+(+p[2])+'日（'+WD[d.getDay()]+'）'}
+function ksDate(v){if(!v)return; KS.iso=v; KS.d=ksLabel(v); draw()}
+function ksTime(i){var t=(KS.t||'19:00〜21:30').split('〜'); return (t[i]||'').trim()||(i?'21:30':'19:00')}
+function ksTimeSet(i,v){if(!v)return; var t=[ksTime(0),ksTime(1)]; t[i]=v;
+ /* ★始まりを 終わりより 後にしたら、終わりを 2時間後に ずらす（★日をまたいでも よい） */
+ if(i===0&&t[0]>=t[1]){var h=(parseInt(t[0],10)+2)%24; t[1]=('0'+h).slice(-2)+t[0].slice(2)}
+ KS.t=t[0]+'〜'+t[1]; draw()}
+function ksLen(){var a=ksTime(0).split(':'),b=ksTime(1).split(':');
+ var m=(+b[0]*60+ +b[1])-(+a[0]*60+ +a[1]); var over=false;
+ if(m<=0){m+=1440; over=true}                      /* ★日をまたぐ稽古（22:00〜00:30 など） */
+ if(m>600)return '★12時間を 超えています。日を 確かめてください';
+ return Math.floor(m/60)+'時間'+(m%60?(m%60)+'分':'')+(over?'（翌日まで）':'')}
+
 function P_keikoKumu(){
  var scs=Object.keys(KS.sc).map(Number).filter(function(i){return SCENES[i]}).sort(function(a,b){return a-b}),need=needed(scs,KS.line,KS.only),W=kw();
  if(!KS.k||W.keiko.indexOf(KS.k)<0)KS.k=W.keiko[0];
@@ -3967,8 +4098,12 @@ function P_keikoKumu(){
  +'<div class="col2" style="align-items:flex-start">'
  +'<div class="card" style="flex:1;min-width:270px">'
  +'<div class="h3" style="margin-top:0">いつ・どこで</div>'
- +'<div class="li plain"><span>日</span><s><input class="inp" style="margin:0;max-width:200px" value="'+(KS.d||'10月17日（金）')+'" oninput="KS.d=this.value"></s></div>'
- +'<div class="li plain"><span>時間</span><s><input class="inp" style="margin:0;max-width:200px" value="'+(KS.t||'19:00〜21:30')+'" oninput="KS.t=this.value"></s></div>'
+ +'<div class="li plain"><span>日</span><s><input class="inp" type="date" style="margin:0;max-width:190px" value="'+ksDateVal()+'" onchange="ksDate(this.value)"><div class="usu" style="text-align:right">'+(KS.d||'')+'</div></s></div>'
+ +'<div class="li plain"><span>時間</span><s>'
+   +'<input class="inp" type="time" step="300" style="margin:0;width:112px" value="'+ksTime(0)+'" onchange="ksTimeSet(0,this.value)">'
+   +'<span class="usu" style="margin:0 6px">〜</span>'
+   +'<input class="inp" type="time" step="300" style="margin:0;width:112px" value="'+ksTime(1)+'" onchange="ksTimeSet(1,this.value)">'
+   +'<div class="usu" style="text-align:right">'+ksLen()+'</div></s></div>'
  +'<div class="li plain"><span>種類</span><s>'+W.keiko.map(function(v){return '<span class="pill sm'+(KS.k===v?' on':'')+'" onclick="KS.k=\''+v+'\';draw()">'+v+'</span>'}).join(' ')+'</s></div>'
  +'<div class="li plain"><span>場所</span><s><input class="inp" style="margin:0;max-width:220px" value="'+(KS.pl||(curP().school?'第3練習室':'○○稽古場 第1'))+'" oninput="KS.pl=this.value"></s></div>'
  +'<div class="li plain"><span>稽古ピアニスト</span><s>'
