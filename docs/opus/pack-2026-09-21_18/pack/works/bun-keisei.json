@@ -1,0 +1,98 @@
+{
+  "title": "冥途の飛脚",
+  "title_original": "冥途の飛脚",
+  "aliases": [
+    "封印切"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "drama",
+  "year_written": 1711,
+  "source": "hand",
+  "source_id": "bunraku-meido",
+  "duration_min": 120,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "忠兵衛"
+    },
+    {
+      "label": "梅川"
+    },
+    {
+      "label": "八右衛門"
+    },
+    {
+      "label": "孫右衛門"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "淡路町の段",
+      "group_label": "上",
+      "roles": [
+        "忠兵衛",
+        "八右衛門",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "封印切の段",
+      "group_label": "中",
+      "roles": [
+        "忠兵衛",
+        "梅川",
+        "八右衛門",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "新口村の段",
+      "group_label": "下",
+      "roles": [
+        "忠兵衛",
+        "梅川",
+        "孫右衛門",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 0,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 0,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い",
+      "count": 0,
+      "section": "other",
+      "note": "三人遣い（主遣い・左遣い・足遣い）"
+    }
+  ],
+  "school": "義太夫節"
+}

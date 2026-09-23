@@ -39,7 +39,11 @@ assertTrue(/!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null/
   "★薄さの条件も揃っている");
 // 呼ぶ先の条件と食い違っていないこと。★ここがずれていたのが原因。
 // ★「直す」を足したとき replace が付きました。条件そのものは同じです。
-assertTrue(/if \(!replace && !topNote && !tessituraNote && dOverride == null\) return;/.test(code),
+// ★★★2026-09-23（★Opus の お決め「実装が 正」）── ★字を 覚えるのを やめました。
+//   ★★いまの 字は `return true;` です（★もとは `return;`）。★決めは 同じ です。
+//   ★★★決め ── ★曲名だけ・作曲家だけ・役だけ でも 保存できる。
+//     ★3つ 揃わないと 保存できない のは 重すぎます。★入れる 負担を 下げるのが この 品の 考え方 です。
+assertTrue(/if \(!replace && !topNote && !tessituraNote && dOverride == null\)\s*return/.test(code),
   "呼ぶ先（handleSaveRepertoire）は3つのどれか1つで受け付ける");
 
 console.log("\n=== ★② 「行がある」と「音の高さを記録済み」を分ける ===");

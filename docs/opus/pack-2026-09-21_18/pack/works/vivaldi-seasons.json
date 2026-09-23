@@ -1,0 +1,138 @@
+{
+  "title": "四季（和声と創意への試み より）",
+  "composer": "ヴィヴァルディ",
+  "composer_sort": "Vivaldi, Antonio",
+  "kind": "orchestra",
+  "year_written": 1725,
+  "source": "hand",
+  "source_id": "vivaldi-seasons",
+  "roles": [
+    {
+      "label": "ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "春 第1楽章 アレグロ",
+      "group_label": "春",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "春 第2楽章 ラルゴ",
+      "group_label": "春",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "春 第3楽章 アレグロ（田園の踊り）",
+      "group_label": "春",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "夏 第1楽章 アレグロ・ノン・モルト",
+      "group_label": "夏",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "夏 第2楽章 アダージョ",
+      "group_label": "夏",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "夏 第3楽章 プレスト（雷雨）",
+      "group_label": "夏",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "秋 第1楽章 アレグロ",
+      "group_label": "秋",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "秋 第2楽章 アダージョ・モルト",
+      "group_label": "秋",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "秋 第3楽章 アレグロ（狩り）",
+      "group_label": "秋",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "冬 第1楽章 アレグロ・ノン・モルト",
+      "group_label": "冬",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "冬 第2楽章 ラルゴ",
+      "group_label": "冬",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "冬 第3楽章 アレグロ",
+      "group_label": "冬",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "通奏低音"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

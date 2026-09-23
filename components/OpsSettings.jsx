@@ -14,7 +14,7 @@ import {
 } from "@/lib/orgBilling";
 import { permHeadLine } from "@/lib/opsPerms";
 import {
-  rosterCount, monthlyFee, perHead, yen, billPlans,
+  rosterCount, monthlyFee, perHead, yen, billBreakdown,
   TIERS, MONTHLY_FLOOR, SETUP_FEE, SETUP_FEE_FROM, YEARLY_FREE_MONTHS,
   PRICE_TAX_LABEL, PRICE_TAX_ROW_LABEL
 } from "@/lib/orgRoster";
@@ -53,8 +53,14 @@ const row = { display: "flex", justifyContent: "space-between", alignItems: "cen
 export default function OpsSettings({ members, staffLines, postName, perms, billing = null }) {
   const n = rosterCount(members);
   const fee = monthlyFee(n);
-  // ★★どの 段も 下限に 届かなかった か。★印の 付け先が 変わります。
-  const 下限が勝った = fee > 0 && !billPlans(n).some((p) => p.yen === fee);
+  // ★★★2026-09-23 ── ★内訳は `billBreakdown` が 作ります（★裁定・Opus）。
+  //   ★★もとは ここで `billPlans` を 3行 とも 出して いました。
+  //     ★★★教室の 方（6〜30人）にも **学校の 料金表**を 出して いました。
+  //       ★教室は 定額 2,980円 です。★1人あたりで 割ると **必ず** ずれます。
+  //       ★★6人で 測ると ── 内訳の いちばん 安い 2,400円 ／ 答え 2,980円。
+  //   ★★★いまは その 段の もの だけ が 出ます ──
+  //       無料 … 出しません ／ 教室 … 金額だけ ／ 学校 … 式（＋下限が 効いた ときだけ 下限）
+  const 内訳 = billBreakdown(n);
 
   return (
     <div className="space-y-3">
@@ -121,41 +127,24 @@ export default function OpsSettings({ members, staffLines, postName, perms, bill
               ★★`monthlyFee` も 同じ 関数を 使います。★内訳と 答えは ずれません。
             ★★5人までは 0円 です（★裁定）。★その ときは 内訳を 出しません。
               ★★出すと「77,600円」だけが 目に 入り、★0円が 伝わりません。 */}
-        {fee > 0 ? (
+        {内訳.total > 0 && 内訳.lines.length > 0 ? (
           <div style={{
             background: C.paper, border: `1px solid ${C.line}`, borderRadius: 10,
             padding: "10px 12px", marginTop: 10,
             fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 2
           }}>
-            {billPlans(n).map((p) => {
-              // ★★★段が 勝った とき だけ 印を つけます。
-              //   ★★下限が 勝った ときは、★どの 段にも つきません。
-              //     ★★その ときの 印は、★下の 下限の 行 に つきます。
-              const えらばれた = !下限が勝った && p.yen === fee;
-              return (
-                <div key={p.rate} style={{
-                  color: えらばれた ? C.ink : C.inkSoft,
-                  fontWeight: えらばれた ? 700 : 400
-                }}>
-                  {`${p.heads}人 × ${p.rate}円　＝ ${yen(p.yen)}円`}
-                  {えらばれた ? "　←　いちばん 安いもの" : ""}
-                </div>
-              );
-            })}
-            {/* ★★★下限が 勝った ときは、★下限の 行に 印を つけます
-                （★2026-09-18・撮って 分かりました）。
-                ★★見本は「どれかの 段が 勝つ」形 だけ を 考えて います。
-                  ★★6人の 教室で 撮って みると ── ★どの 段にも 印が つかず、
-                    ★★9,800円 が どこから 来たのか、★読んで 分かりません でした。
-                ★★★内訳は「追える ように する」ため の もの です。
-                  ★★勝った 行に 印が 無い 内訳は、★その 役目を 果たしません。 */}
-            <div style={{
-              color: 下限が勝った ? C.ink : C.inkSoft,
-              fontWeight: 下限が勝った ? 700 : 400
-            }}>
-              {`下限 ${yen(MONTHLY_FLOOR)}円（下回りません）`}
-              {下限が勝った ? "　←　いちばん 安いもの" : ""}
-            </div>
+            {内訳.lines.map((l) => (
+              <div key={l.label} style={{
+                color: l.chosen ? C.ink : C.inkSoft,
+                fontWeight: l.chosen ? 700 : 400
+              }}>
+                {`${l.label}　＝ ${yen(l.yen)}円`}
+                {/* ★★★定額の 段では「いちばん 安いもの」と 書きません。
+                    ★★くらべる ものが 1つ しか ありません。★くらべて いないのに
+                      ★そう 書くと、★読んだ 方を 迷わせます。 */}
+                {l.chosen && !内訳.flat ? "　←　いちばん 安いもの" : ""}
+              </div>
+            ))}
           </div>
         ) : null}
       </div>

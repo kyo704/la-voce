@@ -1,0 +1,192 @@
+{
+  "title": "ナクソス島のアリアドネ",
+  "title_original": "Ariadne auf Naxos",
+  "aliases": [
+    "アリアドネ"
+  ],
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1916,
+  "duration_min": 130,
+  "language": "de",
+  "source": "hand",
+  "source_id": "strauss-ariadne",
+  "roles": [
+    {
+      "label": "アリアドネ"
+    },
+    {
+      "label": "ツェルビネッタ"
+    },
+    {
+      "label": "作曲家"
+    },
+    {
+      "label": "バッカス"
+    },
+    {
+      "label": "音楽教師"
+    },
+    {
+      "label": "執事"
+    },
+    {
+      "label": "ハルレキン"
+    },
+    {
+      "label": "ナヤーデ"
+    },
+    {
+      "label": "ドリアーデ"
+    },
+    {
+      "label": "エコー"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ 支度の混乱",
+      "group_label": "プロローグ",
+      "roles": [
+        "作曲家",
+        "音楽教師",
+        "執事",
+        "ツェルビネッタ",
+        "ハルレキン"
+      ]
+    },
+    {
+      "label": "プロローグ 作曲家のアリア",
+      "group_label": "プロローグ",
+      "roles": [
+        "作曲家",
+        "ツェルビネッタ"
+      ]
+    },
+    {
+      "label": "オペラ アリアドネの嘆き",
+      "group_label": "オペラ",
+      "roles": [
+        "アリアドネ",
+        "ナヤーデ",
+        "ドリアーデ",
+        "エコー"
+      ]
+    },
+    {
+      "label": "オペラ ツェルビネッタのアリア（偉大な王女さま）",
+      "group_label": "オペラ",
+      "roles": [
+        "ツェルビネッタ",
+        "ハルレキン"
+      ]
+    },
+    {
+      "label": "オペラ バッカスの登場とフィナーレ",
+      "group_label": "オペラ",
+      "roles": [
+        "バッカス",
+        "アリアドネ",
+        "ナヤーデ",
+        "ドリアーデ",
+        "エコー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ハルモニウム",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

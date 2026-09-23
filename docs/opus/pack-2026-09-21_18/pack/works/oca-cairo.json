@@ -1,0 +1,124 @@
+{
+  "title": "カイロの鵞鳥",
+  "title_original": "L'oca del Cairo",
+  "aliases": [],
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1783,
+  "source": "hand",
+  "source_id": "mozart-oca-cairo",
+  "duration_min": 60,
+  "language": "it",
+  "roles": [
+    {
+      "label": "チェリドーラ"
+    },
+    {
+      "label": "ビオンデッロ"
+    },
+    {
+      "label": "ドン・ピッポ"
+    },
+    {
+      "label": "アウレッタ"
+    },
+    {
+      "label": "キキビオ"
+    },
+    {
+      "label": "カランドリーノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "残された断章（上演の形は編曲による）",
+      "group_label": "全",
+      "roles": [
+        "チェリドーラ",
+        "ビオンデッロ",
+        "ドン・ピッポ",
+        "アウレッタ",
+        "キキビオ",
+        "カランドリーノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass",
+      "is_optional": true
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★未完の断章。上演の形は編曲による"
+}

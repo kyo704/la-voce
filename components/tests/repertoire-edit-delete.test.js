@@ -114,8 +114,15 @@ console.log("\n=== その場で直す（最高音・テッシトゥーラ） ===
 assertTrue(/const \[editingPitch, setEditingPitch\] = useState\(false\);/.test(code), "直している最中か、を持っている");
 assertTrue(/\{name && \(!hasPitch \|\| editingPitch\) && \(\(\) => \{/.test(code), "登録済みでも、直すときは欄が開く");
 assertTrue(/replace: editingPitch/.test(code), "★直すときは置き換えて保存する（空にできる）");
-assertTrue(/if \(replace && !topNote && !tessituraNote && dOverride == null\) return;/.test(code),
+// ★★★2026-09-23（★Opus の お決め「実装が 正」）── ★字を 覚えるのを やめました。
+//   ★★もとは `… dOverride == null) return;` と 1字ずつ 書いて ありました。
+//     ★★いまの 字は `return true;` です。★決めは 同じ、★戻し方だけ 変わりました。
+//   ★★★見るのは **決め** です ── ★「置き換える とき、★3つ とも 空なら 止める」。
+assertTrue(/if \(replace && !topNote && !tessituraNote && dOverride == null\)\s*return/.test(code),
   "★ただし、全部空にはできない（行の意味が無くなる）");
+// ★★押せる 札の ほうでも 同じ 決めが 効いて いる こと（★空の まま 押せない）。
+assertTrue(/disabled=\{tessituraSaving \|\| \(!topNoteInput && !tessituraOptionalInput && dOverrideChoice == null\)\}/.test(code),
+  "★3つ とも 空の あいだは、★保存の 札を 押せない");
 assertTrue(/if \(!editingPitch && \(!duplicateWarning \|\| !duplicateWarning\.confirmed\)\) \{/.test(code),
   "直しているときは、似た曲の確認を出さない");
 // ★「やめる」で、飛ばした印を付けないこと。付けると欄が二度と出なくなる。

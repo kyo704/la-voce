@@ -1,0 +1,99 @@
+{
+  "title": "ピアノ五重奏曲 変ホ長調",
+  "composer": "シューマン",
+  "composer_sort": "Schumann, Robert",
+  "kind": "chamber",
+  "year_written": 1842,
+  "source": "hand",
+  "source_id": "schumann-piano-quintet",
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "第1ヴァイオリン"
+    },
+    {
+      "label": "第2ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・ブリランテ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 葬送行進曲",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 スケルツォ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 アレグロ・マ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

@@ -62,7 +62,24 @@ async function main() {
 
   const vt = readCode("components", "VocalTracker.jsx");
   console.log("\n=== ★画面が、生の名前で引いていないこと ===");
-  assertTrue(!/repertoireTessituraMap\[name\]/.test(vt), "★record を生の名前で引いていない");
+  // ★★★2026-09-23（★Opus の お決め「実装が 正」）── ★見かたを 直しました。
+  //
+  //   ★★もとは `repertoireTessituraMap[name]` という **字**を 禁じて いました。
+  //     ★★ところが 22963行 の `name` は、★その 同じ 地図の **鍵** です ──
+  //         [...new Set([ ...Object.keys(repertoireTessituraMap), … ])].map((name) => …
+  //       ★★つまり「地図の 鍵で 地図を 引く」だけ です。★生の 名前では ありません。
+  //   ★★★守りたい 決めは 変わりません ── ★**人が 打った 字**で 引かない。
+  //     ★打った 字は 表記ゆれ・改名で 動きます。★`repertoireKey` で そろえてから 引きます。
+  //
+  //   ★★だから、★引く ときの 鍵が どこから 来たか を 見ます。
+  const 引き = [...vt.matchAll(/repertoireTessituraMap\[([A-Za-z_$][\w$.]*)\]/g)].map((m) => m[1]);
+  // ★★地図の 鍵から 来る もの・すでに 選ばれた 曲の 名 は よい です。
+  const よい = new Set(["name", "nearMatch", "from", "it.name"]);
+  const わるい = 引き.filter((v) => !よい.has(v));
+  assertTrue(わるい.length === 0,
+    "★record を 生の 名前で 引いて いない" + (わるい.length ? "（" + わるい.join("／") + "）" : ""));
+  // ★★そろえる 手が ある こと。★無ければ、★上の 許しが 意味を 失います。
+  assertTrue(/repertoireKey\(/.test(vt), "★そろえる 手（repertoireKey）を 使って いる");
   assertTrue(!/repertoireTessituraMap\[repertoireName\] \|\| \{\}/.test(vt), "★existing も生の名前で引いていない");
   assertTrue(/lookupRepertoire\(repertoireTessituraMap, name\)/.test(vt), "record は lookupRepertoire を通る");
   assertTrue(/resolveRepertoireName\(repertoireTessituraMap, typedName\)/.test(vt),

@@ -1,0 +1,72 @@
+{
+  "title": "筑後川",
+  "title_original": "筑後川",
+  "aliases": [],
+  "composer": "團伊玖磨",
+  "composer_sort": "Dan, Ikuma",
+  "kind": "chorus",
+  "year_written": 1968,
+  "source": "hand",
+  "source_id": "dan-chikugogawa",
+  "duration_min": 22,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（混声4部）",
+      "is_group": true
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1 みなかみ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "2 ダムにて",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "3 銀の魚",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "4 川の祭",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "5 河口",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "作詩: 丸山豊"
+}
