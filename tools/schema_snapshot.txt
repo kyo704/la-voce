@@ -46,13 +46,14 @@ koen_kid_contact_reads|id|kid_id|koen_id|viewer_user_id|viewer_role_at|reason_ki
 koen_kid_contacts|kid_id|contact|updated_at
 koen_kids|id|koen_id|guardian_user_id|nickname|dismiss_at|created_at|left_at
 koen_kind_words|kind|row_word|col_word|cast_word|tbl_word
-koen_members|id|koen_id|user_id|name_at|part|can_manage|invited_at|joined_at|left_at|is_understudy|covers_slot_id|school|school_role
+koen_members|id|koen_id|user_id|name_at|part|can_manage|invited_at|joined_at|left_at|is_understudy|covers_slot_id|school|school_role|invite_code
 koen_org_events|koen_id|org_event_id|session_id
 koen_payments|id|koen_id|koen_title_at|tier_people|amount_yen|paid_at|stripe_payment_intent
 koen_room_members|id|room_id|member_id|kid_id|row_id
 koen_rooms|id|koen_id|name|for_kids|note|sort_order
 koen_rows|id|koen_id|label|group_label|minutes|memo|sort_order|time_from|time_to
 koen_runsheet|id|koen_id|at_time|what|who|sort_order
+koen_runsheet_calls|runsheet_id|member_id
 koen_session_changes|id|session_id|what|changed_by|changed_at
 koen_sessions|id|koen_id|kind|starts_at|ends_at|place|note|canceled_at|created_at
 koen_slots|id|koen_id|label|slot_kind|sort_order|group_kind
@@ -68,6 +69,7 @@ matching_reports|id|reporter_user_id|target_user_id|org_id|reason|detail|created
 memberships|id|org_id|user_id|role|created_at|display_title|display_title_updated_by|display_title_updated_at|grade_label|post_id|division_id|verified_at|verified_by
 minor_billing_consents|id|user_id|age_band|policy_version|displayed_price_yen|plan|declared_at
 monka_read_log|id|org_id|viewer_user_id|target_monka_id|viewed_at|reason|reason_kind|reason_note|post_id|post_name_at|name_at|target_name_at|org_name_at
+monka_requests|id|org_id|student_id|teacher_id|status|requested_at|decided_at|student_name_at|teacher_name_at
 my_periods|id|user_id|ord|name|start_min|end_min|created_at|updated_at|org_id
 my_timetable|id|user_id|weekday|period_id|title|teacher|room|memo|unavailable|created_at|updated_at
 notes|id|user_id|kind|body|source_label|created_at|updated_at|deleted_at|lesson_on|teacher_label|repertoire_name|said_text|next_action|gained_text
@@ -92,6 +94,7 @@ org_periods|id|org_id|ord|name|start_min|end_min|created_at|updated_at
 org_places|id|org_id|name|ord|created_at
 org_post_perm_log|id|changed_at|changed_by|changed_by_kind|org_id|post_id|post_name_at|perms_before|perms_after|added|removed|op
 org_posts|id|org_id|name|perms|sort_order|created_at
+org_settings|org_id|monka_way|monka_needs_ok|updated_at|updated_by
 organizations|id|name|kind|created_by|created_at|contract_owner_user_id
 overlap_notices|lesson_id|status|updated_at
 page_inquiries|id|owner_user_id|from_name|from_email|body|created_at|forwarded_at
@@ -206,3 +209,5 @@ works|@kind|opera,chorus,drama,orchestra,gala,chamber,band,dance,recording,recit
 koen_slots|@group_kind|cast,orchestra,accompanist,staff
 art_schools|@genre|noh,kyogen,kabuki,bunraku,nihon-buyo,gagaku,other
 org_onboarding_checks|@item|roster,teacher_stamp,ics,event
+org_settings|@monka_way|jimu,invite,student
+monka_requests|@status|waiting,accepted,declined,withdrawn

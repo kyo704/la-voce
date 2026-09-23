@@ -1,0 +1,157 @@
+{
+  "title": "結婚手形",
+  "title_original": "La cambiale di matrimonio",
+  "aliases": [],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1810,
+  "source": "hand",
+  "source_id": "rossini-cambiale",
+  "duration_min": 80,
+  "language": "it",
+  "roles": [
+    {
+      "label": "ファニー"
+    },
+    {
+      "label": "エドアルド"
+    },
+    {
+      "label": "トビア・ミル"
+    },
+    {
+      "label": "スルック"
+    },
+    {
+      "label": "ノートン"
+    },
+    {
+      "label": "クラリーナ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "全1幕 手形による縁談",
+      "group_label": "全1幕",
+      "roles": [
+        "トビア・ミル",
+        "ノートン",
+        "クラリーナ",
+        "ファニー",
+        "エドアルド"
+      ]
+    },
+    {
+      "label": "全1幕 スルックの到着",
+      "group_label": "全1幕",
+      "roles": [
+        "スルック",
+        "トビア・ミル",
+        "ファニー",
+        "エドアルド"
+      ]
+    },
+    {
+      "label": "全1幕 決闘騒ぎとフィナーレ",
+      "group_label": "全1幕",
+      "roles": [
+        "ファニー",
+        "エドアルド",
+        "トビア・ミル",
+        "スルック",
+        "ノートン",
+        "クラリーナ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "title": "アパラチアの春",
+  "title_original": "Appalachian Spring",
+  "aliases": [],
+  "composer": "コープランド",
+  "composer_sort": "Copland, Aaron",
+  "kind": "dance",
+  "year_written": 1944,
+  "source": "hand",
+  "source_id": "copland-appalachian",
+  "duration_min": 25,
+  "roles": [
+    {
+      "label": "主役（女性）"
+    },
+    {
+      "label": "主役（男性）"
+    },
+    {
+      "label": "ソリスト",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲（8つの部分）",
+      "group_label": "全曲",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）",
+        "ソリスト"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

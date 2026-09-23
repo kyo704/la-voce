@@ -1,0 +1,92 @@
+{
+  "title": "弦楽四重奏曲第77番「皇帝」",
+  "title_original": "Streichquartett op.76-3",
+  "aliases": [
+    "皇帝"
+  ],
+  "composer": "ハイドン",
+  "composer_sort": "Haydn, Joseph",
+  "kind": "chamber",
+  "year_written": 1797,
+  "source": "hand",
+  "source_id": "haydn-emperor",
+  "duration_min": 26,
+  "roles": [
+    {
+      "label": "第1ヴァイオリン"
+    },
+    {
+      "label": "第2ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 ポコ・アダージョ（皇帝讃歌の変奏）",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 メヌエット",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 フィナーレ プレスト",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "第1ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

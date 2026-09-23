@@ -1,0 +1,161 @@
+{
+  "title": "湖上の美人",
+  "title_original": "La donna del lago",
+  "aliases": [],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1819,
+  "source": "hand",
+  "source_id": "rossini-donna-lago",
+  "duration_min": 150,
+  "language": "it",
+  "roles": [
+    {
+      "label": "エレナ"
+    },
+    {
+      "label": "ウベルト（ジャコモ5世）"
+    },
+    {
+      "label": "マルコム"
+    },
+    {
+      "label": "ロドリーゴ"
+    },
+    {
+      "label": "ドゥグラス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 湖畔（エレナの舟）",
+      "group_label": "第1幕",
+      "roles": [
+        "エレナ",
+        "ウベルト（ジャコモ5世）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 マルコムのアリアと三重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "マルコム",
+        "エレナ",
+        "ドゥグラス",
+        "ロドリーゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 洞窟と対決",
+      "group_label": "第2幕",
+      "roles": [
+        "ウベルト（ジャコモ5世）",
+        "エレナ",
+        "ロドリーゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 戴冠の場（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "エレナ",
+        "ウベルト（ジャコモ5世）",
+        "マルコム",
+        "ドゥグラス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

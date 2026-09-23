@@ -1,0 +1,147 @@
+{
+  "title": "シルヴィア",
+  "title_original": "Sylvia",
+  "aliases": [],
+  "composer": "ドリーブ",
+  "composer_sort": "Delibes, Leo",
+  "kind": "dance",
+  "year_written": 1876,
+  "source": "hand",
+  "source_id": "delibes-sylvia",
+  "duration_min": 120,
+  "roles": [
+    {
+      "label": "主役（女性）"
+    },
+    {
+      "label": "主役（男性）"
+    },
+    {
+      "label": "ソリスト",
+      "is_group": true
+    },
+    {
+      "label": "コール・ド・バレエ",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 聖なる森",
+      "group_label": "第1幕",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）",
+        "ソリスト",
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第2幕 オリオンの洞窟",
+      "group_label": "第2幕",
+      "roles": [
+        "主役（女性）",
+        "ソリスト"
+      ]
+    },
+    {
+      "label": "第3幕 ディアナの神殿（パ・ド・ドゥ）",
+      "group_label": "第3幕",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）",
+        "ソリスト",
+        "コール・ド・バレエ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
