@@ -1,0 +1,365 @@
+{
+  "title": "カルメン",
+  "composer": "ビゼー",
+  "composer_sort": "Bizet, Georges",
+  "kind": "opera",
+  "year_written": 1875,
+  "source": "hand",
+  "source_id": "bizet-carmen",
+  "instrumentation": [
+    "管弦楽"
+  ],
+  "roles": [
+    {
+      "label": "カルメン"
+    },
+    {
+      "label": "ドン・ホセ"
+    },
+    {
+      "label": "エスカミーリョ"
+    },
+    {
+      "label": "ミカエラ"
+    },
+    {
+      "label": "フラスキータ"
+    },
+    {
+      "label": "メルセデス"
+    },
+    {
+      "label": "ダンカイロ"
+    },
+    {
+      "label": "レメンダード"
+    },
+    {
+      "label": "スニガ"
+    },
+    {
+      "label": "モラレス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1番 導入（広場で）",
+      "group_label": "第1幕",
+      "roles": [
+        "モラレス",
+        "ミカエラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2番 子どもの合唱（衛兵交替）",
+      "group_label": "第1幕",
+      "roles": [
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "第3番 合唱（煙草工場の女たち）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4番 ハバネラ（恋は野の鳥）",
+      "group_label": "第1幕",
+      "roles": [
+        "カルメン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5番 情景（花を投げる）",
+      "group_label": "第1幕",
+      "roles": [
+        "カルメン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第6番 二重唱（母の便り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミカエラ",
+        "ドン・ホセ"
+      ]
+    },
+    {
+      "label": "第7番 合唱（喧嘩）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第8番 セギディーリャと二重唱（セビーリャの城壁近くに）",
+      "group_label": "第1幕",
+      "roles": [
+        "カルメン",
+        "ドン・ホセ"
+      ]
+    },
+    {
+      "label": "第9番 フィナーレ",
+      "group_label": "第1幕",
+      "roles": [
+        "カルメン",
+        "ドン・ホセ",
+        "スニガ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "間奏曲（第2幕への）",
+      "group_label": "第2幕",
+      "roles": []
+    },
+    {
+      "label": "第10番 ジプシーの歌（鈴が鳴り）",
+      "group_label": "第2幕",
+      "roles": [
+        "カルメン",
+        "フラスキータ",
+        "メルセデス"
+      ]
+    },
+    {
+      "label": "第11番 闘牛士の歌（諸君の乾杯を喜んで受けよう）",
+      "group_label": "第2幕",
+      "roles": [
+        "エスカミーリョ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第12番 五重唱（密輸の相談）",
+      "group_label": "第2幕",
+      "roles": [
+        "カルメン",
+        "フラスキータ",
+        "メルセデス",
+        "ダンカイロ",
+        "レメンダード"
+      ]
+    },
+    {
+      "label": "第13番 花の歌（おまえの投げたこの花は）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドン・ホセ",
+        "カルメン"
+      ]
+    },
+    {
+      "label": "第14番 フィナーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "カルメン",
+        "ドン・ホセ",
+        "スニガ",
+        "ダンカイロ",
+        "レメンダード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "間奏曲（第3幕への）",
+      "group_label": "第3幕",
+      "roles": []
+    },
+    {
+      "label": "第15番 六重唱と合唱（密輸の行進）",
+      "group_label": "第3幕",
+      "roles": [
+        "カルメン",
+        "ドン・ホセ",
+        "フラスキータ",
+        "メルセデス",
+        "ダンカイロ",
+        "レメンダード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第16番 カルタの三重唱",
+      "group_label": "第3幕",
+      "roles": [
+        "カルメン",
+        "フラスキータ",
+        "メルセデス"
+      ]
+    },
+    {
+      "label": "第17番 ミカエラのアリア（何を恐れることがありましょう）",
+      "group_label": "第3幕",
+      "roles": [
+        "ミカエラ"
+      ]
+    },
+    {
+      "label": "第18番 二重唱（ホセとエスカミーリョ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ドン・ホセ",
+        "エスカミーリョ"
+      ]
+    },
+    {
+      "label": "第19番 フィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "カルメン",
+        "ドン・ホセ",
+        "ミカエラ",
+        "エスカミーリョ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "間奏曲（第4幕への）",
+      "group_label": "第4幕",
+      "roles": []
+    },
+    {
+      "label": "第20番 合唱（闘牛場の前）",
+      "group_label": "第4幕",
+      "roles": [
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "第21番 行進と合唱（闘牛士の入場）",
+      "group_label": "第4幕",
+      "roles": [
+        "カルメン",
+        "エスカミーリョ",
+        "フラスキータ",
+        "メルセデス",
+        "合唱"
+      ],
+      "forces": [
+        "管弦楽",
+        "舞台上の楽隊"
+      ]
+    },
+    {
+      "label": "第22番 二重唱とフィナーレ（おまえだね／そうよ、私よ）",
+      "group_label": "第4幕",
+      "roles": [
+        "カルメン",
+        "ドン・ホセ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・小太鼓・シンバル・トライアングル・タンブリン・カスタネット"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "第1幕・第4幕"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

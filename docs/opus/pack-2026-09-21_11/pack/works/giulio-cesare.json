@@ -1,0 +1,213 @@
+{
+  "title": "ジュリオ・チェーザレ",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1724,
+  "source": "hand",
+  "source_id": "handel-giulio-cesare",
+  "roles": [
+    {
+      "label": "チェーザレ"
+    },
+    {
+      "label": "クレオパトラ"
+    },
+    {
+      "label": "コルネーリア"
+    },
+    {
+      "label": "セスト"
+    },
+    {
+      "label": "トロメーオ"
+    },
+    {
+      "label": "アキッラ"
+    },
+    {
+      "label": "ニレーノ"
+    },
+    {
+      "label": "クーリオ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "凱旋の合唱とポンペーオの首",
+      "group_label": "第1幕",
+      "roles": [
+        "チェーザレ",
+        "コルネーリア",
+        "セスト",
+        "アキッラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "コルネーリアとセストの嘆き",
+      "group_label": "第1幕",
+      "roles": [
+        "コルネーリア",
+        "セスト"
+      ]
+    },
+    {
+      "label": "クレオパトラの登場（喜べ、わが心）",
+      "group_label": "第1幕",
+      "roles": [
+        "クレオパトラ",
+        "ニレーノ"
+      ]
+    },
+    {
+      "label": "チェーザレのアリア（狩人が獲物を追うように）",
+      "group_label": "第1幕",
+      "roles": [
+        "チェーザレ"
+      ]
+    },
+    {
+      "label": "トロメーオの企み",
+      "group_label": "第1幕",
+      "roles": [
+        "トロメーオ",
+        "アキッラ"
+      ]
+    },
+    {
+      "label": "パルナッソス山の場（私を泣かせてください／源より流れ出る）",
+      "group_label": "第2幕",
+      "roles": [
+        "クレオパトラ",
+        "チェーザレ"
+      ]
+    },
+    {
+      "label": "コルネーリアとセストの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "コルネーリア",
+        "セスト"
+      ]
+    },
+    {
+      "label": "クレオパトラの嘆き（つらい運命に泣く）",
+      "group_label": "第2幕",
+      "roles": [
+        "クレオパトラ"
+      ]
+    },
+    {
+      "label": "チェーザレの脱出（嵐に揉まれる小舟のように）",
+      "group_label": "第3幕",
+      "roles": [
+        "チェーザレ"
+      ]
+    },
+    {
+      "label": "セストの復讐とトロメーオの死",
+      "group_label": "第3幕",
+      "roles": [
+        "セスト",
+        "トロメーオ",
+        "ニレーノ"
+      ]
+    },
+    {
+      "label": "フィナーレ（勝利の合唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "チェーザレ",
+        "クレオパトラ",
+        "コルネーリア",
+        "セスト",
+        "クーリオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "note": "パルナッソス山の場"
+    },
+    {
+      "part": "ヴィオラ・ダ・ガンバ",
+      "count": 1,
+      "section": "strings",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

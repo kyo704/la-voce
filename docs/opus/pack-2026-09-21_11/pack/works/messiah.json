@@ -1,0 +1,221 @@
+{
+  "title": "メサイア HWV 56",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "chorus",
+  "year_written": 1741,
+  "source": "hand",
+  "source_id": "handel-messiah",
+  "instrumentation": [
+    "管弦楽",
+    "混声合唱",
+    "独唱4人"
+  ],
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "シンフォニア（序曲）",
+      "group_label": "第1部",
+      "roles": []
+    },
+    {
+      "label": "慰めよ、わが民を（レチタティーヴォとアリア）",
+      "group_label": "第1部",
+      "roles": [
+        "テノール独唱"
+      ]
+    },
+    {
+      "label": "主の栄光は現れ（合唱）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "見よ、おとめがみごもって（レチタティーヴォとアリア）",
+      "group_label": "第1部",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "暗闇を歩む民は（アリア）",
+      "group_label": "第1部",
+      "roles": [
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "ひとりのみどりごが（合唱）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "田園交響曲（ピファ）",
+      "group_label": "第1部",
+      "roles": []
+    },
+    {
+      "label": "羊飼いへの天使の知らせ（レチタティーヴォ）",
+      "group_label": "第1部",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "いと高きところに栄光（合唱）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "シオンの娘よ、大いに喜べ（アリア）",
+      "group_label": "第1部",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "彼はさげすまれ（アリア）",
+      "group_label": "第2部",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "まことに彼はわれらの病を負い（合唱）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "その打たれた傷により（合唱）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "われらはみな羊のごとく（合唱）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ハレルヤ（合唱）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "われは知る、わが贖い主は生きたもう（アリア）",
+      "group_label": "第3部",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "ラッパは鳴り（アリアと独奏トランペット）",
+      "group_label": "第3部",
+      "roles": [
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "アーメン（終結合唱）",
+      "group_label": "第3部",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

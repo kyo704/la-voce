@@ -1,0 +1,253 @@
+{
+  "title": "イドメネオ",
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1781,
+  "source": "hand",
+  "source_id": "mozart-idomeneo",
+  "roles": [
+    {
+      "label": "イドメネオ"
+    },
+    {
+      "label": "イダマンテ"
+    },
+    {
+      "label": "イリア"
+    },
+    {
+      "label": "エレットラ"
+    },
+    {
+      "label": "アルバーチェ"
+    },
+    {
+      "label": "大祭司"
+    },
+    {
+      "label": "神託の声"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "イリアのアリア（父よ、兄弟たちよ）",
+      "group_label": "第1幕",
+      "roles": [
+        "イリア"
+      ]
+    },
+    {
+      "label": "イダマンテのアリアと囚人の解放",
+      "group_label": "第1幕",
+      "roles": [
+        "イダマンテ",
+        "イリア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "エレットラのアリア（私の心に嵐が）",
+      "group_label": "第1幕",
+      "roles": [
+        "エレットラ"
+      ]
+    },
+    {
+      "label": "難破の合唱と海の場",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱",
+        "イドメネオ"
+      ]
+    },
+    {
+      "label": "イドメネオのアリア（海から逃れたが）",
+      "group_label": "第1幕",
+      "roles": [
+        "イドメネオ"
+      ]
+    },
+    {
+      "label": "父と子の再会（レチタティーヴォ）",
+      "group_label": "第1幕",
+      "roles": [
+        "イドメネオ",
+        "イダマンテ"
+      ]
+    },
+    {
+      "label": "アルバーチェのアリアとイドメネオの決意",
+      "group_label": "第2幕",
+      "roles": [
+        "アルバーチェ",
+        "イドメネオ"
+      ]
+    },
+    {
+      "label": "イリアのアリア（そよ風よ）",
+      "group_label": "第2幕",
+      "roles": [
+        "イリア"
+      ]
+    },
+    {
+      "label": "イドメネオのアリア（海の恐ろしさ）",
+      "group_label": "第2幕",
+      "roles": [
+        "イドメネオ"
+      ]
+    },
+    {
+      "label": "三重唱と嵐（第2幕フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "イリア",
+        "イダマンテ",
+        "イドメネオ",
+        "エレットラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "イリアとイダマンテの二重唱",
+      "group_label": "第3幕",
+      "roles": [
+        "イリア",
+        "イダマンテ"
+      ]
+    },
+    {
+      "label": "四重唱（ひとり苦しみのうちに）",
+      "group_label": "第3幕",
+      "roles": [
+        "イリア",
+        "イダマンテ",
+        "イドメネオ",
+        "エレットラ"
+      ]
+    },
+    {
+      "label": "大祭司の場と神託の声",
+      "group_label": "第3幕",
+      "roles": [
+        "大祭司",
+        "イドメネオ",
+        "神託の声",
+        "合唱"
+      ]
+    },
+    {
+      "label": "エレットラのアリア（オレステとアイアースの苦しみ）",
+      "group_label": "第3幕",
+      "roles": [
+        "エレットラ"
+      ]
+    },
+    {
+      "label": "フィナーレ（愛の勝利・バレエ）",
+      "group_label": "第3幕",
+      "roles": [
+        "イドメネオ",
+        "イダマンテ",
+        "イリア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass",
+      "note": "神託の場"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "舞台裏の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "行進・神託"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

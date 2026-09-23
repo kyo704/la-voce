@@ -1,0 +1,260 @@
+{
+  "title": "ボリス・ゴドゥノフ",
+  "composer": "ムソルグスキー",
+  "composer_sort": "Mussorgsky, Modest",
+  "kind": "opera",
+  "year_written": 1874,
+  "source": "hand",
+  "source_id": "mussorgsky-boris",
+  "roles": [
+    {
+      "label": "ボリス"
+    },
+    {
+      "label": "ピーメン"
+    },
+    {
+      "label": "グリゴリー（偽ドミトリー）"
+    },
+    {
+      "label": "マリーナ"
+    },
+    {
+      "label": "ランゴーニ"
+    },
+    {
+      "label": "ヴァルラーム"
+    },
+    {
+      "label": "ミサイール"
+    },
+    {
+      "label": "シュイスキー"
+    },
+    {
+      "label": "フョードル"
+    },
+    {
+      "label": "クセニア"
+    },
+    {
+      "label": "乳母"
+    },
+    {
+      "label": "聖なる愚者"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ノヴォデヴィチ修道院の場（民衆の合唱）",
+      "group_label": "序幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "戴冠の場（鐘と合唱）",
+      "group_label": "序幕",
+      "roles": [
+        "ボリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "修道院の場（ピーメンの語り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピーメン",
+        "グリゴリー（偽ドミトリー）"
+      ]
+    },
+    {
+      "label": "宿屋の場（ヴァルラームの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴァルラーム",
+        "ミサイール",
+        "グリゴリー（偽ドミトリー）"
+      ]
+    },
+    {
+      "label": "ボリスの独白（我は至高の権力を得たり）",
+      "group_label": "第2幕",
+      "roles": [
+        "ボリス",
+        "フョードル",
+        "クセニア",
+        "乳母"
+      ]
+    },
+    {
+      "label": "シュイスキーの報告と時計の幻影",
+      "group_label": "第2幕",
+      "roles": [
+        "ボリス",
+        "シュイスキー"
+      ]
+    },
+    {
+      "label": "ポーランドの場（マリーナとランゴーニ）",
+      "group_label": "第3幕",
+      "roles": [
+        "マリーナ",
+        "ランゴーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "泉のほとりの二重唱",
+      "group_label": "第3幕",
+      "roles": [
+        "マリーナ",
+        "グリゴリー（偽ドミトリー）"
+      ]
+    },
+    {
+      "label": "聖ワシリー寺院前（聖なる愚者）",
+      "group_label": "第4幕",
+      "roles": [
+        "ボリス",
+        "聖なる愚者",
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "ボリスの死",
+      "group_label": "第4幕",
+      "roles": [
+        "ボリス",
+        "フョードル",
+        "ピーメン",
+        "シュイスキー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "クロムイの森の場（革命の合唱）",
+      "group_label": "第4幕",
+      "roles": [
+        "グリゴリー（偽ドミトリー）",
+        "ヴァルラーム",
+        "ミサイール",
+        "聖なる愚者",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion",
+      "note": "鐘（大小）・大太鼓・シンバル・タムタム"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard",
+      "is_optional": true
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "戴冠の場の金管"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "title": "レクイエム ニ短調 K.626",
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "chorus",
+  "year_written": 1791,
+  "source": "hand",
+  "source_id": "mozart-requiem",
+  "instrumentation": [
+    "管弦楽",
+    "混声四部合唱",
+    "独唱4人"
+  ],
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 入祭唱 Requiem aeternam",
+      "group_label": "第1部",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "II キリエ Kyrie",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III 続唱1 Dies irae",
+      "group_label": "続唱",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III 続唱2 Tuba mirum",
+      "group_label": "続唱",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "III 続唱3 Rex tremendae",
+      "group_label": "続唱",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III 続唱4 Recordare",
+      "group_label": "続唱",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "III 続唱5 Confutatis",
+      "group_label": "続唱",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III 続唱6 Lacrimosa",
+      "group_label": "続唱",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV 奉献唱1 Domine Jesu",
+      "group_label": "奉献唱",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV 奉献唱2 Hostias",
+      "group_label": "奉献唱",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "V サンクトゥス Sanctus",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI ベネディクトゥス Benedictus",
+      "group_label": "第2部",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VII アニュス・デイ Agnus Dei",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VIII 聖体拝領唱 Lux aeterna",
+      "group_label": "第2部",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "バセットホルン",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo",
+      "note": "通奏低音"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
