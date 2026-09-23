@@ -1,0 +1,150 @@
+{
+ "_readme": [
+  "★裁定で「画面に 出す」と 決めた ものが、★実装に 残って いるか の 台帳（★裁定179 §3）。",
+  "",
+  "★★なぜ 要るか ── ★2026-09-13、★くらべるの 図から",
+  "　★本番・レッスンの 日の 帯／レーンの 構造／2系統の 色／◎○△の 凡例 が 消えました。",
+  "　★★裁定は 生きた まま、★`lib/lineUp.js` に 註だけ 残って いました。",
+  "　★★★2週間、★誰も 気づきません でした。",
+  "",
+  "★★1行 ＝ 1つの 決め。",
+  "　`ruling`  … 裁定の 番号",
+  "　`screen`  … 画面",
+  "　`shows`   … 何を 出す と 決めたか（★人の 言葉で）",
+  "　`markers` … 実装の 印（★import・関数名・CSS の class・字）",
+  "　`must`    … \"ある\"（出す）／ \"ない\"（出しては いけない）",
+  "　`where`   … 探す ところ（★省くと components / lib / app ぜんぶ）",
+  "",
+  "★★★消す ときは、★裁定を 直して から この 行も 直します。",
+  "　★行を 消すだけ は 許しません。★`why_removed` と 裁定の 版を 書きます。",
+  "",
+  "★★正直に …… ★ここに 載せて いない 表示は 守れません。",
+  "　★裁定を 書く ときに、★同じ 日に 1行 足す。★それが この 台帳の 育て方 です。"
+ ],
+ "rows": [
+  {
+   "ruling": "111",
+   "screen": "くらべる（ならべる）",
+   "shows": "本番・レッスンの 日の 帯",
+   "markers": [
+    "hadPerformanceOrLesson"
+   ],
+   "must": "ある",
+   "where": [
+    "components/LineUpChart.jsx"
+   ],
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "111",
+   "screen": "くらべる（ならべる）",
+   "shows": "レーンの 構造（★7つの うち 5つまで・1つは 残す）",
+   "markers": [
+    "LANES",
+    "LANE_DEFAULT",
+    "toggleLane",
+    "LANE_MIN_REASON",
+    "LANE_MAX_REASON"
+   ],
+   "must": "ある",
+   "where": [
+    "components/LookBackV2.jsx"
+   ],
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "111",
+   "screen": "くらべる（ならべる）",
+   "shows": "◎○△ の 凡例と 帯の 説明",
+   "markers": [
+    "laneWord",
+    "◎＝出た／よい・ない",
+    "たての 帯"
+   ],
+   "must": "ある",
+   "where": [
+    "components/LookBackV2.jsx"
+   ],
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "111",
+   "screen": "くらべる（ならべる）",
+   "shows": "色は 2系統だけ（★えんじ＝◎○△ の もの／みどり＝量の もの。★良し悪しでは ない）",
+   "markers": [
+    "tone === \"midori\" ? C.sage : C.curtain"
+   ],
+   "must": "ある",
+   "where": [
+    "components/LineUpChart.jsx"
+   ],
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "119",
+   "screen": "全画面",
+   "shows": "点数・順位・信号色を 出さない",
+   "markers": [
+    "偏差値",
+    "順位",
+    "信号色"
+   ],
+   "must": "ない",
+   "where": [
+    "components/LineUpChart.jsx",
+    "components/LookBackV2.jsx",
+    "components/CompareV2.jsx",
+    "components/CountV2.jsx"
+   ],
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "176",
+   "screen": "もっと（運営）",
+   "shows": "切って ある 機能の 一覧",
+   "markers": [
+    "hiddenFeatures"
+   ],
+   "must": "ある",
+   "where": [
+    "lib/featureOn.js"
+   ],
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "147",
+   "screen": "公演（子どもの 枠）",
+   "shows": "緊急の 連絡先は 道（read_kid_contact）からだけ。★表を 直に 読ませない",
+   "markers": [
+    "koen_kid_contacts"
+   ],
+   "must": "ない",
+   "where": [
+    "components",
+    "lib",
+    "app"
+   ],
+   "added": "2026-09-23"
+  },
+  {
+   "ruling": "178",
+   "screen": "公演（書き出し）",
+   "shows": "書き出しに 体調の 列を 作らない",
+   "markers": [
+    "throat_condition",
+    "voice_quality",
+    "throatCondition",
+    "voiceQuality"
+   ],
+   "must": "ない",
+   "where": [
+    "lib/opsExport.js"
+   ],
+   "added": "2026-09-23",
+   "allow_in": [
+    "FORBIDDEN_COLUMNS"
+   ],
+   "allow_why": "★`FORBIDDEN_COLUMNS` は、★その 列を **出さない ため** の 並び です。★そこに 名が ある こと自体が、★裁定178 が 守られて いる しるし です。★★数えると、★禁じて いる ことを もって 禁を 破ったと 言う ことに なります。"
+  }
+ ]
+}
