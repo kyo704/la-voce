@@ -142,7 +142,21 @@ async function load(rel) {
   ].forEach((line) => { body = body.split(line).join(""); });
   ok(!/reduce\(/.test(body), "★足し合わせていない（★reduce が 無い）");
   ok(!/\+=/.test(body), "★数を 積み上げていない");
-  ok(!/合計|平均|割合/.test(body), "★合計・平均・割合と 書いていない");
+  // ★★★2026-09-23（★段3a A群）── ★自分の お約束の 字を 捕まえて いました。
+  //   ★★上の 3行を 名指しで 取り除いて から 見て いました。
+  //     ★★お約束の 字が 少し 書き直されると、★取り除きが 外れ、★その まま 当たります。
+  //     ★★★きょう 当たって いたのは これ ──
+  //         「文章を 添えません。確率も 割合も 出しません。」
+  //   ★★★だから 名指しを やめます。★「★打ち消しの 中に しか 出て こない こと」を 見ます。
+  //     ★30字の うちに 打ち消しが 無ければ、★それは 本当に 数を 出して います。
+  const 打消 = /(出しません|出さない|しません|ではありません|では ありません|書きません)/;
+  const 数 = [];
+  for (const m of body.matchAll(/合計|平均|割合/g)) {
+    const 後 = body.slice(m.index, m.index + 34);
+    if (!打消.test(後)) 数.push(m[0] + "「" + 後.replace(/\s+/g, " ").slice(0, 26) + "」");
+  }
+  ok(数.length === 0, "★合計・平均・割合を 出していない（★打ち消しの 中だけ）" +
+    (数.length ? " …… " + 数.join(" / ") : ""));
   // ★★書き方（toFixed／Math.round）は、★1つの 値に しか 使わない こと。
   //   ★lookBackValue の 中だけに あることを 見ます。
   const fmtAt = body.indexOf("export function lookBackValue");
@@ -156,8 +170,21 @@ async function load(rel) {
   //   ★★2026-09-10、★見本 A05 の 枠の 色（#E0C9CE に あたるもの）を
   //     ★手元の 濃淡から 取ったら、★名前だけで 鳴りました。
   //     ★★新しい色を 増やさないための 選び方でした。★見る先を 変えます。
-  ok(!/(value|r\.value|v)\s*[<>]=?[\s\S]{0,60}(C\.|LEVEL_COLORS|#[0-9A-Fa-f]{3,6})/.test(panel),
-    "★値の大小で、色を変えていない");
+  // ★★★2026-09-23（★段3a A群）── ★JSX の 閉じ `}>` を「大なり」と 読んで いました。
+  //     ★当たって いたのは これ ── `v> <Card style={{ borderColor: "#C9A0AB`
+  //       ★★`v}` の あとの `>` は、★タグの 終わり です。★くらべて いません。
+  //   ★★★だから「くらべ」の 形を きつく します ──
+  //       ★左は 名前、★右は **数**（★`v > 3` / `value >= 0.5`）。
+  //       ★`>` の 直前が `}` や `/` の ものは 見ません（★タグの 終わり）。
+  const くらべ = /(?<![}\/])\b(value|r\.value|v)\s*[<>]=?\s*-?\d/g;
+  const 当 = [];
+  for (const m of panel.matchAll(くらべ)) {
+    const 後 = panel.slice(m.index, m.index + 90);
+    if (/(C\.|LEVEL_COLORS|#[0-9A-Fa-f]{3,6})/.test(後)) {
+      当.push(後.replace(/\s+/g, " ").slice(0, 70));
+    }
+  }
+  ok(当.length === 0, "★値の大小で、色を変えていない" + (当.length ? " …… " + 当.join(" / ") : ""));
   ok(!/LEVEL_COLORS\[\s*(?!0\s*\])/.test(panel),
     "★段ごとの 色を 使っていない（★使うのは 1色だけ）");
 
