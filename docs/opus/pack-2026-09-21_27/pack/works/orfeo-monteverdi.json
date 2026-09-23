@@ -1,0 +1,171 @@
+{
+  "title": "オルフェオ",
+  "title_original": "L'Orfeo",
+  "aliases": [
+    "モンテヴェルディのオルフェオ"
+  ],
+  "composer": "モンテヴェルディ",
+  "composer_sort": "Monteverdi, Claudio",
+  "kind": "opera",
+  "year_written": 1607,
+  "duration_min": 110,
+  "language": "it",
+  "source": "hand",
+  "source_id": "monteverdi-orfeo",
+  "roles": [
+    {
+      "label": "オルフェオ"
+    },
+    {
+      "label": "エウリディーチェ"
+    },
+    {
+      "label": "音楽の女神"
+    },
+    {
+      "label": "使者（シルヴィア）"
+    },
+    {
+      "label": "希望"
+    },
+    {
+      "label": "カロンテ"
+    },
+    {
+      "label": "プロセルピナ"
+    },
+    {
+      "label": "プルトーネ"
+    },
+    {
+      "label": "アポロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "トッカータとプロローグ（音楽の女神）",
+      "group_label": "プロローグ",
+      "roles": [
+        "音楽の女神"
+      ]
+    },
+    {
+      "label": "第1幕 婚礼の喜び",
+      "group_label": "第1幕",
+      "roles": [
+        "オルフェオ",
+        "エウリディーチェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 使者の報せ（エウリディーチェの死）",
+      "group_label": "第2幕",
+      "roles": [
+        "オルフェオ",
+        "使者（シルヴィア）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 冥界の川（力強き精霊よ）",
+      "group_label": "第3幕",
+      "roles": [
+        "オルフェオ",
+        "希望",
+        "カロンテ"
+      ]
+    },
+    {
+      "label": "第4幕 プロセルピナの願いと振り返り",
+      "group_label": "第4幕",
+      "roles": [
+        "プロセルピナ",
+        "プルトーネ",
+        "オルフェオ",
+        "エウリディーチェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5幕 アポロとの昇天",
+      "group_label": "第5幕",
+      "roles": [
+        "オルフェオ",
+        "アポロ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "コルネット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "サックバット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "オルガン",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

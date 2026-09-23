@@ -1,0 +1,56 @@
+{
+  "title": "ピアノソナタ第2番 変ロ短調「葬送」",
+  "title_original": "Sonate No. 2",
+  "aliases": [
+    "葬送"
+  ],
+  "composer": "ショパン",
+  "composer_sort": "Chopin, Frederic",
+  "kind": "chamber",
+  "year_written": 1839,
+  "source": "hand",
+  "source_id": "chopin-sonata2",
+  "duration_min": 25,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 グラーヴェ〜ドッピオ・モヴィメント",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 スケルツォ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 葬送行進曲",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第4楽章 プレスト",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

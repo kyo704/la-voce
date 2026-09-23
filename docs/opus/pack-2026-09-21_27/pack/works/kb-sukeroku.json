@@ -1,0 +1,130 @@
+{
+  "title": "助六（助六由縁江戸桜）",
+  "title_original": "助六（助六由縁江戸桜）",
+  "aliases": [
+    "助六"
+  ],
+  "composer": "歌舞伎（市川宗家 歌舞伎十八番）",
+  "composer_sort": "Kabuki Juhachiban",
+  "kind": "drama",
+  "year_written": 1713,
+  "source": "hand",
+  "source_id": "kabuki-sukeroku",
+  "duration_min": 150,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "花川戸助六"
+    },
+    {
+      "label": "揚巻"
+    },
+    {
+      "label": "白酒売新兵衛"
+    },
+    {
+      "label": "髭の意休"
+    },
+    {
+      "label": "曽我満江"
+    },
+    {
+      "label": "通人里暁"
+    },
+    {
+      "label": "三浦屋の遊女",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "河東節の演奏と出端",
+      "group_label": "序",
+      "roles": [
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "揚巻の花魁道中",
+      "group_label": "序",
+      "roles": [
+        "揚巻",
+        "三浦屋の遊女",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "助六の出端（傘の見得）",
+      "group_label": "中",
+      "roles": [
+        "花川戸助六",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "意休とのやりとり",
+      "group_label": "中",
+      "roles": [
+        "花川戸助六",
+        "髭の意休",
+        "揚巻",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "白酒売との兄弟の名乗り",
+      "group_label": "中",
+      "roles": [
+        "花川戸助六",
+        "白酒売新兵衛",
+        "曽我満江",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "通人の場",
+      "group_label": "中",
+      "roles": [
+        "通人里暁",
+        "花川戸助六",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "刀の詮議と立廻り",
+      "group_label": "終",
+      "roles": [
+        "花川戸助六",
+        "髭の意休",
+        "三浦屋の遊女",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線（舞台上の雛壇）"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽（舞台袖）"
+    }
+  ],
+  "school": "成田屋（市川宗家）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}

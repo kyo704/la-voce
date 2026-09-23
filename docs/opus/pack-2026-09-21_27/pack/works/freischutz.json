@@ -1,0 +1,238 @@
+{
+  "title": "魔弾の射手",
+  "composer": "ウェーバー",
+  "composer_sort": "Weber, Carl Maria von",
+  "kind": "opera",
+  "year_written": 1821,
+  "source": "hand",
+  "source_id": "weber-freischutz",
+  "roles": [
+    {
+      "label": "アガーテ"
+    },
+    {
+      "label": "マックス"
+    },
+    {
+      "label": "エンヒェン"
+    },
+    {
+      "label": "カスパール"
+    },
+    {
+      "label": "オットカール侯爵"
+    },
+    {
+      "label": "クーノー"
+    },
+    {
+      "label": "隠者"
+    },
+    {
+      "label": "キリアン"
+    },
+    {
+      "label": "ザミエル（語り）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "導入（射撃大会・キリアンの嘲り）",
+      "group_label": "第1幕",
+      "roles": [
+        "キリアン",
+        "マックス",
+        "クーノー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "三重唱と合唱（マックスの嘆き）",
+      "group_label": "第1幕",
+      "roles": [
+        "マックス",
+        "カスパール",
+        "クーノー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "マックスのアリア（森を抜け、野を越えて）",
+      "group_label": "第1幕",
+      "roles": [
+        "マックス"
+      ]
+    },
+    {
+      "label": "カスパールの飲み歌と復讐の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "カスパール",
+        "マックス",
+        "ザミエル（語り）"
+      ]
+    },
+    {
+      "label": "エンヒェンとアガーテの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "アガーテ",
+        "エンヒェン"
+      ]
+    },
+    {
+      "label": "エンヒェンのアリエッタ（来たれ、細身の若者よ）",
+      "group_label": "第2幕",
+      "roles": [
+        "エンヒェン"
+      ]
+    },
+    {
+      "label": "アガーテの情景とアリア（静かに、静かに）",
+      "group_label": "第2幕",
+      "roles": [
+        "アガーテ"
+      ]
+    },
+    {
+      "label": "狼谷の場（弾丸の鋳造）",
+      "group_label": "第2幕",
+      "roles": [
+        "カスパール",
+        "マックス",
+        "ザミエル（語り）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "狩人の合唱",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "アガーテのカヴァティーナ（雲が太陽を覆っても）",
+      "group_label": "第3幕",
+      "roles": [
+        "アガーテ"
+      ]
+    },
+    {
+      "label": "エンヒェンのロマンツェとアリア",
+      "group_label": "第3幕",
+      "roles": [
+        "エンヒェン"
+      ]
+    },
+    {
+      "label": "花乙女の合唱",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱",
+        "エンヒェン"
+      ]
+    },
+    {
+      "label": "フィナーレ（隠者の裁定）",
+      "group_label": "第3幕",
+      "roles": [
+        "アガーテ",
+        "マックス",
+        "カスパール",
+        "オットカール侯爵",
+        "クーノー",
+        "隠者",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "狩人の合唱のホルン ほか"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

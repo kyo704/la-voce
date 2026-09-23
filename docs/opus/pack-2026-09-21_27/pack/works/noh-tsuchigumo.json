@@ -1,0 +1,103 @@
+{
+  "title": "土蜘蛛",
+  "title_original": "土蜘蛛",
+  "aliases": [],
+  "composer": "能（五番目（切））",
+  "composer_sort": "Noh 五番目（切）",
+  "kind": "drama",
+  "year_written": 1600,
+  "source": "hand",
+  "source_id": "noh-tsuchigumo-kanze",
+  "duration_min": 70,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（僧・土蜘蛛の精）"
+    },
+    {
+      "label": "ツレ（源頼光）"
+    },
+    {
+      "label": "ツレ（胡蝶）"
+    },
+    {
+      "label": "ワキ（独武者）"
+    },
+    {
+      "label": "アイ（従者）",
+      "is_group": true
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "頼光の病",
+      "group_label": "前段",
+      "roles": [
+        "ツレ（源頼光）",
+        "ツレ（胡蝶）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "怪僧の出現と蜘蛛の糸",
+      "group_label": "前段",
+      "roles": [
+        "シテ（僧・土蜘蛛の精）",
+        "ツレ（源頼光）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "アイの報告",
+      "group_label": "中入",
+      "roles": [
+        "アイ（従者）",
+        "ワキ（独武者）"
+      ]
+    },
+    {
+      "label": "塚の中の戦い",
+      "group_label": "後段",
+      "roles": [
+        "シテ（僧・土蜘蛛の精）",
+        "ワキ（独武者）",
+        "囃子方",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "note": "★蜘蛛の糸を投げる。糸の片づけと取り替えの段取りが要る（当日の進行に入れる）／★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う",
+  "school": "観世流"
+}
