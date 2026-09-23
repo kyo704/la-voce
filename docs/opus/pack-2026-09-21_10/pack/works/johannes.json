@@ -1,0 +1,200 @@
+{
+  "title": "ヨハネ受難曲 BWV245",
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chorus",
+  "year_written": 1724,
+  "source": "hand",
+  "source_id": "bach-johannes",
+  "roles": [
+    {
+      "label": "福音史家（テノール）"
+    },
+    {
+      "label": "イエス（バス）"
+    },
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "ペテロ・ピラトほか（バス）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1曲 合唱（主よ、わが主よ）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "捕縛の場",
+      "group_label": "第1部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アリア（わが魂よ）",
+      "group_label": "第1部",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "ペテロの否認とアリア（ああ、わが心よ）",
+      "group_label": "第1部",
+      "roles": [
+        "福音史家（テノール）",
+        "ペテロ・ピラトほか（バス）",
+        "テノール独唱"
+      ]
+    },
+    {
+      "label": "ピラトの尋問",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "ペテロ・ピラトほか（バス）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "鞭打ちとアリオーソ・アリア",
+      "group_label": "第2部",
+      "roles": [
+        "バス独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "十字架の判決",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "ペテロ・ピラトほか（バス）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アリア（急げ、汝ら悩める魂よ）",
+      "group_label": "第2部",
+      "roles": [
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "十字架上の死",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "埋葬の合唱（安らかに憩え）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "終結のコラール（主よ、み使いを）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "オーボエ・ダモーレ／ダ・カッチャ"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ヴィオラ・ダモーレ",
+      "count": 2,
+      "section": "strings",
+      "is_optional": true
+    },
+    {
+      "part": "ヴィオラ・ダ・ガンバ",
+      "count": 1,
+      "section": "strings",
+      "is_optional": true
+    },
+    {
+      "part": "リュート",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

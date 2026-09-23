@@ -134,10 +134,15 @@ def main():
     return 2
 
   # ★service role の 鍵（★人を 作る ため）
-  for l in open(os.path.join(ROOT, ".env.local"), encoding="utf-8"):
-    m = re.match(r"^\s*SUPABASE_SERVICE_ROLE_KEY\s*=\s*(.*)$", l)
-    if m:
-      SERVICE = m.group(1).strip().strip('"').strip("'")
+  #   ★★★2026-09-23 …… ★**送り先の 入れ物から** 取ります。
+  #     ★`.env.local` から 読むと、★`--ref` で 送り先を 変えても
+  #       ★★**古い 入れ物の 鍵**を 使って しまいます（★FX7 で 気づきました）。
+  import urllib.request as _u
+  _r = _u.Request("https://api.supabase.com/v1/projects/%s/api-keys" % ref,
+                  headers={"Authorization": "Bearer " + 合言葉()})
+  for k in json.loads(_u.urlopen(_r, timeout=60).read().decode()):
+    if k.get("name") == "service_role":
+      SERVICE = k.get("api_key", "")
   if not SERVICE and not dry:
     print("★止まりました ── ★service role の 鍵が ありません。")
     return 2

@@ -1,0 +1,197 @@
+{
+  "title": "スターバト・マーテル 作品58",
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvorak, Antonin",
+  "kind": "chorus",
+  "year_written": 1877,
+  "source": "hand",
+  "source_id": "dvorak-stabat",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 悲しみの聖母は立ちぬ（四重唱と合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "II 嘆き悲しむその御魂を（四重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "III ああ、いかに悲しく（合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV 誰か涙を流さぬ者があろうか（バスと合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "V 我にも、キリストの死を（合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI 我に御身の傷を負わせ（テノールと合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VII 我に燃え立たせたまえ（アルト）",
+      "group_label": "全曲",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "VIII 我をして処女のうちに（ソプラノとテノールの二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱"
+      ]
+    },
+    {
+      "label": "IX 肉体は朽ち果てるとも（アルト）",
+      "group_label": "全曲",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "X 御身の死の日に（四重唱と合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

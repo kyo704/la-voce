@@ -341,7 +341,7 @@
    "sd": true,
    "anon": true,
    "auth": true,
-   "e": true
+   "e": false
   },
   "move_lesson(p_lesson_id uuid, p_scheduled_at timestamp with time zone, p_place_id uuid)": {
    "h": "8545463dbe",
@@ -672,18 +672,25 @@
    "auth": true,
    "e": false
   },
+  "audit_row()": {
+   "h": "5adab07cfa",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "purge_ops_audit_log()": {
+   "h": "4e77a0ac9b",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
   "read_kid_contact(p_kid uuid, p_reason_kind text)": {
    "h": "b44afe8d8a",
    "sd": true,
    "anon": false,
    "auth": true,
-   "e": false
-  },
-  "purge_ops_audit_log()": {
-   "h": "43bb167240",
-   "sd": true,
-   "anon": false,
-   "auth": false,
    "e": false
   }
  },
@@ -868,7 +875,8 @@
   "koen_session_changes.koen_session_changes_select": "SELECT|{authenticated}|21b12fbf54",
   "koen_kids.koen_kids_guardian": "ALL|{authenticated}|3c91d7ab25",
   "koen_kids.koen_kids_staff_select": "SELECT|{authenticated}|23f99a5f7e",
-  "koen_kid_contact_reads.koen_kid_reads_select": "SELECT|{authenticated}|f002c062f7"
+  "koen_kid_contact_reads.koen_kid_reads_select": "SELECT|{authenticated}|f002c062f7",
+  "ops_audit_log.ops_audit_select": "SELECT|{authenticated}|a24451dbed"
  },
  "grants": {
   "account_deletions": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
@@ -922,6 +930,7 @@
   "notes": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "notice_batches": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "notice_targets": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "ops_audit_log": "a:SELECT",
   "org_billing": "a:INSERT,a:SELECT,a:UPDATE",
   "org_billing_log": "a:INSERT,a:SELECT",
   "org_contracts": "a:SELECT",
@@ -1049,7 +1058,8 @@
   "monka_read_log_post_id_fkey": "FOREIGN KEY (post_id) REFERENCES org_posts(id) ON DELETE SET NULL",
   "monka_read_log_viewer_user_id_fkey": "FOREIGN KEY (viewer_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
   "monka_read_log_target_monka_id_fkey": "FOREIGN KEY (target_monka_id) REFERENCES auth.users(id) ON DELETE SET NULL",
-  "post_change_log_target_user_id_fkey": "FOREIGN KEY (target_user_id) REFERENCES auth.users(id) ON DELETE SET NULL"
+  "post_change_log_target_user_id_fkey": "FOREIGN KEY (target_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
+  "ops_audit_log_actor_id_fkey": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE SET NULL"
  },
  "triggers": {
   "trg_block_minor_teacher_link": "teacher_student_links",
@@ -1067,7 +1077,15 @@
   "matching_report_cut": "matching_reports",
   "trg_my_periods_org_stable": "my_periods",
   "trg_log_org_post_perm": "org_posts",
-  "koen_sessions_log_change": "koen_sessions"
+  "koen_sessions_log_change": "koen_sessions",
+  "enrollments_audit": "enrollments",
+  "memberships_audit": "memberships",
+  "org_posts_audit": "org_posts",
+  "org_invitations_audit": "org_invitations",
+  "org_billing_audit": "org_billing",
+  "org_events_audit": "org_events",
+  "org_places_audit": "org_places",
+  "lesson_rounds_audit": "lesson_rounds"
  },
  "migrations": [
   "20260914042439_add_repertoire_tessitura_delete_policy",
@@ -1119,6 +1137,7 @@
   "20260922223215_opus_12_productions_core",
   "20260922223218_opus_13_production_children",
   "20260922223221_opus_14_ops_audit_log",
-  "20260922224023_rollback_14_ops_audit_log"
+  "20260922224023_rollback_14_ops_audit_log",
+  "20260922225718_opus_14_ops_audit_log_fixed"
  ]
 }

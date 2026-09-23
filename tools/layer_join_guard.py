@@ -77,6 +77,20 @@ def split_layers(text):
 # ① 倉庫の SQL
 # ---------------------------------------------------------------------------
 
+def 写しか(rel):
+  """★これは「私たちが 書いた 決め」か、★それとも「本番の 姿の 写し」か。
+
+    ★★写しは 見ません。★数えると 二重に なります。
+      ★`supabase/generated/`  …… ★2026-09-20 から。
+      ★`..._base_*.sql`（土台）…… ★2026-09-23 から（裁定175 ㋐）。
+        ★★土台は 104表 ぜんぶの 外部キーを 持ちます。★層を またぐ ものも、
+          ★★**もう 本番に ある もの** です。★ここで 止めても 直せません。
+          ★★★層の 違反は、★それを **作った** 移行の ところで 止まります。
+  """
+  r = rel.replace("\\", "/")
+  return "/generated/" in r or re.search(r"/\d{14}_base_\d\d_", r) is not None
+
+
 def scan_sql():
   out = []
   base = os.path.join(ROOT, "supabase")
@@ -89,7 +103,7 @@ def scan_sql():
       #   ★★`supabase/generated/` は、★本番の 姿を 写した もの です。
       #   ★★私たちが 書いた 決めでは ありません。★数えると 二重に なります。
       #     ★★実際、★写した 中に ある 読み道が「混ざって いる」に 入りました。
-      if "/generated/" in rel.replace("\\", "/"):
+      if 写しか(rel):
         continue
       retired = "/retired/" in rel.replace("\\", "/")
       s = io.open(os.path.join(root, f), encoding="utf-8").read()
@@ -233,6 +247,8 @@ def unassigned():
       if not f.endswith(".sql"):
         continue
       rel = os.path.relpath(os.path.join(root, f), ROOT)
+      if 写しか(rel):
+        continue
       s = io.open(os.path.join(root, f), encoding="utf-8").read()
       for m in re.finditer(
           r"create table\s+(?:if not exists\s+)?(?:public\.)?([a-z_0-9]+)", s, re.I):

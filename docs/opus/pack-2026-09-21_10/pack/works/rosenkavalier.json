@@ -1,0 +1,267 @@
+{
+  "title": "ばらの騎士",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1911,
+  "source": "hand",
+  "source_id": "strauss-rosenkavalier",
+  "roles": [
+    {
+      "label": "元帥夫人"
+    },
+    {
+      "label": "オクタヴィアン"
+    },
+    {
+      "label": "ゾフィー"
+    },
+    {
+      "label": "オックス男爵"
+    },
+    {
+      "label": "ファーニナル"
+    },
+    {
+      "label": "マリアンネ"
+    },
+    {
+      "label": "ヴァルツァッキ"
+    },
+    {
+      "label": "アンニーナ"
+    },
+    {
+      "label": "イタリア人歌手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "朝の二重唱（元帥夫人とオクタヴィアン）",
+      "group_label": "第1幕",
+      "roles": [
+        "元帥夫人",
+        "オクタヴィアン"
+      ]
+    },
+    {
+      "label": "オックス男爵の登場",
+      "group_label": "第1幕",
+      "roles": [
+        "オックス男爵",
+        "元帥夫人",
+        "オクタヴィアン"
+      ]
+    },
+    {
+      "label": "朝の謁見（イタリア人歌手のアリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "イタリア人歌手",
+        "元帥夫人",
+        "ヴァルツァッキ",
+        "アンニーナ",
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "元帥夫人の独白（時は不思議なもの）",
+      "group_label": "第1幕",
+      "roles": [
+        "元帥夫人",
+        "オクタヴィアン"
+      ]
+    },
+    {
+      "label": "銀のばらの献呈",
+      "group_label": "第2幕",
+      "roles": [
+        "オクタヴィアン",
+        "ゾフィー",
+        "ファーニナル",
+        "マリアンネ"
+      ]
+    },
+    {
+      "label": "ゾフィーとオクタヴィアンの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ゾフィー",
+        "オクタヴィアン"
+      ]
+    },
+    {
+      "label": "オックスとの決闘騒ぎ",
+      "group_label": "第2幕",
+      "roles": [
+        "オックス男爵",
+        "オクタヴィアン",
+        "ゾフィー",
+        "ファーニナル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "オックスのワルツ（第2幕フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "オックス男爵",
+        "アンニーナ"
+      ]
+    },
+    {
+      "label": "宿屋の仕掛け（前奏とパントマイム）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァルツァッキ",
+        "アンニーナ",
+        "オクタヴィアン"
+      ]
+    },
+    {
+      "label": "オックスの醜態",
+      "group_label": "第3幕",
+      "roles": [
+        "オックス男爵",
+        "オクタヴィアン",
+        "アンニーナ",
+        "ファーニナル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "三重唱（元帥夫人・ゾフィー・オクタヴィアン）",
+      "group_label": "第3幕",
+      "roles": [
+        "元帥夫人",
+        "ゾフィー",
+        "オクタヴィアン"
+      ]
+    },
+    {
+      "label": "終わりの二重唱とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ゾフィー",
+        "オクタヴィアン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind",
+      "doubling": "バセットホルン・バスクラリネット・エスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion",
+      "note": "大太鼓・小太鼓・シンバル・グロッケン・タンブリン ほか"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "第3幕のワルツ（ヴァイオリン・クラリネット・ホルン ほか）"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
