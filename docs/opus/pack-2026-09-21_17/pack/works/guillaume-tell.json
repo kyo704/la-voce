@@ -1,0 +1,185 @@
+{
+  "title": "ウィリアム・テル",
+  "title_original": "Guillaume Tell",
+  "aliases": [
+    "テル"
+  ],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1829,
+  "duration_min": 240,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "rossini-guillaume-tell",
+  "roles": [
+    {
+      "label": "ギヨーム・テル"
+    },
+    {
+      "label": "アルノルド"
+    },
+    {
+      "label": "マティルド"
+    },
+    {
+      "label": "ジェミ"
+    },
+    {
+      "label": "ヘドヴィジュ"
+    },
+    {
+      "label": "ジェスレル"
+    },
+    {
+      "label": "メルクタール"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 村の祝い",
+      "group_label": "第1幕",
+      "roles": [
+        "ギヨーム・テル",
+        "メルクタール",
+        "アルノルド",
+        "ジェミ",
+        "ヘドヴィジュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 マティルドのアリアと三重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "マティルド",
+        "アルノルド",
+        "ギヨーム・テル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 帽子への敬礼と林檎の場",
+      "group_label": "第3幕",
+      "roles": [
+        "ジェスレル",
+        "ギヨーム・テル",
+        "ジェミ",
+        "マティルド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 アルノルドのアリアとフィナーレ",
+      "group_label": "第4幕",
+      "roles": [
+        "アルノルド",
+        "ギヨーム・テル",
+        "ジェミ",
+        "ヘドヴィジュ",
+        "マティルド",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true,
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

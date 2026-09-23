@@ -1,0 +1,167 @@
+{
+  "title": "アッティラ",
+  "title_original": "Attila",
+  "aliases": [],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1846,
+  "source": "hand",
+  "source_id": "verdi-attila",
+  "duration_min": 130,
+  "language": "it",
+  "roles": [
+    {
+      "label": "アッティラ"
+    },
+    {
+      "label": "オダベッラ"
+    },
+    {
+      "label": "フォレスト"
+    },
+    {
+      "label": "エツィオ"
+    },
+    {
+      "label": "レオーネ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ アクイレイアの廃墟",
+      "group_label": "プロローグ",
+      "roles": [
+        "アッティラ",
+        "オダベッラ",
+        "エツィオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 森の場とアッティラの夢",
+      "group_label": "第1幕",
+      "roles": [
+        "オダベッラ",
+        "フォレスト",
+        "アッティラ",
+        "レオーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 宴と陰謀",
+      "group_label": "第2幕",
+      "roles": [
+        "エツィオ",
+        "アッティラ",
+        "フォレスト",
+        "オダベッラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 フィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "オダベッラ",
+        "フォレスト",
+        "エツィオ",
+        "アッティラ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チンバッソ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

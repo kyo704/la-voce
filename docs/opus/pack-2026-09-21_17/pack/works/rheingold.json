@@ -1,0 +1,201 @@
+{
+  "title": "ラインの黄金",
+  "title_original": "Das Rheingold",
+  "aliases": [
+    "指環"
+  ],
+  "composer": "ワーグナー",
+  "composer_sort": "Wagner, Richard",
+  "kind": "opera",
+  "year_written": 1869,
+  "source": "hand",
+  "source_id": "wagner-rheingold",
+  "duration_min": 150,
+  "language": "de",
+  "roles": [
+    {
+      "label": "ヴォータン"
+    },
+    {
+      "label": "アルベリヒ"
+    },
+    {
+      "label": "ローゲ"
+    },
+    {
+      "label": "フリッカ"
+    },
+    {
+      "label": "フライア"
+    },
+    {
+      "label": "ファーゾルト"
+    },
+    {
+      "label": "ファフナー"
+    },
+    {
+      "label": "ミーメ"
+    },
+    {
+      "label": "エルダ"
+    },
+    {
+      "label": "ラインの娘たち",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1場 ラインの河底（黄金の略奪）",
+      "group_label": "第1場",
+      "roles": [
+        "ラインの娘たち",
+        "アルベリヒ"
+      ]
+    },
+    {
+      "label": "第2場 神々の山上（城の完成）",
+      "group_label": "第2場",
+      "roles": [
+        "ヴォータン",
+        "フリッカ",
+        "フライア",
+        "ファーゾルト",
+        "ファフナー",
+        "ローゲ"
+      ]
+    },
+    {
+      "label": "第3場 ニーベルハイム",
+      "group_label": "第3場",
+      "roles": [
+        "アルベリヒ",
+        "ミーメ",
+        "ヴォータン",
+        "ローゲ"
+      ]
+    },
+    {
+      "label": "第4場 指環の呪いとヴァルハラ入城",
+      "group_label": "第4場",
+      "roles": [
+        "ヴォータン",
+        "アルベリヒ",
+        "ローゲ",
+        "エルダ",
+        "ファーゾルト",
+        "ファフナー",
+        "フリッカ",
+        "フライア",
+        "ラインの娘たち"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 8,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ワーグナーチューバ",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "ハープ",
+      "count": 6,
+      "section": "harp"
+    },
+    {
+      "part": "金床",
+      "count": 18,
+      "section": "percussion",
+      "note": "舞台裏"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

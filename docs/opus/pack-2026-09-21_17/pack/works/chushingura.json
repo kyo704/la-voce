@@ -1,0 +1,114 @@
+{
+  "title": "仮名手本忠臣蔵（通し）",
+  "title_original": "仮名手本忠臣蔵",
+  "aliases": [
+    "忠臣蔵"
+  ],
+  "composer": "竹田出雲ほか",
+  "composer_sort": "Takeda, Izumo",
+  "kind": "drama",
+  "year_written": 1748,
+  "source": "hand",
+  "source_id": "kabuki-chushingura",
+  "duration_min": 300,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "塩冶判官"
+    },
+    {
+      "label": "高師直"
+    },
+    {
+      "label": "大星由良之助"
+    },
+    {
+      "label": "顔世御前"
+    },
+    {
+      "label": "早野勘平"
+    },
+    {
+      "label": "お軽"
+    },
+    {
+      "label": "寺岡平右衛門"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "大序 兜改め",
+      "group_label": "序",
+      "roles": [
+        "高師直",
+        "塩冶判官",
+        "顔世御前",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "三段目 刃傷",
+      "group_label": "三段目",
+      "roles": [
+        "塩冶判官",
+        "高師直",
+        "早野勘平",
+        "その他"
+      ]
+    },
+    {
+      "label": "四段目 判官切腹・城明渡し",
+      "group_label": "四段目",
+      "roles": [
+        "塩冶判官",
+        "大星由良之助",
+        "その他"
+      ]
+    },
+    {
+      "label": "五・六段目 勘平の道行と腹切",
+      "group_label": "五・六段目",
+      "roles": [
+        "早野勘平",
+        "お軽",
+        "その他"
+      ]
+    },
+    {
+      "label": "七段目 祇園一力茶屋",
+      "group_label": "七段目",
+      "roles": [
+        "大星由良之助",
+        "お軽",
+        "寺岡平右衛門",
+        "その他"
+      ]
+    },
+    {
+      "label": "十一段目 討入り",
+      "group_label": "十一段目",
+      "roles": [
+        "大星由良之助",
+        "その他",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}

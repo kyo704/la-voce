@@ -39,7 +39,15 @@ function ratio(a, b) {
 }
 
 (async () => {
-  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "tokens.js"), "utf8");
+  // ★★★2026-09-23、★ここが 落ちて いました（★入れ子の 読み込みが 解けない）。
+  //   ★★`lib/tokens.js` は いま `@/lib/visualTokens` を 読みます（★裁定その81・2026-09-18）。
+  //     ★★`data:` の 形で 読み込むと、★`@/` を どこにも 結べません ──
+  //         ERR_UNSUPPORTED_RESOLVE_REQUEST: Failed to resolve module specifier "@/lib/visualTokens"
+  //   ★★★この 見張りは **色の 見やすさ**（★比 4.5）を 見ます。★止まって いると、
+  //     ★読めない 色が 入っても 誰も 気づきません。★他の 見張りと 同じ 形に 直します。
+  const src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", "tokens.js"), "utf8")
+    .replace(/from "@\/lib\/([a-zA-Z0-9]+)"/g, (mm, n) => `from "${
+      "file://" + path.join(__dirname, "..", "..", "lib", n + ".js")}"`);
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
   const C = m.C;
   const PAPER = C.paper, CARD = C.card;

@@ -1,0 +1,160 @@
+{
+  "title": "エドガール",
+  "title_original": "Edgar",
+  "aliases": [],
+  "composer": "プッチーニ",
+  "composer_sort": "Puccini, Giacomo",
+  "kind": "opera",
+  "year_written": 1889,
+  "source": "hand",
+  "source_id": "puccini-edgar",
+  "duration_min": 110,
+  "language": "it",
+  "roles": [
+    {
+      "label": "エドガール"
+    },
+    {
+      "label": "フィデーリア"
+    },
+    {
+      "label": "ティグラーナ"
+    },
+    {
+      "label": "フランク"
+    },
+    {
+      "label": "グァルティエーロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 村（フィデーリアとティグラーナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "エドガール",
+        "フィデーリア",
+        "ティグラーナ",
+        "フランク",
+        "グァルティエーロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 城（放蕩と悔い）",
+      "group_label": "第2幕",
+      "roles": [
+        "エドガール",
+        "ティグラーナ",
+        "フランク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 葬列とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "エドガール",
+        "フィデーリア",
+        "ティグラーナ",
+        "フランク",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★プッチーニの第2作。上演はまれ"
+}

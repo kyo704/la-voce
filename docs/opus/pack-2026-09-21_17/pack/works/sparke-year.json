@@ -1,0 +1,122 @@
+{
+  "title": "宇宙の音楽",
+  "title_original": "Music of the Spheres",
+  "aliases": [
+    "スパーク"
+  ],
+  "composer": "スパーク",
+  "composer_sort": "Sparke, Philip",
+  "kind": "band",
+  "year_written": 2004,
+  "source": "hand",
+  "source_id": "sparke-music-spheres",
+  "duration_min": 22,
+  "roles": [],
+  "scenes": [
+    {
+      "label": "1 ビッグバン",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "2 ハーモニー・オブ・ザ・スフィアズ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "3 星の誕生",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "4 太陽系",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "5 暗黒物質",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "6 未知への旅",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピッコロ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 6,
+      "section": "woodwind",
+      "doubling": "エスクラリネット・バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 4,
+      "section": "woodwind",
+      "note": "アルト2・テナー・バリトン"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ユーフォニアム",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings",
+      "is_optional": true
+    }
+  ]
+}
