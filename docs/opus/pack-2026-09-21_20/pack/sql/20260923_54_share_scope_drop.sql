@@ -7,6 +7,7 @@
 -- 裁定138 の決まり:「shareScope は 権限で隠すのではなく ★列ごと消す」
 --   → 個人どうしのつながり（teacher_student_links）にも 同じ決まりを 当てる
 -- ★49 のあと。★Code が 列の一覧から外した版を 配ってから 当てる
+-- ★坂本さんの承認（2026-09-23）: ㋐（sql/49 のポリシーを先に落としてから 列を消す）
 --
 -- ★本番の中身を見た（2026-09-23 Opus）:
 --   11行すべてに 値が入っている。形は {"body":false,"meal":false,"notes":false,"sleep":true,…}
@@ -38,19 +39,25 @@ begin
   end if;
 end $$;
 
--- ② 先生からは触れない形（sql/49）を 保ったまま、★列を消す
---    → 消えれば「先生が書き換えられる」形そのものが 台帳から無くなる
+-- ② ★順番が大事（2026-09-23 に 試しの環境で確かめた）
+--    sql/49 で作ったポリシーは with_check の中で share_scope を見ている。
+--    ★ポリシーが列に依りかかっていると、DROP COLUMN は止まる（実際に止まることを確かめた）
+--    → ★先にポリシーを落としてから 列を消す（坂本さんの承認：㋐）
+drop policy if exists teacher_student_links_revoke_by_teacher on public.teacher_student_links;
+
+-- ③ 列を消す
 alter table public.teacher_student_links drop column if exists share_scope;
 
--- ③ 49 で作った「先生は share_scope を変えない更新だけ通す」ポリシーを、列が無い形に作り直す
-drop policy if exists teacher_student_links_revoke_by_teacher on public.teacher_student_links;
+-- ④ 先生の「つながりを切る」だけの道を 作り直す（★列が無い形）
 create policy teacher_student_links_revoke_by_teacher on public.teacher_student_links
   for update to authenticated
   using (auth.uid() = teacher_id)
   with check (auth.uid() = teacher_id);
 -- ★身元（先生・生徒）が変わらないことは 引き金（assert_link_identity_unchanged）が見ている
+-- ★列が無くなったので、「先生が生徒の共有を書き換える」形そのものが 台帳から消える
 
 -- 確かめ（試しの環境で）
+-- ★ポリシーを落とさずに 列を消そうとすると 止まる（試しの環境で確認済み）
 -- 列が消えている（information_schema に share_scope が無い）
 -- つながりの一覧・書き出しが いままでどおり動く（★画面が選んでいないこと が前提）
 -- 先生が つながりを切る → 通る／生徒が切る → 通る

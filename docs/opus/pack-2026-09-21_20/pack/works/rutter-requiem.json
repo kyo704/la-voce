@@ -1,0 +1,111 @@
+{
+  "title": "レクイエム（ラター）",
+  "title_original": "Requiem",
+  "aliases": [],
+  "composer": "ラター",
+  "composer_sort": "Rutter, John",
+  "kind": "chorus",
+  "year_written": 1985,
+  "source": "hand",
+  "source_id": "rutter-requiem",
+  "duration_min": 37,
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I レクイエム・エテルナム",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "II 主よ、御手に（詩篇130）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "III ピエ・イエズ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "IV サンクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "V アニュス・デイ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI 主はわが羊飼い（詩篇23）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VII ルクス・エテルナ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "グロッケン",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

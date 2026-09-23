@@ -1,0 +1,204 @@
+{
+  "title": "グラゴル・ミサ",
+  "title_original": "Glagolská mše",
+  "aliases": [
+    "グラゴルミサ"
+  ],
+  "composer": "ヤナーチェク",
+  "composer_sort": "Janacek, Leos",
+  "kind": "chorus",
+  "year_written": 1926,
+  "source": "hand",
+  "source_id": "janacek-glagolitic",
+  "duration_min": 40,
+  "language": "cu",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 序奏",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "II 主よ憐れみたまえ（Gospodi pomiluj）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱",
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "III 栄光あれ（Slava）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV 我は信ず（Věruju）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "V 聖なるかな（Svet）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI 神の子羊（Agneče Božij）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VII オルガン独奏",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "VIII イントラーダ",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "note": "★第7曲は独奏"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

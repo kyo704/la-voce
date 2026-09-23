@@ -1,0 +1,262 @@
+{
+  "title": "マタイ受難曲 BWV244",
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chorus",
+  "year_written": 1727,
+  "source": "hand",
+  "source_id": "bach-matthaus",
+  "roles": [
+    {
+      "label": "福音史家（テノール）"
+    },
+    {
+      "label": "イエス（バス）"
+    },
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "ペテロ・ユダ・ピラトほか（バス）"
+    },
+    {
+      "label": "合唱I",
+      "is_group": true
+    },
+    {
+      "label": "合唱II",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1曲 合唱（来たれ、娘たちよ）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱I",
+        "合唱II",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "福音史家とイエスの物語（過越の備え）",
+      "group_label": "第1部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）"
+      ]
+    },
+    {
+      "label": "アリア（悔いの悲しみ）",
+      "group_label": "第1部",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "最後の晩餐の場",
+      "group_label": "第1部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "アリア（わが心よ、汝を捧げん）",
+      "group_label": "第1部",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "ゲツセマネの祈り",
+      "group_label": "第1部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "テノール独唱",
+        "バス独唱",
+        "合唱I"
+      ]
+    },
+    {
+      "label": "捕縛と第1部終結の合唱",
+      "group_label": "第1部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "ソプラノ独唱",
+        "アルト独唱",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "第2部冒頭のアリアと合唱（ああ、イエスは去りぬ）",
+      "group_label": "第2部",
+      "roles": [
+        "アルト独唱",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "大祭司の前の裁き",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "ペテロ・ユダ・ピラトほか（バス）",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "ペテロの否認とアリア（憐れみたまえ）",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "ピラトの裁きとバラバ",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "ペテロ・ユダ・ピラトほか（バス）",
+        "ソプラノ独唱",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "十字架への道とアリア（見よ、イエスは）",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "バス独唱",
+        "アルト独唱",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "十字架上の死",
+      "group_label": "第2部",
+      "roles": [
+        "福音史家（テノール）",
+        "イエス（バス）",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "埋葬とレチタティーヴォ四重唱",
+      "group_label": "第2部",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱I",
+        "合唱II"
+      ]
+    },
+    {
+      "label": "終結の合唱（われら涙してひざまずき）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱I",
+        "合唱II"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind",
+      "note": "2群に分かれる"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind",
+      "doubling": "オーボエ・ダモーレ／ダ・カッチャ"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ヴィオラ・ダ・ガンバ",
+      "count": 1,
+      "section": "strings",
+      "is_optional": true
+    },
+    {
+      "part": "オルガン",
+      "count": 2,
+      "section": "continuo",
+      "note": "各群に1台"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Matthäus-Passion BWV 244",
+  "aliases": [
+    "マタイ"
+  ],
+  "duration_min": 170,
+  "language": "de"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "ピアノ三重奏曲 イ短調「偉大な芸術家の思い出に」",
+  "title_original": "Памяти великого художника",
+  "aliases": [
+    "偉大な芸術家"
+  ],
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr",
+  "kind": "chamber",
+  "year_written": 1882,
+  "source": "hand",
+  "source_id": "tchaikovsky-trio",
+  "duration_min": 48,
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 悲歌的小品",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 主題と変奏〜終曲",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

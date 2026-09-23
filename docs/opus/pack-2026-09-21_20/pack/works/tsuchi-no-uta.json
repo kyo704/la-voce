@@ -1,0 +1,81 @@
+{
+  "title": "土の歌",
+  "title_original": "土の歌",
+  "aliases": [
+    "大地讃頌"
+  ],
+  "composer": "佐藤眞",
+  "composer_sort": "Sato, Shin",
+  "kind": "chorus",
+  "year_written": 1962,
+  "source": "hand",
+  "source_id": "sato-tsuchi-no-uta",
+  "duration_min": 30,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（混声4部）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1 農夫と土",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）"
+      ]
+    },
+    {
+      "label": "2 祖国の土",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）"
+      ]
+    },
+    {
+      "label": "3 死の灰",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）"
+      ]
+    },
+    {
+      "label": "4 もぐらもち",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）"
+      ]
+    },
+    {
+      "label": "5 天地の怒り",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）"
+      ]
+    },
+    {
+      "label": "6 地上の祈り",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）"
+      ]
+    },
+    {
+      "label": "7 大地讃頌",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard",
+      "note": "管弦楽版もある"
+    }
+  ],
+  "note": "作詩: 大木惇夫"
+}
