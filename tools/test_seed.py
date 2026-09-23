@@ -74,7 +74,9 @@ def 問う(ref, sql):
   try:
     return json.loads(urllib.request.urlopen(r, timeout=120).read().decode() or "null")
   except urllib.error.HTTPError as e:
-    print("  ★台帳が 断りました ──", e.read().decode()[:200])
+    # ★★どの SQL で 断られたかを 出します。★出さないと、★長い 追いかけに なります。
+    print("  ★台帳が 断りました ──", e.read().decode()[:220].replace("\n", " "))
+    print("  ★その SQL ……", " ".join(sql.split())[:160])
     raise
 
 
@@ -178,36 +180,51 @@ def main():
          on conflict (org_id, user_id) do update set post_id = excluded.post_id"""
       % (ORG1, ids[k], i))
 
+  # ★★年齢の 区分（★`assert_student_is_adult` が 見ます）。
+  #   ★★答えて いない 口は 先生と つながれません（★裁定の とおり）。
+  #   ★★★`is_under_18` は サーバ専用の 列 です（★束2b①）。★ここは 管理の 口 なので 通ります。
+  #     ★★画面からは 書けません。★それで 正しい です。
+  #   ★★2026-09-23、★ここを 入れずに 走らせて `MINOR_TEACHER_LINK_BLOCKED` で 止まりました。
+  #     ★止まった のは **正しい** 動き です。★種の ほうが 足りて いません でした。
+  q("""update public.profiles set is_under_18 = false
+        where id in (%s)""" % ",".join("'%s'" % ids[k] for k in
+                                       ("gakusei1", "gakusei2", "gakusei3",
+                                        "sensei1", "sensei2", "gakucho", "jimucho",
+                                        "kacho", "hogosha1")))
+
   # ★在籍・担当・レッスン
   for k in ("gakusei1", "gakusei2", "gakusei3"):
     q("""insert into public.enrollments (org_id, student_id, status) values ('%s','%s','active')
          on conflict (org_id, student_id) do update set status = 'active'""" % (ORG1, ids[k]))
+  # ★★`assignments` には **部分** 索引が あります（★sql/05・`where ended_at is null`）。
+  #   ★★`on conflict do nothing` は 部分索引に 効きません。★先に 消して から 入れます。
+  #   ★★2026-09-23、★ここで 400 に なりました。
+  q("""delete from public.assignments where org_id = '%s'""" % ORG1)
   q("""insert into public.assignments (org_id, teacher_id, student_id) values
-       ('%s','%s','%s'), ('%s','%s','%s')
-       on conflict do nothing"""
+       ('%s','%s','%s'), ('%s','%s','%s')"""
     % (ORG1, ids["sensei1"], ids["gakusei1"], ORG1, ids["sensei2"], ids["gakusei2"]))
+  q("""delete from public.lessons where org_id = '%s'""" % ORG1)
   q("""insert into public.lessons (org_id, teacher_id, student_id, scheduled_at, duration_minutes, created_by)
-       values ('%s','%s','%s', (current_date + 2) + time '15:00', 45, '%s')
-       on conflict do nothing"""
+       values ('%s','%s','%s', (current_date + 2) + time '15:00', 45, '%s')"""
     % (ORG1, ids["sensei1"], ids["gakusei1"], ids["sensei1"]))
 
   # ★連絡・行事
+  q("""delete from public.org_messages where org_id = '%s'""" % ORG1)
   q("""insert into public.org_messages (org_id, teacher_id, author_id, body, author_name_at) values
        ('%s','%s','%s','★種の 連絡（門下）','★先生 はなこ'),
-       ('%s',null,'%s','★種の お知らせ（学校ぜんぶ）','★学長 いちろう')
-       on conflict do nothing"""
+       ('%s',null,'%s','★種の お知らせ（学校ぜんぶ）','★学長 いちろう')"""
     % (ORG1, ids["sensei1"], ids["sensei1"], ORG1, ids["gakucho"]))
+  q("""delete from public.org_events where org_id = '%s'""" % ORG1)
   q("""insert into public.org_events (org_id, event_date, kind, title, created_by) values
-       ('%s', current_date + 10, '合わせ', '★種の 行事', '%s')
-       on conflict do nothing""" % (ORG1, ids["gakucho"]))
+       ('%s', current_date + 10, '合わせ', '★種の 行事', '%s')""" % (ORG1, ids["gakucho"]))
 
   # ★公演（★子ども 1人・保護者つき）
   q("""insert into public.koen (id, org_id, owner_user_id, title, kind, status) values
        ('cccc0001-0000-4000-8000-000000000001','%s','%s','★種の 公演','opera','open')
        on conflict (id) do nothing""" % (ORG1, ids["gakucho"]))
+  q("""delete from public.koen_kids where koen_id = 'cccc0001-0000-4000-8000-000000000001'""")
   q("""insert into public.koen_kids (koen_id, guardian_user_id, nickname) values
-       ('cccc0001-0000-4000-8000-000000000001','%s','★たねの子')
-       on conflict do nothing""" % ids["hogosha1"])
+       ('cccc0001-0000-4000-8000-000000000001','%s','★たねの子')""" % ids["hogosha1"])
 
   数 = 問う(ref, """select
       (select count(*) from public.organizations) o,
