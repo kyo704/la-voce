@@ -1,0 +1,43 @@
+{
+  "title": "サクソフォンのための小品（デニゾフ版ほか）",
+  "title_original": "Pièce",
+  "aliases": [],
+  "composer": "サン＝サーンス",
+  "composer_sort": "Saint-Saens, Camille",
+  "kind": "chamber",
+  "year_written": 1875,
+  "source": "hand",
+  "source_id": "saintsaens-sax-piece",
+  "duration_min": 8,
+  "roles": [
+    {
+      "label": "サクソフォン"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": [
+        "サクソフォン",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "サクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "★編曲による。上演の版で確かめる"
+}

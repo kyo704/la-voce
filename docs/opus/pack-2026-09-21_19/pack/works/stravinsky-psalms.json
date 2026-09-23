@@ -1,0 +1,115 @@
+{
+  "title": "詩篇交響曲",
+  "title_original": "Symphony of Psalms",
+  "aliases": [],
+  "composer": "ストラヴィンスキー",
+  "composer_sort": "Stravinsky, Igor",
+  "kind": "chorus",
+  "year_written": 1930,
+  "source": "hand",
+  "source_id": "stravinsky-psalms",
+  "duration_min": 22,
+  "language": "la",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 詩篇38",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2楽章 詩篇39（二重フーガ）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3楽章 詩篇150",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 5,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 5,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 5,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大太鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 2,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★ヴァイオリンとヴィオラを使わない（クラリネットも無い）"
+}

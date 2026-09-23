@@ -1,0 +1,45 @@
+TOPIC: "T1 個人情報保護法28条とクラウド例外（Supabase・Vercel・Stripe・メール米国）"
+TLDR: "Supabase・Vercel・メールは『提供』に当たらず（クラウド例外）、外的環境の把握を公表すれば足りる。Stripeは決済データを自ら取り扱うので別扱い（SPLIT）。公表は『相手の所在国＋サーバの所在国＋その国の制度の要点』"
+KEY_FACTS:
+  - FACT: "外国にある第三者の提供するクラウドを利用し、その事業者が個人データを取り扱わないこととなっている場合、第三者への『提供』に該当しない。ただし自らの安全管理措置として適切な措置を講じる必要がある"
+    SOURCE_URL: "https://www.ppc.go.jp/all_faq_index/faq1-q10-25/"
+    SOURCE_REF: "個人情報保護委員会 Q&A 10-25（Q7-53・7-54・12-3 参照）"
+  - FACT: "その場合、外的環境の把握として、クラウド事業者の所在する外国の名称と、個人データが保存されるサーバの所在する外国の名称を明らかにし、当該外国の制度を把握した上で措置を講じ、本人の知り得る状態に置く（法32条1項4号・施行令10条1号）"
+    SOURCE_URL: "https://www.ppc.go.jp/all_faq_index/faq1-q10-25/"
+    SOURCE_REF: "同 Q&A 10-25、通則編ガイドライン 10-7（外的環境の把握）"
+  - FACT: "公表事項の例：『個人データを保管しているA国における個人情報の保護に関する制度を把握した上で安全管理措置を実施』。当該外国の制度についても公表することが望ましい"
+    SOURCE_URL: "https://www.meti.go.jp/policy/it_policy/privacy/ppc_privacy_governance_seminar3.pdf"
+    SOURCE_REF: "個人情報保護委員会事務局『改正越境移転ルールの施行に向けて』令和4年2月"
+  - FACT: "外国事業者が運営するクラウドで、当該事業者がサーバ上の個人データを取り扱っている場合は、サーバが国内にあっても外国にある第三者への提供（28条1項）に該当する"
+    SOURCE_URL: "https://www.businesslawyers.jp/practices/1438"
+    SOURCE_REF: "弁護士解説（通則編ガイドライン・Q&Aの引用）2022-04-12"
+  - FACT: "委託先が外国の第三者に再委託する場合、委託先が日本国内のサーバを使う場合も同様に外的環境の把握が要る（Q&A 10-24）"
+    SOURCE_URL: "https://blog.jpac-privacy.jp/cyberattacktocloudandoutsourcedcompanies/"
+    SOURCE_REF: "Q&A 10-24 の引用（補助）"
+  - FACT: "個人情報保護委員会が諸外国・地域の個人情報保護制度の調査結果を公表しており、外的環境の把握の参考にできる"
+    SOURCE_URL: "https://www.ppc.go.jp/"
+    SOURCE_REF: "『外国における個人情報の保護に関する制度等の調査』（米国・シンガポール・EU 等）"
+PER_SERVICE:
+  SUPABASE: {PROVISION: "NO（クラウド例外。DBの中身を Supabase が取り扱う契約になっていないこと＝規約で確認。契約主体シンガポール／処理東京）", PUBLISH: "シンガポール（事業者）・日本（サーバ）"}
+  VERCEL: {PROVISION: "NO（配信。個人データを取り扱わない前提。米国事業者・エッジは各地）", PUBLISH: "米国（事業者）。サーバの所在は Vercel のリージョン設定を確認して記載"}
+  EMAIL_AND_INQUIRY_US: {PROVISION: "SPLIT。メール送信代行（Resend 等）が本文・宛先を『取り扱う』なら委託（27条5項1号）。相手が米国法人なら『外国にある第三者への委託』＝28条の同意または基準適合体制が要る（委託でも28条は適用される）", PUBLISH: "米国"}
+  STRIPE: {PROVISION: "SPLIT。カード番号は利用者が Stripe に直接入力（Woolsong は保持しない）＝Stripe 自身の取得。Woolsong が渡す氏名・メール・購入情報は委託。契約相手が Stripe Japan（国内法人）なら国内の委託、処理が米国なら外的環境の把握（米国）", PUBLISH: "日本（契約）・米国（処理）。契約主体を Stripe の利用規約で確認"}
+APPLIES_TO_WOOLSONG: SPLIT
+IF_YES_WHAT_TO_DO:
+  - "28条の『外国にある第三者への提供』に当たるのは、メール送信代行と Stripe の『委託』部分だけ。対応は次のどちらか：①本人の同意（ポリシーで国名・制度・相手の措置を示す。28条2項の情報提供）②相手が基準適合体制（APEC CBPR 等）または EU・英国（十分性認定国）にあること"
+  - "Stripe・メール送信代行の契約主体と処理国を規約から確定し、台帳（08-9）に記録する（★Code）"
+  - "クラウド例外を使う Supabase・Vercel は、規約で『事業者がデータにアクセスしない』ことを確認し、記録する"
+DOC_CHANGES:
+  PRIVACY_POLICY:
+    - "7項（委託先）を表にする：役割／相手の名称／相手の所在国／データの処理国／その国の制度の要点（個人情報保護委員会の調査結果へのリンク）／措置"
+    - "新設『外的環境の把握』：日本・シンガポール・米国・イタリア（T2）の4か国"
+    - "新設『安全管理措置』（32条1項4号・施行令10条1号）：組織的・人的・物理的・技術的・外的環境の把握（法務の点検 L4 と同じ）"
+    - "6項（第三者提供）に『外国にある第三者への委託（メール送信・決済）』の一文と、28条2項の情報提供（国名・制度・相手の措置）"
+  TERMS: "変更なし"
+  TOKUSHOHO: "変更なし"
+RELIABILITY: "High（Q&A 10-25 は一次資料）／Stripe・メールの委託該当性は Medium（規約の確認待ち）"
+UNRESOLVED_QUESTIONS:
+  - "Supabase の契約主体（Supabase Pte. Ltd. シンガポール）と、Supabase がデータにアクセスしない旨の規約条項の特定"
+  - "Stripe の契約主体（Stripe Japan KK か Stripe Inc.）。日本の事業者は通常 Stripe Japan と契約するが規約で確認"
+  - "メール送信代行の事業者名・所在国・処理国（Resend／SendGrid 等）"
+  - "Vercel のデータ処理契約（DPA）の有無と、ログに個人データ（IP・メール）が含まれるか"

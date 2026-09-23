@@ -1,0 +1,129 @@
+{
+  "title": "ザイーデ",
+  "title_original": "Zaide",
+  "aliases": [],
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1780,
+  "source": "hand",
+  "source_id": "mozart-zaide",
+  "duration_min": 90,
+  "language": "de",
+  "roles": [
+    {
+      "label": "ザイーデ"
+    },
+    {
+      "label": "ゴマッツ"
+    },
+    {
+      "label": "アラツィム"
+    },
+    {
+      "label": "ソリマン"
+    },
+    {
+      "label": "オスミン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 奴隷の庭（安らかにお休み）",
+      "group_label": "第1幕",
+      "roles": [
+        "ザイーデ",
+        "ゴマッツ",
+        "アラツィム",
+        "オスミン"
+      ]
+    },
+    {
+      "label": "第2幕 逃亡と捕縛",
+      "group_label": "第2幕",
+      "roles": [
+        "ソリマン",
+        "ザイーデ",
+        "ゴマッツ",
+        "アラツィム"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass",
+      "is_optional": true
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★未完の作。フィナーレは上演ごとに補われる"
+}

@@ -1,0 +1,111 @@
+{
+  "note": "裁定で「画面に出す」と決めたものの台帳（裁定179）。markers は Code が埋める",
+  "items": [
+    {
+      "ruling": "111",
+      "screen": "くらべる",
+      "shows": "本番・レッスンの日の帯",
+      "markers": [
+        "hadPerformanceOrLesson"
+      ],
+      "file_hint": "lib/lineUp.js",
+      "added": "2026-09-23",
+      "status": "復元待ち"
+    },
+    {
+      "ruling": "111",
+      "screen": "くらべる",
+      "shows": "レーンの構造（帯が全レーンを貫く）",
+      "markers": [
+        "LANES",
+        "LANE_MAX"
+      ],
+      "file_hint": "lib/lineUp.js",
+      "added": "2026-09-23",
+      "status": "復元待ち"
+    },
+    {
+      "ruling": "111",
+      "screen": "くらべる",
+      "shows": "◎○△の凡例と帯の説明",
+      "markers": [
+        "◎"
+      ],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "復元待ち"
+    },
+    {
+      "ruling": "176",
+      "screen": "もっと",
+      "shows": "切ってある機能の一覧（運営だけ）",
+      "markers": [
+        "features_hidden",
+        "feature_on"
+      ],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "未実装"
+    },
+    {
+      "ruling": "165",
+      "screen": "採点",
+      "shows": "順位を返さない（順位の列を作らない）",
+      "markers": [],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "未実装"
+    },
+    {
+      "ruling": "147",
+      "screen": "公演",
+      "shows": "子どもの緊急の連絡先は 運営だけ",
+      "markers": [
+        "koen_kids"
+      ],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "未実装"
+    },
+    {
+      "ruling": "178",
+      "screen": "公演の書き出し",
+      "shows": "体調の列を作らない",
+      "markers": [
+        "koen_sheet_export"
+      ],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "未実装"
+    },
+    {
+      "ruling": "—(実装が正・2026-09-23)",
+      "screen": "曲を足す",
+      "shows": "曲名・作曲家・役の どれか1つで入る",
+      "markers": [
+        "handleSaveRepertoire"
+      ],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "実装済み"
+    },
+    {
+      "ruling": "—(実装が正・2026-09-23)",
+      "screen": "曲を足す",
+      "shows": "ぜんぶ空では入らない",
+      "markers": [],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "実装済み"
+    },
+    {
+      "ruling": "—(実装が正・2026-09-23)",
+      "screen": "レパートリー",
+      "shows": "曲名を変えても記録がついてくる（名前で引かない）",
+      "markers": [],
+      "file_hint": "",
+      "added": "2026-09-23",
+      "status": "実装済み"
+    }
+  ]
+}

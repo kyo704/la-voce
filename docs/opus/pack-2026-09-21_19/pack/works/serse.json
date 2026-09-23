@@ -1,0 +1,168 @@
+{
+  "title": "セルセ（クセルクセス）",
+  "title_original": "Serse",
+  "aliases": [
+    "Xerxes",
+    "オンブラ・マイ・フ"
+  ],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1738,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "handel-serse",
+  "roles": [
+    {
+      "label": "セルセ"
+    },
+    {
+      "label": "アルサメーネ"
+    },
+    {
+      "label": "ロミルダ"
+    },
+    {
+      "label": "アタランタ"
+    },
+    {
+      "label": "アマストレ"
+    },
+    {
+      "label": "アリオダーテ"
+    },
+    {
+      "label": "エルヴィーロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 オンブラ・マイ・フ（懐かしい木陰）",
+      "group_label": "第1幕",
+      "roles": [
+        "セルセ"
+      ]
+    },
+    {
+      "label": "第1幕 ロミルダとアルサメーネ",
+      "group_label": "第1幕",
+      "roles": [
+        "ロミルダ",
+        "アルサメーネ",
+        "アタランタ"
+      ]
+    },
+    {
+      "label": "第2幕 手紙の取り違え",
+      "group_label": "第2幕",
+      "roles": [
+        "アタランタ",
+        "セルセ",
+        "ロミルダ",
+        "アルサメーネ",
+        "エルヴィーロ"
+      ]
+    },
+    {
+      "label": "第2幕 アマストレの変装",
+      "group_label": "第2幕",
+      "roles": [
+        "アマストレ",
+        "セルセ"
+      ]
+    },
+    {
+      "label": "第3幕 誤解の解けとフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "セルセ",
+        "ロミルダ",
+        "アルサメーネ",
+        "アタランタ",
+        "アマストレ",
+        "アリオダーテ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    }
+  ]
+}

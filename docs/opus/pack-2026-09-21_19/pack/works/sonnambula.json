@@ -1,0 +1,179 @@
+{
+  "title": "夢遊病の女",
+  "title_original": "La sonnambula",
+  "aliases": [
+    "ソナンブラ"
+  ],
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1831,
+  "duration_min": 145,
+  "language": "it",
+  "source": "hand",
+  "source_id": "bellini-sonnambula",
+  "roles": [
+    {
+      "label": "アミーナ"
+    },
+    {
+      "label": "エルヴィーノ"
+    },
+    {
+      "label": "ロドルフォ伯爵"
+    },
+    {
+      "label": "リーザ"
+    },
+    {
+      "label": "テレーザ"
+    },
+    {
+      "label": "アレッシオ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 村の祝い（婚約）",
+      "group_label": "第1幕",
+      "roles": [
+        "アミーナ",
+        "エルヴィーノ",
+        "リーザ",
+        "テレーザ",
+        "アレッシオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 伯爵の到着",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドルフォ伯爵",
+        "アミーナ",
+        "エルヴィーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 夢遊の発覚（宿屋の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "アミーナ",
+        "ロドルフォ伯爵",
+        "リーザ",
+        "エルヴィーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 森の道",
+      "group_label": "第2幕",
+      "roles": [
+        "アミーナ",
+        "テレーザ",
+        "エルヴィーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 水車小屋の場とフィナーレ（ああ、信じられない）",
+      "group_label": "第2幕",
+      "roles": [
+        "アミーナ",
+        "エルヴィーノ",
+        "ロドルフォ伯爵",
+        "テレーザ",
+        "リーザ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

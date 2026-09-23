@@ -1,0 +1,42 @@
+{
+  "title": "序奏とロンド・カプリチオーソ",
+  "title_original": "Introduction et Rondo capriccioso",
+  "aliases": [],
+  "composer": "サン＝サーンス",
+  "composer_sort": "Saint-Saens, Camille",
+  "kind": "chamber",
+  "year_written": 1863,
+  "source": "hand",
+  "source_id": "saintsaens-introduction-rondo",
+  "duration_min": 9,
+  "roles": [
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

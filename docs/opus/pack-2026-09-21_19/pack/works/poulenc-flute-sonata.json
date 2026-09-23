@@ -1,0 +1,58 @@
+{
+  "title": "フルートソナタ",
+  "title_original": "Sonate pour flûte et piano",
+  "aliases": [],
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "chamber",
+  "year_written": 1957,
+  "source": "hand",
+  "source_id": "poulenc-flute-sonata",
+  "duration_min": 13,
+  "roles": [
+    {
+      "label": "フルート"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグレット・マリンコニコ",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 カンティレーナ",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 プレスト・ジョコーソ",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}
