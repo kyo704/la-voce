@@ -1,15 +1,15 @@
 {
  "functions": {
-  "entries_set_source()": {
-   "h": "531c17d749",
-   "sd": false,
-   "anon": true,
-   "auth": true,
-   "e": false
-  },
   "assert_student_is_adult()": {
    "h": "fb2a082708",
    "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "entries_set_source()": {
+   "h": "531c17d749",
+   "sd": false,
    "anon": false,
    "auth": false,
    "e": false
@@ -32,13 +32,6 @@
    "h": "1116c34c2e",
    "sd": true,
    "anon": false,
-   "auth": true,
-   "e": false
-  },
-  "guard_grade_label()": {
-   "h": "aeff3696b1",
-   "sd": false,
-   "anon": true,
    "auth": true,
    "e": false
   },
@@ -115,36 +108,8 @@
   "assert_link_identity_unchanged()": {
    "h": "dd58755a6f",
    "sd": false,
-   "anon": true,
-   "auth": true,
-   "e": false
-  },
-  "assert_assignment_identity_unchanged()": {
-   "h": "3c582f2930",
-   "sd": false,
-   "anon": true,
-   "auth": true,
-   "e": false
-  },
-  "assert_org_event_identity_unchanged()": {
-   "h": "4a42c9b152",
-   "sd": false,
-   "anon": true,
-   "auth": true,
-   "e": false
-  },
-  "assert_lesson_identity_unchanged()": {
-   "h": "334a98085a",
-   "sd": false,
-   "anon": true,
-   "auth": true,
-   "e": false
-  },
-  "org_events_set_bookkeeping()": {
-   "h": "76922d14fe",
-   "sd": false,
-   "anon": true,
-   "auth": true,
+   "anon": false,
+   "auth": false,
    "e": false
   },
   "set_member_display_title(p_membership_id uuid, p_title text)": {
@@ -161,6 +126,34 @@
    "auth": true,
    "e": false
   },
+  "assert_assignment_identity_unchanged()": {
+   "h": "3c582f2930",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "assert_org_event_identity_unchanged()": {
+   "h": "4a42c9b152",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "assert_lesson_identity_unchanged()": {
+   "h": "334a98085a",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "org_events_set_bookkeeping()": {
+   "h": "76922d14fe",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
   "consent_withdrawn(p_user uuid)": {
    "h": "c4a3427c84",
    "sd": true,
@@ -171,8 +164,8 @@
   "guard_enrollment_grade_label()": {
    "h": "938c064fb1",
    "sd": false,
-   "anon": true,
-   "auth": true,
+   "anon": false,
+   "auth": false,
    "e": false
   },
   "has_guardian_consent(p_user_id uuid, p_org_id uuid)": {
@@ -252,9 +245,9 @@
    "auth": true,
    "e": false
   },
-  "log_org_post_perm()": {
-   "h": "7aeaf90a7a",
-   "sd": true,
+  "profiles_guard_server_only_columns()": {
+   "h": "43050779af",
+   "sd": false,
    "anon": false,
    "auth": false,
    "e": false
@@ -266,18 +259,18 @@
    "auth": true,
    "e": false
   },
-  "profiles_guard_server_only_columns()": {
-   "h": "43050779af",
-   "sd": false,
-   "anon": true,
-   "auth": true,
-   "e": false
-  },
   "transfer_contract_owner(p_org_id uuid, p_to_user_id uuid)": {
    "h": "034f4459b9",
    "sd": true,
    "anon": false,
    "auth": true,
+   "e": false
+  },
+  "log_org_post_perm()": {
+   "h": "7d8ee7bb83",
+   "sd": true,
+   "anon": false,
+   "auth": false,
    "e": false
   },
   "get_invitation_teacher(p_code text)": {
@@ -455,6 +448,20 @@
    "auth": true,
    "e": false
   },
+  "audit_row()": {
+   "h": "8858d8e127",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "log_post_change()": {
+   "h": "94212b7421",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
   "get_applicant_detail(p_application_id uuid)": {
    "h": "efe199b13d",
    "sd": true,
@@ -481,6 +488,13 @@
    "sd": true,
    "anon": false,
    "auth": false,
+   "e": false
+  },
+  "record_export(p_org_id uuid, p_what text, p_rows integer)": {
+   "h": "32efc148d5",
+   "sd": true,
+   "anon": false,
+   "auth": true,
    "e": false
   },
   "get_my_cuts()": {
@@ -567,6 +581,13 @@
    "auth": true,
    "e": false
   },
+  "upsert_work_instruments(p_work_id uuid, p_items jsonb)": {
+   "h": "6d7d48cfb5",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
   "org_free_period(p_start date, p_is_pilot boolean)": {
    "h": "91a21ff394",
    "sd": false,
@@ -637,6 +658,13 @@
    "auth": false,
    "e": false
   },
+  "koen_cast_list(p_koen uuid)": {
+   "h": "586d7092a7",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
   "set_web_type(p_type_key text)": {
    "h": "14c0bbda31",
    "sd": true,
@@ -672,13 +700,6 @@
    "auth": true,
    "e": false
   },
-  "audit_row()": {
-   "h": "5adab07cfa",
-   "sd": true,
-   "anon": false,
-   "auth": false,
-   "e": false
-  },
   "purge_ops_audit_log()": {
    "h": "4e77a0ac9b",
    "sd": true,
@@ -686,11 +707,424 @@
    "auth": false,
    "e": false
   },
-  "read_kid_contact(p_kid uuid, p_reason_kind text)": {
-   "h": "b44afe8d8a",
+  "actor_id()": {
+   "h": "a713236c9f",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "can_grant_post_user(p_user_id uuid, p_org_id uuid, p_post_id uuid)": {
+   "h": "e8c13d80ff",
    "sd": true,
    "anon": false,
    "auth": true,
+   "e": false
+  },
+  "log_org_billing_change()": {
+   "h": "8ccb2ce9d3",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "join_koen_by_code(p_code text, p_name text)": {
+   "h": "58a0f6d375",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "stamp_koen_names()": {
+   "h": "c961291f3b",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "koen_block_after_expiry()": {
+   "h": "358325975a",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "stamp_user_name()": {
+   "h": "de192dd4ec",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "stamp_org_name()": {
+   "h": "708fa867ea",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "purge_closed_school_logs()": {
+   "h": "339aad6963",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "drop_kid_contact_when_orphan()": {
+   "h": "568f0401e0",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "read_kid_contact(p_kid uuid, p_reason_kind text)": {
+   "h": "5e702f4061",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "undo_works_import(p_import uuid)": {
+   "h": "47c4bc342c",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "feature_on(p_key text)": {
+   "h": "c926d38746",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "features_hidden()": {
+   "h": "abd193938d",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "is_org_bootstrap(p_actor uuid, p_org_id uuid, p_target uuid)": {
+   "h": "e78ac68c31",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "set_member_post(p_org_id uuid, p_user_id uuid, p_post_id uuid, p_actor uuid)": {
+   "h": "99d7b310a4",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "koen_tier_price(p_people integer)": {
+   "h": "648f665c57",
+   "sd": false,
+   "anon": true,
+   "auth": true,
+   "e": false
+  },
+  "koen_due_amount(p_koen uuid, p_people integer)": {
+   "h": "e101f2e839",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "incident_recipients(p_org uuid)": {
+   "h": "75a800d5d2",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "orgs_without_incident_contact()": {
+   "h": "3157ee54e7",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "require_dismiss_for_kid()": {
+   "h": "d26a4b3e50",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "check_koen_tier()": {
+   "h": "b98b1c415d",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "my_calendar_items(p_token text)": {
+   "h": "3137ceb327",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "koen_conflicts(p_koen uuid)": {
+   "h": "1e58549508",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_unseen_changes(p_koen uuid)": {
+   "h": "391acad180",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "upsert_work(p_work jsonb)": {
+   "h": "744b38d6be",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "set_attendance(p_session uuid, p_rows jsonb)": {
+   "h": "21691210d7",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_day_sheet(p_koen uuid, p_on date)": {
+   "h": "acde52ddef",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "recount_works_completeness()": {
+   "h": "e6c7499301",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "import_works(p_source text, p_scope text, p_works jsonb)": {
+   "h": "151b3de0be",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "works_kind_counts()": {
+   "h": "454b11647b",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "bump_work_used(p_work uuid)": {
+   "h": "fdd8923dc8",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "search_works(p_q text, p_kind text, p_ready_only boolean)": {
+   "h": "a2aafa7a5e",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_apply_work(p_koen uuid, p_work uuid)": {
+   "h": "42a0fbf551",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_pit_sheet(p_koen uuid, p_work uuid)": {
+   "h": "5ff7287bc5",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_attendance_counts(p_koen uuid)": {
+   "h": "703068a71c",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_compute_valid_until(p_koen uuid)": {
+   "h": "72264dce14",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "koen_is_open(p_koen uuid)": {
+   "h": "41a81513fe",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "extend_koen(p_koen uuid, p_new_until date)": {
+   "h": "515d9810f6",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_keep_valid_until()": {
+   "h": "6c13a620c5",
+   "sd": false,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "set_koen_paid(p_koen uuid)": {
+   "h": "fa6a09ff4a",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "verify_work(p_work uuid, p_ok boolean)": {
+   "h": "48213b1b0e",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "works_unverified(p_source text)": {
+   "h": "a3c8865771",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "works_ready_for_draft(p_kind text)": {
+   "h": "fd30ce1e08",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_seed_simple(p_koen uuid, p_rows text[], p_slots text[])": {
+   "h": "ce177de726",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "org_has_any_member(p_org_id uuid)": {
+   "h": "da29c13a72",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "org_contacts_keep_incident()": {
+   "h": "4846700903",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "my_features()": {
+   "h": "fec1cd01cd",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "mark_closing_org()": {
+   "h": "572c2127ca",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "my_koen_schedule(p_koen uuid)": {
+   "h": "7850d466e6",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_understudy_needed(p_session uuid)": {
+   "h": "6a4c18a870",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "call_understudy(p_session uuid, p_understudy uuid, p_call_at timestamp with time zone)": {
+   "h": "80d67304ad",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_sheet_export(p_koen uuid)": {
+   "h": "8f89b59684",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "search_works(p_q text, p_kind text, p_ready_only boolean, p_max_roles integer, p_needs_chorus boolean)": {
+   "h": "30f9222363",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "koen_copy_frame(p_from uuid, p_to uuid)": {
+   "h": "9567ec8cea",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "import_work(p_work jsonb, p_source text, p_source_url text)": {
+   "h": "cda0942a36",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "koen_members_with_school(p_koen uuid)": {
+   "h": "f699e49769",
+   "sd": true,
+   "anon": false,
+   "auth": true,
+   "e": false
+  },
+  "run_retention()": {
+   "h": "2d8e46b28f",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "retention_health()": {
+   "h": "be6055614f",
+   "sd": true,
+   "anon": false,
+   "auth": false,
+   "e": false
+  },
+  "guard_grade_label()": {
+   "h": "aeff3696b1",
+   "sd": false,
+   "anon": false,
+   "auth": false,
    "e": false
   }
  },
@@ -698,17 +1132,16 @@
   "item_acquisitions.自分の台帳だけ読める": "SELECT|{authenticated}|4d695bb5a5",
   "org_posts.同じ学校の人だけ役職を読める": "SELECT|{authenticated}|3b472816d4",
   "monka_read_log.monka_read_log_select_master_or_self": "SELECT|{authenticated}|79333fc3fb",
-  "subscriptions.Users can view own subscription": "SELECT|{public}|4d695bb5a5",
-  "post_change_log.post_change_log_insert": "INSERT|{authenticated}|cdb170fcf8",
   "post_change_log.post_change_log_select": "SELECT|{authenticated}|1f9921e4a7",
+  "subscriptions.Users can view own subscription": "SELECT|{public}|4d695bb5a5",
   "performances.performances_own": "ALL|{authenticated}|8b73317079",
   "profiles.Users can update own profile": "UPDATE|{public}|0d7daa7745",
   "profiles.Users can view own profile": "SELECT|{public}|d90c174175",
   "portfolio_entries.portfolio_entries_own": "ALL|{authenticated}|9bdbd7d5a7",
-  "cohort_changes.Users can view own cohort changes": "SELECT|{public}|4d695bb5a5",
   "events.Users can insert their own events": "INSERT|{public}|935b32e690",
   "events.Users can view their own events": "SELECT|{public}|4d695bb5a5",
   "character_inventory.Users can manage own inventory": "ALL|{public}|69e35c1014",
+  "cohort_changes.Users can view own cohort changes": "SELECT|{public}|4d695bb5a5",
   "feedback.Users can submit feedback": "INSERT|{public}|935b32e690",
   "questionnaire_responses.Users can insert their own questionnaire responses": "INSERT|{public}|935b32e690",
   "questionnaire_responses.Users can view their own questionnaire responses": "SELECT|{public}|4d695bb5a5",
@@ -728,8 +1161,6 @@
   "age_answer_changes.Users can insert own age changes": "INSERT|{public}|935b32e690",
   "age_answer_changes.Users can view own age changes": "SELECT|{public}|4d695bb5a5",
   "role_master.Users manage their own roles": "ALL|{public}|69e35c1014",
-  "org_billing_log.org_billing_log_insert": "INSERT|{authenticated}|ab445b2c94",
-  "org_billing_log.org_billing_log_select": "SELECT|{authenticated}|2abcff2e19",
   "teacher_invitations.Teachers can create invitations": "INSERT|{public}|23b8b77f1d",
   "teacher_invitations.Teachers can view their own invitations": "SELECT|{public}|f7cedb650e",
   "teacher_notes.Only the teacher can access their notes": "ALL|{public}|bb4bb8801f",
@@ -745,7 +1176,8 @@
   "lessons.Teachers can update or delete org lessons": "UPDATE|{public}|737c44e4ca",
   "lessons.lessons_student_notice": "UPDATE|{public}|44d19b2709",
   "evaluation_reviews.evaluation_reviews_select": "SELECT|{public}|c82d841c02",
-  "evaluation_reviews.evaluation_reviews_write": "ALL|{public}|6e543f4ddf",
+  "evaluation_reviews.evaluation_reviews_write": "ALL|{public}|c41840e9cf",
+  "org_billing_log.org_billing_log_select": "SELECT|{authenticated}|2abcff2e19",
   "org_events.org_events_delete_needs_can_gyoji": "DELETE|{authenticated}|95899463d3",
   "org_events.org_events_insert_needs_can_gyoji": "INSERT|{authenticated}|9a7d7c0216",
   "org_events.org_events_select_member": "SELECT|{public}|3ca960ec0b",
@@ -760,7 +1192,7 @@
   "memberships.memberships_update_role_management": "UPDATE|{public}|6c8ef1a149",
   "organizations.organizations_insert_own": "INSERT|{authenticated}|a74d3af84b",
   "organizations.organizations_select": "SELECT|{public}|2098637789",
-  "organizations.organizations_select_own_created": "SELECT|{authenticated}|8c147d2a0b",
+  "organizations.organizations_select_bootstrap": "SELECT|{authenticated}|3f49d809e5",
   "article_notes.Users manage their own article notes": "ALL|{public}|69e35c1014",
   "minor_billing_consents.minor_billing_consents_own_insert": "INSERT|{public}|935b32e690",
   "minor_billing_consents.minor_billing_consents_own_select": "SELECT|{public}|4d695bb5a5",
@@ -811,22 +1243,20 @@
   "org_messages.org_messages_withdraw": "UPDATE|{public}|9b52c6ccb8",
   "org_message_drafts.org_message_drafts_own": "ALL|{public}|4f32506fb7",
   "guardian_consents.guardian_consents_select_own": "SELECT|{public}|4d695bb5a5",
-  "evaluation_items.evaluation_items_select": "SELECT|{public}|6ce7de1f5b",
+  "evaluation_items.evaluation_items_select": "SELECT|{authenticated}|aa48a143cb",
   "evaluation_items.evaluation_items_write": "ALL|{public}|3f8f6cd336",
-  "evaluation_judge_done.evaluation_judge_done_own": "ALL|{public}|6e543f4ddf",
-  "score_log.score_log_select": "SELECT|{public}|07e8bf31a9",
+  "evaluation_judge_done.evaluation_judge_done_own": "ALL|{public}|b735885d57",
   "org_places.org_places_select": "SELECT|{public}|be0d4d1454",
   "org_places.org_places_write": "ALL|{public}|7e505a28bc",
-  "export_log.export_log_insert": "INSERT|{public}|f6bad3a347",
   "export_log.export_log_select": "SELECT|{public}|77d0964496",
   "overlap_notices.overlap_notices_select": "SELECT|{public}|8a891a60b8",
   "overlap_notices.overlap_notices_write": "ALL|{public}|35739f688a",
   "org_periods.org_periods_select": "SELECT|{public}|438a968328",
   "org_periods.org_periods_write": "ALL|{public}|7e505a28bc",
   "roster_drafts.roster_drafts_all": "ALL|{public}|7a3f3c841d",
+  "score_log.score_log_select": "SELECT|{public}|07e8bf31a9",
   "evaluation_scores.evaluation_scores_select": "SELECT|{public}|c1da28e6c0",
-  "evaluation_scores.evaluation_scores_write": "ALL|{public}|6e543f4ddf",
-  "contract_owner_log.contract_owner_log_select": "SELECT|{public}|97099b5633",
+  "evaluation_scores.evaluation_scores_write": "ALL|{public}|0f28ee1cfe",
   "application_messages.application_messages_delete_own": "DELETE|{public}|6ff5260fe8",
   "application_messages.application_messages_insert_own": "INSERT|{public}|7404084a85",
   "application_messages.application_messages_select_own": "SELECT|{public}|6ff5260fe8",
@@ -843,6 +1273,7 @@
   "postings.postings_update_own": "UPDATE|{public}|f98364e2d0",
   "matching_reports.matching_reports_insert_own": "INSERT|{public}|c752206502",
   "matching_reports.matching_reports_select_own": "SELECT|{public}|ff5b0f0f3b",
+  "contract_owner_log.contract_owner_log_select": "SELECT|{public}|97099b5633",
   "student_price_consents.spc_select_own": "SELECT|{authenticated}|08775ac8e8",
   "subscription_items.subscription_items_select_own": "SELECT|{authenticated}|08775ac8e8",
   "org_contracts.org_contracts_select": "SELECT|{authenticated}|34cae02238",
@@ -859,37 +1290,76 @@
   "lesson_rounds.lesson_rounds_write": "INSERT|{authenticated}|72570eb9dc",
   "portfolios.portfolios_own": "ALL|{authenticated}|9bdbd7d5a7",
   "page_inquiries.page_inquiries_owner_select": "SELECT|{authenticated}|a7445dda9a",
-  "koen.koen_insert": "INSERT|{authenticated}|f07c0f0c6d",
-  "koen.koen_select": "SELECT|{authenticated}|b43093e686",
-  "koen.koen_update": "UPDATE|{authenticated}|e31436b539",
-  "koen_members.koen_members_select": "SELECT|{authenticated}|298efbdaff",
-  "koen_members.koen_members_write": "ALL|{authenticated}|dc6d687ae9",
   "koen_rows.koen_rows_select": "SELECT|{authenticated}|298efbdaff",
   "koen_rows.koen_rows_write": "ALL|{authenticated}|dc6d687ae9",
   "koen_slots.koen_slots_select": "SELECT|{authenticated}|298efbdaff",
   "koen_slots.koen_slots_write": "ALL|{authenticated}|dc6d687ae9",
   "koen_cells.koen_cells_select": "SELECT|{authenticated}|6988f9924a",
   "koen_cells.koen_cells_write": "ALL|{authenticated}|3c517c6ff1",
-  "koen_sessions.koen_sessions_select": "SELECT|{authenticated}|298efbdaff",
-  "koen_sessions.koen_sessions_write": "ALL|{authenticated}|dc6d687ae9",
+  "koen_members.koen_members_select": "SELECT|{authenticated}|298efbdaff",
+  "koen_members.koen_members_write": "ALL|{authenticated}|dc6d687ae9",
   "koen_session_changes.koen_session_changes_select": "SELECT|{authenticated}|21b12fbf54",
+  "koen_sessions.koen_sessions_insert": "INSERT|{authenticated}|79ad395a35",
+  "koen_sessions.koen_sessions_select": "SELECT|{authenticated}|298efbdaff",
+  "koen_sessions.koen_sessions_update": "UPDATE|{authenticated}|dc6d687ae9",
+  "koen.koen_insert": "INSERT|{authenticated}|f07c0f0c6d",
+  "koen.koen_select": "SELECT|{authenticated}|b43093e686",
+  "koen.koen_update": "UPDATE|{authenticated}|e31436b539",
   "koen_kids.koen_kids_guardian": "ALL|{authenticated}|3c91d7ab25",
   "koen_kids.koen_kids_staff_select": "SELECT|{authenticated}|23f99a5f7e",
+  "ops_audit_log.ops_audit_select": "SELECT|{authenticated}|a24451dbed",
   "koen_kid_contact_reads.koen_kid_reads_select": "SELECT|{authenticated}|f002c062f7",
-  "ops_audit_log.ops_audit_select": "SELECT|{authenticated}|a24451dbed"
+  "feature_flags.feature_flags_read": "SELECT|{authenticated}|8fc83448cc",
+  "feature_flag_testers.feature_flag_testers_own": "SELECT|{authenticated}|08775ac8e8",
+  "koen_rooms.koen_rooms_select": "SELECT|{authenticated}|298efbdaff",
+  "koen_rooms.koen_rooms_write": "ALL|{authenticated}|dc6d687ae9",
+  "koen_room_members.koen_room_members_select": "SELECT|{authenticated}|c2950ac095",
+  "koen_room_members.koen_room_members_write": "ALL|{authenticated}|5c9ef712b3",
+  "koen_calls.koen_calls_select": "SELECT|{authenticated}|298efbdaff",
+  "koen_calls.koen_calls_write": "ALL|{authenticated}|dc6d687ae9",
+  "koen_payments.koen_payments_select": "SELECT|{authenticated}|23f99a5f7e",
+  "org_contacts.org_contacts_select": "SELECT|{authenticated}|3791009982",
+  "org_contacts.org_contacts_write": "ALL|{authenticated}|14a87d6577",
+  "koen_attendance.koen_attendance_select": "SELECT|{authenticated}|aabe0d55e1",
+  "koen_attendance.koen_attendance_write": "ALL|{authenticated}|239cbf9e8b",
+  "koen_runsheet.koen_runsheet_select": "SELECT|{authenticated}|298efbdaff",
+  "koen_runsheet.koen_runsheet_write": "ALL|{authenticated}|dc6d687ae9",
+  "work_roles.work_roles_select": "SELECT|{authenticated}|e42d988444",
+  "work_roles.work_roles_write": "ALL|{authenticated}|155089406f",
+  "work_scene_roles.work_scene_roles_select": "SELECT|{authenticated}|67c674dd38",
+  "work_scene_roles.work_scene_roles_write": "ALL|{authenticated}|7209a92b39",
+  "koen_fees.koen_fees_select": "SELECT|{authenticated}|005ee7372c",
+  "koen_fees.koen_fees_write": "ALL|{authenticated}|24c4e31922",
+  "koen_join_codes.koen_join_codes_manage": "ALL|{authenticated}|dc6d687ae9",
+  "koen_org_events.koen_org_events_select": "SELECT|{authenticated}|298efbdaff",
+  "koen_org_events.koen_org_events_write": "ALL|{authenticated}|80dfaf91f9",
+  "koen_change_seen.koen_change_seen_own": "ALL|{authenticated}|dc99812dac",
+  "work_instruments.work_instruments_select": "SELECT|{authenticated}|e42f1b46cb",
+  "work_scenes.work_scenes_select": "SELECT|{authenticated}|e9ff409d29",
+  "work_scenes.work_scenes_write": "ALL|{authenticated}|e13b497bf0",
+  "evaluation_judges.evaluation_judges_delete": "DELETE|{authenticated}|07e8bf31a9",
+  "evaluation_judges.evaluation_judges_insert": "INSERT|{authenticated}|de12df73e3",
+  "evaluation_judges.evaluation_judges_select": "SELECT|{authenticated}|046595bc9a",
+  "koen_dues.koen_dues_select": "SELECT|{authenticated}|2b592b60bc",
+  "koen_dues.koen_dues_write": "ALL|{authenticated}|24c4e31922",
+  "koen_kind_words.koen_kind_words_read": "SELECT|{authenticated}|8fc83448cc",
+  "works.works_select": "SELECT|{authenticated}|ce95a36663",
+  "works.works_write": "ALL|{authenticated}|c69be55e25",
+  "art_schools.art_schools_read": "SELECT|{authenticated}|8fc83448cc"
  },
  "grants": {
   "account_deletions": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "age_answer_changes": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "application_messages": "a:DELETE",
   "applications": "a:DELETE",
+  "art_schools": "a:SELECT",
   "article_notes": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "article_progress": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "assignments": "a:INSERT,a:SELECT",
   "calendar_tokens": "a:SELECT",
   "chapter_state": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "character_inventory": "a:SELECT",
-  "cohort_changes": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "cohort_changes": "a:SELECT",
   "consent_records": "a:INSERT,a:SELECT",
   "contract_owner_log": "a:SELECT",
   "cycle_periods": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
@@ -898,21 +1368,36 @@
   "entries": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "evaluation_items": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "evaluation_judge_done": "a:DELETE,a:INSERT,a:SELECT",
-  "evaluation_reviews": "a:INSERT,a:SELECT,a:UPDATE",
-  "evaluation_scores": "a:INSERT,a:SELECT,a:UPDATE",
+  "evaluation_judges": "a:DELETE,a:INSERT,a:SELECT",
+  "evaluation_reviews": "a:SELECT",
+  "evaluation_scores": "a:SELECT",
   "events": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
-  "export_log": "a:INSERT,a:SELECT",
+  "export_log": "a:SELECT",
+  "feature_flag_testers": "a:SELECT",
+  "feature_flags": "a:SELECT",
   "feedback": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "guardian_consents": "a:SELECT",
   "item_acquisitions": "a:SELECT",
   "koen": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_attendance": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_calls": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "koen_cells": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_change_seen": "a:INSERT,a:SELECT,a:UPDATE",
+  "koen_dues": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_fees": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_join_codes": "a:DELETE,a:INSERT,a:UPDATE",
   "koen_kid_contact_reads": "a:SELECT",
   "koen_kids": "a:INSERT,a:SELECT,a:UPDATE",
+  "koen_kind_words": "a:SELECT",
   "koen_members": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_org_events": "a:DELETE,a:INSERT,a:SELECT",
+  "koen_payments": "a:SELECT",
+  "koen_room_members": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_rooms": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "koen_rows": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
-  "koen_session_changes": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
-  "koen_sessions": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_runsheet": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "koen_session_changes": "a:SELECT",
+  "koen_sessions": "a:INSERT,a:SELECT,a:UPDATE",
   "koen_slots": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "lesson_ng_dates": "a:DELETE,a:INSERT,a:SELECT",
   "lesson_prefs": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
@@ -932,7 +1417,8 @@
   "notice_targets": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "ops_audit_log": "a:SELECT",
   "org_billing": "a:INSERT,a:SELECT,a:UPDATE",
-  "org_billing_log": "a:INSERT,a:SELECT",
+  "org_billing_log": "a:SELECT",
+  "org_contacts": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "org_contracts": "a:SELECT",
   "org_divisions": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "org_event_participants": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
@@ -954,7 +1440,7 @@
   "portfolio_entries": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "portfolio_recordings": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "portfolios": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
-  "post_change_log": "a:INSERT,a:SELECT",
+  "post_change_log": "a:SELECT",
   "postings": "a:DELETE",
   "profiles": "a:INSERT,a:SELECT",
   "project_master": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
@@ -971,7 +1457,12 @@
   "teacher_notes": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
   "teacher_student_links": "a:SELECT",
   "timetable_nudges": "a:SELECT",
-  "user_notices": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE"
+  "user_notices": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "work_instruments": "a:SELECT",
+  "work_roles": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "work_scene_roles": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "work_scenes": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE",
+  "works": "a:DELETE,a:INSERT,a:SELECT,a:UPDATE"
  },
  "table_level_writes": {
   "account_deletions": "INSERT,UPDATE",
@@ -980,24 +1471,30 @@
   "article_progress": "INSERT,UPDATE",
   "assignments": "INSERT",
   "chapter_state": "INSERT,UPDATE",
-  "cohort_changes": "INSERT,UPDATE",
   "consent_records": "INSERT",
   "cycle_periods": "INSERT,UPDATE",
   "enrollments": "INSERT,UPDATE",
   "entries": "INSERT,UPDATE",
   "evaluation_items": "INSERT,UPDATE",
   "evaluation_judge_done": "INSERT",
-  "evaluation_reviews": "INSERT,UPDATE",
-  "evaluation_scores": "INSERT,UPDATE",
+  "evaluation_judges": "INSERT",
   "events": "INSERT,UPDATE",
-  "export_log": "INSERT",
   "feedback": "INSERT,UPDATE",
   "koen": "INSERT,UPDATE",
+  "koen_attendance": "INSERT,UPDATE",
+  "koen_calls": "INSERT,UPDATE",
   "koen_cells": "INSERT,UPDATE",
+  "koen_change_seen": "INSERT,UPDATE",
+  "koen_dues": "INSERT,UPDATE",
+  "koen_fees": "INSERT,UPDATE",
+  "koen_join_codes": "INSERT,UPDATE",
   "koen_kids": "INSERT,UPDATE",
   "koen_members": "INSERT,UPDATE",
+  "koen_org_events": "INSERT",
+  "koen_room_members": "INSERT,UPDATE",
+  "koen_rooms": "INSERT,UPDATE",
   "koen_rows": "INSERT,UPDATE",
-  "koen_session_changes": "INSERT,UPDATE",
+  "koen_runsheet": "INSERT,UPDATE",
   "koen_sessions": "INSERT,UPDATE",
   "koen_slots": "INSERT,UPDATE",
   "lesson_ng_dates": "INSERT",
@@ -1015,7 +1512,7 @@
   "notice_batches": "INSERT,UPDATE",
   "notice_targets": "INSERT,UPDATE",
   "org_billing": "INSERT,UPDATE",
-  "org_billing_log": "INSERT",
+  "org_contacts": "INSERT,UPDATE",
   "org_divisions": "INSERT,UPDATE",
   "org_event_participants": "INSERT,UPDATE",
   "org_invitations": "INSERT,UPDATE",
@@ -1032,7 +1529,6 @@
   "portfolio_entries": "INSERT,UPDATE",
   "portfolio_recordings": "INSERT,UPDATE",
   "portfolios": "INSERT,UPDATE",
-  "post_change_log": "INSERT",
   "profiles": "INSERT",
   "project_master": "INSERT,UPDATE",
   "questionnaire_responses": "INSERT,UPDATE",
@@ -1041,27 +1537,40 @@
   "roster_drafts": "INSERT,UPDATE",
   "teacher_invitations": "INSERT,UPDATE",
   "teacher_notes": "INSERT,UPDATE",
-  "user_notices": "INSERT,UPDATE"
+  "user_notices": "INSERT,UPDATE",
+  "work_roles": "INSERT,UPDATE",
+  "work_scene_roles": "INSERT,UPDATE",
+  "work_scenes": "INSERT,UPDATE",
+  "works": "INSERT,UPDATE"
  },
  "log_fks": {
   "email_change_log_user_id_fkey": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
-  "monka_read_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE",
   "post_change_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE",
   "post_change_log_changed_by_fkey": "FOREIGN KEY (changed_by) REFERENCES auth.users(id) ON DELETE SET NULL",
-  "score_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE",
-  "org_billing_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE",
   "org_billing_log_actor_id_fkey": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE SET NULL",
-  "export_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE",
   "export_log_user_id_fkey": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
-  "contract_owner_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE",
   "score_log_editor_user_id_fkey": "FOREIGN KEY (editor_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
   "monka_read_log_post_id_fkey": "FOREIGN KEY (post_id) REFERENCES org_posts(id) ON DELETE SET NULL",
   "monka_read_log_viewer_user_id_fkey": "FOREIGN KEY (viewer_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
   "monka_read_log_target_monka_id_fkey": "FOREIGN KEY (target_monka_id) REFERENCES auth.users(id) ON DELETE SET NULL",
   "post_change_log_target_user_id_fkey": "FOREIGN KEY (target_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
-  "ops_audit_log_actor_id_fkey": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE SET NULL"
+  "ops_audit_log_actor_id_fkey": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE SET NULL",
+  "monka_read_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE SET NULL",
+  "score_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE SET NULL",
+  "org_billing_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE SET NULL",
+  "export_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE SET NULL",
+  "contract_owner_log_org_id_fkey": "FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE SET NULL"
  },
  "triggers": {
+  "koen_members_expiry": "koen_members",
+  "koen_rows_expiry": "koen_rows",
+  "koen_slots_expiry": "koen_slots",
+  "koen_cells_expiry": "koen_cells",
+  "koen_sessions_expiry": "koen_sessions",
+  "koen_calls_expiry": "koen_calls",
+  "koen_rooms_expiry": "koen_rooms",
+  "koen_runsheet_expiry": "koen_runsheet",
+  "koen_keep_until": "koen",
   "trg_block_minor_teacher_link": "teacher_student_links",
   "trg_block_minor_assignment": "assignments",
   "trg_link_identity_immutable": "teacher_student_links",
@@ -1073,11 +1582,17 @@
   "entries_set_source": "entries",
   "guard_grade_label": "memberships",
   "guard_enrollment_grade_label": "enrollments",
+  "koen_calls_kid_dismiss": "koen_calls",
+  "koen_members_tier_check": "koen_members",
   "evaluation_scores_guard_trg": "evaluation_scores",
   "matching_report_cut": "matching_reports",
   "trg_my_periods_org_stable": "my_periods",
+  "koen_attendance_stamp": "koen_attendance",
+  "koen_fees_stamp": "koen_fees",
   "trg_log_org_post_perm": "org_posts",
   "koen_sessions_log_change": "koen_sessions",
+  "organizations_mark_closing": "organizations",
+  "org_contacts_keep_incident_trg": "org_contacts",
   "enrollments_audit": "enrollments",
   "memberships_audit": "memberships",
   "org_posts_audit": "org_posts",
@@ -1085,7 +1600,21 @@
   "org_billing_audit": "org_billing",
   "org_events_audit": "org_events",
   "org_places_audit": "org_places",
-  "lesson_rounds_audit": "lesson_rounds"
+  "lesson_rounds_audit": "lesson_rounds",
+  "memberships_log_post_change": "memberships",
+  "org_billing_log_change": "org_billing",
+  "evaluation_scores_stamp_user": "evaluation_scores",
+  "evaluation_reviews_stamp_user": "evaluation_reviews",
+  "org_messages_stamp_user": "org_messages",
+  "score_log_stamp_user": "score_log",
+  "post_change_log_stamp_user": "post_change_log",
+  "monka_read_log_stamp_user": "monka_read_log",
+  "monka_read_log_stamp_org": "monka_read_log",
+  "score_log_stamp_org": "score_log",
+  "org_billing_log_stamp_org": "org_billing_log",
+  "export_log_stamp_org": "export_log",
+  "contract_owner_log_stamp_org": "contract_owner_log",
+  "koen_kids_orphan": "koen_kids"
  },
  "migrations": [
   "20260914042439_add_repertoire_tessitura_delete_policy",
@@ -1138,6 +1667,38 @@
   "20260922223218_opus_13_production_children",
   "20260922223221_opus_14_ops_audit_log",
   "20260922224023_rollback_14_ops_audit_log",
-  "20260922225718_opus_14_ops_audit_log_fixed"
+  "20260922225718_opus_14_ops_audit_log_fixed",
+  "20260923013615_set_member_post_actor",
+  "20260923014222_opus_24_actor_id",
+  "20260923020009_opus_34_1_2_4",
+  "20260923020613_opus_06_1_2_triggers",
+  "20260923022107_opus_17_fix_withdrawal",
+  "20260923022307_opus_16_logs_survive_school_close",
+  "20260923022454_opus_22_fix_productions",
+  "20260923023025_opus_30_feature_flags",
+  "20260923023503_opus_35_bootstrap",
+  "20260923023732_opus_24_5_06_4_close_log_writes",
+  "20260923024541_opus_18_production_rooms_calls_tiers",
+  "20260923024544_opus_20_productions_rest",
+  "20260923024547_opus_23_productions_calendar_and_events",
+  "20260923024550_opus_25_production_screens_functions",
+  "20260923024553_opus_26_works_catalog",
+  "20260923024556_opus_27_works_import_functions",
+  "20260923024559_opus_28_work_instruments",
+  "20260923024602_opus_29_civic_opera",
+  "20260923024605_opus_33_koen_valid_until",
+  "20260923030953_taba3_165_163_164w3",
+  "20260923031226_opus_31_r2_evaluation_items",
+  "20260923032944_opus_37_org_contacts",
+  "20260923035748_r1_org_bootstrap_read_fixed",
+  "20260923040245_my_features",
+  "20260923041745_opus_37_org_contacts_v2",
+  "20260923041748_opus_38_recording_recital_v2",
+  "20260923041751_opus_41_koen_usability_v2",
+  "20260923041754_opus_36_works_search_ux_v2",
+  "20260923041757_opus_39_works_import_route_v2",
+  "20260923041800_opus_40_schools_v2",
+  "20260923041803_opus_42_retention_runs_v2",
+  "20260923044521_revoke_trigger_functions"
  ]
 }
