@@ -1,0 +1,288 @@
+{
+  "title": "セビリアの理髪師",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1816,
+  "source": "hand",
+  "source_id": "rossini-barbiere",
+  "roles": [
+    {
+      "label": "ロジーナ"
+    },
+    {
+      "label": "アルマヴィーヴァ伯爵"
+    },
+    {
+      "label": "フィガロ"
+    },
+    {
+      "label": "バルトロ"
+    },
+    {
+      "label": "ドン・バジリオ"
+    },
+    {
+      "label": "ベルタ"
+    },
+    {
+      "label": "フィオレッロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1番 導入（そっと静かに）",
+      "group_label": "第1幕",
+      "roles": [
+        "フィオレッロ",
+        "アルマヴィーヴァ伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1番b カヴァティーナ（空は微笑み）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2番 カヴァティーナ（私は町の何でも屋）",
+      "group_label": "第1幕",
+      "roles": [
+        "フィガロ"
+      ]
+    },
+    {
+      "label": "第3番 カンツォーネ（お前の名を知りたい）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "ロジーナ"
+      ]
+    },
+    {
+      "label": "第4番 二重唱（金貨の力で）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "フィガロ"
+      ]
+    },
+    {
+      "label": "第5番 カヴァティーナ（今の歌声は）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロジーナ"
+      ]
+    },
+    {
+      "label": "第6番 アリア（陰口はそよ風のように）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・バジリオ",
+        "バルトロ"
+      ]
+    },
+    {
+      "label": "第7番 二重唱（それじゃ私なのね）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロジーナ",
+        "フィガロ"
+      ]
+    },
+    {
+      "label": "第8番 アリア（私のような医者に）",
+      "group_label": "第1幕",
+      "roles": [
+        "バルトロ"
+      ]
+    },
+    {
+      "label": "第9番 フィナーレ（第1幕・兵士の乱入）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "ロジーナ",
+        "フィガロ",
+        "バルトロ",
+        "ドン・バジリオ",
+        "ベルタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第10番 二重唱（平和と喜び）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "バルトロ"
+      ]
+    },
+    {
+      "label": "第11番 音楽のレッスン（むなしい心遣い）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロジーナ",
+        "アルマヴィーヴァ伯爵",
+        "バルトロ"
+      ]
+    },
+    {
+      "label": "第12番 五重唱（ドン・バジリオの追い出し）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロジーナ",
+        "アルマヴィーヴァ伯爵",
+        "フィガロ",
+        "バルトロ",
+        "ドン・バジリオ"
+      ]
+    },
+    {
+      "label": "第13番 アリア（年寄りは恋を求める）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベルタ"
+      ]
+    },
+    {
+      "label": "第14番 嵐の音楽",
+      "group_label": "第2幕",
+      "roles": []
+    },
+    {
+      "label": "第15番 三重唱（ああ、なんという不意の喜び）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロジーナ",
+        "アルマヴィーヴァ伯爵",
+        "フィガロ"
+      ]
+    },
+    {
+      "label": "第16番 フィナーレ（第2幕）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロジーナ",
+        "アルマヴィーヴァ伯爵",
+        "フィガロ",
+        "バルトロ",
+        "ドン・バジリオ",
+        "ベルタ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "セレナータ"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Il barbiere di Siviglia",
+  "aliases": [
+    "セビリア",
+    "Barbiere",
+    "理髪師"
+  ],
+  "duration_min": 165,
+  "language": "it"
+}

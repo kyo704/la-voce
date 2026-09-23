@@ -1,0 +1,142 @@
+{
+  "title": "リア王",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1606,
+  "source": "hand",
+  "source_id": "shakespeare-lear",
+  "roles": [
+    {
+      "label": "リア王"
+    },
+    {
+      "label": "ゴネリル"
+    },
+    {
+      "label": "リーガン"
+    },
+    {
+      "label": "コーディリア"
+    },
+    {
+      "label": "グロスター"
+    },
+    {
+      "label": "エドガー"
+    },
+    {
+      "label": "エドマンド"
+    },
+    {
+      "label": "ケント"
+    },
+    {
+      "label": "道化"
+    },
+    {
+      "label": "オールバニ公"
+    },
+    {
+      "label": "コーンウォール公"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 国土の分割",
+      "group_label": "第1幕",
+      "roles": [
+        "リア王",
+        "ゴネリル",
+        "リーガン",
+        "コーディリア",
+        "ケント",
+        "グロスター",
+        "その他"
+      ]
+    },
+    {
+      "label": "第1幕 グロスター家の企み",
+      "group_label": "第1幕",
+      "roles": [
+        "グロスター",
+        "エドマンド",
+        "エドガー"
+      ]
+    },
+    {
+      "label": "第2幕 リアの放逐",
+      "group_label": "第2幕",
+      "roles": [
+        "リア王",
+        "ゴネリル",
+        "リーガン",
+        "ケント",
+        "道化",
+        "コーンウォール公"
+      ]
+    },
+    {
+      "label": "第3幕 荒野の嵐",
+      "group_label": "第3幕",
+      "roles": [
+        "リア王",
+        "道化",
+        "ケント",
+        "エドガー"
+      ]
+    },
+    {
+      "label": "第3幕 グロスターの失明",
+      "group_label": "第3幕",
+      "roles": [
+        "グロスター",
+        "コーンウォール公",
+        "リーガン",
+        "その他"
+      ]
+    },
+    {
+      "label": "第4幕 ドーヴァー・コーディリアとの再会",
+      "group_label": "第4幕",
+      "roles": [
+        "リア王",
+        "コーディリア",
+        "エドガー",
+        "グロスター",
+        "ケント"
+      ]
+    },
+    {
+      "label": "第5幕 決闘とフィナーレ",
+      "group_label": "第5幕",
+      "roles": [
+        "エドガー",
+        "エドマンド",
+        "オールバニ公",
+        "リア王",
+        "コーディリア",
+        "ゴネリル",
+        "リーガン",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "King Lear",
+  "aliases": [],
+  "duration_min": 180,
+  "language": "en"
+}

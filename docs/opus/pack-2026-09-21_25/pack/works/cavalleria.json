@@ -1,0 +1,229 @@
+{
+  "title": "カヴァレリア・ルスティカーナ",
+  "composer": "マスカーニ",
+  "composer_sort": "Mascagni, Pietro",
+  "kind": "opera",
+  "year_written": 1890,
+  "source": "hand",
+  "source_id": "mascagni-cavalleria",
+  "roles": [
+    {
+      "label": "サントゥッツァ"
+    },
+    {
+      "label": "トゥリッドゥ"
+    },
+    {
+      "label": "アルフィオ"
+    },
+    {
+      "label": "ルチア"
+    },
+    {
+      "label": "ローラ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲とシチリアーナ（オー、ローラ）",
+      "group_label": "全1幕",
+      "roles": [
+        "トゥリッドゥ"
+      ]
+    },
+    {
+      "label": "合唱（オレンジの香りは）",
+      "group_label": "全1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "アルフィオの歌（馬は元気に）",
+      "group_label": "全1幕",
+      "roles": [
+        "アルフィオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "復活祭の祈り（レジナ・チェリ）",
+      "group_label": "全1幕",
+      "roles": [
+        "サントゥッツァ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ロマンツァ（母さん、あの酒は）",
+      "group_label": "全1幕",
+      "roles": [
+        "サントゥッツァ",
+        "ルチア"
+      ]
+    },
+    {
+      "label": "二重唱（サントゥッツァとトゥリッドゥ）",
+      "group_label": "全1幕",
+      "roles": [
+        "サントゥッツァ",
+        "トゥリッドゥ"
+      ]
+    },
+    {
+      "label": "ローラの登場（花の歌）",
+      "group_label": "全1幕",
+      "roles": [
+        "ローラ",
+        "トゥリッドゥ",
+        "サントゥッツァ"
+      ]
+    },
+    {
+      "label": "二重唱（サントゥッツァとアルフィオ）",
+      "group_label": "全1幕",
+      "roles": [
+        "サントゥッツァ",
+        "アルフィオ"
+      ]
+    },
+    {
+      "label": "間奏曲",
+      "group_label": "全1幕",
+      "roles": []
+    },
+    {
+      "label": "乾杯の歌（泡立つ酒を）",
+      "group_label": "全1幕",
+      "roles": [
+        "トゥリッドゥ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "決闘の申し込み",
+      "group_label": "全1幕",
+      "roles": [
+        "トゥリッドゥ",
+        "アルフィオ"
+      ]
+    },
+    {
+      "label": "母さん、あの酒は強く（トゥリッドゥの別れ）",
+      "group_label": "全1幕",
+      "roles": [
+        "トゥリッドゥ",
+        "ルチア"
+      ]
+    },
+    {
+      "label": "フィナーレ（トゥリッドゥが殺された）",
+      "group_label": "全1幕",
+      "roles": [
+        "サントゥッツァ",
+        "ルチア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル・鐘"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "note": "復活祭の場面"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

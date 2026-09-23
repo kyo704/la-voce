@@ -1,0 +1,45 @@
+TOPIC: "T2 イタリアから作業する間（日本法の外的環境の把握／GDPR 3条1項・3条2項）"
+TLDR: "日本法：イタリアを外的環境の把握に足す（EU GDPR＋伊 Codice）。GDPR：9か月の単独運営者の滞在が『拠点』に当たるかは SPLIT（Weltimmo・EDPB は敷居が低い）。3条2項（EU の人へのサービス提供）は、音楽院の学生に使わせた時点で YES になりうる。★滞在中は EU の人を利用者にしない・EU向けに売らない・拠点の要素を作らない、が最も安い"
+KEY_FACTS:
+  - FACT: "GDPR 3条1項：EU 域内の管理者の拠点の活動の文脈で行われる処理に適用。処理が EU 域内で行われるかは問わない（前文22）。拠点とは『安定した仕組みを通じた実効的かつ現実の活動の遂行』。法的形態は問わない"
+    SOURCE_URL: "https://edpb.europa.eu/sites/edpb/files/files/file1/edpb_guidelines_3_2018_territorial_scope_en.pdf"
+    SOURCE_REF: "EDPB Guidelines 3/2018 §1（Art 3(1)）・GDPR Recital 22"
+  - FACT: "『安定した仕組み』の敷居は低く、EU 域内に1人の従業員または代理人がいれば足りうる（十分な安定性で活動する場合）。ただし EU の処理者を使うだけ、EU の代理人（27条）を置くだけでは拠点にならない"
+    SOURCE_URL: "https://www.lexology.com/library/detail.aspx?g=c0145975-83b0-460f-ad15-9a1c6e6beb0d"
+    SOURCE_REF: "同 Guidelines 3/2018 の要約（Weltimmo C-230/14 を踏襲）"
+  - FACT: "3条2項(a)：EU 域外の管理者でも、EU 域内にいる人に対し『支払いの有無を問わず』物・サービスを提供する処理には適用。判定は提供の時点でその人が EU 域内にいるか"
+    SOURCE_URL: "https://gdpr-text.com/read/article-3/"
+    SOURCE_REF: "GDPR Art 3(2)(a)・Guidelines 3/2018 §2"
+  - FACT: "3条2項が当たる EU 域外の管理者は EU 域内に代理人（27条）を置く義務。例外は『処理が偶発的で、特別カテゴリー（健康等）の大規模処理を含まず、リスクが低い』場合。『偶発的』の意味は Guidelines で明確にされていない"
+    SOURCE_URL: "https://www.lexology.com/library/detail.aspx?g=c0145975-83b0-460f-ad15-9a1c6e6beb0d"
+    SOURCE_REF: "GDPR Art 27(2)(a)・Guidelines 3/2018 §4"
+  - FACT: "日本法：外国において個人データを取り扱う場合（委託・クラウド・国外の拠点等）は、当該外国の制度を把握して安全管理措置を講じ、本人の知り得る状態に置く"
+    SOURCE_URL: "https://www.ppc.go.jp/all_faq_index/faq1-q10-25/"
+    SOURCE_REF: "Q&A 10-25・通則編ガイドライン 10-7"
+APPLIES_TO_WOOLSONG:
+  JP_LAW_EXTERNAL_ENV: YES
+  GDPR_ART3_1_ESTABLISHMENT: SPLIT
+  GDPR_ART3_2_TARGETING: "NO（日本向け販売のみ・EU に売らない・EU の人を登録させない場合）／YES（音楽院の学生に使わせる、イタリア語で EU 向けに案内する場合）"
+IF_YES_WHAT_TO_DO:
+  CHEAPEST_PATH:
+    - "★滞在中は EU 域内にいる人を利用者にしない（音楽院での試用は『観察』だけ。裁定141 の『実態を見る』はそのまま。試用は帰国後か、GDPR の準備後）"
+    - "★EU 向けに売らない・案内しない。ランディングと料金ページに『日本にお住まいの方向け』を明記。イタリア語 UI は残してよいが、EU の通貨・EU 向けの配送語・EU の顧客事例を置かない（Guidelines 3/2018 の targeting 指標）"
+    - "★拠点の要素を作らない：イタリアに事業の口座・住所・partita IVA・看板・代理人を持たない（9/7 の前提Cと同じ）。日本の住所（バーチャルオフィス）を唯一の事業所とする"
+    - "上を守った上で『EU に拠点を持たない・EU の人にサービスを提供していない』旨の内部メモ（no-establishment memo）を日付つきで残す。SPLIT のときに最も効く証拠"
+  IF_STILL_YES_ART3_1:
+    - "GDPR 全体が適用（日本の利用者の処理も）。最低限：30条の処理記録／9条2項(a)の明示的同意（既存の同意画面で足りるか点検）／13条の情報提供（英語・伊語のプライバシー通知）／33条の72時間通知（伊 Garante）／日本への移転は十分性認定（2019年1月）で可"
+    - "DPO（37条）：健康データの『大規模』処理に当たるかで要否が分かれる。SPLIT"
+  IF_ART3_2_ONLY:
+    - "27条の代理人（伊または EU 域内の代行サービス。年数万円）。健康データを扱うので 27条2項の例外は使えない前提で置く"
+DOC_CHANGES:
+  PRIVACY_POLICY:
+    - "『外的環境の把握』に『イタリア（EU 一般データ保護規則 GDPR および伊 個人データ保護法典 D.Lgs.196/2003）』を足し、『2026年10月〜2027年7月、運営者がイタリアから運営に必要な範囲で記録に触れることがある。端末の暗号化・二要素・アクセス記録の措置を講じている』の要点"
+    - "『対象地域』の一文：『本サービスは日本にお住まいの方を対象としています』（3条2項の targeting を否定する事実）"
+  TERMS: "2条（利用者）に『日本にお住まいの方』を足す"
+  TOKUSHOHO: "『対象：日本国内にお住まいの方』"
+  LANDING: "同上の一文"
+RELIABILITY: "Medium（3条1項の当てはめは判断が割れる。3条2項と日本法の外的環境の把握は High）"
+UNRESOLVED_QUESTIONS:
+  - "単独の個人事業者が学生ビザで9か月滞在し、自宅から遠隔で第三国向け事業を運営する場合を『拠点』と見た監督機関の判断例は本調査では見つかっていない（UNKNOWN）"
+  - "Woolsong のUIにイタリア語がある事実が、他の要素なしで targeting と評価されるか（Guidelines は『言語だけでは足りない』の立場だが、伊滞在中の運営と組み合わさると SPLIT）"
+  - "既に登録している38人に EU 在住者がいるか（いれば3条2項の処理が既に存在する）"

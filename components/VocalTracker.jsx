@@ -72,6 +72,12 @@ import { SCALES, DEFAULT_SCALE, SCALE_LABELS, SCALE_SAMPLE, SCALE_SAMPLE_LINES, 
 import { osOf, installGuidePlatform } from "@/lib/platform";
 // ★★大事な操作の前に、もう一度確かめます（判断-メールを失うこと §4）。
 //   ★入ったままで長く使える形にしたぶん、★持ち出すときだけ、確かめます。
+// ★★★レッスン割（★裁定139）。★出すか 出さないかは `featureOn` だけ が 決めます（★裁定176）。
+//   ★★2026-09-23 まで、★この 4画面は どこからも 呼ばれて いませんでした。
+//     ★作って あって、★見張りも 通って いて、★誰も たどり着けない ── という 形 です。
+//   ★★★鍵が 閉じて いる あいだ、★入口ごと 出ません（★`LessonRoundArea` が 中で 判じます）。
+import LessonRoundArea from "@/components/LessonRoundArea";
+import { loadFeatures } from "@/lib/featureOn";
 import ReauthGate from "@/components/ReauthGate";
 import RecoveryCodeCard from "@/components/RecoveryCodeCard";
 // ★★お知らせの画面（v3・2026-09-03 確定）。★文面は lib/notices.js が持ちます。
@@ -5673,6 +5679,23 @@ export default function VocalTracker({
   const [notesSubTab, setNotesSubTab] = useState("calendar");
   // レッスン画面の立場。null は「まだ選んでいない」＝ 既定に従う。
   const [lessonRoleChoice, setLessonRoleChoice] = useState(null);
+
+  // ★★★機能の 切り替え ── ★台帳に 1回 だけ 尋ねます（★裁定176）。
+  //   ★★読めなかった ときは 空 です ＝ ★ぜんぶ 閉じる（★`loadFeatures` の 決め）。
+  //   ★★★ここで 中身を 見ません。★見るのは `featureOn` だけ です。
+  const [features, setFeatures] = useState(null);
+  // ★★★1つ だけ 作って 持ち回ります。
+  //   ★★描くたびに `createClient()` を 呼ぶと、★毎回 ちがう ものに なります。
+  //     ★★受け取った 側の `useEffect` が それを 見て いると、★止まりません。
+  const featureClient = useMemo(() => createClient(), []);
+  useEffect(() => {
+    let 生きている = true;
+    (async () => {
+      const f = await loadFeatures(featureClient);
+      if (生きている) setFeatures(f);
+    })();
+    return () => { 生きている = false; };
+  }, [featureClient]);
   // 周期の記録。開始日と、あれば終了日だけを持つ（周期記録の設計.md §3-1）。
   // 計測中の発声セッション。★端末に持たせる（画面を閉じても続くように）。
   const [runningSession, setRunningSession] = useState(null); // { kind, startedAtMs }
@@ -21726,6 +21749,17 @@ export default function VocalTracker({
                   </div>
                 </details>
               </div>
+            )}
+
+            {/* ★★★レッスン割（★裁定139）── ★鍵が 開いて いる ときだけ 出ます。
+                ★★出すか 出さないかは `LessonRoundArea` の 中の `featureOn` **だけ** が
+                　 決めます（★裁定176 §1「判定は 1か所」）。
+                ★★ここで `features` の 中身を 見ません。★見ると 2か所に なります。
+                ★★★生徒を 開いて いる あいだは 出しません（★戻る 道が あるため）。 */}
+            {activeTab === "lesson" && !viewingStudentLink && (
+              <LessonRoundArea
+                supabase={featureClient} userId={userId}
+                role={lessonRole} features={features} />
             )}
 
             {activeTab === "lesson" && lessonRole === "teach" && (

@@ -1,0 +1,345 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { C } from "@/lib/tokens";
+import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
+import { DAYS, periodsOf } from "@/lib/myTimetable";
+import { featureOn } from "@/lib/featureOn";
+import {
+  LESSON_ROUND_KEY, COLS_ROUND, COLS_PREF, COLS_NG, COLS_TIMETABLE,
+  slotKey, canEdit, canConfirm, firstDateFor, slotOfLesson
+} from "@/lib/lessonRound";
+import LessonPrefs from "./LessonPrefs";
+import LessonPrefMap from "./LessonPrefMap";
+import LessonRoundDone from "./LessonRoundDone";
+import LessonPlaceSlots from "./LessonPlaceSlots";
+import { tx } from "@/lib/t";
+
+// ============================================================================
+// ★★★レッスン割の 4画面を 1つに まとめる ところ
+//
+//   ★出どころ 裁定139（レッスン割）／ 裁定176（作り終えて 隠して 置く）
+//
+//   ★★★2026-09-23 まで、★この 4画面は **どこからも 呼ばれて いません** でした。
+//     ★作って あって、★見張りも 通って いて、★誰も たどり着けない ── という 形 です。
+//     ★★「作った」と「届く」は 別 です。★ここが その 間を つなぎます。
+//
+//   ★★★出すか 出さないかは `featureOn(features, LESSON_ROUND_KEY)` **だけ** で 決めます。
+//     ★裁定176 §1 …「判定は 1か所: feature_on(鍵)」
+//     ★★★閉じて いる とき、★**入口ごと 出しません**（★裁定176 §3）──
+//       ★「近日公開」も 出しません。★押せない 入口も 置きません。
+//       ★★期待を 作らない、が 決め です。
+//     ★★読み込み中も false です（★`featureOn` の 決め）。
+//       ★一瞬 見えて 消えるのは、★見えたのと 同じ です。
+//
+//   ★★★決めは 1つも ここで 作りません ──
+//     ★誰が 見て よいか …… ★台帳の RLS（`lesson_rounds_select` ほか）
+//     ★何を 出すか   …… `lib/lessonRound.js`
+//     ★列の 名前     …… `COLS_*`（★`select('*')` を 書かない）
+//
+//   ★見張り components/tests/lesson-round-area.test.js
+// ============================================================================
+
+const 小 = { ...TYPE.usual, color: C.inkSoft, lineHeight: 1.8 };
+
+/** ★いまの 立場で 見る 画面（★先生・事務）。 */
+const 地図 = "map";
+const 確定 = "done";
+const 置く = "place";
+
+export default function LessonRoundArea({ supabase, userId, role, features }) {
+  // ★★★鍵が 開いて いるか。★hooks より 先に 返さない ように、★値だけ 先に 出します。
+  const 開 = featureOn(features, LESSON_ROUND_KEY);
+
+  const [round, setRound] = useState(null);
+  const [periods, setPeriods] = useState([]);
+  const [timetable, setTimetable] = useState([]);
+  const [prefs, setPrefs] = useState({});
+  const [ngDates, setNgDates] = useState([]);
+  const [counts, setCounts] = useState({});
+  const [allPrefs, setAllPrefs] = useState([]);
+  const [names, setNames] = useState({});
+  const [monka, setMonka] = useState([]);
+  const [placed, setPlaced] = useState({});
+  const [placedBy, setPlacedBy] = useState({});
+  const [view, setView] = useState(地図);
+  const [who, setWho] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [sent, setSent] = useState(false);
+
+  const 教 = role === "teach";
+
+  // ---- 読む --------------------------------------------------------------
+  useEffect(() => {
+    if (!開 || !supabase || !userId) return;
+    let 生きている = true;
+    (async () => {
+      try {
+        // ★★どの 回が 自分に 関わるかは、★台帳の RLS が 決めます。
+        //   ★★ここで 誰の ものかを 絞りません。★絞ると 2か所で 決める ことに なります。
+        const { data: rs, error: e1 } = await supabase
+          .from("lesson_rounds").select(COLS_ROUND)
+          .eq("status", "open").order("due_on", { ascending: true }).limit(1);
+        if (e1) throw e1;
+        const r = (rs || [])[0] || null;
+        if (!生きている) return;
+        setRound(r);
+        if (!r) return;
+
+        // ★★コマ ── ★学生は 自分の もの、★先生・事務は 学校の もの。
+        const { data: ps } = 教
+          ? await supabase.from("org_periods")
+              .select("id, ord, name, start_min, end_min").eq("org_id", r.org_id).order("ord")
+          : await supabase.from("my_periods")
+              .select("id, ord, name, start_min, end_min").eq("user_id", userId).order("ord");
+        if (!生きている) return;
+        setPeriods(periodsOf(ps || []));
+
+        if (!教) {
+          const [{ data: tt }, { data: pf }, { data: ng }] = await Promise.all([
+            supabase.from("my_timetable").select(COLS_TIMETABLE).eq("user_id", userId),
+            supabase.from("lesson_prefs").select(COLS_PREF).eq("round_id", r.id).eq("user_id", userId),
+            supabase.from("lesson_ng_dates").select(COLS_NG).eq("round_id", r.id).eq("user_id", userId)
+          ]);
+          if (!生きている) return;
+          setTimetable(tt || []);
+          const m = {};
+          (pf || []).forEach((x) => { m[x.slot_key] = x.level; });
+          setPrefs(m);
+          setNgDates((ng || []).map((x) => x.ng_on).sort());
+          return;
+        }
+
+        // ★★先生・事務 ── ★濃さは 台帳が 数えます（`pref_map`）。
+        const { data: cm } = await supabase.rpc("pref_map", { p_round_id: r.id });
+        if (!生きている) return;
+        const c = {};
+        (cm || []).forEach((x) => { c[x.slot_key] = { maru: x.maru, sankaku: x.sankaku }; });
+        setCounts(c);
+
+        // ★★★名前は **押されてから** 出します。★行そのものは 先に 読みますが、
+        //   ★`namesOf` を 通さない かぎり どこにも 出ません（★`LessonPrefMap` の 決め）。
+        const { data: ap } = await supabase
+          .from("lesson_prefs").select(COLS_PREF).eq("round_id", r.id);
+        if (!生きている) return;
+        setAllPrefs(ap || []);
+
+        // ★★門下（★担当の 学生）── ★終わって いない ものだけ。
+        const { data: asg } = await supabase
+          .from("assignments").select("student_id, ended_at")
+          .eq("org_id", r.org_id).eq("teacher_id", userId).is("ended_at", null);
+        if (!生きている) return;
+        const ids = Array.from(new Set((asg || []).map((x) => x.student_id).filter(Boolean)));
+        setMonka(ids);
+
+        // ★★★名前は `profiles` を 直に 引けません。
+        //   ★★`profiles` の 読みの 決めは 1つ だけ です ── `auth.uid() = id`。
+        //     ★★★先生が 学生の 行を 引くと、★**0行** が 返ります。
+        //       ★誤りには なりません。★名前が 空に なる だけ です ──
+        //       ★★だから 見た目では 気づけません（★試しの 台帳で 数えて 見つけました）。
+        //   ★★`get_connected_names` が「誰の 名前を 見て よいか」を 持って います。
+        //     ★つながって いない 人を 渡すと、★その 行は 返って きません。
+        //     ★★ここで 誰と つながって いるかを 決めません。★台帳が 決めます。
+        if (ids.length > 0) {
+          const { data: pr } = await supabase.rpc("get_connected_names", { p_ids: ids });
+          if (!生きている) return;
+          const nm = {};
+          (pr || []).forEach((x) => { nm[x.id] = x.display_name || tx("お名前が まだ です"); });
+          setNames(nm);
+        }
+
+        // ★★もう 置いた もの（★この 回の 期間の レッスン）。
+        const { data: ls } = await supabase
+          .from("lessons").select("id, student_id, scheduled_at, place_id")
+          .eq("org_id", r.org_id).eq("teacher_id", userId)
+          .gte("scheduled_at", r.period_from).lte("scheduled_at", r.period_to + "T23:59:59");
+        if (!生きている) return;
+        // ★★★`lessons` に 枠の 鍵は ありません（`place_id` は **部屋** です）。
+        //   ★★置いた 時こく から 枠を 読み戻します（`slotOfLesson`）。
+        const 置 = {}, 人 = {};
+        (ls || []).forEach((x) => {
+          const k = slotOfLesson(x.scheduled_at, periodsOf(ps || []));
+          if (k) 置[k] = true;
+          if (x.student_id) 人[x.student_id] = k || true;
+        });
+        setPlaced(置);
+        setPlacedBy(人);
+      } catch (e) {
+        if (生きている) setError(String((e && e.message) || e));
+      }
+    })();
+    return () => { 生きている = false; };
+  }, [開, supabase, userId, 教]);
+
+  // ---- 学生の 操作 -------------------------------------------------------
+  const onTap = useCallback((k, next) => {
+    setSent(false);
+    setPrefs((p) => {
+      const m = { ...p };
+      if (next === null || next === undefined) delete m[k]; else m[k] = next;
+      return m;
+    });
+  }, []);
+
+  const onSend = useCallback(async () => {
+    if (!round || !supabase) return;
+    setBusy(true); setError("");
+    try {
+      const 行 = Object.keys(prefs).map((k) => ({
+        round_id: round.id, user_id: userId, slot_key: k, level: prefs[k]
+      }));
+      // ★★消した ものは 消します（★隠して 済ませない・CLAUDE.md）。
+      const { error: e1 } = await supabase.from("lesson_prefs")
+        .delete().eq("round_id", round.id).eq("user_id", userId);
+      if (e1) throw e1;
+      if (行.length > 0) {
+        const { error: e2 } = await supabase.from("lesson_prefs").insert(行);
+        if (e2) throw e2;
+      }
+      setSent(true);
+    } catch (e) {
+      setError(String((e && e.message) || e));
+    } finally { setBusy(false); }
+  }, [round, supabase, prefs, userId]);
+
+  const onAddNg = useCallback(async () => {
+    if (!round || !supabase) return;
+    const v = typeof window !== "undefined"
+      ? window.prompt(tx("来られない 日（2026-10-01 の 形）")) : null;
+    if (!v || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return;
+    setBusy(true); setError("");
+    try {
+      const { error: e } = await supabase.from("lesson_ng_dates")
+        .insert({ round_id: round.id, user_id: userId, ng_on: v });
+      if (e) throw e;
+      setNgDates((a) => Array.from(new Set([...a, v])).sort());
+    } catch (e) { setError(String((e && e.message) || e)); }
+    finally { setBusy(false); }
+  }, [round, supabase, userId]);
+
+  const onRemoveNg = useCallback(async (v) => {
+    if (!round || !supabase) return;
+    setBusy(true); setError("");
+    try {
+      const { error: e } = await supabase.from("lesson_ng_dates")
+        .delete().eq("round_id", round.id).eq("user_id", userId).eq("ng_on", v);
+      if (e) throw e;
+      setNgDates((a) => a.filter((x) => x !== v));
+    } catch (e) { setError(String((e && e.message) || e)); }
+    finally { setBusy(false); }
+  }, [round, supabase, userId]);
+
+  // ---- 先生の 操作 -------------------------------------------------------
+  // ★★★押された コマの 名前だけ を 組み立てます。★押されるまで 呼ばれません。
+  const namesOf = useCallback((k) => allPrefs
+    .filter((x) => x.slot_key === k && (x.level === 2 || x.level === 1))
+    .map((x) => ({ id: x.user_id, name: names[x.user_id] || tx("お名前が まだ です"),
+      mark: x.level === 2 ? "◎" : "△" })), [allPrefs, names]);
+
+  const notPlaced = useMemo(() => monka
+    .filter((id) => !placedBy[id])
+    .map((id) => ({ id, name: names[id] || tx("お名前が まだ です") })), [monka, placedBy, names]);
+
+  const whoPrefs = useMemo(() => {
+    const m = {};
+    allPrefs.forEach((x) => { if (x.user_id === who) m[x.slot_key] = x.level; });
+    return m;
+  }, [allPrefs, who]);
+
+  const onPlaceStudent = useCallback((id) => { setWho(id); setView(置く); }, []);
+
+  const doPlace = useCallback(async (k) => {
+    if (!round || !supabase || !who) return;
+    setBusy(true); setError("");
+    try {
+      // ★★★どの 日に するかは `lib/lessonRound.js` が 決めます。
+      //   ★ここでは 決めません。★決めが 変わる ときは lib だけ 直します。
+      const 日 = firstDateFor(k, round, periods);
+      if (!日) throw new Error(tx("その 枠に あたる 日が、この 回の 中に ありません。"));
+      const { error: e } = await supabase.from("lessons").insert({
+        org_id: round.org_id, teacher_id: userId, student_id: who,
+        created_by: userId, scheduled_at: 日
+      });
+      if (e) throw e;
+      setPlaced((p) => ({ ...p, [k]: true }));
+      setPlacedBy((p) => ({ ...p, [who]: k }));
+      setWho(null); setView(確定);
+    } catch (e) { setError(String((e && e.message) || e)); }
+    finally { setBusy(false); }
+  }, [round, supabase, who, userId, periods]);
+
+  const onConfirm = useCallback(async () => {
+    if (!round || !supabase) return;
+    setBusy(true); setError("");
+    try {
+      const { error: e } = await supabase.from("lesson_rounds")
+        .update({ status: "confirmed", confirmed_at: new Date().toISOString() })
+        .eq("id", round.id);
+      if (e) throw e;
+      setRound((r) => ({ ...r, status: "confirmed" }));
+    } catch (e) { setError(String((e && e.message) || e)); }
+    finally { setBusy(false); }
+  }, [round, supabase]);
+
+  // ---- 出す --------------------------------------------------------------
+  // ★★★閉じて いる ときは、★何も 出しません（★入口も 出しません）。
+  if (!開) return null;
+  // ★★回が 無い ときも 出しません。★空の 表を 置くと、★壊れて 見えます。
+  if (!round) return null;
+
+  const 枠 = {
+    borderTop: `1px solid ${C.line}`, marginTop: rem(16), paddingTop: rem(16)
+  };
+
+  if (!教) {
+    return (
+      <div style={枠}>
+        <LessonPrefs
+          round={round} periods={periods} timetable={timetable}
+          prefs={prefs} ngDates={ngDates}
+          onTap={onTap} onAddNg={onAddNg} onRemoveNg={onRemoveNg} onSend={onSend}
+          busy={busy} error={error} sent={sent} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={枠}>
+      {view === 置く && who ? (
+        <LessonPlaceSlots
+          student={{ id: who, name: names[who] || tx("お名前が まだ です") }}
+          periods={periods} prefs={whoPrefs} placed={placed} busy={{}}
+          onPlace={doPlace} onBack={() => { setWho(null); setView(確定); }}
+          busyNow={busy} />
+      ) : (
+        <>
+          <div style={{ display: "flex", gap: rem(6), marginBottom: rem(10) }}>
+            {[[地図, "希望の 地図"], [確定, "確定して 配る"]].map(([v, w]) => (
+              <button key={v} type="button" onClick={() => setView(v)}
+                style={{
+                  minHeight: 44, padding: `0 ${rem(13)}`, borderRadius: 999,
+                  border: `1px solid ${view === v ? C.curtain : C.line}`,
+                  background: view === v ? C.curtain : C.card,
+                  color: view === v ? C.onCurtain : C.inkSoft,
+                  fontFamily: FONT_STACK, ...TYPE.li
+                }}>{tx(w)}</button>
+            ))}
+          </div>
+          {view === 地図 ? (
+            <LessonPrefMap
+              round={round} periods={periods} counts={counts}
+              namesOf={namesOf} placed={placed} busy={{}} />
+          ) : (
+            <LessonRoundDone
+              round={round} total={monka.length} placed={placed} notPlaced={notPlaced}
+              onPlace={onPlaceStudent} onConfirm={onConfirm} busy={busy} />
+          )}
+        </>
+      )}
+      {error ? (
+        <p style={{ ...TYPE.li, color: C.curtain, marginTop: rem(10) }}>{error}</p>
+      ) : null}
+    </div>
+  );
+}

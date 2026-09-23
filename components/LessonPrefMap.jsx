@@ -42,7 +42,7 @@ export default function LessonPrefMap({
   // ★★★いちばん 濃い ところを 先に 数えます（★見本と 同じ）。
   let 最大 = 1;
   periods.forEach((p) => DAYS.forEach((d, di) => {
-    const c = counts[slotKey(di + 1, p.id)] || {};
+    const c = counts[slotKey(di, p.id)] || {};
     最大 = Math.max(最大, prefWeight(c.maru, c.sankaku));
   }));
 
@@ -76,7 +76,7 @@ export default function LessonPrefMap({
                 <tr key={p.id}>
                   <td style={{ color: C.inkSoft, lineHeight: 1.3, ...TYPE.usual }}>{p.name}</td>
                   {DAYS.map((d, di) => {
-                    const k = slotKey(di + 1, p.id);
+                    const k = slotKey(di, p.id);
                     const 置 = placed[k];
                     const 塞 = busy[k];
                     if (置) {

@@ -105,8 +105,17 @@ export default function LessonPrefs({
                   {p.name}
                 </td>
                 {DAYS.map((d, di) => {
-                  // ★★★曜日は 1 から 数えます（★`lib/myTimetable.js` と 同じ）。
-                  const wd = di + 1;
+                  // ★★★曜日は **0 から** 数えます（2026-09-23 に 直しました）。
+                  //   ★★台帳の `my_timetable.weekday` は 0〜6 です
+                  //     （`my_timetable_weekday_ok` … weekday >= 0 and weekday <= 6）。
+                  //   ★★`seed_prefs_from_timetable` は その 生の 値で 鍵を 作ります ──
+                  //       t.weekday::text || '-' || t.period_id::text
+                  //   ★★`lib/myTimetable.js` の `buildGrid` も `cellKey(wd, …)` を
+                  //     **0 から** 呼んで います。
+                  //   ★★★1 から 数えて いた ため、★月曜の 希望が "1-…" に なり、
+                  //     ★授業の × は "0-…" に 付いて いました ── ★1日 ずれます。
+                  //     ★★土（5）が 6 に なると、★日曜と 同じ 鍵に なります。
+                  const wd = di;
                   const k = slotKey(wd, p.id);
                   return (
                     <td key={d}>
