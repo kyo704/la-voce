@@ -1,139 +1,106 @@
-"use client";
-
-// ============================================================================
-// ならべる ── 同じ 日付の 軸に、上下に 並べる（★見本 stackSVG）
-//
-//   ★出どころ docs/design/pack-final/00-動く見本-PC・iPad（個人）.html の stackSVG()
-//            docs/design/pack-final/裁定-ふりかえる・とだな・もっと（9月10日 その7）§1
-//            営業資料 v5 1ページ目
-//              「声の調子と、眠りと、夕食の時刻と、湿度を、
-//                同じ日付の軸に上下に並べます」
-//
-//   ★★これが この製品の いちばんの 売りです。
-//     ★★1本の 線では ありません。★上下に 並べて 見くらべる ための 画面です。
-//
-//   ★★本番・レッスンの 日は、★縦の 帯が 全部の レーンを 貫きます（★裁定 §1-2）。
-//     ★「本番の 前後で、上下が どう 動いたか」が 1目で 見えます。
-//
-//   ★★出さないもの
-//     ・平均　　★合成した 数だからです（★裁定 §1-2）
-//     ・点数・順位・合計
-//     ・良い／悪いの 色分け　★1色の 濃淡だけです
-//     ・基準線・予報
-//
-//   ★数と 決めは lib/lineUp.js が 持ちます。★ここでは 決めません。
-//
-//   ★見張り components/tests/line-up-stack.test.js
-// ============================================================================
-
 import { C } from "@/lib/tokens";
-import { TYPE, FONT_STACK, rem } from "@/lib/uiKit";
-import { laneOf, laneValue, laneWord } from "@/lib/lineUp";
-import { hadPerformanceOrLesson } from "@/lib/analysisFamilies";
-import { tx } from "@/lib/t";
+import { TYPE } from "@/lib/uiKit";
 
-/** ★色は 2系統だけ（★裁定 §1-3）。★系列ごとに 別の 色相を 使いません。 */
-function toneColor(tone) {
-  return tone === "midori" ? C.sage : C.curtain;
+function mmdd(iso) {
+  return `${Number(iso.slice(5, 7))}/${Number(iso.slice(8, 10))}`;
 }
 
-export default function LineUpChart({ entries, dates, keys }) {
-  const lanes = (keys || []).map(laneOf).filter(Boolean);
-  if (lanes.length === 0 || (dates || []).length === 0) return null;
+function valueOf(entry, key) {
+  const value = entry && entry[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
 
-  // ★見本の 数。★1つも 変えていません。
-  const W = 880, pl = 66, pr = 16, pt = 10, laneH = 46, gap = 17, pb = 28;
-  const iw = W - pl - pr;
-  const H = pt + lanes.length * laneH + (lanes.length - 1) * gap + pb;
-  const bot = H - pb;
-  const xOf = (i) => pl + (dates.length < 2 ? iw / 2 : (iw * i) / (dates.length - 1));
-  const mmdd = (iso) => `${Number(iso.slice(5, 7))}/${Number(iso.slice(8, 10))}`;
+// 長さ＝値の割合、色の濃さ＝値の割合、の両方で差を見せる（長さだけの濃淡表現をやめる）。
+function ratioOf(value, min, max) {
+  if (value == null) return 0;
+  return Math.max(0, Math.min(1, (value - min) / Math.max(1, max - min)));
+}
 
-  const step = Math.max(1, Math.ceil(dates.length / 9));
+function horizontalValue(value, min, max) {
+  if (value == null) return 0;
+  return 15 + ratioOf(value, min, max) * 85;
+}
 
+function Metric({ title, dates, entries, field, tint = C.curtain, min = 1, max = 5, sleep = false }) {
+  const values = dates.map((date) => valueOf(entries[date], field));
+  const filled = values.filter((value) => value != null);
+  if (filled.length === 0) return null;
+  const horizontal = dates.length <= 28;
+  const height = sleep ? 72 : 64;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img"
-      aria-label={tx("記録を 同じ日付の 上下に 並べた図")}
-      style={{ width: "100%", height: "auto", display: "block", fontFamily: FONT_STACK }}>
+    <div className="card" style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14, marginBottom: 9, minHeight: sleep ? 126 : horizontal ? 170 : 126, boxSizing: "border-box" }}>
+      <div style={{ ...TYPE.mini, marginBottom: 8 }}>{title}</div>
+      {horizontal && !sleep ? (
+        <div style={{ display: "grid", gap: 4 }}>
+          {values.map((value, index) => (
+            <div key={dates[index]} style={{ display: "flex", alignItems: "center", gap: 6, minHeight: 20 }}>
+              <s style={{ width: 31, ...TYPE.usual, textDecoration: "none", color: C.inkSoft, flexShrink: 0 }}>
+                {dates.length <= 14 || index % 7 === 0 ? mmdd(dates[index]) : ""}
+              </s>
+              <span style={{ flex: 1, height: 12, borderRadius: 2, background: C.line2, position: "relative", overflow: "hidden" }}>
+                {value != null && (
+                  <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${horizontalValue(value, min, max)}%`, background: tint, opacity: 0.35 + ratioOf(value, min, max) * 0.6, borderRadius: 2 }} />
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "flex-end", gap: dates.length <= 14 ? 4 : 2, height }}>
+          {values.map((value, index) => (
+            <i key={dates[index]} title={value == null ? mmdd(dates[index]) : `${mmdd(dates[index])} ${value}`}
+              style={{
+                flex: 1, display: "block", minWidth: 0, height: value == null ? 0 : `${Math.max(10, ratioOf(value, min, max) * 100)}%`,
+                background: tint, opacity: value == null ? 0 : 0.35 + ratioOf(value, min, max) * 0.6,
+                borderRadius: "2px 2px 0 0"
+              }} />
+          ))}
+        </div>
+      )}
+      <div style={{ ...TYPE.usual, textAlign: "right", marginTop: 7 }}>{sleep ? "4〜9時間" : !horizontal ? "1本＝1日" : ""}</div>
+    </div>
+  );
+}
 
-      {/* ★★本番・レッスンの 日。★全部の レーンを 貫きます。
-          ★★色で 良し悪しを 言いません。★灰色の 帯です。 */}
-      {dates.map((d, i) => (
-        hadPerformanceOrLesson((entries || {})[d]) ? (
-          <rect key={`h${d}`} x={(xOf(i) - 1.6).toFixed(1)} y={pt}
-            width="3.2" height={bot - pt}
-            style={{ fill: C.inkSoft, opacity: 0.30 }} />
-        ) : null
-      ))}
+function Concerns({ dates, entries }) {
+  const symptoms = ["のどが いがらっぽい", "せきばらい", "のどが 渇く", "鼻が つまる", "肩が こわばる", "胃が もたれる"];
+  const rows = symptoms.map((symptom) => {
+    const days = dates.map((date) => (entries[date]?.throatSymptoms || []).includes(symptom));
+    return { symptom, days, count: days.filter(Boolean).length };
+  });
+  if (!rows.some((row) => row.count > 0)) return null;
+  const horizontal = dates.length <= 28;
+  return (
+    <div className="card" style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14, minHeight: 218, boxSizing: "border-box" }}>
+      <div style={{ ...TYPE.mini, marginBottom: 9 }}>気になったこと</div>
+      <div style={{ display: "grid", gap: 6 }}>
+        {rows.map(({ symptom, days, count }) => {
+          const weeks = [];
+          for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7).filter(Boolean).length);
+          return (
+          <div key={symptom} style={{ display: "flex", alignItems: "center", gap: 7, minHeight: 18 }}>
+            <span style={{ width: 112, ...TYPE.usual, flexShrink: 0 }}>{symptom}</span>
+            <span style={{ display: "flex", flex: 1, gap: 2, alignItems: "center", height: horizontal ? 14 : 32 }}>
+              {(horizontal ? days : weeks).map((amount, i) => <i key={i} style={{ flex: 1, height: horizontal ? 14 : `${amount ? 30 + (amount / 7) * 70 : 8}%`, minHeight: horizontal ? 14 : 3, borderRadius: 2, background: amount ? C.curtain : C.line2, opacity: amount ? 0.7 : 1 }} />)}
+            </span>
+            <span style={{ width: 30, textAlign: "right", ...TYPE.usual, flexShrink: 0 }}>{count}日</span>
+          </div>
+          );
+        })}
+      </div>
+      <div style={{ ...TYPE.usual, marginTop: 7 }}>{horizontal ? "●＝その日 あった" : "1本＝1週間。高さ＝その週に あった日数"}</div>
+    </div>
+  );
+}
 
-      {lanes.map((lane, j) => {
-        const top = pt + j * (laneH + gap);
-        const three = lane.scale === "three";
-        // ★★書いていない 日は 飛ばします。★0 として 描きません。
-        const pts = dates
-          .map((d, i) => ({ i, v: laneValue((entries || {})[d], lane.key) }))
-          .filter((p) => p.v != null);
-        let mx, mn;
-        if (three) { mx = 3; mn = 1; }
-        else {
-          const vs = pts.map((p) => p.v);
-          mx = vs.length ? Math.max(...vs) : 1;
-          mn = vs.length ? Math.min(...vs) : 0;
-        }
-        if (mx === mn) mx = mn + 1;
-        const yOf = (v) => top + laneH - ((v - mn) / (mx - mn)) * laneH;
-        const color = toneColor(lane.tone);
-        // ★★書いていない 日で 線を つながないこと。
-        //   ★つなぐと、★書いていない 日にも 値が あったように 見えます。
-        const segs = [];
-        let cur = [];
-        dates.forEach((d, i) => {
-          const v = laneValue((entries || {})[d], lane.key);
-          if (v == null) { if (cur.length > 1) segs.push(cur); cur = []; return; }
-          cur.push(`${cur.length ? "L" : "M"}${xOf(i).toFixed(1)} ${yOf(v).toFixed(1)}`);
-        });
-        if (cur.length > 1) segs.push(cur);
-
-        return (
-          <g key={lane.key}>
-            {[0, 0.5, 1].map((g) => (
-              <line key={g} x1={pl} y1={(top + laneH * g).toFixed(1)}
-                x2={W - pr} y2={(top + laneH * g).toFixed(1)}
-                style={{ stroke: C.line, strokeWidth: 1 }} />
-            ))}
-            {segs.map((seg, k) => (
-              <path key={k} d={seg.join(" ")} fill="none"
-                style={{
-                  stroke: color, opacity: lane.opacity, strokeWidth: 2,
-                  strokeLinejoin: "round", strokeLinecap: "round"
-                }} />
-            ))}
-            {dates.length <= 32 ? pts.map((p) => (
-              <circle key={p.i} cx={xOf(p.i).toFixed(1)} cy={yOf(p.v).toFixed(1)} r="2.5"
-                style={{ fill: color, opacity: lane.opacity }} />
-            )) : null}
-            {/* ★★名前は 図の 中に 置きます。★紙の 色で 縁取り、線に 重なっても 読めます。 */}
-            <text x={pl + 6} y={top + 14} fontSize="12.5" paintOrder="stroke"
-              style={{ fill: C.ink, stroke: C.paper, strokeWidth: 4, strokeLinejoin: "round" }}>
-              {lane.label}
-            </text>
-            <text x={pl - 8} y={top + 9} fontSize="10" textAnchor="end" style={{ fill: C.inkSoft }}>
-              {three ? "◎" : laneWord(lane.key, mx)}
-            </text>
-            <text x={pl - 8} y={top + laneH + 3} fontSize="10" textAnchor="end" style={{ fill: C.inkSoft }}>
-              {three ? "△" : laneWord(lane.key, mn)}
-            </text>
-          </g>
-        );
-      })}
-
-      {dates.map((d, i) => (
-        (i % step === 0 || i === dates.length - 1) ? (
-          <text key={`x${d}`} x={xOf(i).toFixed(1)} y={H - 9} fontSize="10.5"
-            textAnchor="middle" style={{ fill: C.inkSoft }}>{mmdd(d)}</text>
-        ) : null
-      ))}
-      <line x1={pl} y1={bot} x2={W - pr} y2={bot} style={{ stroke: C.line, strokeWidth: 1 }} />
-    </svg>
+export default function LineUpChart({ entries = {}, dates = [] }) {
+  if (!dates.length) return null;
+  return (
+    <div>
+      <Metric title="こえの ちょうし" dates={dates} entries={entries} field="voiceQuality" />
+      <Metric title="のどの ちょうし" dates={dates} entries={entries} field="throatCondition" />
+      <Metric title="昨夜の 睡眠" dates={dates} entries={entries} field="sleepHours" tint={C.sage} min={4} max={9} sleep />
+      <Concerns dates={dates} entries={entries} />
+    </div>
   );
 }
