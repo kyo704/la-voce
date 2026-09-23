@@ -24,8 +24,11 @@ function t(cond, label) {
 
 (async () => {
   const p = path.join(__dirname, "..", "..", "lib", "lessonRound.js");
-  const L = await import("data:text/javascript;base64," +
-    Buffer.from(fs.readFileSync(p, "utf8")).toString("base64"));
+  // ★★`@/lib/…` を 結べる ように 直してから 読みます（★ほかの 見張りと 同じ 形）。
+  const L = await import("data:text/javascript;base64," + Buffer.from(
+    fs.readFileSync(p, "utf8").replace(/from "@\/lib\/([a-zA-Z0-9]+)"/g,
+      (m, n) => `from "${"file://" + path.join(__dirname, "..", "..", "lib", n + ".js")}"`)
+  ).toString("base64"));
   const 生 = readRaw("lib", "lessonRound.js");
   const 素 = readCode("lib", "lessonRound.js");
 
@@ -50,6 +53,9 @@ function t(cond, label) {
     "pack-2026-09-21_16", "pack", "sql", "20260923_10_lesson_allocation.sql"), "utf8");
   t(/t\.weekday::text \|\| '-' \|\| t\.period_id::text/.test(sql),
     "★台帳も 同じ 形で 作って いる（★sql/10 を 読んで 確かめた）");
+  // ★★★決めは 1か所 ── ★`lib/myTimetable.js` の `cellKey` を 借ります。
+  t(/import \{ cellKey \} from "@\/lib\/myTimetable"/.test(生),
+    "★時間割の `cellKey` を 借りて いる（★同じ 形を 2つ 持たない）");
 
   console.log("\n④ 授業の コマ");
   t(L.isClassSlot([{ weekday: 1, period_id: "p1", unavailable: true }], 1, "p1") === true,
