@@ -1,0 +1,60 @@
+{
+  "title": "ヴァイオリンソナタ第1番 ト長調「雨の歌」",
+  "title_original": "Violinsonate Nr. 1",
+  "aliases": [
+    "雨の歌"
+  ],
+  "composer": "ブラームス",
+  "composer_sort": "Brahms, Johannes",
+  "kind": "chamber",
+  "year_written": 1879,
+  "source": "hand",
+  "source_id": "brahms-violin-sonata1",
+  "duration_min": 28,
+  "roles": [
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 ヴィヴァーチェ・マ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アレグロ・モルト・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

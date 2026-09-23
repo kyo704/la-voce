@@ -1,0 +1,112 @@
+{
+  "title": "船弁慶",
+  "title_original": "船弁慶",
+  "aliases": [],
+  "composer": "能（五番目（切））",
+  "composer_sort": "Noh 五番目（切）",
+  "kind": "drama",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "noh-funabenkei-kanze",
+  "duration_min": 85,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（静御前・平知盛の霊）"
+    },
+    {
+      "label": "子方（源義経）"
+    },
+    {
+      "label": "ワキ（武蔵坊弁慶）"
+    },
+    {
+      "label": "ワキツレ（従者）",
+      "is_group": true
+    },
+    {
+      "label": "アイ（船頭）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "義経一行の道行",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（武蔵坊弁慶）",
+        "子方（源義経）",
+        "ワキツレ（従者）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "静の別れの舞",
+      "group_label": "前段",
+      "roles": [
+        "シテ（静御前・平知盛の霊）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "船出（アイの語り）",
+      "group_label": "中入",
+      "roles": [
+        "アイ（船頭）",
+        "ワキ（武蔵坊弁慶）"
+      ]
+    },
+    {
+      "label": "知盛の霊の出現",
+      "group_label": "後段",
+      "roles": [
+        "シテ（静御前・平知盛の霊）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "祈りと退散",
+      "group_label": "後段",
+      "roles": [
+        "ワキ（武蔵坊弁慶）",
+        "シテ（静御前・平知盛の霊）",
+        "子方（源義経）",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う"
+}

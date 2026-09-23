@@ -1,0 +1,156 @@
+{
+  "title": "トーリードのイフィジェニー",
+  "title_original": "Iphigénie en Tauride",
+  "aliases": [
+    "イフィジェニー"
+  ],
+  "composer": "グルック",
+  "composer_sort": "Gluck, Christoph Willibald",
+  "kind": "opera",
+  "year_written": 1779,
+  "source": "hand",
+  "source_id": "gluck-iphigenie-tauride",
+  "duration_min": 120,
+  "language": "fr",
+  "roles": [
+    {
+      "label": "イフィジェニー"
+    },
+    {
+      "label": "オレスト"
+    },
+    {
+      "label": "ピラード"
+    },
+    {
+      "label": "トアス"
+    },
+    {
+      "label": "ディアーヌ"
+    },
+    {
+      "label": "巫女たち",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 嵐と神殿",
+      "group_label": "第1幕",
+      "roles": [
+        "イフィジェニー",
+        "巫女たち",
+        "トアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 オレストとピラードの友情",
+      "group_label": "第2幕",
+      "roles": [
+        "オレスト",
+        "ピラード",
+        "イフィジェニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 犠牲の選択",
+      "group_label": "第3幕",
+      "roles": [
+        "イフィジェニー",
+        "オレスト",
+        "ピラード"
+      ]
+    },
+    {
+      "label": "第4幕 認知とディアーヌの出現",
+      "group_label": "第4幕",
+      "roles": [
+        "イフィジェニー",
+        "オレスト",
+        "トアス",
+        "ディアーヌ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

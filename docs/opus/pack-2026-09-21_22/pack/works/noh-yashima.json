@@ -1,0 +1,104 @@
+{
+  "title": "八島（屋島）",
+  "title_original": "八島（屋島）",
+  "aliases": [],
+  "composer": "能（二番目（修羅））",
+  "composer_sort": "Noh 二番目（修羅）",
+  "kind": "drama",
+  "year_written": 1430,
+  "source": "hand",
+  "source_id": "noh-yashima-kanze",
+  "duration_min": 75,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（老漁夫・源義経の霊）"
+    },
+    {
+      "label": "ツレ（漁夫）"
+    },
+    {
+      "label": "ワキ（旅僧）"
+    },
+    {
+      "label": "アイ（里人）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "旅僧の道行",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（旅僧）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "老漁夫の物語",
+      "group_label": "前段",
+      "roles": [
+        "シテ（老漁夫・源義経の霊）",
+        "ツレ（漁夫）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "アイの語り",
+      "group_label": "中入",
+      "roles": [
+        "アイ（里人）"
+      ]
+    },
+    {
+      "label": "義経の霊と弓流しの物語",
+      "group_label": "後段",
+      "roles": [
+        "シテ（老漁夫・源義経の霊）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "修羅の舞",
+      "group_label": "後段",
+      "roles": [
+        "シテ（老漁夫・源義経の霊）",
+        "囃子方",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う"
+}

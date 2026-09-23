@@ -1,0 +1,121 @@
+{
+  "title": "オイディプス王",
+  "composer": "ソポクレス",
+  "composer_sort": "Sophocles",
+  "kind": "drama",
+  "year_written": -429,
+  "source": "hand",
+  "source_id": "sophocles-oedipus",
+  "roles": [
+    {
+      "label": "オイディプス"
+    },
+    {
+      "label": "イオカステ"
+    },
+    {
+      "label": "クレオン"
+    },
+    {
+      "label": "テイレシアス"
+    },
+    {
+      "label": "コリントスの使者"
+    },
+    {
+      "label": "羊飼い"
+    },
+    {
+      "label": "伝令"
+    },
+    {
+      "label": "神官"
+    },
+    {
+      "label": "合唱隊",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロロゴス（嘆願と神託）",
+      "group_label": "全曲",
+      "roles": [
+        "オイディプス",
+        "神官",
+        "クレオン"
+      ]
+    },
+    {
+      "label": "パロドス（合唱隊の登場）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第1エペイソディオン（テイレシアスとの対決）",
+      "group_label": "全曲",
+      "roles": [
+        "オイディプス",
+        "テイレシアス",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第2エペイソディオン（クレオンとの争い・イオカステ）",
+      "group_label": "全曲",
+      "roles": [
+        "オイディプス",
+        "クレオン",
+        "イオカステ",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第3エペイソディオン（コリントスの使者）",
+      "group_label": "全曲",
+      "roles": [
+        "オイディプス",
+        "イオカステ",
+        "コリントスの使者",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第4エペイソディオン（羊飼いの証言）",
+      "group_label": "全曲",
+      "roles": [
+        "オイディプス",
+        "羊飼い",
+        "コリントスの使者",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "エクソドス（伝令の報告と退場）",
+      "group_label": "全曲",
+      "roles": [
+        "伝令",
+        "オイディプス",
+        "クレオン",
+        "合唱隊"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "Οἰδίπους Τύραννος / Oedipus Rex",
+  "aliases": [
+    "オイディプス"
+  ],
+  "duration_min": 100,
+  "language": "el"
+}
