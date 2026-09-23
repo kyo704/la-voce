@@ -10818,6 +10818,15 @@ export default function VocalTracker({
   // ★止めないが、契約者が居なくなる教室（2026-09-02）。
   //   ★消したあとに知らせても意味がないので、先に一度だけ出します。
   const [payerOrgs, setPayerOrgs] = useState([]);
+  // ★★★2026-09-23 ── ★契約者の ぶんを 受ける ところが ありません でした。
+  //   ★サーバ（app/api/account/delete/route.js）は 409 と ともに
+  //     `contractOwner: true` ／ `orgs` ／ `notice` ／ `how` ／ 引き継げる 方の 数
+  //     を 返して います。★画面が それを **捨てて** いました。
+  //   ★★★そのため、★契約者の 方には 「削除できませんでした。」だけ が 出ます。
+  //     ★なぜ 止まったのか、★どう すれば よいのか、★どちらも 伝わりません。
+  //   ★★本番の 7学校 とも 契約者が 入って います（2026-09-23）。★7人が この 道に 入ります。
+  const [contractOrgs, setContractOrgs] = useState([]);
+  const [contractNotice, setContractNotice] = useState(null);
   const [payerAcknowledged, setPayerAcknowledged] = useState(false);
   const [closeOrgTarget, setCloseOrgTarget] = useState(null);   // 閉じようとしている教室
   const [closeOrgConfirm, setCloseOrgConfirm] = useState("");
@@ -10876,6 +10885,17 @@ export default function VocalTracker({
       if (res.status === 409 && data.paymentActive) {
         setPaymentBlockLines(data.lines || PAYMENT_BLOCK_LINES);
         setDeleteStatus("paymentActive");
+        return;
+      }
+      // ★★★契約者の ときは、★引き継ぎに お連れします（★裁定 その116）。
+      //   ★★止めるのは 台帳の 仕事、★知らせるのは 画面の 仕事 です。
+      if (res.status === 409 && data.contractOwner) {
+        setContractOrgs(data.orgs || []);
+        setContractNotice({
+          notice: data.notice, how: data.how,
+          noneNotice: data.noneNotice, noneHow: data.noneHow
+        });
+        setDeleteStatus("contractOwner");
         return;
       }
       if (res.status === 409 && data.payerNotice) {
@@ -26237,6 +26257,34 @@ export default function VocalTracker({
                     ★止めていません。選択肢も出しません。
                       「教室を閉じる」を並べると、閉じなくてよい教室を
                       閉じさせてしまいます。知らせと、連絡先と、続ける道だけ。 */}
+                {deleteStatus === "contractOwner" && contractOrgs.map((org) => (
+                  <div key={org.orgId} className="rounded-2xl p-4 space-y-3"
+                    style={{ background: C.card, border: `1px solid ${C.curtain}`, borderWidth: 2 }}>
+                    <p className="text-sm font-medium" style={{ color: C.ink }}>{org.name}</p>
+                    {/* ★★★引き継げる 方が いるか で、★言い方が 変わります。
+                        ★★言葉は `lib/orgContract.js` が 持ちます。★ここでは 作りません。 */}
+                    <p className="text-sm leading-relaxed" style={{ color: C.ink }}>
+                      {org.candidates > 0
+                        ? (contractNotice && contractNotice.notice)
+                        : (contractNotice && contractNotice.noneNotice)}
+                    </p>
+                    <p className="text-sm leading-relaxed" style={{ color: C.inkSoft }}>
+                      {org.candidates > 0
+                        ? (contractNotice && contractNotice.how)
+                        : (contractNotice && contractNotice.noneHow)}
+                    </p>
+                    {/* ★★★行き先を 札に します（★台帳 …「道を 出すなら 押せる ように」）。
+                        ★★字だけ 置くと、★どこを 押せば よいか 分かりません。 */}
+                    <button type="button"
+                      onClick={() => { setDeleteStatus("idle"); setMoreSection("通っているところ"); }}
+                      className="block w-full rounded-2xl p-3 text-left"
+                      style={{ background: C.paper, border: `1px solid ${C.line}` }}>
+                      <span className="block text-sm font-medium" style={{ color: C.curtain }}>
+                        {org.candidates > 0 ? "契約者を 変える" : "学校を 見る"}
+                      </span>
+                    </button>
+                  </div>
+                ))}
                 {deleteStatus === "payerNotice" && payerOrgs.map((org) => (
                   <div key={org.orgId} className="rounded-2xl p-4 space-y-3"
                     style={{ background: C.card, border: `1px solid ${C.gold}`, borderWidth: 2 }}>
