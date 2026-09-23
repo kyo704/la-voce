@@ -1,0 +1,149 @@
+{
+  "title": "アルチェステ",
+  "title_original": "Alceste",
+  "aliases": [],
+  "composer": "グルック",
+  "composer_sort": "Gluck, Christoph Willibald",
+  "kind": "opera",
+  "year_written": 1767,
+  "source": "hand",
+  "source_id": "gluck-alceste",
+  "duration_min": 150,
+  "language": "it",
+  "roles": [
+    {
+      "label": "アルチェステ"
+    },
+    {
+      "label": "アドメート"
+    },
+    {
+      "label": "エヴァンドロ"
+    },
+    {
+      "label": "大祭司"
+    },
+    {
+      "label": "アポロ"
+    },
+    {
+      "label": "冥府の神々",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 王の病と神託",
+      "group_label": "第1幕",
+      "roles": [
+        "アルチェステ",
+        "エヴァンドロ",
+        "大祭司",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 身代わりの誓い",
+      "group_label": "第2幕",
+      "roles": [
+        "アルチェステ",
+        "アドメート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 冥府への道とアポロの救い",
+      "group_label": "第3幕",
+      "roles": [
+        "アルチェステ",
+        "アドメート",
+        "アポロ",
+        "冥府の神々",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

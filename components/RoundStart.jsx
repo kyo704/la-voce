@@ -10,7 +10,8 @@ import {
   RS_WHOSE_NOTE_2, RS_WHOSE_NOTE_3, RS_NAME, RS_NAME_EX, RS_PERIOD, RS_DUE,
   RS_DUE_NOTE, RS_COUNT, RS_COUNT_UNIT, RS_COUNT_NOTE, RS_MODE_HEAD,
   RS_WHEN_HINT, RS_WHEN_NOTE, RS_START, RS_ASK_HEAD, RS_ASK_1, RS_ASK_2,
-  RS_ASK_3, RS_ASK_4, RS_NEED_TEACHER, RS_MODE_NOTE, RS_NOTE, startedLine
+  RS_ASK_3, RS_ASK_4, RS_NEED_TEACHER, RS_MODE_NOTE, RS_NOTE, startedLine,
+  orgRows, showsOrgTabs, selectedOrg, RS_ORG_1, RS_ORG_2
 } from "@/lib/roundStart";
 import { tx } from "@/lib/t";
 
@@ -51,9 +52,16 @@ function 選札({ on, children, onClick }) {
   );
 }
 
+// ★★★`onBack` を 外しました（★2026-09-24）。
+//   ★この 画面は レッスン割の **中** に 出ます。★戻る 先は その 帯 です。
+//   ★★渡さない `onBack` を 置くと、★出ない 札が 残ります（★`prop_not_passed`）。
 export default function RoundStart({
-  supabase, orgId, teachers = [], today, monkaCount, onStarted, onBack
+  supabase, orgs = [], teachers = [], today, monkaCount, onStarted, onPickOrg
 }) {
+  // ★★★どの 学校の 回か（★裁定140・design-v42）。
+  //   ★★「はじめの 1つ」を こちらで 選びません ── ★台帳が 名前の 順で 返します。
+  //   ★★1校 だけの 方には 札も 註も 出しません（★裁定73）。
+  const [orgSel, setOrgSel] = useState(null);
   const [選, set選] = useState([]);
   const [name, setName] = useState("");
   const [from, setFrom] = useState("");
@@ -70,18 +78,20 @@ export default function RoundStart({
 
   useEffect(() => { if (!due && today) setDue(defaultDue(today)); }, [due, today]);
 
+  const 校 = useMemo(() => orgRows(orgs), [orgs]);
+  const いま校 = useMemo(() => selectedOrg(orgs, orgSel), [orgs, orgSel]);
   const 形 = useMemo(() => checkForm({ from, to, due, count }), [from, to, due, count]);
   const 押せる = useMemo(() =>
     canStart({ teachers: 選, from, to, due, count }), [選, from, to, due, count]);
 
   const 始める = useCallback(async () => {
-    if (!supabase || !orgId) return;
+    if (!supabase || !いま校) return;
     if (選.length === 0) { setError(tx(RS_NEED_TEACHER)); return; }
     setBusy(true); setError(""); setAsk(false);
     try {
       // ★★1人ずつ 例外を 拾うのは 台帳 です。★止まった 人 だけ 返って きます。
       const { data, error: e } = await supabase.rpc("start_lesson_rounds", {
-        p_org: orgId, p_teachers: 選, p_name: name,
+        p_org: いま校.id, p_teachers: 選, p_name: name,
         p_from: from, p_to: to, p_due: due, p_need: Number(count)
       });
       if (e) throw e;
@@ -89,7 +99,7 @@ export default function RoundStart({
       if (onStarted) onStarted();
     } catch (e) { setError(String((e && e.message) || e)); }
     finally { setBusy(false); }
-  }, [supabase, orgId, 選, name, from, to, due, count, onStarted]);
+  }, [supabase, いま校, 選, name, from, to, due, count, onStarted]);
 
   const 名 = useMemo(() => {
     const o = {};
@@ -99,15 +109,25 @@ export default function RoundStart({
 
   return (
     <div>
-      {onBack ? (
-        <button type="button" onClick={onBack}
-          style={{
-            minHeight: 44, padding: `0 ${rem(11)}`, borderRadius: 999, marginBottom: rem(6),
-            border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
-            fontFamily: FONT_STACK, ...TYPE.usual
-          }}>‹ {tx("レッスン割")}</button>
-      ) : null}
       <h2 style={{ ...TYPE.title, margin: `${rem(2)} 0 ${rem(4)}` }}>{tx(RS_HEAD)}</h2>
+
+      {/* ★★★学校の 札 …… ★2校 以上の ときだけ（★裁定73）。 */}
+      {showsOrgTabs(orgs) ? (
+        <>
+          <div style={{ display: "flex", gap: rem(6), flexWrap: "wrap", marginBottom: rem(10) }}>
+            {校.map((o) => (
+              <選札 key={o.id} on={いま校 && いま校.id === o.id}
+                onClick={() => { setOrgSel(o.id); set選([]); if (onPickOrg) onPickOrg(o.id); }}>
+                {o.name}
+              </選札>
+            ))}
+          </div>
+          <div style={{ ...小, marginBottom: rem(9) }}>
+            {tx(RS_ORG_1)}{いま校 ? いま校.name : ""}{tx(RS_ORG_2)}
+          </div>
+        </>
+      ) : null}
+
       <div style={{ ...小, marginBottom: rem(10) }}>{tx(RS_SUB)}</div>
 
       <div style={{ display: "flex", gap: rem(12), alignItems: "flex-start", flexWrap: "wrap" }}>

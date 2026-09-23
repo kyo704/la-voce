@@ -7,12 +7,16 @@ import { DAYS, periodsOf } from "@/lib/myTimetable";
 import { featureOn } from "@/lib/featureOn";
 import {
   LESSON_ROUND_KEY, COLS_ROUND, COLS_PREF, COLS_NG, COLS_TIMETABLE,
-  slotKey, canEdit, canConfirm, firstDateFor, slotOfLesson
+  slotKey, canEdit, canConfirm, firstDateFor, slotOfLesson, placeableSlots
 } from "@/lib/lessonRound";
 import LessonPrefs from "./LessonPrefs";
 import LessonPrefMap from "./LessonPrefMap";
 import LessonRoundDone from "./LessonRoundDone";
-import LessonPlaceSlots from "./LessonPlaceSlots";
+// ★★★置ける 枠は `OpsOkeru`（★前から ある 画面）を 使います（★2026-09-24）。
+//   ★★私は 同じ 見本（`P_okeru`）の 画面を **2つ 作って** いました。
+//     ★`components/LessonPlaceSlots.jsx` を 消し、★こちらに 揃えました。
+//   ★★どの 枠を 出すかの 決めは `lib/lessonRound.js` の `placeableSlots()` が 持ちます。
+import OpsOkeru from "./OpsOkeru";
 // ★★★回が 1つも 無い ときの 画面（★裁定185・2026-09-24）。
 //   ★★これが 無いと、★先生は **回を 始められません**。
 //     ★★2026-09-23 は「回が 無ければ 何も 出さない」で 止めて いました。
@@ -73,8 +77,12 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
   // ★★★回を 始める ための もの（★回が 1つも 無い ときだけ 使います）。
-  const [myOrg, setMyOrg] = useState(null);
+  // ★★★どの 学校の 回か（★裁定140・design-v42・2026-09-24）。
+  //   ★★「はじめの 1つ」を こちらで 選びません。★`my_orgs()` が 名前の 順で 返します。
+  //   ★★1校 だけの 方には 札も 註も 出ません（★裁定73・`RoundStart` の 中で 判じます）。
+  const [myOrgs, setMyOrgs] = useState([]);
   const [orgTeachers, setOrgTeachers] = useState([]);
+  const [pickedOrg, setPickedOrg] = useState(null);
 
   const 教 = role === "teach";
 
@@ -100,14 +108,17 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
         //     ★★学生の 行は 外します。★学生の 回は ありません。
         if (!r) {
           if (!教) return;
-          const { data: ms } = await supabase.from("memberships")
-            .select("org_id, role").eq("user_id", userId).neq("role", "student").limit(1);
-          const org = (ms || [])[0] || null;
+          // ★★★どの 学校に いるかは 台帳が 返します（`my_orgs()`・sql/71）。
+          //   ★★`limit 1` を 書きません。★2校 で 教えて いる 先生が います。
+          //   ★★学生と して いる 学校は 外します ── ★学生の 回は ありません。
+          const { data: os } = await supabase.rpc("my_orgs");
+          const 校 = (os || []).filter((o) => o && o.is_student !== true);
           if (!生きている) return;
-          setMyOrg(org);
-          if (org) {
+          setMyOrgs(校);
+          const 選 = 校.find((o) => o.org_id === pickedOrg) || 校[0] || null;
+          if (選) {
             const { data: nm } = await supabase.rpc("get_org_member_names",
-              { p_org_id: org.org_id });
+              { p_org_id: 選.org_id });
             if (!生きている) return;
             // ★★自分は 必ず 入れます。★先生は 自分の 回を 始められます。
             const 先 = (nm || []).filter((x) => x && x.role !== "student")
@@ -201,7 +212,7 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
       }
     })();
     return () => { 生きている = false; };
-  }, [開, supabase, userId, 教]);
+  }, [開, supabase, userId, 教, pickedOrg]);
 
   // ---- 学生の 操作 -------------------------------------------------------
   const onTap = useCallback((k, next) => {
@@ -326,14 +337,15 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
   //     ★★先生は **始める ところに たどり着けません** でした。
   //   ★★学生には 出しません ── ★始めるのは 先生か 事務 です（★裁定185）。
   if (!round) {
-    if (!教 || !myOrg) return null;
+    if (!教 || myOrgs.length === 0) return null;
     return (
       <div style={枠}>
         <RoundStart
-          supabase={supabase} orgId={myOrg.org_id}
+          supabase={supabase} orgs={myOrgs}
           teachers={orgTeachers} today={new Date().toISOString().slice(0, 10)}
           monkaCount={monka.length}
-          onStarted={() => { setRound(null); setMyOrg(null); }} />
+          onPickOrg={setPickedOrg}
+          onStarted={() => { setRound(null); setMyOrgs([]); }} />
       </div>
     );
   }
@@ -353,11 +365,14 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
   return (
     <div style={枠}>
       {view === 置く && who ? (
-        <LessonPlaceSlots
-          student={{ id: who, name: names[who] || tx("お名前が まだ です") }}
-          periods={periods} prefs={whoPrefs} placed={placed} busy={{}}
-          onPlace={doPlace} onBack={() => { setWho(null); setView(確定); }}
-          busyNow={busy} />
+        <OpsOkeru
+          studentName={names[who] || tx("お名前が まだ です")}
+          slots={placeableSlots({
+            prefs: whoPrefs, placed, busy: {}, periods, days: DAYS.length, round
+          })}
+          busy={busy} error={error}
+          onPut={(s) => doPlace(s.key)}
+          onClose={() => { setWho(null); setView(確定); }} />
       ) : (
         <>
           <div style={{ display: "flex", gap: rem(6), marginBottom: rem(10) }}>

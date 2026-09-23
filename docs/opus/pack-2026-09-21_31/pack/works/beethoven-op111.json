@@ -1,0 +1,40 @@
+{
+  "title": "ピアノソナタ第32番 ハ短調",
+  "title_original": "Klaviersonate Nr. 32",
+  "aliases": [],
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "chamber",
+  "year_written": 1822,
+  "source": "hand",
+  "source_id": "beethoven-op111",
+  "duration_min": 27,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 マエストーソ〜アレグロ・コン・ブリオ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アリエッタ（主題と変奏）",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

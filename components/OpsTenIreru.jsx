@@ -5,7 +5,7 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { ScreenHead, Card, Note } from "@/components/UiV2";
 import {
-  ENTRY_NOTES, ENTRY_LABEL, REVIEW_LABEL, pointOk, whyPointBad, SAVED_LINE,
+  ENTRY_NOTES, ENTRY_LABEL, REVIEW_LABEL, pointOk, whyPointBad, pointChoices, SAVED_LINE,
   EDIT_REASON_LABEL, EDIT_REASON_HINT, EDIT_LABEL, EDIT_NOTE,
   mayEditConfirmed, EDIT_WHY_EMPTY, CONFIRMED_WORD
 } from "@/lib/evaluation";
@@ -67,17 +67,25 @@ export default function OpsTenIreru({
               {i.name}　<span style={小}>{i.max_points}点満点</span>
             </label>
             {i.note ? <p style={{ ...小, margin: "0 0 2px" }}>{i.note}</p> : null}
-            <input type="number" inputMode="decimal"
-              value={下書き[i.id] == null ? "" : 下書き[i.id]}
-              onChange={(e) => set下書き((d) => ({ ...d, [i.id]: e.target.value }))}
-              step={i.step} min={0} max={i.max_points}
-              style={{
-                width: "100%", minHeight: 48, borderRadius: 10, marginTop: 2,
-                padding: `0 ${rem(10)}`,
-                border: `1px solid ${pointOk(下書き[i.id], i) ? C.line : C.curtain}`,
-                background: C.paper, color: C.ink, fontSize: rem(16),
-                fontFamily: FONT_STACK
-              }} />
+            {/* ★★★点は **札** です。★打ち込みません（★2026-09-24 に 直しました）。
+                ★見本の 註 ──「点は 札で 選びます。手で 打ちません。
+                　　　　　　　　（ホールの 暗がりで、細かい 数字を 打つのは 難しいからです）」
+                ★★前は `<input type="number">` で した。★見本と ちがって いました。
+                ★★★満点を 超える 札は 作りません（`pointChoices`）。
+                  ★出して から 止めるのでは なく、★はじめから ありません。 */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 4 }}>
+              {pointChoices(i).map((v) => (
+                <button key={v} type="button" disabled={busy}
+                  onClick={() => set下書き((d) => ({ ...d, [i.id]: String(v) }))}
+                  style={{
+                    minHeight: 48, minWidth: 48, padding: `0 ${rem(10)}`, borderRadius: 999,
+                    border: `1px solid ${Number(下書き[i.id]) === v ? C.curtain : C.line}`,
+                    background: Number(下書き[i.id]) === v ? C.curtain : C.card,
+                    color: Number(下書き[i.id]) === v ? C.onCurtain : C.inkSoft,
+                    fontFamily: FONT_STACK, ...TYPE.li
+                  }}>{v}</button>
+              ))}
+            </div>
             {/* ★★その場で わけを 出します。★押してから 断りません。 */}
             {!pointOk(下書き[i.id], i) ? (
               <p style={{ ...小, margin: "2px 0 0", color: C.ink }}>

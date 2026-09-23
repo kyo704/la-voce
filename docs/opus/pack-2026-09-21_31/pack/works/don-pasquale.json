@@ -1,0 +1,236 @@
+{
+  "title": "ドン・パスクワーレ",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1843,
+  "source": "hand",
+  "source_id": "donizetti-pasquale",
+  "roles": [
+    {
+      "label": "ノリーナ"
+    },
+    {
+      "label": "エルネスト"
+    },
+    {
+      "label": "ドン・パスクワーレ"
+    },
+    {
+      "label": "マラテスタ医師"
+    },
+    {
+      "label": "公証人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "導入（パスクワーレとマラテスタ・天使のような娘）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・パスクワーレ",
+        "マラテスタ医師"
+      ]
+    },
+    {
+      "label": "パスクワーレのアリア（私はもう燃えている）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・パスクワーレ"
+      ]
+    },
+    {
+      "label": "エルネストのアリア（遠い国で）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルネスト",
+        "ドン・パスクワーレ"
+      ]
+    },
+    {
+      "label": "ノリーナのカヴァティーナ（騎士のまなざしは）",
+      "group_label": "第1幕",
+      "roles": [
+        "ノリーナ"
+      ]
+    },
+    {
+      "label": "ノリーナとマラテスタの二重唱（じっとしていて）",
+      "group_label": "第1幕",
+      "roles": [
+        "ノリーナ",
+        "マラテスタ医師"
+      ]
+    },
+    {
+      "label": "エルネストのアリア（哀れな男を憐れんで）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルネスト"
+      ]
+    },
+    {
+      "label": "偽りの結婚（四重唱と公証人）",
+      "group_label": "第2幕",
+      "roles": [
+        "ノリーナ",
+        "ドン・パスクワーレ",
+        "マラテスタ医師",
+        "公証人",
+        "エルネスト"
+      ]
+    },
+    {
+      "label": "第2幕フィナーレ（ぶたれた頬）",
+      "group_label": "第2幕",
+      "roles": [
+        "ノリーナ",
+        "エルネスト",
+        "ドン・パスクワーレ",
+        "マラテスタ医師"
+      ]
+    },
+    {
+      "label": "召使いの合唱（なんという騒ぎ）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ノリーナとパスクワーレの二重唱",
+      "group_label": "第3幕",
+      "roles": [
+        "ノリーナ",
+        "ドン・パスクワーレ"
+      ]
+    },
+    {
+      "label": "パスクワーレとマラテスタの二重唱（急ごう）",
+      "group_label": "第3幕",
+      "roles": [
+        "ドン・パスクワーレ",
+        "マラテスタ医師"
+      ]
+    },
+    {
+      "label": "エルネストのセレナータ（4月の優しい夜）",
+      "group_label": "第3幕",
+      "roles": [
+        "エルネスト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "二重唱とフィナーレ（庭の場）",
+      "group_label": "第3幕",
+      "roles": [
+        "ノリーナ",
+        "エルネスト",
+        "ドン・パスクワーレ",
+        "マラテスタ医師",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "note": "セレナータ"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -53,7 +53,10 @@ const 中 = {};
 });
 
 console.log("① 4画面 とも 呼ばれて いる");
-const 画面 = ["LessonPrefs", "LessonPrefMap", "LessonRoundDone", "LessonPlaceSlots"];
+// ★★★`LessonPlaceSlots` を 消しました（★2026-09-24）。
+//   ★同じ 見本（`P_okeru`）の 画面が `OpsOkeru` に すでに ありました。
+//   ★★`components/tests/no-duplicate-screens.test.js` が 見つけました。
+const 画面 = ["LessonPrefs", "LessonPrefMap", "LessonRoundDone", "OpsOkeru", "RoundStart"];
 t(紙.length > 0, "★紙を 読めた（" + 紙.length + "枚）");
 画面.forEach((n) => {
   const 呼 = 紙.filter((f) =>
@@ -67,12 +70,20 @@ const 親 = 紙.filter((f) =>
 t(親.length > 0, "★LessonRoundArea ── 呼ばれて いる（"
   + (親.map((f) => path.basename(f)).join("／") || "★どこからも") + "）");
 
-console.log("\n② 鍵の 判じは 1か所");
+console.log("\n② 鍵の 判じは 1機能に 1か所");
+// ★★★2026-09-24 ── ★機能が 増えました（レッスン割・公演）。
+//   ★★「ぜんぶで 1か所」では なく、★**1つの 機能に 1か所** です。
+//     ★`LessonRoundArea` が `lesson_rounds`、★`KoenArea` が `koen`。
+//   ★★★見るのは 2つ ──
+//     ① レッスン割の 鍵を 見て いるのは まとめ役 だけ か
+//     ② `featureOn` を 呼ぶ ところは、★どれも **まとめ役** か（★画面に 散らばって いない）
 const 判 = 紙.filter((f) => /\bfeatureOn\s*\(/.test(中[f]) && !/lib[\\/]featureOn\.js$/.test(f));
-t(判.length === 1, "★`featureOn` を 呼ぶのは 1か所（"
-  + 判.map((f) => path.basename(f)).join("／") + "）");
-t(判.length === 1 && path.basename(判[0]) === "LessonRoundArea.jsx",
-  "★呼ぶのは まとめ役");
+const レ鍵 = 紙.filter((f) => /LESSON_ROUND_KEY/.test(中[f]) && !/lib[\\/]lessonRound\.js$/.test(f));
+t(レ鍵.length === 1 && path.basename(レ鍵[0]) === "LessonRoundArea.jsx",
+  "★レッスン割の 鍵を 見るのは まとめ役 だけ（" + レ鍵.map((f) => path.basename(f)).join("／") + "）");
+t(判.every((f) => /Area\.jsx$/.test(f)),
+  "★`featureOn` を 呼ぶのは まとめ役 だけ（" + 判.map((f) => path.basename(f)).join("／") + "）");
+t(判.length > 0, "★鍵を 見て いる ところが ある（" + 判.length + "か所）");
 
 console.log("\n③ 鍵の 字を 2か所に 書いて いない");
 // ★★★見るのは「**鍵として** 直に 書かれた 字」だけ です。
@@ -98,7 +109,11 @@ t(戻 > 判行, "★閉じて いれば null を 返す");
 //   ★★いまは ── ★学生には 出さない ／ ★先生には「回を 始める」を 出す。
 t(/if \(!round\) \{/.test(area), "★回が 無い ときの 分かれ道が ある");
 const 無 = area.slice(area.indexOf("if (!round) {"), area.indexOf("if (!round) {") + 500);
-t(/if \(!教 \|\| !myOrg\) return null;/.test(無), "★★学生には 出さない（★始めるのは 先生か 事務）");
+t(/if \(!教 \|\| myOrgs\.length === 0\) return null;/.test(無), "★★学生には 出さない（★始めるのは 先生か 事務）");
+// ★★★2026-09-24 ── ★学校を `limit 1` で 選びません（★裁定140・sql/71）。
+t(/rpc\(\s*"my_orgs"\)/.test(area), "★どの 学校に いるかは 台帳が 返す");
+t(!/from\("memberships"\)[\s\S]{0,120}limit\(1\)/.test(area), "★★`limit 1` で 学校を 選んで いない");
+t(/is_student !== true/.test(area), "★学生と して いる 学校は 外す（★学生の 回は ない）");
 t(/<RoundStart/.test(無), "★先生には 始める ところを 出す");
 // ★★中身を 描く ところ より、★返す 方が 先に 並んで いる こと
 t(戻 < area.indexOf("<LessonPrefs"), "★null は 画面を 組み立てる 前");

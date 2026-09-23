@@ -29,8 +29,8 @@
     "lib/koenInfo.js"
   ],
   "点を入れる": [
-    "components/ScoreEntry.jsx",
-    "lib/scoreEntry.js"
+    "components/OpsTenIreru.jsx",
+    "lib/evaluation.js"
   ],
   "審査員を足す": [
     "components/JuryPanel.jsx",
@@ -89,7 +89,8 @@
     "lib/lessonRound.js"
   ],
   "置ける枠": [
-    "components/LessonPlaceSlots.jsx",
+    "components/OpsOkeru.jsx",
+    "lib/opsKumu.js",
     "lib/lessonRound.js"
   ],
   "回を始める": [
@@ -99,5 +100,13 @@
   "担当の先生を選ぶ": [
     "components/MonkaPickTeacher.jsx",
     "lib/monkaWay.js"
+  ],
+  "公演の料金": [
+    "components/KoenPay.jsx",
+    "lib/koenInvite.js"
+  ],
+  "公演の運営": [
+    "components/KoenArea.jsx",
+    "lib/koenArea.js"
   ]
 }
