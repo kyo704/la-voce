@@ -82,8 +82,34 @@ function t(cond, label) {
   // ★★見本 577〜582行。★アプリは 1文字も 足しません。
   t(tc.MORNING_WORDS_FOOT === "前に あなたが 書いた ことばです", "★下の 1行が 見本の まま");
   t(mihon.includes(tc.MORNING_WORDS_FOOT), "★その 字が 見本に ある");
-  t(mihon.includes("border-color:#CFC0A4;background:#FDFAF3"), "★見本の 色");
-  t(/borderColor: "#CFC0A4", background: "#FDFAF3"/.test(home), "★実装も 同じ 色");
+  // ★★★2026-09-23（★段3a A群）── ★字を 覚えるのを やめました。
+  //   ★★もとは `mihon.includes("border-color:#CFC0A4;background:#FDFAF3")` と 書いて ありました。
+  //     ★★`#CFC0A4` は、★**どの 見本にも 1度も 出て きません**（★9本 数えました）。
+  //       ★見本は 変数で 書いて います ── border-color:var(--ink4);background:var(--card2)
+  //     ★★2026-09-11 の 一度きりの 読み違い が、★実装と 見張りの 両方に 入って いました。
+  //       ★見張りは その日から きょうまで、★**一度も 通って いません**。
+  //   ★★★いまは 見本の `:root` から 値を 引いて くらべます。
+  const 変数 = (n) => (mihon.match(new RegExp("--" + n + "\\s*:\\s*([^;}]+)"))
+    || [])[1] && (mihon.match(new RegExp("--" + n + "\\s*:\\s*([^;}]+)")))[1].trim();
+  const ink4 = 変数("ink4"), card2 = 変数("card2");
+  t(Boolean(ink4 && card2), "★見本の :root から 色を 読めた（--ink4 " + ink4 + " / --card2 " + card2 + "）");
+  t(mihon.includes("border-color:var(--ink4);background:var(--card2)"),
+    "★見本は その 2つを 使って いる");
+  const 実背 = (home.match(/borderColor: "(#[0-9A-Fa-f]{6})", background: "(#[0-9A-Fa-f]{6})"/) || []);
+  t(実背[2] && card2 && 実背[2].toUpperCase() === card2.toUpperCase(),
+    "★地の 色は 見本と 同じ（" + 実背[2] + " / " + card2 + "）");
+  // ★★★枠の 色は ちがいます（★実装 #CFC0A4 ／ 見本 --ink4）。
+  //   ★★見た目の お決め なので、★勝手に 変えません。★台帳に 書いて 置きます。
+  //   ★★★書いて 置く ことを、★ここで 見ます。★消したら 赤く なります。
+  const 除 = JSON.parse(require("fs").readFileSync(
+    require("path").join(__dirname, "..", "..", "tools", "excluded_by_design.json"), "utf8"));
+  const 枠 = ((除.__diff__ || {})["home.morningWords.borderColor"]) || null;
+  t(Boolean(枠 && 枠.why && 枠.reopen_when),
+    "★枠の 色の ちがいが、★わけと 開き直す 引き金つきで 書いて ある");
+  t(Boolean(枠) && 枠.mihon && ink4 && 枠.mihon.toUpperCase() === ink4.toUpperCase(),
+    "★書いて ある 見本の 値が、★いまの 見本と 同じ（★見本が 変わったら 赤く なります）");
+  t(Boolean(枠) && 実背[1] && 枠.app.toUpperCase() === 実背[1].toUpperCase(),
+    "★書いて ある 実装の 値が、★いまの 実装と 同じ");
   // ★★その日の 本番だけ。★前の日も 次の日も 出しません。
   const P = [{ performed_on: "2026-09-11", label: "秋の 演奏会", morning_words: "ことば" }];
   t(tc.morningWordsFor(P, "2026-09-11").words === "ことば", "★その日は 出す");

@@ -96,7 +96,12 @@ export default function HomeV2({
           ★★アプリは 1文字も 足しません。★要約しません。★知らせも 出しません。
             ★書くように 誘いません。★書いて いない 方には、★枠ごと 出ません。
           ★★決めるのは lib/todayCard.js の morningWordsFor です。★ここで 決めません。
-          ★★見本の 色　border-color:#CFC0A4 ／ background:#FDFAF3 */}
+          ★★地の 色は 見本と 同じ（--card2 ＝ #FDFAF3）。
+          ★★★枠の 色は ちがいます ── ★見本 --ink4（#706456）／ 実装 #CFC0A4。
+            ★★2026-09-11 に『見本の 色』として 入りましたが、★#CFC0A4 は
+              ★どの 見本にも 出て きません。★読み違い です。
+            ★★いま 直すと ここだけ 濃い 枠に なる ので、★お伺いして から にします。
+            ★★★`tools/excluded_by_design.json` の `__diff__` に 書いて あります。 */}
       {morning ? (
         <Card style={{ borderColor: "#CFC0A4", background: "#FDFAF3" }}>
           {morning.label ? <Usu style={{ marginTop: 0 }}>{morning.label}</Usu> : null}

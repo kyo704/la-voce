@@ -668,7 +668,13 @@ export function Switch({ on, onChange, label }) {
 /**
  * ★戻る（.back）。★「‹ ◯◯」。
  *
- *   ★見本 .back{font-size:12.5px;color:var(--enji);padding:9px 0 3px;display:inline-block}
+ *   ★見本 .back{font-size:13.5px;color:var(--enji);padding:9px 0 3px;display:inline-block}
+ *
+ *   ★★★2026-09-23（★段3a A群）── ★12.5 → 13.5 に 直しました。
+ *     ★ここの 註は ずっと「見本 12.5px」と 書いて いました。
+ *     ★★けれど 見本は、★いまも 前の 版も **13.5px** です。★読み違い でした。
+ *     ★★★`lib/uiKit.js` の 決め（★見本より 1段 大きく）から 見ても、
+ *       ★見本より **小さい** のは 逆 でした。
  *   ★★行き先の 名前を 書きます。★「戻る」だけに しません。
  *     ★どこへ 戻るのかが 分からないと、★押せません。
  */
@@ -677,7 +683,7 @@ export function Back({ children, onClick }) {
     <button className="back" type="button" onClick={onClick} style={{
       display: "inline-block", background: "transparent", border: "none",
       padding: "9px 1px 3px", minHeight: SPACE.tapMin,
-      color: C.curtain, fontSize: rem(12.5), fontFamily: FONT_STACK,
+      color: C.curtain, fontSize: rem(13.5), fontFamily: FONT_STACK,
       textAlign: "left"
     }}>‹　{children}</button>
   );
