@@ -41,7 +41,12 @@ def 台帳(試し=True):
   tok = subprocess.run(
     ["bash", "-lc", 'source "%s" >/dev/null 2>&1; printf %%s "$SUPABASE_ACCESS_TOKEN"' % f],
     capture_output=True, text=True).stdout.strip()
-  ref = "smntpurraumeerselvsc" if 試し else "xxjtplvpcneksrofkjmf"
+  # ★★★2026-09-23 ── ★試しの 台帳が 移りました。
+  #   ★古い `smntpurraumeerselvsc` は **止まって います**（INACTIVE）。
+  #   ★★そこへ 問うと「connection timeout」で 落ちます。★落ちるのは 良い こと ですが、
+  #     ★「試しで 通った」と 言える 先は いま `orutyqtfygvzcuhjgsch`（la-voce-test2）だけ です。
+  #   ★★FX7 で 建て直した のは こちら で、★表の 数は 本番と 同じ 135 です。
+  ref = "orutyqtfygvzcuhjgsch" if 試し else "xxjtplvpcneksrofkjmf"
   req = urllib.request.Request(
     "https://api.supabase.com/v1/projects/%s/database/query" % ref,
     data=json.dumps({"query": "select type_key, name, note from public.page_type_catalog"}).encode(),

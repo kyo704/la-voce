@@ -18,6 +18,14 @@
 //     ② どの 道も `CRON_SECRET` が 無ければ 503
 //     ③ その 503 は、★合言葉を くらべる **前** に ある
 //     ④ 台帳に 触るのは、★くらべた **あと**
+//
+//   ★★★`app/api/ops/` も 同じ ②③④ で 見ます（★2026-09-23）。
+//     ★こちらは **時計で 走りません**。★人が 呼ぶ ときだけ 走ります。
+//     ★★だから `vercel.json` には 書きません ── ①は 当てません。
+//     ★★★けれど 合言葉は 同じ です。★守りを 緩めません。
+//     ★（★置いた わけ ── ★訓練の 便りを `cron/` に 置くと、★①が 崩れます。
+//        ★★①は「道の 名前を 覚えない」ための 決まり です。★穴を 開けずに、
+//        ★★時計で 走らない 道を 別の 棚に 分けました）
 // ============================================================================
 const fs = require("fs");
 const path = require("path");
@@ -47,9 +55,22 @@ t(JSON.stringify(道) === JSON.stringify(書),
   t(分 !== "*", "★" + c.path + " は 1日 1回の 形（" + c.schedule + "）");
 });
 
+// ★★手で 呼ぶ 道（★時計で 走らない）
+const 手置場 = path.join(ROOT, "app", "api", "ops");
+const 手道 = fs.existsSync(手置場) ? fs.readdirSync(手置場).filter((n) =>
+  fs.statSync(path.join(手置場, n)).isDirectory()
+  && fs.existsSync(path.join(手置場, n, "route.js"))).sort() : [];
+(v.crons || []).forEach((c) => {
+  t(!c.path.startsWith("/api/ops/"),
+    "★" + c.path + " ── 手で 呼ぶ 棚の 道を 時計に 載せて いない");
+});
+
 console.log("\n② 合言葉が 無ければ 503／③ くらべる 前に／④ 台帳は あと");
-道.forEach((n) => {
-  const code = readCode("app/api/cron/" + n, "route.js");
+const 見る = 道.map((n) => ["app/api/cron/" + n, n])
+  .concat(手道.map((n) => ["app/api/ops/" + n, "ops/" + n]));
+t(見る.length >= 道.length, "★見る 道（" + 見る.length + "本）");
+見る.forEach(([dir, n]) => {
+  const code = readCode(dir, "route.js");
   const 読 = code.indexOf("process.env.CRON_SECRET");
   const 五 = code.indexOf("503");
   const 比 = code.search(/authHeader\s*!==|headers\.get\("authorization"\)/);

@@ -3,6 +3,10 @@
 --   ①10〜15分の枠 ②審査員が自分の門下なら「門下」と出す（★自動で外さない）
 --   ③伴奏者が別の枠 ④確定した順に 採点の画面が並ぶ
 -- ★165（evaluation_judges）・10 のあと
+-- ★本番で確かめた列（2026-09-23 夜・Code の指摘を受けて）:
+--   evaluation_judges は org_id・event_id・judge_id・added_by・added_at の ★5列だけ
+--   ★judge_name_at は evaluation_scores／evaluation_reviews の列。★ここには無い
+--   → 審査員の名前は ★profiles（display_name／name）から取る
 
 create table if not exists public.jury_slots (
   id          uuid primary key default gen_random_uuid(),
@@ -36,12 +40,14 @@ create policy jury_slots_mine on public.jury_slots for select to authenticated
 create or replace function public.jury_monka_flags(p_event uuid)
 returns table(slot_id uuid, student_name text, judge_name text, is_monka boolean)
 language sql stable security definer set search_path to 'public' as $$
-  select s.id, coalesce(s.student_name_at,'—'), coalesce(j.judge_name_at,'—'),
+  -- ★審査員の名前は profiles から取る（evaluation_judges に名前の列は無い。2026-09-23 の誤り）
+  select s.id, coalesce(s.student_name_at,'—'), coalesce(p.display_name, p.name, '—'),
          exists (select 1 from public.assignments a
                   where a.org_id = s.org_id and a.student_id = s.student_id
                     and a.teacher_id = j.judge_id and a.ended_at is null)
     from public.jury_slots s
     join public.evaluation_judges j on j.event_id = s.event_id
+    left join public.profiles p on p.id = j.judge_id
    where s.event_id = p_event and public.has_can(s.org_id,'saiten');
 $$;
 revoke all on function public.jury_monka_flags(uuid) from public, anon;

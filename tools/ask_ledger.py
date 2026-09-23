@@ -23,11 +23,16 @@ import json, os, re, subprocess, sys, urllib.request, urllib.error
 
 # ★★★台帳は 2つ あります（★2026-09-20 に 分かりました）。
 #   ★本番 …… `xxjtplvpcneksrofkjmf`（★38人の 記録）
-#   ★試し …… `smntpurraumeerselvsc`（`la-voce-test`・★手元の 画面が 見る 先）
+#   ★試し …… `orutyqtfygvzcuhjgsch`（`la-voce-test2`・★手元の 画面が 見る 先）
 #   ★★★既定は **本番** の まま です。★`--test` を 付けた ときだけ 試しの ほうへ。
 #     ★★取り違えると、★試すつもりで 本番を 触ります。★既定を 変えません。
 REF_HONBAN = "xxjtplvpcneksrofkjmf"
-REF_TAMESHI = "smntpurraumeerselvsc"
+# ★★★2026-09-23 ── ★試しの 台帳が 移りました。
+#   ★古い `smntpurraumeerselvsc` は **止まって います**（INACTIVE）。
+#   ★★そこへ 問うと「connection timeout」で 落ちます。★落ちるのは 良い こと ですが、
+#     ★「試しで 通った」と 言える 先は いま `orutyqtfygvzcuhjgsch`（la-voce-test2）だけ です。
+#   ★★FX7 で 建て直した のは こちら で、★表の 数は 本番と 同じ 135 です。
+REF_TAMESHI = "orutyqtfygvzcuhjgsch"
 REF = REF_HONBAN
 
 # ★★書く 言葉。★`--write` が 無ければ 弾きます。

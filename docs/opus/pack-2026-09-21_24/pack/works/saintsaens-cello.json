@@ -1,0 +1,92 @@
+{
+  "title": "チェロ協奏曲第1番 イ短調",
+  "title_original": "Concerto pour violoncelle n° 1",
+  "composer": "サン＝サーンス",
+  "composer_sort": "Saint-Saens, Camille",
+  "kind": "orchestra",
+  "year_written": 1872,
+  "source": "hand",
+  "source_id": "saintsaens-cello1",
+  "duration_min": 19,
+  "roles": [
+    {
+      "label": "チェロ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "単一楽章（3つの部分）",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

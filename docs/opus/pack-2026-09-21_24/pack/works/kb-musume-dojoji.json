@@ -1,0 +1,85 @@
+{
+  "title": "京鹿子娘道成寺",
+  "title_original": "京鹿子娘道成寺",
+  "aliases": [
+    "娘道成寺"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "drama",
+  "year_written": 1753,
+  "source": "hand",
+  "source_id": "kabuki-musume-dojoji",
+  "duration_min": 60,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "白拍子花子"
+    },
+    {
+      "label": "所化",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "道行と鐘供養",
+      "group_label": "序",
+      "roles": [
+        "白拍子花子",
+        "所化",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "乱拍子と手踊り",
+      "group_label": "中",
+      "roles": [
+        "白拍子花子",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "鞠唄・花笠踊り",
+      "group_label": "中",
+      "roles": [
+        "白拍子花子",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "鐘入りと蛇体",
+      "group_label": "終",
+      "roles": [
+        "白拍子花子",
+        "所化",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 0,
+      "section": "other"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽"
+    },
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "is_optional": true
+    }
+  ],
+  "school": "歌舞伎（上演の家により型が違う）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}
