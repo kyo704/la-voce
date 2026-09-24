@@ -1,0 +1,66 @@
+{
+  "title": "チェロソナタ ト短調",
+  "title_original": "Соната для виолончели",
+  "aliases": [],
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninoff, Sergei",
+  "kind": "chamber",
+  "year_written": 1901,
+  "source": "hand",
+  "source_id": "rachmaninov-cello-sonata",
+  "duration_min": 35,
+  "roles": [
+    {
+      "label": "チェロ"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 レント〜アレグロ・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アレグロ・スケルツァンド",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アンダンテ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第4楽章 アレグロ・モッソ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

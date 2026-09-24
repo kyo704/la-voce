@@ -1,0 +1,175 @@
+{
+  "title": "仮面",
+  "title_original": "Le maschere",
+  "aliases": [],
+  "composer": "マスカーニ",
+  "composer_sort": "Mascagni, Pietro",
+  "kind": "opera",
+  "year_written": 1901,
+  "source": "hand",
+  "source_id": "mascagni-maschere",
+  "duration_min": 150,
+  "language": "it",
+  "roles": [
+    {
+      "label": "ロザウラ"
+    },
+    {
+      "label": "フロリンド"
+    },
+    {
+      "label": "パンタローネ"
+    },
+    {
+      "label": "アルレッキーノ"
+    },
+    {
+      "label": "コロンビーナ"
+    },
+    {
+      "label": "ブリゲッラ"
+    },
+    {
+      "label": "タルタリア"
+    },
+    {
+      "label": "カピタン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前口上（仮面たちの紹介）",
+      "group_label": "序",
+      "roles": [
+        "パンタローネ",
+        "アルレッキーノ",
+        "コロンビーナ",
+        "ブリゲッラ",
+        "タルタリア",
+        "カピタン"
+      ]
+    },
+    {
+      "label": "第1幕 縁談",
+      "group_label": "第1幕",
+      "roles": [
+        "ロザウラ",
+        "フロリンド",
+        "パンタローネ",
+        "コロンビーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 仮面たちの計略",
+      "group_label": "第2幕",
+      "roles": [
+        "アルレッキーノ",
+        "コロンビーナ",
+        "ブリゲッラ",
+        "タルタリア",
+        "カピタン"
+      ]
+    },
+    {
+      "label": "第3幕 大団円",
+      "group_label": "第3幕",
+      "roles": [
+        "ロザウラ",
+        "フロリンド",
+        "パンタローネ",
+        "アルレッキーノ",
+        "コロンビーナ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★上演はまれ"
+}

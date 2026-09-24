@@ -1,0 +1,77 @@
+{
+  "title": "サクソフォン四重奏曲",
+  "composer": "デザンクロ",
+  "composer_sort": "Desenclos, Alfred",
+  "kind": "chamber",
+  "year_written": 1964,
+  "source": "hand",
+  "source_id": "desenclos-sax-quartet",
+  "roles": [
+    {
+      "label": "ソプラノサクソフォン"
+    },
+    {
+      "label": "アルトサクソフォン"
+    },
+    {
+      "label": "テナーサクソフォン"
+    },
+    {
+      "label": "バリトンサクソフォン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    },
+    {
+      "label": "第2楽章 カルモ〜アンダンテ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    },
+    {
+      "label": "第3楽章 プーコ・ラルゴ〜アレグロ・エネルジコ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ソプラノサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "アルトサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "テナーサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "バリトンサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}

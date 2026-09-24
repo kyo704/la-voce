@@ -1,0 +1,173 @@
+{
+  "title": "ウェルテル",
+  "title_original": "Werther",
+  "aliases": [
+    "春風よなぜ"
+  ],
+  "composer": "マスネ",
+  "composer_sort": "Massenet, Jules",
+  "kind": "opera",
+  "year_written": 1892,
+  "duration_min": 140,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "massenet-werther",
+  "roles": [
+    {
+      "label": "ウェルテル"
+    },
+    {
+      "label": "シャルロッテ"
+    },
+    {
+      "label": "アルベール"
+    },
+    {
+      "label": "ソフィー"
+    },
+    {
+      "label": "大法官"
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 大法官の家（子どもたちのクリスマス）",
+      "group_label": "第1幕",
+      "roles": [
+        "大法官",
+        "児童合唱",
+        "ウェルテル",
+        "シャルロッテ"
+      ]
+    },
+    {
+      "label": "第1幕 月光の二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "ウェルテル",
+        "シャルロッテ"
+      ]
+    },
+    {
+      "label": "第2幕 菩提樹の広場",
+      "group_label": "第2幕",
+      "roles": [
+        "ウェルテル",
+        "シャルロッテ",
+        "アルベール",
+        "ソフィー"
+      ]
+    },
+    {
+      "label": "第3幕 手紙の場（オシアンの歌）",
+      "group_label": "第3幕",
+      "roles": [
+        "シャルロッテ",
+        "ウェルテル",
+        "ソフィー"
+      ]
+    },
+    {
+      "label": "第4幕 クリスマスの夜・フィナーレ",
+      "group_label": "第4幕",
+      "roles": [
+        "ウェルテル",
+        "シャルロッテ",
+        "児童合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

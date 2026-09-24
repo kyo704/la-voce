@@ -345,5 +345,65 @@
  "香盤表": [
   "components/KoenSheet.jsx",
   "lib/koenSheet.js"
+ ],
+ "コマの中身": [
+  "components/OpsSchedule.jsx",
+  "lib/opsSchedule.js"
+ ],
+ "公演の料金": [
+  "components/KoenInfo.jsx",
+  "lib/koenInfo.js"
+ ],
+ "受診プレビュー": [
+  "components/NotesV2.jsx",
+  "lib/clinicSheet.js"
+ ],
+ "組織": [
+  "components/OpsOrgMaster.jsx",
+  "lib/orgDivisions.js"
+ ],
+ "ひとの一覧": [
+  "components/OpsPeople.jsx",
+  "lib/orgRoster.js"
+ ],
+ "置ける枠": [
+  "components/OpsKumu.jsx",
+  "lib/opsKumu.js"
+ ],
+ "自分の門下": [
+  "components/Renraku.jsx",
+  "lib/renraku.js"
+ ],
+ "記事": [
+  "components/VocalTracker.jsx",
+  "lib/learnContent.js"
+ ],
+ "まだ": [
+  "components/VocalTracker.jsx",
+  "lib/itemLedger.js"
+ ],
+ "切ってある機能": [
+  "components/VocalTracker.jsx",
+  "lib/featureFlags.js"
+ ],
+ "見た目を選ぶ": [
+  "components/VocalTracker.jsx",
+  "lib/displayPrefs.js"
+ ],
+ "自分のコマの時間": [
+  "components/MyTimetable.jsx",
+  "lib/myTimetable.js"
+ ],
+ "コマを決める": [
+  "components/OpsOrgMaster.jsx",
+  "lib/opsSchedule.js"
+ ],
+ "出演者": [
+  "components/KoenCast.jsx",
+  "lib/koenCast.js"
+ ],
+ "公演": [
+  "components/KoenArea.jsx",
+  "lib/koenArea.js"
  ]
 }

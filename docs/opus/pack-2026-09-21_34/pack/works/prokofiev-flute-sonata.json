@@ -1,0 +1,66 @@
+{
+  "title": "フルートソナタ ニ長調",
+  "title_original": "Соната для флейты",
+  "aliases": [],
+  "composer": "プロコフィエフ",
+  "composer_sort": "Prokofiev, Sergei",
+  "kind": "chamber",
+  "year_written": 1943,
+  "source": "hand",
+  "source_id": "prokofiev-flute-sonata",
+  "duration_min": 24,
+  "roles": [
+    {
+      "label": "フルート"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 スケルツォ",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アンダンテ",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第4楽章 アレグロ・コン・ブリオ",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

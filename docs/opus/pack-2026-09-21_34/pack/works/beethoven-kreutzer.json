@@ -1,0 +1,60 @@
+{
+  "title": "ヴァイオリンソナタ第9番 イ長調「クロイツェル」",
+  "title_original": "Violinsonate Nr. 9",
+  "aliases": [
+    "クロイツェル"
+  ],
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "chamber",
+  "year_written": 1803,
+  "source": "hand",
+  "source_id": "beethoven-kreutzer-sonata",
+  "duration_min": 38,
+  "roles": [
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アダージョ・ソステヌート〜プレスト",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アンダンテ・コン・ヴァリアツィオーニ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 プレスト",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "title": "神々の黄昏",
+  "title_original": "Götterdämmerung",
+  "aliases": [
+    "指環"
+  ],
+  "composer": "ワーグナー",
+  "composer_sort": "Wagner, Richard",
+  "kind": "opera",
+  "year_written": 1876,
+  "source": "hand",
+  "source_id": "wagner-gotterdammerung",
+  "duration_min": 270,
+  "language": "de",
+  "roles": [
+    {
+      "label": "ジークフリート"
+    },
+    {
+      "label": "ブリュンヒルデ"
+    },
+    {
+      "label": "ハーゲン"
+    },
+    {
+      "label": "グンター"
+    },
+    {
+      "label": "グートルーネ"
+    },
+    {
+      "label": "アルベリヒ"
+    },
+    {
+      "label": "ヴァルトラウテ"
+    },
+    {
+      "label": "ノルン",
+      "is_group": true
+    },
+    {
+      "label": "ラインの娘たち",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ ノルンの場と夜明けの二重唱",
+      "group_label": "プロローグ",
+      "roles": [
+        "ノルン",
+        "ブリュンヒルデ",
+        "ジークフリート"
+      ]
+    },
+    {
+      "label": "第1幕 ギービヒ家",
+      "group_label": "第1幕",
+      "roles": [
+        "ハーゲン",
+        "グンター",
+        "グートルーネ",
+        "ジークフリート"
+      ]
+    },
+    {
+      "label": "第1幕 ヴァルトラウテの訪問と裏切り",
+      "group_label": "第1幕",
+      "roles": [
+        "ブリュンヒルデ",
+        "ヴァルトラウテ",
+        "ジークフリート"
+      ]
+    },
+    {
+      "label": "第2幕 ハーゲンの呼び出しと誓い",
+      "group_label": "第2幕",
+      "roles": [
+        "ハーゲン",
+        "アルベリヒ",
+        "ジークフリート",
+        "ブリュンヒルデ",
+        "グンター",
+        "グートルーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ラインの娘たちと狩",
+      "group_label": "第3幕",
+      "roles": [
+        "ジークフリート",
+        "ラインの娘たち",
+        "ハーゲン",
+        "グンター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 葬送行進曲とブリュンヒルデの自己犠牲",
+      "group_label": "第3幕",
+      "roles": [
+        "ブリュンヒルデ",
+        "ハーゲン",
+        "グートルーネ",
+        "ラインの娘たち",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 8,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ワーグナーチューバ",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "ハープ",
+      "count": 6,
+      "section": "harp"
+    },
+    {
+      "part": "舞台上の角笛",
+      "count": 0,
+      "section": "banda"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

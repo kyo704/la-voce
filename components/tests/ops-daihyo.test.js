@@ -56,8 +56,27 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
 
   見る("④できる こと 8行", () => {
     assert.strictEqual(m.CAN_DO.length, 8);
-    assert.strictEqual(m.CAN_DO.filter((x) => x.ok).length, 4);
-    assert.strictEqual(m.CAN_DO.filter((x) => !x.ok).length, 4);
+    // ★★2026-09-24・裁定190 ── ★数を 覚えるのを やめました。
+    //   ★★「できる 4つ／できない 4つ」と 数で 縛って いました。
+    //     ★★裁定190 で 1つが `ok: false` に 移り、★この 行が 先に 落ちました。
+    //     ★★落ちる べきは「中身が ちがう」ほう です。★数では ありません。
+    //   ★★★裁定190 §2 の とおりに、★1行ずつ 見ます。
+    const 表 = new Map(m.CAN_DO.map((x) => [x.label, x.ok]));
+    const 見立 = [
+      ["門下の 連絡に「重要」を 付ける", true],      // ★§2 ②
+      ["門下の 投稿を 消す", true],                  // ★§2 ②
+      ["時間割の 集まりを 見る", true],              // ★§2 ①（★sql/75 で 道が 出来ました）
+      ["出して いない人に 1回だけ 知らせる", false], // ★§2 ✕ 催促を 送る
+      ["ほかの人の 時間割の 中身を 見る", false],    // ★§2 ✕ 中身
+      ["ほかの人の 空きコマを 見る", false],
+      ["予定を 決める", false],
+      ["生徒の 記録を 見る", false]                  // ★§2 ✕ 体調
+    ];
+    見立.forEach(([l, v]) => {
+      assert.ok(表.has(l), "★" + l + " が ありません");
+      assert.strictEqual(表.get(l), v,
+        "★" + l + " は " + (v ? "できます" : "できません") + " の はず です（★裁定190 §2）");
+    });
     const 字 = m.CAN_DO.map((x) => x.label).join("／");
     ["時間割の 中身", "空きコマ", "生徒の 記録"].forEach((v) =>
       assert.ok(字.includes(v), "★" + v + " が ありません"));
@@ -120,9 +139,23 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     };
     const 集 = 見(f2, "get_timetable_submitted");
     const 知 = 見(f3, "nudge_timetable");
-    // ★★代表を 見る 1行が 道に あるか。
-    const 集が代表を見る = /monka_representative|is_representative/.test(集);
+    // ★★★2026-09-24・裁定190 ── ★代表の 道は **別の 関数** に なりました。
+    //   ★★`get_timetable_submitted` は 変えません（★先生・事務に 効く ため）。
+    //   ★★代わりに `rep_timetable_submitted` を 見ます。
+    const 代 = readRaw("supabase", "migrations_pending",
+      "20260924_75_rep_submitted.sql");
+    const 集が代表を見る = /is_representative/.test(代)
+      && /rep_timetable_submitted/.test(代);
     const 知が代表を見る = /monka_representative|is_representative/.test(知);
+    // ★★★既存の 2本は 変わって いない こと（★裁定190 §4）。
+    assert.ok(!/is_representative/.test(集), "★古い 関数を 広げて います");
+    assert.ok(!/is_representative/.test(知), "★知らせの 関数を 広げて います");
+    // ★★★代表の 道が、★同じ 門下だけ／真偽だけ で ある こと。
+    assert.ok(/a2\.teacher_id = me\.teacher_id/.test(代), "★同じ 門下に 絞って いません");
+    assert.ok(/returns table\(student_id uuid, submitted boolean\)/.test(代),
+      "★返す 列が ちがいます（★名前や 中身を 返して います）");
+    assert.ok(/revoke all on function public\.rep_timetable_submitted\(uuid\) from public, anon/.test(代),
+      "★だれにでも 開いて います");
     const 約 = m.CAN_DO.filter((c) => c.ok).map((c) => c.label);
     const ずれ = [];
     // ★★鍵は `CAN_DO` の 字 そのもの です。★写しを 作りません ──

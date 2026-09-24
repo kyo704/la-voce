@@ -1,0 +1,122 @@
+{
+  "title": "エジプトのイスラエル人",
+  "title_original": "Israel in Egypt",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "chorus",
+  "year_written": 1739,
+  "source": "hand",
+  "source_id": "handel-israel",
+  "duration_min": 130,
+  "language": "en",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 ヨセフの葬送",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 出エジプト（10の災い）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3部 モーセの歌",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass",
+      "is_optional": true
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion",
+      "is_optional": true
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★合唱の比重が非常に大きい"
+}
