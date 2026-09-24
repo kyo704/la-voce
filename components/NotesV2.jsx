@@ -98,8 +98,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
       repertoire_name: item.name || "",
       composer: item.composer || "", position_in: item.positionIn || "",
       language: item.language || "イタリア語", high_note: item.highNote || "",
-      low_note: item.lowNote || "", status: item.status || "はじめたばかり",
-      performance: item.performance || ""
+      low_note: item.lowNote || "", status: item.status || "はじめたばかり"
     });
     setError("");
   }
@@ -175,7 +174,9 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
                       id: item.noteId, name: item.name, composer: item.composer,
                       positionIn: item.positionIn, language: item.language,
                       highNote: item.highNote, lowNote: item.lowNote,
-                      status: st, performance: item.performance
+                      // ★★名前は 変わりません。★つなぎ直しは 起きません。
+                      previousName: item.name,
+                      status: st
                     });
                   }
                 }}>{st}</Li>
@@ -438,13 +439,25 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
     // ★★稽古の メモは、★6つの 欄も 一緒に 渡します（★裁定 §1）。
     //   ★★知らない 欄は 落とします（pickFields）。
     if (kind === "repertoire" && onAddRepertoire) {
-      const ok = await onAddRepertoire({
-        id: draft.id, name: draft.repertoire_name, composer: draft.composer,
+      // ★★`previousName` ── ★開いた ときの 名前 です（★`body` に 入って います）。
+      //   ★★足す ときは 空 です。★直す ときだけ 入って います。
+      //   ★★★これが 無いと、★名前を 変えた とき 曲が 2つに 割れます。
+      const res = await onAddRepertoire({
+        id: draft.id, name: draft.repertoire_name, previousName: draft.body || "",
+        composer: draft.composer,
         positionIn: draft.position_in, language: draft.language,
         highNote: draft.high_note, lowNote: draft.low_note,
-        status: draft.status, performance: draft.performance
+        status: draft.status
       });
-      if (!ok) { setError("まだ足せていません。開いたままにしています。"); return false; }
+      const ok = res && res.ok !== false;
+      if (!ok) {
+        // ★★わけを 出します。★「まだ足せていません」だけ だと、
+        //   ★送れなかった ように 読めます。★曲名が 無い ときは ちがいます。
+        const why = (res && res.why) || "";
+        setError(why ? why + "。開いたままにしています。"
+          : "まだ足せていません。開いたままにしています。");
+        return false;
+      }
       setError("");
       return true;
     }
@@ -507,6 +520,34 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
           ) : null}
           打ったものは、ほかを 押しても <b>消えません</b>。
         </div>
+        {/* ==================================================================
+            ★★曲の 台帳の 断り（★見本 SC['曲を足す'] の note・2026-09-24）。
+              ★★見本の 3つ の うち、★書いたのは **2つ** です。
+
+              ★①「曲名・作曲家・役の どれか 1つ あれば 入ります」── ★書いて いません。
+                ★★この 道は 曲名が 要ります（`if (!key) return`）。
+                ★★★見本の **中でも** 食いちがって います ── ★見本の `addRep()` も
+                  「曲名を 入れてください」で 止めます。★note だけが 別の ことを
+                  言って います。★どちらが 正しいかは、★決めごと です。
+                ★★Opus に お尋ねして います。
+
+              ★②「ぜんぶ 空のままでは 入りません」── ★書きました。★本当 です。
+
+              ★③「あとで 曲名を 変えても、記録は ついてきます」── ★書きました。
+                ★★きょう、★本当に しました（★上の `onAddRepertoire`）。
+                ★★★かっこの 中は 変えました。★見本は「（名前では なく 中で
+                  つないでいます）」と 書いて います。★ちがいます ──
+                  ★つないで いるのは **名前** です。★変えた ときに、★記録の 中の
+                  曲名も いっしょに 書き換えて います。
+                ★★仕組みと ちがう ことを、★書きません。
+           ================================================================== */}
+        {kind === "repertoire" ? (
+          <div className="note">
+            <b>ぜんぶ 空のままでは 入りません</b>（どの 曲か 分からなくなるため）。<br />
+            あとで 曲名を 変えても、<b>記録は ついてきます</b>
+            （記録の 中の 曲名も、いっしょに 書き換えます）。
+          </div>
+        ) : null}
         {/* ★★稽古の メモは、★聞く項目を 分けます（★裁定 9月10日夜 §1）。
             ★★「＋を 押しても 同じ 白紙が 出ていました。
               ★書くことが 違うので、聞く項目を 分けました」
@@ -604,15 +645,44 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
                   onClick={() => setEditing({ ...editing, status: v })}>{v}</Pill>
               ))}
             </div>
-            <div className="fl">本番の 予定（あれば）</div>
-            <Input value={editing.performance || ""} placeholder="れい：11月20日 定期演奏会"
-              onChange={(e) => setEditing({ ...editing, performance: e.target.value })} />
+            {/* ==================================================================
+                ★★★「本番の 予定（あれば）」を 外しました（★2026-09-24）。
+                  ★★見本には あります。★けれど 書く 先が ありません ──
+                    `repertoire_tessitura` に その 列が なく、
+                    `onAddRepertoire` は 受け取って、★捨てて いました。
+                  ★★★打てて、★しまうと 消える ── ★いちばん 危ない 形 です。
+                    ★★打った 方は「入れた」と 思われます。★次に 開くと 空 です。
+                  ★★見本の「本番の予定を 入れると、本番でそろえる の 0日目に
+                    なります」も、★そう なって いません。★0日目を 決めるのは
+                    `lib/recordSheets.js` の 印 です（★`performances` の 行）。
+                  ★★どう するかは Opus に お尋ねして います
+                    （docs/ledgers/08-保留している決め.md）。
+                    ★★列を 足すのか、★見本から 外すのか ── ★決めでは ありません。
+                    ★★ここでは「黙って 消える」ことだけ を 止めます。
+               ================================================================== */}
             <div className="card repertoire-preview">
               <div style={{ fontSize: "0.75rem", lineHeight: 1.85 }}>
                 いま 入っているもの<br />
                 <b>{editing.repertoire_name || "（曲名 まだ）"}</b>{"　"}{editing.composer || ""}{"　"}{editing.position_in || ""}<br />
                 {editing.language || "ことば 未選択"}{"　／　"}{editing.high_note || "—"}{" 〜 "}{editing.low_note || "—"}{"　／　"}{editing.status || "ようす 未選択"}
               </div>
+            </div>
+            {/* ==============================================================
+                ★★見本の 下の note は 3つ です。★書いたのは **1つ** です。
+
+                  ★①「出来ばえ・点数の 欄は ありません。「様子」は ご自分で
+                    選ぶ段階です。」── ★書きました。★本当 です。
+
+                  ★②「足した曲は、ひつじの「たな」にも 並びます。」── ★書いて
+                    いません。★たなは `shelfRows(entries, …)` ── ★**記録**から
+                    出て います。★足しただけ の 曲は 並びません。★記録した 日が
+                    出来て はじめて 並びます。★書くと 嘘に なります。
+
+                  ★③「本番の予定を 入れると、本番でそろえる の 0日目に なります。」
+                    ── ★書いて いません。★欄ごと 外しました（★上を ご覧ください）。
+               ============================================================== */}
+            <div className="note">
+              出来ばえ・点数の 欄は ありません。「様子」は ご自分で 選ぶ段階です。
             </div>
           </div>
         ) : (
@@ -675,7 +745,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
             setEditing(isRenrakuKind(kind) || isPractice(kind)
               ? { id: null, body: "", ...emptyPractice(todayISO) }
               : kind === "repertoire"
-                ? { id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" }
+                ? { id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり" }
                 : { id: null, body: "" });
             setError("");
           }} />
@@ -725,7 +795,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
               if (isRenrakuKind(kind) || isPractice(kind)) {
                 setEditing({ id: null, body: "", ...emptyPractice(todayISO) });
               } else if (kind === "repertoire") {
-                setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" });
+                setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり" });
               } else {
                 setEditing({ id: null, body: "" });
               }
@@ -814,7 +884,7 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
         {kind === "repertoire" ? (
           <>
             <Card onClick={() => {
-              setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり", performance: "" });
+              setEditing({ id: null, body: "", repertoire_name: "", composer: "", position_in: "", language: "イタリア語", high_note: "", low_note: "", status: "はじめたばかり" });
               setError("");
             }} style={{ minHeight: 44, cursor: "pointer" }}>
               <p style={{ ...TYPE.body, margin: 0 }}>＋ 曲を 足す</p>

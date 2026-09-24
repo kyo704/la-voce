@@ -16366,11 +16366,16 @@ export default function VocalTracker({
         return next;
       });
       setMergeResult(`「${from}」を「${to}」に変えました（${affectedDates.length}日ぶんの記録をつなぎ直しました）。`);
+      setMergeInProgress(false);
+      // ★★成ったか どうかを 返します（★2026-09-24）。
+      //   ★★呼ぶ 側が「つなぎ直せた」ことを 確かめられる ように します。
+      return true;
     } catch (err) {
       console.error("曲目の名前の変更に失敗しました:", err);
       setMergeResult("名前を変えられませんでした。もう一度お試しください。");
+      setMergeInProgress(false);
+      return false;
     }
-    setMergeInProgress(false);
   }
 
   // ★★レパートリーを 消します。
@@ -23120,9 +23125,34 @@ export default function VocalTracker({
                   ...renrakuStudios.map((s) => orgDisplayName(s.teacherId)).filter(Boolean),
                   "自主練"
                 ])]}
-                onAddRepertoire={async ({ id, name, composer, positionIn, language, highNote, lowNote, status, performance }) => {
+                onAddRepertoire={async ({ id, name, composer, positionIn, language, highNote, lowNote, previousName }) => {
                   const key = String(name || "").trim();
-                  if (!key) return false;
+                  // ★★曲名が 空の ときは 入りません。★わけを その場に 出します
+                  //   （★2026-09-24・それまで「まだ足せていません」だけ でした。
+                  //     ★送れなかった ように 読めます。★ちがいます ── ★曲名が 要ります）。
+                  if (!key) return { ok: false, why: "曲名が ありません" };
+                  // ==========================================================
+                  // ★★★名前を 変えた とき（★2026-09-24・見本 SC['曲を足す'] の 断り）
+                  //
+                  //   ★★見本は「あとで 曲名を 変えても、記録は ついてきます」と
+                  //     書いて います。★この 道は、★そう なって いません でした。
+                  //     ★★新しい 名で `repertoire_tessitura` に **もう1行** 作り、
+                  //       ★古い 行と、★記録の 中の 古い 曲名は、★そのまま 残ります。
+                  //       ★★つまり 曲が 2つに 割れ、★記録は 古い 方に 置き去りに
+                  //         なります。★「ついてきます」の 逆 です。
+                  //
+                  //   ★★だから、★先に つなぎ直します。
+                  //     ★★`handleRenameRepertoire` は 前から あります
+                  //       （★記録・台帳・役・案件を、★ぜんぶ 書き換えます）。
+                  //       ★★この 画面から 呼んで いなかった だけ です。
+                  //   ★★つなぎ直せなかった ときは、★書きません。★割れた ままに
+                  //     する くらいなら、★開いた ままに します。
+                  // ==========================================================
+                  const 前 = String(previousName || "").trim();
+                  if (前 && 前 !== key) {
+                    const つないだ = await handleRenameRepertoire(前, key);
+                    if (つないだ === false) return { ok: false, why: "つなぎ直せませんでした" };
+                  }
                   const fieldsOk = await handleSaveRepertoireFields(key, {
                     composer: composer || null,
                     position_in: positionIn || null,
@@ -23130,16 +23160,17 @@ export default function VocalTracker({
                     status: status || null,
                     singing_language: language || null
                   });
-                  if (!fieldsOk) return false;
+                  if (!fieldsOk) return { ok: false, why: "書けませんでした" };
                   if (highNote || lowNote) {
                     const tessituraOk = await handleSaveRepertoire(key, {
                       topNote: highNote || null,
                       tessituraNote: lowNote || null,
                       replace: true
                     });
-                    if (!tessituraOk) return false;
+                    if (!tessituraOk) return { ok: false, why: "書けませんでした" };
                   }
-                  return handleSaveNote({ id, kind: "repertoire", body: key });
+                  const 書けた = await handleSaveNote({ id, kind: "repertoire", body: key });
+                  return 書けた ? { ok: true } : { ok: false, why: "書けませんでした" };
                 }}
                 onSave={handleSaveNote}
                 onDelete={handleDeleteNote}
