@@ -1,6 +1,6 @@
 {
   "_source": "確定-学校の値段.md（第3版・2026-09-21）／裁定155。★値段を変えたら、まずこのファイルを変える。裁定166（lookup_key・公演の段・導入期間）／★2026-09-23: つたえる 3,600→6,000円・学生3,000円（裁定180）",
-  "version": "2026-09-23-v5",
+  "version": "2026-09-24-v7",
   "org": {
     "free_max_students": 5,
     "kyoshitsu": {
@@ -26,7 +26,8 @@
       ],
       "annual_months": 10,
       "setup_fee": 100000,
-      "setup_fee_min_students": 100
+      "setup_fee_min_students": 100,
+      "setup_fee_note": "★名簿100人以上のときのみ・初年度1回（裁定189）。★自動では請求しない（1度たずねる）"
     }
   },
   "individual": {
@@ -45,7 +46,8 @@
       "refund_per_month": 500,
       "gakusei_annual": 3000,
       "gakusei_refund_per_month": 250,
-      "note": "2026-09-23 に 3,600円→6,000円。★契約している学校の名簿にいる学生のみ 3,000円（裁定180）"
+      "note": "2026-09-23 に 3,600円→6,000円。★契約している学校の名簿にいる学生のみ 3,000円（裁定180）",
+      "gakusei_note": "★契約している学校の名簿にいる学生のみ（裁定180・189）。無料の枠の教室は含まない"
     },
     "shiraberu": {
       "monthly": 580,
@@ -63,8 +65,6 @@
   "check_points": [
     5,
     6,
-    7,
-    29,
     30,
     31,
     32,
@@ -72,7 +72,6 @@
     60,
     88,
     95,
-    99,
     100,
     150,
     216,
@@ -116,7 +115,15 @@
   ],
   "stale_scan_exclude": [
     "_old-*/**",
-    "**/_old-*/**"
+    "**/_old-*/**",
+    "docs/reports/**",
+    "**/reports/**",
+    "**/報告*",
+    "**/進捗の共有*",
+    "**/*レポート*",
+    "**/*の確かめ_*",
+    "**/Sonnetへの報告*",
+    "**/*査読*"
   ],
   "koen_tiers": [
     [
@@ -153,11 +160,12 @@
     "ind_page_type": 480,
     "kyo_m": 2980,
     "kyo_y": 29800,
-    "ind_tsutaeru_gakusei_y": 3000
+    "ind_tsutaeru_y_gakusei": 3000
   },
   "gakko_free_period": {
     "pilot_free_until": "2027-09-30",
     "free_months": 3,
     "cap": "前日 of next April 1"
-  }
+  },
+  "_scan_note": "★報告・査読・進捗の共有は ★当時の記録です（裁定・法務と同じ扱い）。古い値段が出てきても 直しません → 見ません"
 }

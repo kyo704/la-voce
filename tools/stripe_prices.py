@@ -15,7 +15,10 @@
 
   ★作る もの（★`tools/prices.json` から 読みます。★数を 書き写しません）
     ind_tsutaeru_y          … つたえる 年 6,000円（税込）
-    ind_tsutaeru_gakusei_y  … つたえる 年 3,000円（税込・★契約校の 名簿の 学生）
+    ind_tsutaeru_y_gakusei  … つたえる 年 3,000円（税込・★契約校の 名簿の 学生）
+      ★★2026-09-24、★名を 変えました（★prices.json v7）──
+        ★前 `ind_tsutaeru_gakusei_y` → ★いま `ind_tsutaeru_y_gakusei`。
+      ★★Stripe の 側にも 同じ 名が あります。★張り替えが 要ります。
 
   python3 tools/stripe_prices.py              ★下見（作りません）
   python3 tools/stripe_prices.py --ok         ★試しの 口に 作ります
@@ -31,7 +34,7 @@ ITEMS = [
   {"lookup": "ind_tsutaeru_y",
    "name": "つたえる（公開ページ・紙の型・英語）　年",
    "why": "裁定180。★月あたり 500円"},
-  {"lookup": "ind_tsutaeru_gakusei_y",
+  {"lookup": "ind_tsutaeru_y_gakusei",
    "name": "つたえる　年（学生）",
    "why": "裁定180。★契約して いる 学校の 名簿に 在籍中で、★在籍の 確かめに 同意して いる 方"},
 ]
