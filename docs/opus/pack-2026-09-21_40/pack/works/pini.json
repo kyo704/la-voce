@@ -1,0 +1,146 @@
+{
+  "title": "ローマの松",
+  "composer": "レスピーギ",
+  "composer_sort": "Respighi, Ottorino",
+  "kind": "orchestra",
+  "year_written": 1924,
+  "source": "hand",
+  "source_id": "respighi-pini",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "ボルゲーゼ荘の松",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "カタコンブ付近の松",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "ジャニコロの松",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "アッピア街道の松",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion",
+      "note": "多数（鐘・タムタム・小太鼓 ほか）"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ブッチーナ",
+      "count": 6,
+      "section": "banda",
+      "note": "舞台裏の金管。トランペット・フリューゲルで代える"
+    },
+    {
+      "part": "録音の小鳥の声",
+      "count": 1,
+      "section": "other",
+      "note": "ジャニコロの松"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

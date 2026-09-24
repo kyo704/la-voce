@@ -1,0 +1,42 @@
+{
+  "title": "ミゼレーレ",
+  "title_original": "Miserere mei, Deus",
+  "aliases": [],
+  "composer": "アレグリ",
+  "composer_sort": "Allegri, Gregorio",
+  "kind": "chorus",
+  "year_written": 1638,
+  "source": "hand",
+  "source_id": "allegri-miserere",
+  "duration_min": 13,
+  "language": "la",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲（★高いCのソプラノ）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "is_optional": true,
+      "note": "無伴奏が基本"
+    }
+  ],
+  "note": "★無伴奏。二重合唱（4声＋5声）"
+}

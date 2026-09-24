@@ -1,0 +1,199 @@
+{
+  "title": "ランスへの旅",
+  "title_original": "Il viaggio a Reims",
+  "aliases": [
+    "ランス"
+  ],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1825,
+  "duration_min": 170,
+  "language": "it",
+  "source": "hand",
+  "source_id": "rossini-viaggio",
+  "roles": [
+    {
+      "label": "コリンナ"
+    },
+    {
+      "label": "メリベーア侯爵夫人"
+    },
+    {
+      "label": "フォルヴィル伯爵夫人"
+    },
+    {
+      "label": "コルテーゼ夫人"
+    },
+    {
+      "label": "ベルフィオーレ"
+    },
+    {
+      "label": "リーベンスコフ"
+    },
+    {
+      "label": "シドニー卿"
+    },
+    {
+      "label": "ドン・プロフォンド"
+    },
+    {
+      "label": "トロンボノク男爵"
+    },
+    {
+      "label": "ドン・アルヴァーロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序奏（黄金の百合亭）",
+      "group_label": "全1幕",
+      "roles": [
+        "コルテーゼ夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "フォルヴィル伯爵夫人の嘆き",
+      "group_label": "全1幕",
+      "roles": [
+        "フォルヴィル伯爵夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ドン・プロフォンドのアリア（目録の歌）",
+      "group_label": "全1幕",
+      "roles": [
+        "ドン・プロフォンド"
+      ]
+    },
+    {
+      "label": "大七重唱",
+      "group_label": "全1幕",
+      "roles": [
+        "メリベーア侯爵夫人",
+        "ドン・アルヴァーロ",
+        "リーベンスコフ",
+        "トロンボノク男爵",
+        "ドン・プロフォンド",
+        "ベルフィオーレ",
+        "コルテーゼ夫人"
+      ]
+    },
+    {
+      "label": "14声の大コンチェルタート",
+      "group_label": "全1幕",
+      "roles": [
+        "コリンナ",
+        "メリベーア侯爵夫人",
+        "フォルヴィル伯爵夫人",
+        "コルテーゼ夫人",
+        "ベルフィオーレ",
+        "リーベンスコフ",
+        "シドニー卿",
+        "ドン・プロフォンド",
+        "トロンボノク男爵",
+        "ドン・アルヴァーロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "各国の歌とフィナーレ",
+      "group_label": "全1幕",
+      "roles": [
+        "コリンナ",
+        "トロンボノク男爵",
+        "シドニー卿",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

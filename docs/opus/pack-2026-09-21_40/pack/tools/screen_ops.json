@@ -1,0 +1,698 @@
+{
+ "_note": "★画面ごとに どの表を どう触るか（読む/書く/消す）。2026-09-24 Opus。★Code が 実装ファイルを 当てるための 手がかり",
+ "公演を作る": {
+  "w": [
+   "koen",
+   "koen_sessions(kind=show)"
+  ],
+  "r": [
+   "works",
+   "koen_kind_words"
+  ],
+  "fn": [
+   "koen_set_work",
+   "koen_set_show_date"
+  ],
+  "note": "★題名・種類・会場・稽古の始まり(opens_on)。★本番の日は sessions の行"
+ },
+ "作品をさがす": {
+  "r": [
+   "works",
+   "work_roles",
+   "work_scenes"
+  ],
+  "fn": [
+   "search_works",
+   "work_composers"
+  ],
+  "note": "★書かない。選ぶだけ"
+ },
+ "配役を決める": {
+  "w": [
+   "koen_slots",
+   "koen_cells.people"
+  ],
+  "r": [
+   "koen_members"
+  ],
+  "note": "★枠（列）を 作る・人数を 決める"
+ },
+ "香盤表": {
+  "w": [
+   "koen_rows",
+   "koen_cells"
+  ],
+  "r": [
+   "koen_slots",
+   "koen_members"
+  ],
+  "note": "★行（場面）と マス。★いちばん 書く画面"
+ },
+ "香盤表を見る": {
+  "r": [
+   "koen_rows",
+   "koen_cells",
+   "koen_slots"
+  ],
+  "note": "★読むだけ（出演者の側）"
+ },
+ "出演者を招く": {
+  "w": [
+   "koen_members",
+   "koen_join_codes"
+  ],
+  "fn": [
+   "add_member_placeholder",
+   "koen_invitable"
+  ],
+  "note": "★合言葉 か 名簿から"
+ },
+ "出演者": {
+  "w": [
+   "koen_members(part=staff)"
+  ],
+  "r": [
+   "koen_members"
+  ],
+  "note": "★スタッフを 足す・外す"
+ },
+ "合言葉で入る": {
+  "w": [
+   "koen_members"
+  ],
+  "fn": [
+   "join_koen_by_code",
+   "claim_member"
+  ],
+  "note": "★本人が 入る"
+ },
+ "招かれている": {
+  "r": [
+   "koen_members(invited_at)"
+  ],
+  "note": "★読むだけ"
+ },
+ "公演に入る": {
+  "w": [
+   "koen_members"
+  ],
+  "fn": [
+   "join_koen_by_code"
+  ],
+  "note": "★合言葉で入る と 同じ道"
+ },
+ "稽古を組む": {
+  "w": [
+   "koen_sessions"
+  ],
+  "r": [
+   "schedule_view",
+   "koen_members"
+  ],
+  "fn": [
+   "busy_at"
+  ],
+  "note": "★重なりは 教えるだけ"
+ },
+ "稽古の一覧": {
+  "r": [
+   "koen_sessions"
+  ],
+  "note": "★読むだけ"
+ },
+ "稽古の中身": {
+  "r": [
+   "koen_sessions",
+   "koen_rows"
+  ],
+  "w": [
+   "koen_sessions.note"
+  ],
+  "note": "★その回に やる 場面"
+ },
+ "稽古": {
+  "r": [
+   "koen_sessions",
+   "koen_session_changes"
+  ],
+  "note": "★出演者の側・読むだけ"
+ },
+ "稽古を書く": {
+  "w": [
+   "notes"
+  ],
+  "note": "★個人の ノート（公演の表では ない）"
+ },
+ "公演の出欠": {
+  "w": [
+   "koen_attendance"
+  ],
+  "r": [
+   "koen_members",
+   "koen_kids"
+  ],
+  "note": "★運営が つける"
+ },
+ "当日の進行": {
+  "w": [
+   "koen_runsheet",
+   "koen_runsheet_calls"
+  ],
+  "r": [
+   "koen_members"
+  ],
+  "fn": [
+   "runsheet_staff_sheet"
+  ],
+  "note": "★区切りと 呼ぶスタッフ"
+ },
+ "当日の進行を見る": {
+  "r": [
+   "koen_runsheet"
+  ],
+  "fn": [
+   "my_runsheet"
+  ],
+  "note": "★読むだけ"
+ },
+ "本番の日の流れ": {
+  "r": [
+   "koen_runsheet"
+  ],
+  "fn": [
+   "my_runsheet"
+  ],
+  "note": "★出演者の側。★自分の所だけ 濃く"
+ },
+ "スタッフの自分の予定": {
+  "r": [
+   "koen_runsheet",
+   "koen_runsheet_calls"
+  ],
+  "fn": [
+   "my_runsheet"
+  ],
+  "note": "★自分が 呼ばれた区切りだけ"
+ },
+ "公演の自分の予定": {
+  "r": [
+   "koen_sessions",
+   "koen_calls"
+  ],
+  "fn": [
+   "my_koen_schedule"
+  ],
+  "note": "★自分の 呼び出しだけ"
+ },
+ "代役を 立てる": {
+  "w": [
+   "koen_members(is_understudy, covers_slot_id)"
+  ],
+  "note": "★自動で 呼ばない"
+ },
+ "楽屋": {
+  "w": [
+   "koen_rooms",
+   "koen_room_members"
+  ],
+  "note": "★部屋割り"
+ },
+ "子どもの枠": {
+  "w": [
+   "koen_kids",
+   "koen_kid_contacts"
+  ],
+  "r": [
+   "koen_calls"
+  ],
+  "note": "★呼び名だけ。★連絡先は 保護者が 任意で"
+ },
+ "緊急の連絡先": {
+  "r": [
+   "koen_kid_contacts"
+  ],
+  "w": [
+   "koen_kid_contact_reads"
+  ],
+  "note": "★見る理由を 聞いてから。★見たことが 残る"
+ },
+ "公演の料金": {
+  "r": [
+   "koen.tier_people",
+   "koen_payments"
+  ],
+  "fn": [
+   "koen_tier_price"
+  ],
+  "note": "★15人まで 無料"
+ },
+ "公演の情報": {
+  "w": [
+   "koen(title, venue, opens_on)"
+  ],
+  "r": [
+   "koen.valid_until"
+  ],
+  "note": "★期限は 変わらない"
+ },
+ "公演の運営": {
+  "r": [
+   "koen",
+   "koen_members",
+   "koen_rows",
+   "koen_sessions"
+  ],
+  "note": "★入口。★数を 見せるだけ"
+ },
+ "公演": {
+  "r": [
+   "koen",
+   "koen_sessions",
+   "koen_change_seen"
+  ],
+  "note": "★出演者の 入口"
+ },
+ "書き出す（香盤表）": {
+  "r": [
+   "koen_rows",
+   "koen_cells",
+   "koen_slots"
+  ],
+  "w": [
+   "export_log"
+  ],
+  "note": "★紙に 出す。★体調の列は 作らない"
+ },
+ "配る": {
+  "r": [
+   "koen_members",
+   "koen_rows"
+  ],
+  "w": [
+   "export_log"
+  ],
+  "note": "★くばりもの"
+ },
+ "前の公演から写す": {
+  "w": [
+   "koen_rows",
+   "koen_slots"
+  ],
+  "r": [
+   "koen(前の公演)"
+  ],
+  "note": "★枠だけ。★人・稽古・期限は 写さない"
+ },
+ "曲": {
+  "r": [
+   "work_scenes",
+   "koen_rows"
+  ],
+  "note": "★合唱・オケの 行"
+ },
+ "曲を足す": {
+  "w": [
+   "koen_rows"
+  ],
+  "note": "★行を 足す"
+ },
+ "曲を直す": {
+  "w": [
+   "koen_rows"
+  ],
+  "note": "★行を 直す"
+ },
+ "曲目を答える": {
+  "w": [
+   "repertoire_tessitura"
+  ],
+  "note": "★個人の レパートリー（公演の表では ない）"
+ },
+ "きょう": {
+  "w": [
+   "entries"
+  ],
+  "r": [
+   "performances",
+   "org_events"
+  ],
+  "note": "★30秒で 書く。★いちばん 書く画面"
+ },
+ "書く": {
+  "w": [
+   "entries"
+  ],
+  "note": "★同じ表・項目が 多い姿"
+ },
+ "なにを書く": {
+  "w": [
+   "profiles(選んだ項目)"
+  ],
+  "note": "★出す項目を 選ぶ"
+ },
+ "聞いてほしいこと": {
+  "w": [
+   "profiles(毎日の問い)"
+  ],
+  "note": "★最大5つ＋いつ書くか（実装意図）"
+ },
+ "整える": {
+  "w": [
+   "entries"
+  ],
+  "note": "★あとから 直す"
+ },
+ "前3日": {
+  "r": [
+   "entries"
+  ],
+  "note": "★読むだけ"
+ },
+ "受診プレビュー": {
+  "r": [
+   "entries",
+   "performances"
+  ],
+  "note": "★紙に 出す。★初日から 出る"
+ },
+ "本番のふりかえり": {
+  "w": [
+   "performance_results"
+  ],
+  "r": [
+   "performances",
+   "entries"
+  ],
+  "note": "★2回目から 比べられる"
+ },
+ "本番の前後": {
+  "r": [
+   "entries",
+   "performances"
+  ],
+  "note": "★読むだけ"
+ },
+ "しらべる": {
+  "r": [
+   "entries"
+  ],
+  "note": "★n≥10・効果量・多重比較（裁定111）"
+ },
+ "くらべる": {
+  "r": [
+   "entries",
+   "cycle_periods"
+  ],
+  "note": "★1指標=1カード・横棒（裁定111追補）"
+ },
+ "調べる": {
+  "r": [
+   "entries"
+  ],
+  "note": "★しらべる と 同じ束"
+ },
+ "ひつじ": {
+  "r": [
+   "character_inventory",
+   "item_acquisitions"
+  ],
+  "note": "★罰しない・戻ると 何かある"
+ },
+ "たな": {
+  "r": [
+   "repertoire_tessitura"
+  ],
+  "note": "★歌ってきたもの"
+ },
+ "ノート": {
+  "w": [
+   "notes"
+  ],
+  "note": "★レッスンの ノート"
+ },
+ "ノート本文": {
+  "w": [
+   "notes"
+  ],
+  "note": "★本文を 書く"
+ },
+ "記事": {
+  "r": [
+   "article_progress"
+  ],
+  "w": [
+   "article_notes"
+  ],
+  "note": "★読んだ印・書き込み"
+ },
+ "門下": {
+  "r": [
+   "org_messages",
+   "assignments"
+  ],
+  "w": [
+   "org_messages"
+  ],
+  "note": "★体調は 見えない"
+ },
+ "門下を開く": {
+  "r": [
+   "assignments"
+  ],
+  "w": [
+   "monka_read_log"
+  ],
+  "note": "★見た理由が 残る"
+ },
+ "門下を開いた記録": {
+  "r": [
+   "monka_read_log"
+  ],
+  "note": "★読むだけ"
+ },
+ "担当の先生を選ぶ": {
+  "w": [
+   "monka_requests",
+   "assignments"
+  ],
+  "fn": [
+   "request_monka",
+   "monka_teachers"
+  ],
+  "note": "★学校が 選ぶ やり方のときだけ"
+ },
+ "自分の門下": {
+  "r": [
+   "assignments",
+   "profiles"
+  ],
+  "note": "★先生の側"
+ },
+ "代表を決める": {
+  "w": [
+   "assignments.is_representative"
+  ],
+  "fn": [
+   "set_monka_representative"
+  ],
+  "note": "★役職では ない"
+ },
+ "自分のコマ": {
+  "w": [
+   "my_timetable",
+   "my_periods"
+  ],
+  "note": "★本人だけ"
+ },
+ "授業を入れる": {
+  "w": [
+   "my_timetable"
+  ],
+  "note": "★コマに 入れる"
+ },
+ "授業の時間を出す": {
+  "w": [
+   "timetable_share"
+  ],
+  "fn": [
+   "set_timetable_share",
+   "my_timetable_share"
+  ],
+  "note": "★既定オフ・★学校ごと"
+ },
+ "自分の予定": {
+  "r": [
+   "lessons",
+   "org_events",
+   "my_timetable"
+  ],
+  "note": "★読むだけ"
+ },
+ "あなたの重なり": {
+  "r": [
+   "schedule_view"
+  ],
+  "fn": [
+   "busy_at"
+  ],
+  "note": "★教えるだけ"
+ },
+ "レッスン": {
+  "r": [
+   "lessons"
+  ],
+  "note": "★学生の側"
+ },
+ "レッスンの希望": {
+  "w": [
+   "lesson_prefs",
+   "lesson_ng_dates"
+  ],
+  "note": "★締切まで 直せる"
+ },
+ "レッスン割": {
+  "w": [
+   "lessons"
+  ],
+  "r": [
+   "lesson_prefs",
+   "lesson_rounds"
+  ],
+  "note": "★確定すると カレンダーへ"
+ },
+ "回を始める": {
+  "w": [
+   "lesson_rounds"
+  ],
+  "fn": [
+   "start_lesson_round",
+   "start_lesson_rounds"
+  ],
+  "note": "★同じ先生に 開いている回は 1つ"
+ },
+ "希望の地図": {
+  "r": [
+   "lesson_prefs"
+  ],
+  "note": "★読むだけ"
+ },
+ "希望がまだの方": {
+  "r": [
+   "lesson_prefs",
+   "assignments"
+  ],
+  "note": "★催促は しない"
+ },
+ "名簿": {
+  "w": [
+   "enrollments",
+   "roster_drafts"
+  ],
+  "note": "★札は meibo"
+ },
+ "半年のまとめ": {
+  "r": [
+   "org_monthly_stats"
+  ],
+  "fn": [
+   "make_monthly_stats"
+  ],
+  "note": "★数だけ・5人未満は「―」"
+ },
+ "はじめの1週間": {
+  "r": [
+   "org_onboarding_checks"
+  ],
+  "fn": [
+   "onboarding_state"
+  ],
+  "note": "★押させない・事実から 数える"
+ },
+ "門下の 決め方": {
+  "w": [
+   "org_settings"
+  ],
+  "fn": [
+   "set_monka_way"
+  ],
+  "note": "★master だけ"
+ },
+ "役職を変える": {
+  "w": [
+   "memberships.role",
+   "post_change_log"
+  ],
+  "note": "★持っていない札は 渡せない"
+ },
+ "行事": {
+  "w": [
+   "org_events"
+  ],
+  "note": "★出欠は 集めない"
+ },
+ "実技試験を組む": {
+  "w": [
+   "jury_slots"
+  ],
+  "fn": [
+   "jury_layout",
+   "jury_conflicts"
+  ],
+  "note": "★門下と出すが 外さない"
+ },
+ "審査員を足す": {
+  "w": [
+   "evaluation_judges"
+  ],
+  "note": "★その回だけ"
+ },
+ "点を入れる": {
+  "w": [
+   "evaluation_scores",
+   "score_log"
+  ],
+  "fn": [
+   "scoring_queue",
+   "edit_confirmed_score"
+  ],
+  "note": "★確定後は わけが要る"
+ },
+ "評価の項目": {
+  "w": [
+   "evaluation_items"
+  ],
+  "note": "★満点・刻み"
+ },
+ "プラン": {
+  "r": [
+   "subscriptions",
+   "purchases",
+   "sku_features"
+  ],
+  "fn": [
+   "my_entitlements"
+  ],
+  "note": "★買った鍵で 決まる"
+ },
+ "退会": {
+  "w": [
+   "account_deletions"
+  ],
+  "note": "★連鎖で 消える（69表）"
+ },
+ "年をたずねる": {
+  "w": [
+   "profiles.is_under_18",
+   "age_answer_changes"
+  ],
+  "note": "★15歳未満は 登録できない"
+ },
+ "カレンダーにつなぐ": {
+  "r": [
+   "koen_sessions",
+   "lessons",
+   "org_events"
+  ],
+  "note": "★いまは 1件ずつ（裁定191）"
+ }
+}

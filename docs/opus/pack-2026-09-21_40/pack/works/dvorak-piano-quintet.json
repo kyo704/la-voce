@@ -1,0 +1,102 @@
+{
+  "title": "ピアノ五重奏曲第2番 イ長調",
+  "title_original": "Klavírní kvintet",
+  "aliases": [],
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvorak, Antonin",
+  "kind": "chamber",
+  "year_written": 1887,
+  "source": "hand",
+  "source_id": "dvorak-piano-quintet",
+  "duration_min": 40,
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "第1ヴァイオリン"
+    },
+    {
+      "label": "第2ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・マ・ノン・タント",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 ドゥムカ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 フリアント",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 フィナーレ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "title": "弦楽セレナーデ ハ長調",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr",
+  "kind": "orchestra",
+  "year_written": 1880,
+  "source": "hand",
+  "source_id": "tchaikovsky-serenade",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "第1楽章 小さなソナタの形式で",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第2楽章 ワルツ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第3楽章 エレジー",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第4楽章 フィナーレ（ロシアの主題）",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

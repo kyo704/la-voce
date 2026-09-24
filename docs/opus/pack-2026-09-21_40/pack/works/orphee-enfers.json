@@ -1,0 +1,249 @@
+{
+  "title": "天国と地獄（地獄のオルフェ）",
+  "composer": "オッフェンバック",
+  "composer_sort": "Offenbach, Jacques",
+  "kind": "opera",
+  "year_written": 1858,
+  "source": "hand",
+  "source_id": "offenbach-orphee",
+  "roles": [
+    {
+      "label": "オルフェ"
+    },
+    {
+      "label": "ユリディス"
+    },
+    {
+      "label": "ジュピター"
+    },
+    {
+      "label": "プルート（アリステ）"
+    },
+    {
+      "label": "世論"
+    },
+    {
+      "label": "ジョン・スティクス"
+    },
+    {
+      "label": "ディアーヌ"
+    },
+    {
+      "label": "キューピッド"
+    },
+    {
+      "label": "ヴェニュス"
+    },
+    {
+      "label": "ジュノン"
+    },
+    {
+      "label": "メルキュール"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "世論の登場",
+      "group_label": "第1幕",
+      "roles": [
+        "世論"
+      ]
+    },
+    {
+      "label": "ユリディスの花の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "ユリディス"
+      ]
+    },
+    {
+      "label": "二重唱（オルフェとユリディス・ヴァイオリンの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "オルフェ",
+        "ユリディス"
+      ]
+    },
+    {
+      "label": "アリステの登場（羊飼いの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "プルート（アリステ）",
+        "ユリディス"
+      ]
+    },
+    {
+      "label": "ユリディスの別れ（死んでゆく）",
+      "group_label": "第1幕",
+      "roles": [
+        "ユリディス"
+      ]
+    },
+    {
+      "label": "フィナーレ（第1幕・世論の勧め）",
+      "group_label": "第1幕",
+      "roles": [
+        "オルフェ",
+        "世論",
+        "合唱"
+      ]
+    },
+    {
+      "label": "神々の眠り・目覚めの合唱",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱",
+        "ディアーヌ",
+        "キューピッド",
+        "ヴェニュス"
+      ]
+    },
+    {
+      "label": "神々の反乱",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュピター",
+        "ジュノン",
+        "メルキュール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "オルフェの訴え（世論とともに）",
+      "group_label": "第2幕",
+      "roles": [
+        "オルフェ",
+        "世論",
+        "ジュピター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ジョン・スティクスの歌（私がボイオティアの王だった頃）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジョン・スティクス"
+      ]
+    },
+    {
+      "label": "蠅の二重唱（ジュピターとユリディス）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジュピター",
+        "ユリディス"
+      ]
+    },
+    {
+      "label": "地獄のギャロップ（カンカン）",
+      "group_label": "第4幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "フィナーレ（振り返るな）",
+      "group_label": "第4幕",
+      "roles": [
+        "オルフェ",
+        "ユリディス",
+        "ジュピター",
+        "世論",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "コルネット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル・小太鼓"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

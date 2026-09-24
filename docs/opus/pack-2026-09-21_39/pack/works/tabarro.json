@@ -1,0 +1,196 @@
+{
+  "title": "外套",
+  "composer": "プッチーニ",
+  "composer_sort": "Puccini, Giacomo",
+  "kind": "opera",
+  "year_written": 1918,
+  "source": "hand",
+  "source_id": "puccini-tabarro",
+  "roles": [
+    {
+      "label": "ジョルジェッタ"
+    },
+    {
+      "label": "ミケーレ"
+    },
+    {
+      "label": "ルイージ"
+    },
+    {
+      "label": "フルーゴラ"
+    },
+    {
+      "label": "ティンカ"
+    },
+    {
+      "label": "タルパ"
+    },
+    {
+      "label": "歌売り"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "セーヌ河の夕暮れ（荷降ろし）",
+      "group_label": "全1幕",
+      "roles": [
+        "ミケーレ",
+        "ジョルジェッタ",
+        "ルイージ",
+        "ティンカ",
+        "タルパ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "歌売りの歌",
+      "group_label": "全1幕",
+      "roles": [
+        "歌売り",
+        "合唱"
+      ]
+    },
+    {
+      "label": "フルーゴラの場",
+      "group_label": "全1幕",
+      "roles": [
+        "フルーゴラ",
+        "タルパ",
+        "ティンカ"
+      ]
+    },
+    {
+      "label": "ジョルジェッタとルイージの二重唱",
+      "group_label": "全1幕",
+      "roles": [
+        "ジョルジェッタ",
+        "ルイージ"
+      ]
+    },
+    {
+      "label": "ミケーレとジョルジェッタの場",
+      "group_label": "全1幕",
+      "roles": [
+        "ミケーレ",
+        "ジョルジェッタ"
+      ]
+    },
+    {
+      "label": "ミケーレの独白（さあ、行け）",
+      "group_label": "全1幕",
+      "roles": [
+        "ミケーレ"
+      ]
+    },
+    {
+      "label": "フィナーレ（外套の下）",
+      "group_label": "全1幕",
+      "roles": [
+        "ミケーレ",
+        "ジョルジェッタ",
+        "ルイージ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "鐘・タムタム・大太鼓・霧笛"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "舞台裏の楽器",
+      "count": 0,
+      "section": "banda",
+      "note": "霧笛・遠くの角笛・コルネット"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
