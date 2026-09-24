@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { C } from "@/lib/tokens";
+import { tx } from "@/lib/t";
 import { TYPE, SPACE, FONT_STACK, rem } from "@/lib/uiKit";
 import {
   ScreenHead, Card, Box, Li, Btn, Two, FieldLabel, Input, TextArea,
@@ -11,6 +12,7 @@ import {
 import { COLS_MY_PERIODS, COLS_MY_TIMETABLE } from "@/lib/dbColumns";
 import {
   DAYS, TT_COPY, TT_FREE_LABEL, TT_EDIT_HINT, TT_LEGEND, TT_GRID_NOTES,
+  CELL_NOT_PICKED,
   hhmm, periodsOf, isOwnPeriods,
   buildGrid, freeCount, cellLabel, DEFAULT_PERIODS
 } from "@/lib/myTimetable";
@@ -111,6 +113,16 @@ export default function MyTimetable({ userId, onBack }) {
     <div style={{ fontFamily: FONT_STACK }}>
       <Back onClick={onBack}>きょう</Back>
       <ScreenHead title={TT_COPY.title} />
+
+      {/* ★★★マスを 選ばずに 1つの マスの 画面へ 来た とき（★2026-09-24）。
+          ★★白くは なりません ── ★ここへ 落ちます。
+            ★★けれど 黙って 落ちると、★「戻された」と 見えます。
+          ★★1行 だけ 出します。★字は lib が 持ちます。 */}
+      {view === "cell" && !cell ? (
+        <p style={{ ...TYPE.li, color: C.ink, margin: `${rem(8)} 0 0` }}>
+          {tx(CELL_NOT_PICKED)}
+        </p>
+      ) : null}
 
       {/* ★★断り（★見本 3300行）。★閉じられます。★見本も そう して います。 */}
       {help ? (

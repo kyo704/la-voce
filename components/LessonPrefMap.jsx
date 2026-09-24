@@ -6,8 +6,10 @@ import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { DAYS } from "@/lib/myTimetable";
 import {
   slotKey, prefWeight, densityPercent, isDarkCell, cellWord,
-  MAP_NOTE, MAP_NOTE_LINES, MAP_EMPTY_HEAD, MAP_EMPTY_HOW
+  MAP_NOTE, MAP_NOTE_LINES, MAP_EMPTY_HEAD, MAP_EMPTY_HOW,
+  MAP_NO_ROUND_HEAD, MAP_NO_ROUND_SUB
 } from "@/lib/lessonRound";
+import { Back } from "@/components/UiV2";
 import { tx } from "@/lib/t";
 
 // ============================================================================
@@ -37,7 +39,25 @@ export default function LessonPrefMap({
   round, periods = [], counts = {}, namesOf, placed = {}, busy = {}, onBack
 }) {
   const [選, set選] = useState(null);
-  if (!round) return null;
+  // ==========================================================================
+  // ★★★回が 無い ときに、★白い 画面に しません（★2026-09-24・Opus の ご指摘）。
+  //   ★★前は `return null` でした。★何も 出ません。
+  //     ★★★「読み込み中」と「無い」と「壊れた」が、★同じ 顔に なります。
+  //   ★★見本も そう して います ── `SC['コマの中身']` は
+  //     「外れて います。戻って 置き直して ください。」と 出します。
+  //   ★★責めません。★次に 何を すれば よいかだけ を 書きます。
+  // ==========================================================================
+  if (!round) {
+    return (
+      <div style={{ fontFamily: FONT_STACK }}>
+        {onBack ? <Back onClick={onBack}>{tx("もどる")}</Back> : null}
+        <p style={{ ...TYPE.li, color: C.ink, margin: `${rem(10)} 0 ${rem(4)}` }}>
+          {tx(MAP_NO_ROUND_HEAD)}
+        </p>
+        <p style={小}>{tx(MAP_NO_ROUND_SUB)}</p>
+      </div>
+    );
+  }
 
   // ★★★いちばん 濃い ところを 先に 数えます（★見本と 同じ）。
   let 最大 = 1;
