@@ -429,5 +429,11 @@
  "さがす": [
   "components/MatchingSearch.jsx",
   "lib/matchingSearch.js"
+ ],
+ "その人": [
+  "components/OpsPeople.jsx"
+ ],
+ "型の中身": [
+  "components/OpsPresets.jsx"
  ]
 }

@@ -190,12 +190,21 @@ def 見本の中身(key):
     #   ★★②の とき、★指した 先を 読まないと **本文が 空** に なります。
     #     ★★そうすると「見本の もとに 無い」＝ ④中身 と 数えて しまい、
     #       ★本物の 抜けが 見えなく なります（★2026-09-23、★目盛りが 合いませんでした）。
+    #   ③ `'型の中身':P_presetEdit,` （★名前と 関数を 並べた 表）
+    #   ★★③は 運営の 見本の 書き方 です。★①②だけを 見て いたので、
+    #     ★`型の中身` は「見本から 字が 取れない」と 出て いました
+    #     （★2026-09-25、★目で 見て 気づきました）。
     場 = []
     m2 = re.search(r"SC\['" + re.escape(key) + r"'\]\s*=\s*(\w+)", s)
     if m2 and m2.group(1) != "function":
       j2 = s.find("function %s(" % m2.group(1))
       if j2 >= 0: 場.append(j2)
-    場 += [s.find("SC['%s']=function" % key), s.find("SC['%s']=" % key)]
+    m3 = re.search(r"'" + re.escape(key) + r"'\s*:\s*(P_\w+|SC_\w+|\w+)\s*[,}]", s)
+    if m3:
+      j3 = s.find("function %s(" % m3.group(1))
+      if j3 >= 0: 場.append(j3)
+    場 += [s.find("SC['%s']=function" % key), s.find("SC['%s']=" % key),
+           s.find("P['%s']=function" % key), s.find("P['%s']=" % key)]
     for i in 場:
       if i is None or i < 0: continue
       j = s.find("\nfunction ", i + 5)
