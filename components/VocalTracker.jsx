@@ -27682,9 +27682,21 @@ export default function VocalTracker({
                                       ★★前は `r.right || "›"` でした。★`right` が あると
                                         ★矢印が **置きかわり**、★「5つまで」だけに なって いました。
                                       ★★見本は `<s>5つまで ›</s>` ── ★両方 出します。 */}
-                                  <Li right={rightOf(r, { paid: subscribed === true, orgCount: myEnrollments.length })} last={i === sec.rows.length - 1}>
+                                  <Li right={rightOf(r, {
+                                    paid: subscribed === true,
+                                    orgCount: myEnrollments.length,
+                                    // ★★書いた 数は 画面が 数えます。★lib では 数えません。
+                                    portfolioCount: (portfolioEntries || []).length
+                                  })} last={i === sec.rows.length - 1}>
                                     {/* ★★赤で 出すのは、★見本の .x です（★退会）。 */}
                                     <span style={r.danger ? { color: C.rust } : undefined}>{r.label}</span>
+                                    {/* ★★行の 下の 小さな 字（★見本の `<div class="usu">`）。
+                                        ★★字は lib が 持ちます。★ここで 書きません。 */}
+                                    {r.sub ? (
+                                      <span style={{ display: "block", ...TYPE.mini, color: C.inkSoft }}>
+                                        {r.sub}
+                                      </span>
+                                    ) : null}
                                   </Li>
                                 </button>
                               )

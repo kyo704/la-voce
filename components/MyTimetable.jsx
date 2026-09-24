@@ -10,7 +10,8 @@ import {
 } from "@/components/UiV2";
 import { COLS_MY_PERIODS, COLS_MY_TIMETABLE } from "@/lib/dbColumns";
 import {
-  DAYS, TT_COPY, hhmm, periodsOf, isOwnPeriods,
+  DAYS, TT_COPY, TT_FREE_LABEL, TT_EDIT_HINT, TT_LEGEND, TT_GRID_NOTES,
+  hhmm, periodsOf, isOwnPeriods,
   buildGrid, freeCount, cellLabel, DEFAULT_PERIODS
 } from "@/lib/myTimetable";
 
@@ -215,9 +216,28 @@ export default function MyTimetable({ userId, onBack }) {
             </tbody>
           </table>
         </div>
-        {/* ★★空きの 数。★先生に 伝わるのは、★この 数だけ です。 */}
+        {/* ★★空きの 数。★先生に 伝わるのは、★この 数だけ です。
+            ★★2026-09-24、★字を 見本に 合わせました ──「空いて いる コマ」では
+              ★なく「先生に 見える あき」。★数は 同じ です。★ちがうのは、
+              ★★**だれに 見えるか** を 言って いる こと です。 */}
         <Usu style={{ marginTop: 7 }}>
-          空いて いる コマ　{freeCount(rows, list)}／{list.length * DAYS.length}
+          {TT_FREE_LABEL}　{freeCount(rows, list)}／{list.length * DAYS.length}
+          　／　{TT_EDIT_HINT}
+        </Usu>
+        {/* ★★凡例（★見本の 色見本）。★3つ です。
+            ★★見本の 4つ目「ほかの 教室」は、★この 表に 出ない マス です。
+              ★★無い ものの 色見本を 置きません。
+            ★★色は ここが 持って います（`CELL_BG`）。★名と 順は lib です。 */}
+        <Usu style={{ marginTop: 4 }}>
+          {TT_LEGEND.map((g, i) => (
+            <span key={g.state} style={{ marginRight: 10, whiteSpace: "nowrap" }}>
+              <span style={{
+                display: "inline-block", width: 9, height: 9, marginRight: 4,
+                background: CELL_BG[g.state], border: `1px solid ${C.line}`
+              }} />
+              {g.label}
+            </span>
+          ))}
         </Usu>
       </Card>
 
@@ -236,9 +256,16 @@ export default function MyTimetable({ userId, onBack }) {
         </Btn>
       </Two>
 
-      {/* ★★見本 .note。★4行。★1文字も 変えないこと。 */}
+      {/* ==================================================================
+          ★★表の 下の 註（★見本 `SC['時間割']` の `.note`）── ★2026-09-24。
+            ★★ここに 出して いたのは、★**別の 画面**の 註 でした
+              （`TT_COPY.notes` は `SC['授業を入れる']` の もの です）。
+            ★★見本の この 画面の 註は 4行。★書いたのは 3行 です。
+              ★書かなかった 1行は「設定 →「時間の 割り方」」── ★その 設定が
+              ★まだ ありません。★決めは `lib/myTimetable.js` が 持ちます。
+         ================================================================== */}
       <Note fold>
-        {TT_COPY.notes.map((line, i) => (
+        {TT_GRID_NOTES.map((line, i) => (
           <span key={i}>{i > 0 ? <br /> : null}{line}</span>
         ))}
       </Note>

@@ -34,7 +34,7 @@ function ok(cond, label) {
   const ROOT = path.join(__dirname, "..", "..");
   const src = fs.readFileSync(path.join(ROOT, "lib", "moreMenu.js"), "utf8");
   const m = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
-  const { MORE_ROWS, moreSections, mayShowMoreRow } = m;
+  const { MORE_ROWS, moreSections, mayShowMoreRow, rightOf } = m;
   const v = readRaw("components", "VocalTracker.jsx");
   const vCode = readCode("components", "VocalTracker.jsx");
 
@@ -136,6 +136,42 @@ function ok(cond, label) {
   const 行 = 何も.flatMap((x) => x.rows.map((r) => r.key));
   ok(!行.includes("授業の時間"), "★★条件を 渡さなければ、★授業の 時間は 出ない");
   ok(!行.includes("担当の先生"), "★★条件を 渡さなければ、★担当の 先生は 出ない");
+
+  // -------------------------------------------------------------------------
+  // ★⑨ 2026-09-24 ── ★見本 `SC['もっと']` と 読みくらべて（★段3a A群）
+  // -------------------------------------------------------------------------
+  console.log("⑨ ★あなたの ページ（★裁定129 P1・裁定131）");
+  {
+    const 行 = MORE_ROWS.find((r) => r.key === "経歴");
+    ok(行.label === "あなたの ページ", "★名が 見本の とおり");
+    ok((行.group || null) === null, "★もっとの 直下（★じぶんの記録の 中では ない）");
+    // ★★下の 字は、★在る もの だけ。★「紙」も「公開」も まだ です。
+    ok(!/紙|公開/.test(行.sub || ""), "★無い ものを 下に 書いて いない");
+    ok(rightOf(行, { portfolioCount: 13 }) === "13件 ›", "★書いた 数が 出る");
+    ok(rightOf(行, { portfolioCount: 0 }) === "›", "★0は 数で 言わない");
+    ok(rightOf(行, {}) === "›", "★渡されなければ 矢印だけ");
+  }
+
+  console.log("⑩ ★授業の 時間の 下の 字 ── ★約束 です");
+  {
+    const 行 = MORE_ROWS.find((r) => r.key === "授業の時間");
+    ok(行.sub === "学校には 「授業」と だけ", "★見本の 字");
+    // ★★★書いた 以上、★そう なって いる こと。
+    const ls = readCode("lib", "lessonRound.js");
+    const i = ls.indexOf("export function isClassSlot");
+    const 本 = ls.slice(i, i + 420);
+    ok(/return timetable\.some/.test(本) && !/name|title|subject/.test(本),
+      "★授業の 名前を 返して いない");
+    const ts = readCode("lib", "timetableShare.js");
+    ok(/科目の 名前・教室・先生の 名前は 出ません/.test(ts), "★行き先にも 書いて ある");
+  }
+
+  console.log("⑪ ★下の 字は lib が 持つ");
+  {
+    const vt2 = readCode("components", "VocalTracker.jsx");
+    ok(/\{r\.sub\}/.test(vt2), "★画面が 下の 字を 出して いる");
+    ok(!/学校には 「授業」と だけ/.test(vt2), "★画面に 字を 書いて いない");
+  }
 
   console.log(failed === 0 ? "\n全て ok" : "\n" + failed + "件 NG");
   process.exit(failed === 0 ? 0 : 1);
