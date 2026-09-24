@@ -1,0 +1,105 @@
+{
+  "title": "交響曲第94番 ト長調「驚愕」",
+  "title_original": "Sinfonie Nr. 94",
+  "aliases": [
+    "驚愕",
+    "びっくり"
+  ],
+  "composer": "ハイドン",
+  "composer_sort": "Haydn, Joseph",
+  "kind": "orchestra",
+  "year_written": 1791,
+  "source": "hand",
+  "source_id": "haydn-sym94",
+  "duration_min": 24,
+  "roles": [],
+  "scenes": [
+    {
+      "label": "第1楽章 アダージョ〜ヴィヴァーチェ・アッサイ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第2楽章 アンダンテ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第3楽章 メヌエット",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第4楽章 フィナーレ アレグロ・ディ・モルト",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

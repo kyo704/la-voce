@@ -1,0 +1,88 @@
+{
+  "title": "心の四季",
+  "title_original": "心の四季",
+  "aliases": [],
+  "composer": "髙田三郎",
+  "composer_sort": "Takata, Saburo",
+  "kind": "chorus",
+  "year_written": 1967,
+  "source": "hand",
+  "source_id": "takata-kokoro-no-shiki",
+  "duration_min": 22,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（混声4部）",
+      "is_group": true
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1 風が",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "2 みずすまし",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "3 流れ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "4 むらさきの",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "5 雪の日に",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "6 真昼の星",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "7 生きる",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "作詩: 吉野弘"
+}

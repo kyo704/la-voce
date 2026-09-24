@@ -90,7 +90,13 @@ import ClassTimeShare from "@/components/ClassTimeShare";
 //   ★★★判じるのは `KoenArea` の 中の `featureOn` **だけ** です。
 import KoenArea from "@/components/KoenArea";
 import KoenNew from "@/components/KoenNew";
-import { mayCreateKoen, KOEN_KEY } from "@/lib/koenArea";
+import { mayCreateKoen, mayShowKoenMine, KOEN_KEY } from "@/lib/koenArea";
+// ★★★2026-09-24・配線 ── ★採点の となりの 2枚。
+//   ★★前から 出来て いて、★どこからも 呼ばれて いません でした。
+//   ★★★鍵（`scoring`）が 閉じて いる あいだは、★入口ごと 出しません（★裁定176 §3）。
+import KoenMine from "@/components/KoenMine";
+import JuryPanel from "@/components/JuryPanel";
+import JuryLayout from "@/components/JuryLayout";
 import OrgSummary from "@/components/OrgSummary";
 import OrgFirstWeek from "@/components/OrgFirstWeek";
 import MonkaWaySetting from "@/components/MonkaWaySetting";
@@ -277,7 +283,7 @@ import OpsSaiten from "@/components/OpsSaiten";
 import OpsTenIreru from "@/components/OpsTenIreru";
 import {
   FAILED_LINE as EVAL_FAILED, SAVED_LINE as SAITEN_SAVED,
-  EDIT_FAILED as EVAL_EDIT_FAILED, confirmedWord, isConfirmed
+  EDIT_FAILED as EVAL_EDIT_FAILED, confirmedWord, isConfirmed, mayGoJury
 } from "@/lib/evaluation";
 import GuardianAsk from "@/components/GuardianAsk";
 import GuardianWithdraw from "@/components/GuardianWithdraw";
@@ -14262,6 +14268,8 @@ export default function VocalTracker({
   //   ★★`saitenEvent` …… どの 行事を 採点して いるか（★null なら 出しません）
   //   ★★`saitenOne` …… どなたの 点を 入れて いるか
   const [saitenEvent, setSaitenEvent] = useState(null);
+  // ★★採点の となりの 2枚（★2026-09-24）。★null なら 出しません。
+  const [juryView, setJuryView] = useState(null);   // ★"judges" ／ "layout"
   const [saitenOne, setSaitenOne] = useState(null);
   const [saitenScores, setSaitenScores] = useState([]);
   const [saitenReviews, setSaitenReviews] = useState([]);
@@ -17593,6 +17601,20 @@ export default function VocalTracker({
                   onClose={() => { setSaitenOne(null); setSaitenSaved(""); }} />
               );
             }
+            // ★★★審査員を 足す／実技試験を 組む（★2026-09-24・配線）。
+            //   ★★鍵が 閉じて いれば、★下の 入口が 渡されないので ここへ 来ません。
+            if (tabKey === "events" && saitenEvent && juryView) {
+              const 行事 = (opsEventList || []).find((e) => e.id === saitenEvent) || {};
+              return juryView === "judges" ? (
+                <JuryPanel
+                  supabase={featureClient} orgId={opsOrgId} event={行事}
+                  postLabel={(k) => k} />
+              ) : (
+                <JuryLayout
+                  supabase={featureClient} event={行事}
+                  eventDate={行事.event_date || ""} />
+              );
+            }
             if (tabKey === "events" && saitenEvent) {
               const 行事 = (opsEventList || []).find((e) => e.id === saitenEvent) || {};
               // ★★受験者は 名簿の 在籍から 出します（★見本の 字の とおり）。
@@ -17616,7 +17638,16 @@ export default function VocalTracker({
                   onConfirm={() => { void handleConfirmScores(opsOrgId, saitenEvent); }}
                   onOpenOne={(s) => { setSaitenOne(s); setSaitenSaved(""); }}
                   onDone={() => { void handleJudgeDone(opsOrgId, saitenEvent); }}
-                  onClose={() => { setSaitenEvent(null); setSaitenOne(null); }} />
+                  /* ★★★2026-09-24・配線 ── ★2つ 揃った ときだけ 渡します。
+                       ① 鍵が 開いて いる（`featureOn(features,"scoring")`）
+                       ② 採点の できことを 持って いる（`saiten`）
+                     ★★どちらか 欠けたら 渡しません ＝ 札が 出ません。
+                       ★★押せない 札を 置きません（★裁定176 §3）。 */
+                  onGoJudges={mayGoJury(features, canOps(gate, "saiten"))
+                    ? () => setJuryView("judges") : undefined}
+                  onGoLayout={mayGoJury(features, canOps(gate, "saiten"))
+                    ? () => setJuryView("layout") : undefined}
+                  onClose={() => { setSaitenEvent(null); setSaitenOne(null); setJuryView(null); }} />
               );
             }
             // ★★★公演（★裁定141・176・2026-09-24）。
@@ -27640,6 +27671,9 @@ export default function VocalTracker({
                       //     ★`activeTab` も `lessonRole` も 条件に しません。
                       //     ★★あの 2つが、★入口を 閉じて いた 当の もの です。
                       canInvite: canSeeBetaFeatures(profile),
+                      // ★★★公演（★出演者の 側・2026-09-24）。★鍵だけ で 決めます。
+                      //   ★★閉じて いれば 行ごと 出ません（★裁定176 §3）。
+                      koenOn: mayShowKoenMine(features),
                       // ★★★さがす（★2026-09-21・坂本さんの お決め）。
                       //   ★★9画面の うち 1枚 しか ありません。★名簿の 方 だけに 出します。
                       //   ★★決めるのは `lib/matchingGate.js` です。★ここで 決めません。
@@ -27986,6 +28020,17 @@ export default function VocalTracker({
                       onGoPortfolio={() => setMoreSection("経歴")}
                       loadError={matchingError} />
                   </div>
+                ) : null}
+
+                {/* ★★★公演（★出演者の 側・見本 `SC['公演']`・2026-09-24）。
+                    ★★`KoenMySchedule` と `KoenDayFlow` は 出来て いながら、
+                      ★どこからも 呼ばれて いません でした。★ここから 届きます。
+                    ★★鍵は 中で もう一度 判じます ── ★行を 通り抜けて 来ても、
+                      ★閉じて いれば 1文字も 出しません。 */}
+                {layoutV2 && moreSection === "公演" ? (
+                  <KoenMine
+                    supabase={featureClient} userId={userId} features={features}
+                    onBack={() => setMoreSection(null)} />
                 ) : null}
 
                 {layoutV2 && moreSection === "経歴" ? (

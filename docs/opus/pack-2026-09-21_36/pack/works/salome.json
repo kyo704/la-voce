@@ -1,0 +1,227 @@
+{
+  "title": "サロメ",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1905,
+  "source": "hand",
+  "source_id": "strauss-salome",
+  "roles": [
+    {
+      "label": "サロメ"
+    },
+    {
+      "label": "ヘロデ"
+    },
+    {
+      "label": "ヘロディアス"
+    },
+    {
+      "label": "ヨカナーン"
+    },
+    {
+      "label": "ナラボート"
+    },
+    {
+      "label": "ヘロディアスの小姓"
+    },
+    {
+      "label": "ユダヤ人たち",
+      "is_group": true
+    },
+    {
+      "label": "ナザレ人・兵士たち",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "テラスの場（ナラボートとサロメ）",
+      "group_label": "全1幕",
+      "roles": [
+        "ナラボート",
+        "ヘロディアスの小姓",
+        "サロメ",
+        "ナザレ人・兵士たち"
+      ]
+    },
+    {
+      "label": "ヨカナーンの声と登場",
+      "group_label": "全1幕",
+      "roles": [
+        "ヨカナーン",
+        "サロメ",
+        "ナラボート"
+      ]
+    },
+    {
+      "label": "サロメとヨカナーンの場",
+      "group_label": "全1幕",
+      "roles": [
+        "サロメ",
+        "ヨカナーン",
+        "ナラボート"
+      ]
+    },
+    {
+      "label": "ヘロデとヘロディアスの登場",
+      "group_label": "全1幕",
+      "roles": [
+        "ヘロデ",
+        "ヘロディアス",
+        "サロメ"
+      ]
+    },
+    {
+      "label": "ユダヤ人たちの五重唱",
+      "group_label": "全1幕",
+      "roles": [
+        "ユダヤ人たち",
+        "ヘロデ",
+        "ナザレ人・兵士たち"
+      ]
+    },
+    {
+      "label": "七つのヴェールの踊り",
+      "group_label": "全1幕",
+      "roles": [
+        "サロメ"
+      ]
+    },
+    {
+      "label": "褒美の要求（ヨカナーンの首を）",
+      "group_label": "全1幕",
+      "roles": [
+        "サロメ",
+        "ヘロデ",
+        "ヘロディアス"
+      ]
+    },
+    {
+      "label": "フィナーレ（サロメの最後の場）",
+      "group_label": "全1幕",
+      "roles": [
+        "サロメ",
+        "ヘロデ",
+        "ヘロディアス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind",
+      "doubling": "コーラングレ・ヘッケルフォン"
+    },
+    {
+      "part": "クラリネット",
+      "count": 6,
+      "section": "woodwind",
+      "doubling": "バスクラリネット・エスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion",
+      "note": "多数（シロフォン・タムタム・グロッケン ほか）"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ハルモニウム",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "舞台裏の楽器",
+      "count": 0,
+      "section": "banda",
+      "note": "オルガン・ハルモニウム"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Salome",
+  "aliases": [],
+  "duration_min": 100,
+  "language": "de"
+}

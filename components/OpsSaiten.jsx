@@ -25,7 +25,11 @@ const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsSaiten({
   eventName, eventSub, students = [], items = [], scoresOf, allScores = [],
-  perms, myDone, onOpenOne, onDone, onConfirm, onClose, busy, error = "", done = ""
+  perms, myDone, onOpenOne, onDone, onConfirm, onClose, busy, error = "", done = "",
+  // ★★★2026-09-24 ── ★採点の となりの 2枚への 入口。
+  //   ★★どちらも 渡されなければ **出しません**（★押せない 札を 置きません）。
+  //     ★渡すか どうかを 決めるのは 呼ぶ 側 です ── ★鍵（`scoring`）と、できこと。
+  onGoJudges, onGoLayout
 }) {
   const 使う = items.filter((i) => i && i.in_use);
   const 並 = defaultOrder(students);
@@ -43,6 +47,24 @@ export default function OpsSaiten({
             }}>‹ 行事</button>
         ) : null} />
       {eventSub ? <p style={{ ...小, margin: "-4px 0 10px" }}>{eventSub}</p> : null}
+
+      {/* ==================================================================
+          ★★採点の となりの 2枚（★2026-09-24・配線）。
+            ★審査員を 足す（`JuryPanel`）／実技試験を 組む（`JuryLayout`）。
+          ★★どちらも 前から 出来て いました。★どこからも 呼ばれて いません でした。
+            ★★「作った」と「届く」は 別 です。
+          ★★渡されなければ 出しません。★鍵が 閉じて いる 間は 1つも 出ません。
+         ================================================================== */}
+      {onGoJudges || onGoLayout ? (
+        <Card style={{ padding: 0, marginBottom: rem(10) }}>
+          {onGoJudges ? (
+            <Li last={!onGoLayout} onClick={onGoJudges} right="›">審査員を 足す</Li>
+          ) : null}
+          {onGoLayout ? (
+            <Li last onClick={onGoLayout} right="›">実技試験を 組む</Li>
+          ) : null}
+        </Card>
+      ) : null}
 
       <H3>{LIST_HEAD}　<span style={小}>{LIST_SUB}</span></H3>
       <Card style={{ padding: 0 }}>

@@ -1,0 +1,33 @@
+{
+  "title": "ピアノソナタ ロ短調",
+  "title_original": "Klaviersonate h-moll",
+  "aliases": [],
+  "composer": "リスト",
+  "composer_sort": "Liszt, Franz",
+  "kind": "chamber",
+  "year_written": 1853,
+  "source": "hand",
+  "source_id": "liszt-sonata-bminor",
+  "duration_min": 30,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "単一楽章",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "title": "夜のガスパール",
+  "title_original": "Gaspard de la nuit",
+  "aliases": [
+    "スカルボ"
+  ],
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "chamber",
+  "year_written": 1908,
+  "source": "hand",
+  "source_id": "ravel-gaspard",
+  "duration_min": 22,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I オンディーヌ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "II 絞首台",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "III スカルボ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

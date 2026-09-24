@@ -1,0 +1,59 @@
+{
+  "title": "小ミサ曲",
+  "title_original": "Messe basse",
+  "aliases": [],
+  "composer": "フォーレ",
+  "composer_sort": "Faure, Gabriel",
+  "kind": "chorus",
+  "year_written": 1881,
+  "source": "hand",
+  "source_id": "faure-messe-basse",
+  "duration_min": 10,
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "キリエ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "サンクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ベネディクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アニュス・デイ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}
