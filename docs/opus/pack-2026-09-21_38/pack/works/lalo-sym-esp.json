@@ -1,0 +1,135 @@
+{
+  "title": "スペイン交響曲",
+  "title_original": "Symphonie espagnole",
+  "composer": "ラロ",
+  "composer_sort": "Lalo, Edouard",
+  "kind": "orchestra",
+  "year_written": 1874,
+  "source": "hand",
+  "source_id": "lalo-symphonie-espagnole",
+  "duration_min": 33,
+  "roles": [
+    {
+      "label": "ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 スケルツァンド",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 間奏曲",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "第4楽章 アンダンテ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "第5楽章 ロンド",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

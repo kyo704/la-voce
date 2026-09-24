@@ -1,0 +1,43 @@
+{
+  "title": "12の練習曲 作品10",
+  "title_original": "Études op.10",
+  "aliases": [
+    "革命",
+    "黒鍵"
+  ],
+  "composer": "ショパン",
+  "composer_sort": "Chopin, Frederic",
+  "kind": "chamber",
+  "year_written": 1833,
+  "source": "hand",
+  "source_id": "chopin-etudes-op10",
+  "duration_min": 30,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1番〜第11番",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "★第12番「革命」",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

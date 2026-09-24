@@ -1,0 +1,156 @@
+{
+  "title": "ウリッセの帰還",
+  "title_original": "Il ritorno d'Ulisse in patria",
+  "aliases": [
+    "ウリッセ"
+  ],
+  "composer": "モンテヴェルディ",
+  "composer_sort": "Monteverdi, Claudio",
+  "kind": "opera",
+  "year_written": 1640,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "monteverdi-ulisse",
+  "roles": [
+    {
+      "label": "ウリッセ"
+    },
+    {
+      "label": "ペネーロペ"
+    },
+    {
+      "label": "テレーマコ"
+    },
+    {
+      "label": "エウメーテ"
+    },
+    {
+      "label": "イーロ"
+    },
+    {
+      "label": "メラント"
+    },
+    {
+      "label": "ミネルヴァ"
+    },
+    {
+      "label": "求婚者たち",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ 人間のはかなさ",
+      "group_label": "プロローグ",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ペネーロペの嘆き",
+      "group_label": "第1幕",
+      "roles": [
+        "ペネーロペ",
+        "メラント"
+      ]
+    },
+    {
+      "label": "第1幕 ウリッセの帰還とミネルヴァ",
+      "group_label": "第1幕",
+      "roles": [
+        "ウリッセ",
+        "ミネルヴァ",
+        "エウメーテ"
+      ]
+    },
+    {
+      "label": "第2幕 テレーマコの帰還",
+      "group_label": "第2幕",
+      "roles": [
+        "テレーマコ",
+        "エウメーテ",
+        "ウリッセ"
+      ]
+    },
+    {
+      "label": "第2幕 求婚者たちと弓の試し",
+      "group_label": "第2幕",
+      "roles": [
+        "ペネーロペ",
+        "求婚者たち",
+        "ウリッセ",
+        "イーロ"
+      ]
+    },
+    {
+      "label": "第3幕 イーロの嘆きと再会",
+      "group_label": "第3幕",
+      "roles": [
+        "イーロ",
+        "ペネーロペ",
+        "ウリッセ",
+        "エウメーテ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

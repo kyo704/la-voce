@@ -1,0 +1,267 @@
+{
+  "title": "ファウスト",
+  "composer": "グノー",
+  "composer_sort": "Gounod, Charles",
+  "kind": "opera",
+  "year_written": 1859,
+  "source": "hand",
+  "source_id": "gounod-faust",
+  "roles": [
+    {
+      "label": "マルグリート"
+    },
+    {
+      "label": "ファウスト"
+    },
+    {
+      "label": "メフィストフェレス"
+    },
+    {
+      "label": "ヴァランタン"
+    },
+    {
+      "label": "シーベル"
+    },
+    {
+      "label": "マルト"
+    },
+    {
+      "label": "ワーグナー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "ファウストの独白と契約",
+      "group_label": "第1幕",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス"
+      ]
+    },
+    {
+      "label": "ヴァランタンの祈り（立ち去る前に）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴァランタン",
+        "ワーグナー",
+        "シーベル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "金の子牛の歌",
+      "group_label": "第2幕",
+      "roles": [
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ワルツと合唱（第2幕フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファウスト",
+        "マルグリート",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "シーベルの花の歌",
+      "group_label": "第3幕",
+      "roles": [
+        "シーベル"
+      ]
+    },
+    {
+      "label": "ファウストのカヴァティーナ（清らかな住まい）",
+      "group_label": "第3幕",
+      "roles": [
+        "ファウスト"
+      ]
+    },
+    {
+      "label": "宝石の歌（マルグリート）",
+      "group_label": "第3幕",
+      "roles": [
+        "マルグリート",
+        "マルト"
+      ]
+    },
+    {
+      "label": "四重唱と愛の二重唱",
+      "group_label": "第3幕",
+      "roles": [
+        "マルグリート",
+        "ファウスト",
+        "メフィストフェレス",
+        "マルト"
+      ]
+    },
+    {
+      "label": "糸紡ぎの場とシーベル",
+      "group_label": "第4幕",
+      "roles": [
+        "マルグリート",
+        "シーベル"
+      ]
+    },
+    {
+      "label": "兵士の合唱（見よ、勇者の帰りを）",
+      "group_label": "第4幕",
+      "roles": [
+        "合唱",
+        "ヴァランタン"
+      ]
+    },
+    {
+      "label": "教会の場（メフィストフェレスの脅し）",
+      "group_label": "第4幕",
+      "roles": [
+        "マルグリート",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ヴァランタンの死",
+      "group_label": "第4幕",
+      "roles": [
+        "ヴァランタン",
+        "ファウスト",
+        "メフィストフェレス",
+        "マルグリート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ワルプルギスの夜（バレエ）",
+      "group_label": "第5幕",
+      "roles": [
+        "メフィストフェレス",
+        "ファウスト"
+      ]
+    },
+    {
+      "label": "牢獄の三重唱とフィナーレ（天使の合唱）",
+      "group_label": "第5幕",
+      "roles": [
+        "マルグリート",
+        "ファウスト",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "コルネット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "大太鼓・小太鼓・シンバル・トライアングル・鐘"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "note": "教会の場"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "第2幕・兵士の合唱"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "title": "無伴奏ヴァイオリンのためのソナタ第1番 ト短調",
+  "title_original": "Sonate Nr. 1 BWV 1001",
+  "aliases": [],
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chamber",
+  "year_written": 1720,
+  "source": "hand",
+  "source_id": "bach-sonata1",
+  "duration_min": 18,
+  "roles": [
+    {
+      "label": "ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "アダージョ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "フーガ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "シチリアーノ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "プレスト",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}
