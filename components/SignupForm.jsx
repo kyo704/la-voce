@@ -63,6 +63,16 @@ const ST = {
   labelAgeQuestion: { ja: "18歳未満ですか？", en: "Are you under 18?", zh: "您未满18岁吗？", it: "Hai meno di 18 anni?", de: "Bist du unter 18 Jahre alt?", fr: "Avez-vous moins de 18 ans ?", es: "¿Eres menor de 18 años?", ko: "만 18세 미만이신가요?", ru: "Вам меньше 18 лет?" },
   optionUnder18Yes: { ja: "はい（18歳未満です）", en: "Yes (under 18)", zh: "是（未满18岁）", it: "Sì (meno di 18 anni)", de: "Ja (unter 18)", fr: "Oui (moins de 18 ans)", es: "Sí (menor de 18)", ko: "예(18세 미만)", ru: "Да (меньше 18)" },
   optionUnder18No: { ja: "いいえ（18歳以上です）", en: "No (18 or older)", zh: "否（已满18岁）", it: "No (18 anni o più)", de: "Nein (18 oder älter)", fr: "Non (18 ans ou plus)", es: "No (18 o más)", ko: "아니요(18세 이상)", ru: "Нет (18 и старше)" },
+  // ★★★見本の `年をたずねる` に ある 一文（★2026-09-25）。
+  //   ★★「生まれた日は うかがいません」は、★**集めない** と いう お約束 です。
+  //     ★帯（15歳未満／15〜17／18以上）しか たずねません。
+  //     ★★書いて いない と、★いずれ 生年月日を 足したく なった とき、
+  //       ★誰も 止めません。★書いて あれば 止まります。
+  ageNoBirthdate: { ja: "生まれた日は うかがいません。", en: "We do not ask for your date of birth.",
+    zh: "我们不会询问您的出生日期。", it: "Non chiediamo la tua data di nascita.",
+    de: "Wir fragen nicht nach deinem Geburtsdatum.", fr: "Nous ne demandons pas votre date de naissance.",
+    es: "No preguntamos tu fecha de nacimiento.", ko: "생년월일은 묻지 않습니다.",
+    ru: "Мы не спрашиваем дату вашего рождения." },
   ageQuestionNote: { ja: "答えなくても登録できます。お答えいただくと、年齢に合わない項目をお出しせずに済みます。あとから設定でも変更できます。", en: "You can sign up without answering. Answering lets us avoid showing items that are not suitable for your age. You can change this later in Settings.", zh: "不回答也可以注册。回答后，我们可以避免显示不适合您年龄的项目。之后也可在设置中更改。", it: "Puoi registrarti anche senza rispondere. Rispondendo, eviteremo di mostrarti elementi non adatti alla tua età. Puoi modificarlo in seguito nelle impostazioni.", de: "Du kannst dich auch ohne Antwort registrieren. Mit einer Antwort können wir Inhalte ausblenden, die nicht zu deinem Alter passen. Du kannst das später in den Einstellungen ändern.", fr: "Vous pouvez vous inscrire sans répondre. Si vous répondez, nous éviterons d'afficher des éléments inadaptés à votre âge. Vous pourrez le modifier plus tard dans les réglages.", es: "Puedes registrarte sin responder. Si respondes, evitaremos mostrarte elementos que no sean adecuados para tu edad. Podrás cambiarlo después en los ajustes.", ko: "답하지 않아도 가입할 수 있습니다. 답해 주시면 연령에 맞지 않는 항목을 표시하지 않을 수 있습니다. 나중에 설정에서 변경할 수 있습니다.", ru: "Зарегистрироваться можно и без ответа. Ответ позволит нам не показывать то, что не подходит по возрасту. Изменить это можно позже в настройках." },
 };
 
@@ -345,7 +355,10 @@ function SignupFormInner() {
               </label>
             ))}
           </div>
-          <p style={{ fontSize: "0.71875rem", color: C.inkSoft, marginTop: 8, lineHeight: 1.6 }}>
+          <p style={{ fontSize: "0.71875rem", color: C.ink, marginTop: 8, lineHeight: 1.6 }}>
+            {str("ageNoBirthdate", lang)}
+          </p>
+          <p style={{ fontSize: "0.71875rem", color: C.inkSoft, marginTop: 4, lineHeight: 1.6 }}>
             {str("ageQuestionNote", lang)}
           </p>
           {/* ★★★弾く ときは、★その場で わけを 出します。★押してから 断りません。 */}

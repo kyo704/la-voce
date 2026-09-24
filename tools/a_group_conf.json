@@ -243,7 +243,9 @@
   "lib/myKoenDay.js"
  ],
  "プラン": [
-  "lib/planScreen.js"
+  "components/VocalTracker.jsx",
+  "lib/planScreen.js",
+  "lib/plans.js"
  ],
  "レッスンの希望": [
   "components/LessonPrefs.jsx",
@@ -387,7 +389,7 @@
   "lib/myTimetable.js"
  ],
  "年をたずねる": [
-  "components/VocalTracker.jsx",
+  "components/SignupForm.jsx",
   "lib/ageGate.js"
  ],
  "カレンダーにつなぐ": [
@@ -431,9 +433,12 @@
   "lib/matchingSearch.js"
  ],
  "その人": [
-  "components/OpsPeople.jsx"
+  "components/OpsRoster.jsx",
+  "lib/orgRoster.js",
+  "components/OpsMonkaHito.jsx"
  ],
  "型の中身": [
-  "components/OpsPresets.jsx"
+  "components/OpsPresets.jsx",
+  "lib/lessonPresets.js"
  ]
 }
