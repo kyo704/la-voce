@@ -6,7 +6,6 @@
     "  ★見えなく する ためでは ありません。★**数えられる ように する** ため です。",
     "★つないだら、★この 行を 消して ください。★見張りが 残って いる ことを 教えます。"
   ],
-  "WorksSearch": "★公演の 機能は 台帳の 鍵（`koen`）が off です。★いつ つなぐ …… `koen` を 開ける 前。★`featureOn(features,'koen')` の 中に 入れます",
   "Understudy": "★画面は できて います。★けれど **稽古の 1回**（`koen_sessions`）が 無いと 中身が 出ません（`koen_understudy_needed(p_session)`）。★いつ つなぐ …… `稽古を組む` を 作った とき。★押せる のに 空、は 押せない 札より たちが 悪い ので 出しません",
   "KoenDayFlow": "★公演の 機能は 台帳の 鍵（`koen`）が off です。★いつ つなぐ …… `koen` を 開ける 前。★`featureOn(features,'koen')` の 中に 入れます",
   "KoenMySchedule": "★公演の 機能は 台帳の 鍵（`koen`）が off です。★いつ つなぐ …… `koen` を 開ける 前。★`featureOn(features,'koen')` の 中に 入れます",

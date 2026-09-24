@@ -43,17 +43,25 @@ function t(cond, label) {
     t(!画.includes(w), "★「" + w + "」を 画面に 書いて いない"));
   t(/KIND_LABELS/.test(画), "★種類の 名は lib から 借りる");
 
-  console.log("\n③ 台帳に 無い 欄を 出さない");
+  console.log("\n③ 5つ とも 出す（★2026-09-24・sql/72）");
   t(L.NEW_FIELDS.length === 5, "★見本は 5つ（" + L.NEW_FIELDS.length + "）");
-  t(L.shownFields().length === 3, "★出すのは 3つ（" + L.shownFields().length + "）");
-  t(L.shownFields().map((f) => f.key).join(",") === "title,opens_on,venue", "★題名・本番の日・会場");
-  ["work", "from"].forEach((k) =>
-    t(!L.SHOWN_FIELDS.includes(k), "★「" + k + "」を 出して いない（★列が ない）"));
-  // ★★出して いない ものを、★こっそり 入れて いない こと
-  const 入 = 画.slice(画.indexOf("toKoenRow"), 画.indexOf("toKoenRow") + 200);
-  t(!/work|rehearsal/.test(入), "★入れる ところにも 無い");
-  const r = L.toKoenRow({ title: " あ ", kind: "opera" }, { orgId: "o", userId: "u" });
-  t(!("work" in r) && !("from" in r), "★台帳に 渡す 形にも 無い");
+  t(L.shownFields().length === 5, "★5つ とも 出す（" + L.shownFields().length + "）");
+  // ★★★`opens_on`（台帳の 列）は **稽古の はじまり** です。
+  //   ★見本の「本番の 日」は 稽古の 1行 に なります（`koen_set_show_date`）。
+  const r = L.toKoenRow({ title: " あ ", kind: "opera", from: "2026-11-01", opens_on: "2027-03-14" },
+                        { orgId: "o", userId: "u" });
+  t(r.opens_on === "2026-11-01", "★★`opens_on` に 入るのは **稽古の はじまり**");
+  t(!("work" in r) && !("show" in r), "★作品と 本番の 日は、★この 形に 入れない");
+  // ★★あとの 手順で 入れて いる こと
+  const 後 = L.afterCreate({ workId: "w1", opens_on: "2027-03-14" });
+  t(後.length === 2, "★あとの 手順は 2つ（" + 後.length + "）");
+  t(後.some((x) => x.fn === "koen_set_work"), "★作品は `koen_set_work`");
+  t(後.some((x) => x.fn === "koen_set_show_date"), "★本番の 日は `koen_set_show_date`");
+  t(L.afterCreate({}).length === 0, "★★空なら 呼ばない（★空の 行を 作らない）");
+  t(/afterCreate\(form\)/.test(画), "★画面も その 手順を 踏む");
+  // ★★作品は **選ぶ**（★打ち込まない）
+  t(L.NEW_FIELDS.find((f) => f.key === "work").pick === true, "★作品は 選ぶ もの");
+  t(/<WorksSearch/.test(画), "★作品を さがす 画面へ 行ける");
 
   console.log("\n④ owner_user_id は 自分");
   t(r.owner_user_id === "u", "★自分を 入れる");
@@ -71,6 +79,17 @@ function t(cond, label) {
   // ★★呼ぶ 側が 自分で 組み立てて いない こと
   const vt = readCode("components", "VocalTracker.jsx");
   t(/mayCreateKoen\(features, canOps\(gate, "gyoji"\)\)/.test(vt), "★画面は lib に 尋ねる");
+
+  console.log("\n⑤b 切って ある 種類は 出さない（★裁定187）");
+  const K = [{ kind: "opera" }, { kind: "band" }];
+  t(L.kindsToShow(K, {}).length === 2, "★★鍵が 1つも 無い ときは ぜんぶ 出す");
+  t(L.kindsToShow(K, { koen_opera: true, koen_band: false }).map((x) => x.kind).join() === "opera",
+    "★切って ある 種類は 出さない");
+  t(L.kindsToShow(K, { koen_opera: false, koen_band: false }).length === 0, "★ぜんぶ 切れば 0");
+  t(/kindsToShow\(kinds, features\)/.test(画), "★画面も その とおり");
+  // ★★「まだ 使えません」と 並べない
+  ["まだ 使えません", "2027年10月", "近日", "準備中"].forEach((w) =>
+    t(!new RegExp(w).test(画), "★「" + w + "」と 書いて いない"));
 
   console.log("\n⑥ 但し書きが 見本の まま");
   const 見 = fs.readFileSync(path.join(ROOT, "docs", "design", "pack-final",

@@ -1,0 +1,174 @@
+{
+  "title": "アンドレア・シェニエ",
+  "title_original": "Andrea Chénier",
+  "aliases": [
+    "シェニエ"
+  ],
+  "composer": "ジョルダーノ",
+  "composer_sort": "Giordano, Umberto",
+  "kind": "opera",
+  "year_written": 1896,
+  "duration_min": 120,
+  "language": "it",
+  "source": "hand",
+  "source_id": "giordano-chenier",
+  "roles": [
+    {
+      "label": "アンドレア・シェニエ"
+    },
+    {
+      "label": "マッダレーナ"
+    },
+    {
+      "label": "ジェラール"
+    },
+    {
+      "label": "ベルシ"
+    },
+    {
+      "label": "マデロン"
+    },
+    {
+      "label": "ルーシェ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 コワニー伯爵邸の夜会（即興詩）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンドレア・シェニエ",
+        "マッダレーナ",
+        "ジェラール",
+        "ベルシ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 革命下のパリ",
+      "group_label": "第2幕",
+      "roles": [
+        "アンドレア・シェニエ",
+        "マッダレーナ",
+        "ジェラール",
+        "ベルシ",
+        "ルーシェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 革命裁判所（祖国の敵）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジェラール",
+        "マッダレーナ",
+        "マデロン",
+        "アンドレア・シェニエ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 サン・ラザール牢獄・フィナーレ",
+      "group_label": "第4幕",
+      "roles": [
+        "アンドレア・シェニエ",
+        "マッダレーナ",
+        "ジェラール",
+        "ルーシェ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

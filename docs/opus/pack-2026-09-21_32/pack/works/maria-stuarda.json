@@ -1,0 +1,184 @@
+{
+  "title": "マリア・ストゥアルダ",
+  "title_original": "Maria Stuarda",
+  "aliases": [
+    "スチュアルダ"
+  ],
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1835,
+  "duration_min": 140,
+  "language": "it",
+  "source": "hand",
+  "source_id": "donizetti-maria-stuarda",
+  "roles": [
+    {
+      "label": "マリア・ストゥアルダ"
+    },
+    {
+      "label": "エリザベッタ"
+    },
+    {
+      "label": "レスター"
+    },
+    {
+      "label": "タルボット"
+    },
+    {
+      "label": "セシル"
+    },
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ウェストミンスターの宮廷",
+      "group_label": "第1幕",
+      "roles": [
+        "エリザベッタ",
+        "レスター",
+        "タルボット",
+        "セシル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 フォザリンゲイ城の庭",
+      "group_label": "第2幕",
+      "roles": [
+        "マリア・ストゥアルダ",
+        "アンナ",
+        "レスター"
+      ]
+    },
+    {
+      "label": "第2幕 ★二人の女王の対決",
+      "group_label": "第2幕",
+      "roles": [
+        "マリア・ストゥアルダ",
+        "エリザベッタ",
+        "レスター",
+        "タルボット",
+        "セシル"
+      ]
+    },
+    {
+      "label": "第3幕 死刑の署名",
+      "group_label": "第3幕",
+      "roles": [
+        "エリザベッタ",
+        "セシル",
+        "レスター"
+      ]
+    },
+    {
+      "label": "第3幕 告解と祈りの合唱",
+      "group_label": "第3幕",
+      "roles": [
+        "マリア・ストゥアルダ",
+        "タルボット",
+        "アンナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 処刑とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "マリア・ストゥアルダ",
+        "レスター",
+        "アンナ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

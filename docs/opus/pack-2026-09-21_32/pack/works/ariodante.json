@@ -1,0 +1,158 @@
+{
+  "title": "アリオダンテ",
+  "title_original": "Ariodante",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1735,
+  "duration_min": 195,
+  "language": "it",
+  "source": "hand",
+  "source_id": "handel-ariodante",
+  "roles": [
+    {
+      "label": "アリオダンテ"
+    },
+    {
+      "label": "ジネヴラ"
+    },
+    {
+      "label": "ポリネッソ"
+    },
+    {
+      "label": "ダリンダ"
+    },
+    {
+      "label": "ルルカーニオ"
+    },
+    {
+      "label": "スコットランド王"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ジネヴラとアリオダンテの愛",
+      "group_label": "第1幕",
+      "roles": [
+        "ジネヴラ",
+        "アリオダンテ",
+        "スコットランド王",
+        "ダリンダ",
+        "ポリネッソ"
+      ]
+    },
+    {
+      "label": "第2幕 欺きの夜（アリオダンテの絶望）",
+      "group_label": "第2幕",
+      "roles": [
+        "アリオダンテ",
+        "ポリネッソ",
+        "ダリンダ",
+        "ルルカーニオ"
+      ]
+    },
+    {
+      "label": "第2幕 ジネヴラの狂乱",
+      "group_label": "第2幕",
+      "roles": [
+        "ジネヴラ",
+        "スコットランド王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 決闘と真相",
+      "group_label": "第3幕",
+      "roles": [
+        "アリオダンテ",
+        "ポリネッソ",
+        "ルルカーニオ",
+        "ダリンダ"
+      ]
+    },
+    {
+      "label": "第3幕 フィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ジネヴラ",
+        "アリオダンテ",
+        "スコットランド王",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    }
+  ]
+}

@@ -17591,6 +17591,7 @@ export default function VocalTracker({
             if (tabKey === "events" && koenNew) {
               return (
                 <KoenNew supabase={featureClient} orgId={opsOrgId} userId={userId}
+                  features={features}
                   onMade={(id) => { setKoenNew(false); setKoenId(id); }}
                   onBack={() => setKoenNew(false)} />
               );

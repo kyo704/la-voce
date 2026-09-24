@@ -6,12 +6,13 @@ import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import { COLS_WORDS } from "@/lib/koenSheet";
 import { KIND_LABELS } from "@/lib/worksSearch";
 import {
-  canCreate, toKoenRow, shownFields,
+  canCreate, toKoenRow, shownFields, afterCreate, kindsToShow,
   NEW_HEAD, NEW_KIND_HEAD, NEW_KIND_SUB, NEW_KIND_ROW, NEW_KIND_CHANGE,
   NEW_PRICE_HEAD, NEW_PRICE_MAKE, NEW_PRICE_FREE, NEW_PRICE_15, NEW_PRICE_15V,
   NEW_PRICE_16, NEW_PRICE_16V, NEW_PRICE_NOTE, NEW_NEED_TITLE, NEW_MADE,
   NEW_KIND_NOTE, NEW_NOTE
 } from "@/lib/koenArea";
+import WorksSearch from "./WorksSearch";
 import { tx } from "@/lib/t";
 
 // ============================================================================
@@ -46,9 +47,14 @@ const 入 = {
   fontFamily: FONT_STACK, ...TYPE.li
 };
 
-export default function KoenNew({ supabase, orgId, userId, onMade, onBack }) {
+export default function KoenNew({ supabase, orgId, userId, features, onMade, onBack }) {
   const [kinds, setKinds] = useState([]);
-  const [form, setForm] = useState({ title: "", opens_on: "", venue: "", kind: "" });
+  const [form, setForm] = useState({
+    title: "", work: "", workId: null, from: "", opens_on: "", venue: "", kind: ""
+  });
+  // ★★作品は **選びます**。★打ち込みません（★`works` から 選ぶ ことで
+  //   ★「よく 使われて いる 順」が 育ちます）。
+  const [作品を選ぶ, set作品を選ぶ] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [word, setWord] = useState("");
@@ -76,6 +82,14 @@ export default function KoenNew({ supabase, orgId, userId, onMade, onBack }) {
       if (e) throw e;
       const id = ((data || [])[0] || {}).id;
       if (!id) throw new Error(tx("作れませんでした。"));
+      // ★★★作った あとに する こと（★決めるのは lib）。
+      //   ★作品 …… `koen_set_work`（★`used_count` も 増えます）
+      //   ★本番の 日 …… `koen_set_show_date`（★稽古の 1行。★期限が 決まります）
+      //   ★★どちらかが 失敗しても、★公演 そのものは 残ります ── ★消しません。
+      for (const 次 of afterCreate(form)) {
+        const { error: e2 } = await supabase.rpc(次.fn, { p_koen: id, ...次.args });
+        if (e2) console.error("★あとの 手順で 止まりました:", 次.fn, e2);
+      }
       setWord(tx(NEW_MADE));
       if (onMade) onMade(id);
     } catch (e) { setError(String((e && e.message) || e)); }
@@ -102,7 +116,10 @@ export default function KoenNew({ supabase, orgId, userId, onMade, onBack }) {
           background: C.card, border: `1px solid ${C.line}`, borderRadius: 12,
           overflow: "hidden", maxWidth: 760
         }}>
-          {kinds.map((k) => (
+          {/* ★★★切って ある 種類は 出しません（★裁定187）。
+              ★「まだ 使えません」と 並べるのは、★期待させて 断る こと です。
+              ★★止めるのは 機能の 切り替え だけ。★台帳では 止めません。 */}
+          {kindsToShow(kinds, features).map((k) => (
             <button key={k.kind} type="button"
               onClick={() => setForm((f) => ({ ...f, kind: k.kind }))}
               style={{
@@ -130,6 +147,18 @@ export default function KoenNew({ supabase, orgId, userId, onMade, onBack }) {
           ))}
         </div>
       </div>
+    );
+  }
+
+  // ★★作品を さがす（★別の 画面。★選ぶと 戻ります）
+  if (作品を選ぶ) {
+    return (
+      <WorksSearch supabase={supabase} kind={form.kind}
+        onPick={(w) => {
+          setForm((s) => ({ ...s, work: w.title, workId: w.id }));
+          set作品を選ぶ(false);
+        }}
+        onBack={() => set作品を選ぶ(false)} />
     );
   }
 
@@ -162,11 +191,27 @@ export default function KoenNew({ supabase, orgId, userId, onMade, onBack }) {
           {shownFields().map((f) => (
             <div key={f.key} style={{ marginBottom: rem(8) }}>
               <div style={{ ...小, marginBottom: rem(3) }}>{tx(f.label)}</div>
-              <input
-                type={f.key === "opens_on" ? "date" : "text"}
-                value={form[f.key] || ""}
-                onChange={(e) => setForm((s) => ({ ...s, [f.key]: e.target.value }))}
-                style={入} />
+              {f.pick ? (
+                // ★★★作品は 選びます。★`works` から 選ぶ と、
+                //   ★「よく 使われて いる 順」が 育ちます。
+                <button type="button" onClick={() => set作品を選ぶ(true)}
+                  style={{
+                    ...入, display: "flex", alignItems: "center",
+                    justifyContent: "space-between", textAlign: "left",
+                    background: C.card, cursor: "pointer"
+                  }}>
+                  <span style={{ color: form.work ? C.ink : C.inkSoft }}>
+                    {form.work || tx("作品を さがす")}
+                  </span>
+                  <span style={{ color: C.inkSoft }}>›</span>
+                </button>
+              ) : (
+                <input
+                  type={f.date ? "date" : "text"}
+                  value={form[f.key] || ""}
+                  onChange={(e) => setForm((s) => ({ ...s, [f.key]: e.target.value }))}
+                  style={入} />
+              )}
             </div>
           ))}
           <button type="button" onClick={作る} disabled={busy}
