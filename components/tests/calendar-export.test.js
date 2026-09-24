@@ -57,8 +57,15 @@ function 本体(src, 見出し) {
   })());
 
   console.log("\n③ ★題名の引数が、復活していないこと");
-  ok("buildGoogleCalendarUrl は題名を受け取らない",
-    /function buildGoogleCalendarUrl\(lesson, t\)/.test(VT));
+  // ★★★2026-09-24 ── ★中身を `lib/calendarExport.js` へ 移しました。
+  //   ★★出演者の 公演からも 使う ことに なりました。★写しを 作りません。
+  //   ★★見る ものは 同じ です ── ★題名を 受け取らない こと。
+  const CE = 読む("lib/calendarExport.js");
+  ok("googleCalendarUrl は題名を受け取らない",
+    /export function googleCalendarUrl\(lesson, t\)/.test(CE));
+  // ★★★写しが 生えて いない こと。★2つ あると 片方だけ 広がります。
+  ok("★VocalTracker に 写しが 無い",
+    !/function buildGoogleCalendarUrl\(lesson, t\) \{/.test(VT));
   ok("downloadLessonICS は題名を受け取らない",
     /function downloadLessonICS\(lesson, t\)/.test(VT));
   ok("AddToCalendarButtons は題名を受け取らない",
@@ -67,7 +74,7 @@ function 本体(src, 見出し) {
     !/<AddToCalendarButtons[^>]*title=/.test(VT));
 
   console.log("\n④ ★組み立ての中身に、渡してはいけないものが無いこと");
-  const google = 本体(VT, "function buildGoogleCalendarUrl(");
+  const google = 本体(CE, "export function googleCalendarUrl(");
   const ics = 本体(VT, "function downloadLessonICS(");
   ok("Google のURLを組み立てる本体が取り出せた", !!google);
   ok("★Google のURLに lesson.note が入っていない", google && !google.includes("lesson.note"));

@@ -1,0 +1,153 @@
+{
+  "title": "ベルシャザールの饗宴",
+  "title_original": "Belshazzar's Feast",
+  "aliases": [],
+  "composer": "ウォルトン",
+  "composer_sort": "Walton, William",
+  "kind": "chorus",
+  "year_written": 1931,
+  "source": "hand",
+  "source_id": "walton-belshazzar",
+  "duration_min": 35,
+  "language": "en",
+  "roles": [
+    {
+      "label": "バリトン独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 バビロン捕囚",
+      "group_label": "全曲",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 饗宴と壁の文字",
+      "group_label": "全曲",
+      "roles": [
+        "バリトン独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3部 バビロンの崩壊と歓呼",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 1,
+      "section": "woodwind",
+      "note": "アルト"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 6,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "別働の金管隊",
+      "count": 0,
+      "section": "banda",
+      "note": "2組"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

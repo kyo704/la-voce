@@ -12,7 +12,7 @@ import {
 import { COLS_MY_PERIODS, COLS_MY_TIMETABLE } from "@/lib/dbColumns";
 import {
   DAYS, TT_COPY, TT_FREE_LABEL, TT_EDIT_HINT, TT_LEGEND, TT_GRID_NOTES,
-  CELL_NOT_PICKED,
+  CELL_NOT_PICKED, CELL_NOT_PICKED_HOW,
   hhmm, periodsOf, isOwnPeriods,
   buildGrid, freeCount, cellLabel, DEFAULT_PERIODS
 } from "@/lib/myTimetable";
@@ -119,9 +119,14 @@ export default function MyTimetable({ userId, onBack }) {
             ★★けれど 黙って 落ちると、★「戻された」と 見えます。
           ★★1行 だけ 出します。★字は lib が 持ちます。 */}
       {view === "cell" && !cell ? (
-        <p style={{ ...TYPE.li, color: C.ink, margin: `${rem(8)} 0 0` }}>
-          {tx(CELL_NOT_PICKED)}
-        </p>
+        <>
+          <p style={{ ...TYPE.li, color: C.ink, margin: `${rem(8)} 0 0` }}>
+            {tx(CELL_NOT_PICKED)}
+          </p>
+          <p style={{ ...TYPE.mini, color: C.inkSoft, margin: `${rem(2)} 0 0` }}>
+            {tx(CELL_NOT_PICKED_HOW)}
+          </p>
+        </>
       ) : null}
 
       {/* ★★断り（★見本 3300行）。★閉じられます。★見本も そう して います。 */}

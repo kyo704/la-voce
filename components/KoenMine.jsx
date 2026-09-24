@@ -10,6 +10,11 @@ import {
 } from "@/lib/koenArea";
 import KoenMySchedule from "./KoenMySchedule";
 import KoenDayFlow from "./KoenDayFlow";
+// ★★★カレンダー（★裁定195・2026-09-24）。★切り替えで 姿が 変わります。
+import CalendarConnect from "./CalendarConnect";
+import { mayShowSubscribe, SUB_LEAD, ONE_LEAD } from "@/lib/calendarSub";
+import { scheduleRows } from "@/lib/myKoenDay";
+import { googleCalendarUrl } from "@/lib/calendarExport";
 import { tx } from "@/lib/t";
 
 // ============================================================================
@@ -42,6 +47,8 @@ export default function KoenMine({ supabase, userId, features, onBack }) {
   const [rows, setRows] = useState([]);
   const [koens, setKoens] = useState({});
   const [開いた, set開いた] = useState(null);   // ★{ koenId, view }
+  // ★★1件ずつ の ための 一覧（★カレンダーの 姿の ときだけ 引きます）。
+  const [呼ばれ, set呼ばれ] = useState([]);
   const [error, setError] = useState("");
 
   const 読む = useCallback(async () => {
@@ -67,16 +74,59 @@ export default function KoenMine({ supabase, userId, features, onBack }) {
 
   useEffect(() => { 読む(); }, [読む]);
 
+  // ★★★カレンダーを 開いた ときだけ 引きます。★ふだんは 引きません。
+  //   ★★`my_koen_schedule` …… ★呼ばれて いる ところ だけ が 返ります。
+  //     ★★ほかの 方の 時刻は 入りません（★台帳の 決め）。
+  useEffect(() => {
+    if (!supabase || !開いた || 開いた.view !== "cal") { set呼ばれ([]); return; }
+    let 生 = true;
+    (async () => {
+      try {
+        const { data, error: e } = await supabase.rpc("my_koen_schedule",
+          { p_koen: 開いた.koenId });
+        if (e) throw e;
+        if (生) set呼ばれ(scheduleRows(data || [], 開いた.koenId));
+      } catch (e) { if (生) setError(String((e && e.message) || e)); }
+    })();
+    return () => { 生 = false; };
+  }, [supabase, 開いた]);
+
   // ★★★鍵が 閉じて いれば、★1文字も 出しません。
   if (!開) return null;
 
   if (開いた) {
     const koen = koens[開いた.koenId] || { id: 開いた.koenId };
     const 行 = rows.find((r) => r.koen_id === 開いた.koenId) || {};
+    // ★★1件ずつ の 一覧は、★呼ばれて いる ところ だけ です。
+    //   ★★`予定` は カレンダーの 姿の ときだけ 使います。
+    const 予定 = (開いた.view === "cal" ? 呼ばれ : []).map((r) => ({
+      id: r.id,
+      title: (koen.title || "") + "　" + (r.kind || ""),
+      sub: (r.place || ""),
+      startsAt: r.callAt || r.startsAt,
+      minutes: 60
+    }));
     return (
       <div style={{ fontFamily: FONT_STACK }}>
         <Back onClick={() => set開いた(null)}>{tx(MINE_HEAD)}</Back>
-        {開いた.view === "mine" ? (
+        {開いた.view === "cal" ? (
+          /* ★★★1件ずつ の 一覧は、★自分の 予定と 同じ ところから 出します。
+               ★★`my_koen_schedule` …… ★呼ばれて いる ところ だけ が 返ります。
+               ★★ほかの 方の 時刻は 入りません（★台帳の 決め）。
+             ★★★切り替えが 開いた ら、★この 一覧は 出ません（★住所の 姿に なります）。 */
+          <CalendarConnect
+            supabase={supabase} features={features}
+            items={予定}
+            onPutOne={(x) => {
+              // ★★カレンダーへ 送るのは 3つ だけ です（`CALENDAR_ALLOWED`）。
+              //   ★★体調の ことは 1文字も 入りません。
+              const u = googleCalendarUrl(
+                { scheduled_at: x.startsAt, duration_minutes: x.minutes || 60 },
+                () => x.title || "");
+              if (u) window.open(u, "_blank", "noopener,noreferrer");
+            }}
+            onBack={() => set開いた(null)} />
+        ) : 開いた.view === "mine" ? (
           <KoenMySchedule supabase={supabase} koen={koen} myRole={行.part || ""} />
         ) : (
           <KoenDayFlow
@@ -113,7 +163,14 @@ export default function KoenMine({ supabase, userId, features, onBack }) {
                 <Li key={l.key} last={i === MINE_LINKS.length - 1} right="›"
                   onClick={() => set開いた({ koenId: r.koen_id, view: l.key })}>
                   {tx(l.label)}
-                  <span style={{ ...小, display: "block" }}>{tx(l.sub)}</span>
+                  {/* ★★カレンダーの 下の 字は、★切り替えで 変わります。
+                      ★★開いて いれば「1度 つなぐと…」、★閉じて いれば「1件ずつ」。
+                      ★★判じるのは 束 です。★ここでは 決めません。 */}
+                  <span style={{ ...小, display: "block" }}>
+                    {tx(l.key === "cal"
+                      ? (mayShowSubscribe(features) ? SUB_LEAD : ONE_LEAD)
+                      : l.sub)}
+                  </span>
                 </Li>
               ))}
             </Card>

@@ -419,8 +419,8 @@
   "lib/ageGate.js"
  ],
  "カレンダーにつなぐ": [
-  "components/VocalTracker.jsx",
-  "lib/calendarExport.js"
+  "components/CalendarConnect.jsx",
+  "lib/calendarSub.js"
  ],
  "場所を決める": [
   "components/OpsOrgMaster.jsx",
@@ -449,5 +449,9 @@
  "日を選ぶ": [
   "components/RangeCalendar.jsx",
   "lib/rangeCalendar.js"
+ ],
+ "役職を変えた記録": [
+  "components/OpsPermLog.jsx",
+  "lib/permLog.js"
  ]
 }

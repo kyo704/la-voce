@@ -488,7 +488,7 @@ import {
   pearson, rankArray, spearman, tDistPValue,
   benjaminiHochberg, computeHedgesG, effectSortWeight
 } from "@/lib/analysisCore";
-import { buildCalendarEvent } from "@/lib/calendarExport";
+import { buildCalendarEvent, googleCalendarUrl } from "@/lib/calendarExport";
 import { buildLinkConsentRow, buildUnlinkPatch } from "@/lib/linkConsent";
 import { departingOwnerNotice, transferMailto, CLOSE_ORG_KEEP_LINE, CLOSE_ORG_DELETE_LINE, DEPARTING_PAYER_LINE } from "@/lib/orgClosure";
 // データの書き出し（G3-16）。★含める項目を減らさないこと。
@@ -3166,15 +3166,10 @@ function formatDateForGoogleCalendar(date) {
 //   ★details に lesson.note を入れていたのもやめます。
 //     メモには体調のことも、ほかの生徒さんのことも書けます。
 //   ★「入れないでください」ではなく、★入れられない形にします。
-function buildGoogleCalendarUrl(lesson, t) {
-  const ev = buildCalendarEvent(lesson, t);
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: ev.title,
-    dates: `${formatDateForGoogleCalendar(ev.start)}/${formatDateForGoogleCalendar(ev.end)}`
-  });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
-}
+// ★★★2026-09-24、★中身を `lib/calendarExport.js` へ 移しました。
+//   ★★出演者の 公演からも 使う ことに なりました。★写しを 作りません。
+//   ★★送って よい ものの 決めが、★その 束に あります。★道も そこに 置きます。
+const buildGoogleCalendarUrl = googleCalendarUrl;
 function formatDateForICS(date) {
   return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 }

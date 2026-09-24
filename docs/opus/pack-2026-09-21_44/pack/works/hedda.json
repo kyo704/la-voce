@@ -1,0 +1,92 @@
+{
+  "title": "ヘッダ・ガーブレル",
+  "title_original": "Hedda Gabler",
+  "aliases": [],
+  "composer": "イプセン",
+  "composer_sort": "Ibsen, Henrik",
+  "kind": "drama",
+  "year_written": 1891,
+  "source": "hand",
+  "source_id": "ibsen-hedda",
+  "duration_min": 150,
+  "language": "no",
+  "roles": [
+    {
+      "label": "ヘッダ"
+    },
+    {
+      "label": "テスマン"
+    },
+    {
+      "label": "レェヴボルグ"
+    },
+    {
+      "label": "テア"
+    },
+    {
+      "label": "ブラック判事"
+    },
+    {
+      "label": "ユリアーネ伯母"
+    },
+    {
+      "label": "女中ベルテ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 新居の朝",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘッダ",
+        "テスマン",
+        "ユリアーネ伯母",
+        "テア",
+        "ブラック判事",
+        "女中ベルテ"
+      ]
+    },
+    {
+      "label": "第2幕 午後の訪問",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘッダ",
+        "ブラック判事",
+        "レェヴボルグ",
+        "テスマン",
+        "テア"
+      ]
+    },
+    {
+      "label": "第3幕 原稿の焼却",
+      "group_label": "第3幕",
+      "roles": [
+        "ヘッダ",
+        "テスマン",
+        "テア",
+        "レェヴボルグ",
+        "ブラック判事"
+      ]
+    },
+    {
+      "label": "第4幕 終幕（拳銃）",
+      "group_label": "第4幕",
+      "roles": [
+        "ヘッダ",
+        "テスマン",
+        "テア",
+        "ブラック判事",
+        "ユリアーネ伯母"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}
