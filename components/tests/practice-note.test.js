@@ -70,6 +70,30 @@ function ok(cond, label) {
   ok(欄.length === 0, "★画面には 判定の 欄が 無い（★打ち消しの 中だけ）" +
     (欄.length ? " …… " + 欄.join(" / ") : ""));
 
+  console.log("②b ★下の 註 ── ★2026-09-24・見本 `SC['稽古を書く']` の note");
+  {
+    const 註 = m.PRACTICE_NOTES.join("\n");
+    ["打った そばから 残ります", "この2つは 出口だけ",
+      "先生には 送られません", "コメント欄も ありません",
+      "レパートリーの その曲"].forEach((w) =>
+        ok(註.includes(w), "★" + w + " が ありません"));
+    ok(/PRACTICE_NOTES/.test(ui), "★画面が 出して いません");
+    // ★★★書いた 以上、★本当で ある こと。
+    // ★① ひとりでに 残る（★「保存」の 札を 置いて いない）。
+    ok(/timer\.current = setTimeout/.test(ui), "★ひとりでに 送って いません");
+    ok(!/>保存</.test(readRaw("components", "NotesV2.jsx")), "★「保存」の 札が あります");
+    // ★② 先生に 送られない ── ★`notes` の 決まりが ぜんぶ ご本人だけ。
+    const rls = readRaw("supabase", "migrations", "20260101000009_base_09_rls.sql");
+    const 決 = rls.split("\n").filter((l) => /create policy "notes_/.test(l));
+    ok(決.length === 4, "★較正 ── ★決まりが 4つ 読めて いる（" + 決.length + "）");
+    決.forEach((l) => {
+      const i = rls.indexOf(l);
+      ok(/auth\.uid\(\) = user_id/.test(rls.slice(i, i + 200)), "★ご本人だけ …… " + l.slice(14, 40));
+    });
+    // ★③ 曲から 同じ メモが 引ける（★写しを 作って いない）。
+    ok(/notesForRepertoire/.test(ui), "★曲から 引いて いません");
+  }
+
   console.log("③ 「みた曲」は えらぶ もの");
   ok(PRACTICE_FIELDS.find((f) => f.key === "repertoire_name").kind === "repertoire",
     "★えらぶ 形");

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import {
   DONE_HEAD, DONE_LINES, FAILED_LINE, SCHOOL_SEES, SCHOOL_NEVER_SEES,
-  GUARDIAN_NOTES, GUARDIAN_LATER
+  GUARDIAN_NOTES, GUARDIAN_LATER, GUARDIAN_NO_ACCOUNT
 } from "@/lib/guardianConsent";
 
 // ============================================================================
@@ -58,6 +58,15 @@ export default function GuardianPage() {
         {状態 === "済み" ? DONE_HEAD : "お子さまが 学校に 入ろうと して います"}
       </h1>
 
+      {/* ★★★登録は 要りません、と いちばん 上で 申し上げます（★2026-09-24）。
+          ★★お入りに なって いない 方が、★いきなり 開く 画面 です。
+            ★★「まず 登録を させられるのでは」と 思われた ところで 閉じられます。
+          ★★押した あとには 出しません ── ★もう 済んで います。 */}
+      {状態 === "済み" ? null : (
+        <p style={{ margin: "0 0 6px", fontSize: "0.875rem", color: "#6B6259" }}>
+          {GUARDIAN_NO_ACCOUNT}
+        </p>
+      )}
       {状態 === "済み" ? (
         <div style={{ marginTop: 14 }}>
           {DONE_LINES.map((t) => (

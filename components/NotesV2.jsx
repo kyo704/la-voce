@@ -9,7 +9,7 @@ import {
 } from "@/components/UiV2";
 import {
   PRACTICE_FIELDS, REPERTOIRE_STATUS, isPractice, emptyPractice, pickFields, practiceTitle, practiceSub,
-  notesForRepertoire
+  notesForRepertoire, PRACTICE_NOTES
 } from "@/lib/practiceNote";
 import {
   NOTE_KINDS, DEFAULT_KIND, kindOrDefault, visibleNotes, isRenrakuKind,
@@ -541,6 +541,18 @@ export default function NotesV2({ notes, onSave, onAddRepertoire, onDelete, onDe
                   曲名も いっしょに 書き換えて います。
                 ★★仕組みと ちがう ことを、★書きません。
            ================================================================== */}
+        {/* ==================================================================
+            ★★稽古の メモの 下の 註（★見本 `SC['稽古を書く']` の note・2026-09-24）。
+              ★★3行 とも、★書く 前に 確かめました（★わけは lib の 覚え書き）。
+              ★★字は `lib/practiceNote.js` が 持ちます。★ここで 書きません。
+           ================================================================== */}
+        {isPractice(kind) ? (
+          <div className="note">
+            {PRACTICE_NOTES.map((t, i) => (
+              <span key={t}>{i > 0 ? <br /> : null}{t}</span>
+            ))}
+          </div>
+        ) : null}
         {kind === "repertoire" ? (
           <div className="note">
             <b>ぜんぶ 空のままでは 入りません</b>（どの 曲か 分からなくなるため）。<br />

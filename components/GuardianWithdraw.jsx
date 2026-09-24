@@ -33,7 +33,13 @@ export default function GuardianWithdraw({
             style={{
               background: "transparent", border: "none", color: C.inkSoft,
               ...TYPE.mini, minHeight: 44, padding: "0 4px", fontFamily: FONT_STACK
-            }}>‹ 戻る</button>
+            /* ★★★どこへ 帰るかを 名で 言います（★2026-09-24・見本 `bk(…)`）。
+                 ★★「戻る」だけ だと、★どこへ 帰るか 分かりません。
+                 ★★見本の 字は `通っているところの中身` ── ★あれは 見本の 中の
+                   ★画面の 名 です。★人に お見せする 字では ありません。
+                 ★★★帰る 先は、★その 教室の 中身 です。★だから 教室の 名を 出します。
+                   ★名が 分からない ときだけ、★「通っている ところ」に します。 */
+            }}>‹ {orgName || "通っている ところ"}</button>
         ) : null} />
       {orgName ? <p style={{ ...小, margin: "-4px 0 10px" }}>{orgName}</p> : null}
 

@@ -210,6 +210,31 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/onResend/.test(ask) && /onResend=/.test(vt), "★入れ直しが つながって いません");
   });
 
+  見る("★保護者の 画面 ── ★登録は 要らない、と 先に 申し上げる", () => {
+    assert.ok(/GUARDIAN_NO_ACCOUNT/.test(保), "★書いて いません");
+    assert.ok(/登録する 必要が ありません/.test(m.GUARDIAN_NO_ACCOUNT), "★字が ちがいます");
+    // ★★★書いた 以上、★本当で ある こと。
+    //   ★★押す 道が、★お入りに なって いるかを 問わない こと。
+    assert.ok(!/getUser|auth\.getUser|createClient\(\)\.auth/.test(acc),
+      "★押す 道が 登録を 求めて います");
+    assert.ok(!/getUser/.test(保), "★画面が 登録を 求めて います");
+  });
+
+  見る("★保護者の 画面の 註 ── ★4行 ぜんぶ", () => {
+    const 字 = m.GUARDIAN_NOTES.join("\n");
+    [
+      "保護者の 方にも 見えません",
+      "ご本人だけの ものです",      // ★★なぜ そう なのか。★落ちると 隠して いるように 読めます
+      "7日で 切れます",
+      "取り消せます"
+    ].forEach((w) => assert.ok(字.includes(w), "★" + w + " が ありません"));
+    // ★★数を 覚えません。★同じ 字が 2度 出て いない ことだけ を 見ます。
+    assert.strictEqual(new Set(m.GUARDIAN_NOTES).size, m.GUARDIAN_NOTES.length,
+      "★同じ 字が 2度 出て います");
+    // ★★画面が ぜんぶ 出して いる こと。
+    assert.ok(/GUARDIAN_NOTES\.map/.test(保), "★画面が 出して いません");
+  });
+
   見る("★催促しない（★閉じる ところが ある）", () => {
     assert.ok(/onClose/.test(ask), "★閉じられません");
     assert.ok(/setGuardianAsk\(null\)/.test(vt), "★閉じても 残ります");
@@ -249,7 +274,10 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
 
   見る("★保護者の 画面に「いまは やめて おく」が ある", () => {
     assert.ok(/GUARDIAN_LATER/.test(保), "★その 札が ありません");
-    assert.strictEqual(m.GUARDIAN_NOTES.length, 3, "★断りが 3つ ありません");
+    // ★★2026-09-24、★数を 覚えるのを やめました。
+    //   ★★見本の 註が 1行 増えた とき、★この 行が 先に 落ちました ──
+    //     ★落ちる べきは「字が 足りない」ほう です。★数では ありません。
+    //   ★★中身は 下の 見張りが 見ます。
     assert.ok(m.GUARDIAN_NOTES.join("").includes("7日で 切れます"),
       "★期限を 書いて いません");
   });
