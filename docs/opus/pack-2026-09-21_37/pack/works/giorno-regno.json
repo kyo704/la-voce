@@ -1,0 +1,149 @@
+{
+  "title": "一日だけの王様",
+  "title_original": "Un giorno di regno",
+  "aliases": [],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1840,
+  "source": "hand",
+  "source_id": "verdi-giorno-regno",
+  "duration_min": 120,
+  "language": "it",
+  "roles": [
+    {
+      "label": "ベルフィオーレ"
+    },
+    {
+      "label": "ジュリエッタ"
+    },
+    {
+      "label": "男爵夫人"
+    },
+    {
+      "label": "ケルビーノ男爵"
+    },
+    {
+      "label": "ラ・ロッカ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 男爵の館",
+      "group_label": "第1幕",
+      "roles": [
+        "ベルフィオーレ",
+        "ジュリエッタ",
+        "男爵夫人",
+        "ケルビーノ男爵",
+        "ラ・ロッカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 騒動とフィナーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "ベルフィオーレ",
+        "ジュリエッタ",
+        "男爵夫人",
+        "ラ・ロッカ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チンバッソ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★上演はまれ。場面の立て方は目安"
+}

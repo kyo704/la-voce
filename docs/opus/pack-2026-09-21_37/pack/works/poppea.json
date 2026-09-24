@@ -1,0 +1,220 @@
+{
+  "title": "ポッペアの戴冠",
+  "composer": "モンテヴェルディ",
+  "composer_sort": "Monteverdi, Claudio",
+  "kind": "opera",
+  "year_written": 1643,
+  "source": "hand",
+  "source_id": "monteverdi-poppea",
+  "roles": [
+    {
+      "label": "ポッペア"
+    },
+    {
+      "label": "ネローネ"
+    },
+    {
+      "label": "オッターヴィア"
+    },
+    {
+      "label": "オットーネ"
+    },
+    {
+      "label": "セネカ"
+    },
+    {
+      "label": "ドルジッラ"
+    },
+    {
+      "label": "アルナルタ"
+    },
+    {
+      "label": "愛の神"
+    },
+    {
+      "label": "運命の女神"
+    },
+    {
+      "label": "徳の女神"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ（運命・徳・愛の神の争い）",
+      "group_label": "プロローグ",
+      "roles": [
+        "運命の女神",
+        "徳の女神",
+        "愛の神"
+      ]
+    },
+    {
+      "label": "オットーネの嘆き（戻ってきた）",
+      "group_label": "第1幕",
+      "roles": [
+        "オットーネ"
+      ]
+    },
+    {
+      "label": "ポッペアとネローネの別れ",
+      "group_label": "第1幕",
+      "roles": [
+        "ポッペア",
+        "ネローネ"
+      ]
+    },
+    {
+      "label": "アルナルタの忠告",
+      "group_label": "第1幕",
+      "roles": [
+        "ポッペア",
+        "アルナルタ"
+      ]
+    },
+    {
+      "label": "オッターヴィアの嘆き（さげすまれた王妃）",
+      "group_label": "第1幕",
+      "roles": [
+        "オッターヴィア"
+      ]
+    },
+    {
+      "label": "セネカとネローネの対決",
+      "group_label": "第1幕",
+      "roles": [
+        "セネカ",
+        "ネローネ"
+      ]
+    },
+    {
+      "label": "セネカの死",
+      "group_label": "第2幕",
+      "roles": [
+        "セネカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ネローネの喜びの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ネローネ"
+      ]
+    },
+    {
+      "label": "オットーネとドルジッラ",
+      "group_label": "第2幕",
+      "roles": [
+        "オットーネ",
+        "ドルジッラ"
+      ]
+    },
+    {
+      "label": "暗殺の失敗",
+      "group_label": "第2幕",
+      "roles": [
+        "オットーネ",
+        "ポッペア",
+        "アルナルタ",
+        "愛の神"
+      ]
+    },
+    {
+      "label": "オッターヴィアの追放（ローマよ、さらば）",
+      "group_label": "第3幕",
+      "roles": [
+        "オッターヴィア"
+      ]
+    },
+    {
+      "label": "戴冠の場",
+      "group_label": "第3幕",
+      "roles": [
+        "ポッペア",
+        "ネローネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "終わりの二重唱（あなたを見つめ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ポッペア",
+        "ネローネ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo",
+      "note": "通奏低音"
+    },
+    {
+      "part": "テオルボ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass",
+      "is_optional": true,
+      "note": "戴冠の場"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "L'incoronazione di Poppea",
+  "aliases": [
+    "ポッペア",
+    "Poppea"
+  ],
+  "duration_min": 180,
+  "language": "it"
+}

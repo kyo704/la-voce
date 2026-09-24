@@ -1,0 +1,147 @@
+{
+  "title": "スターバト・マーテル（ペルゴレージ）",
+  "composer": "ペルゴレージ",
+  "composer_sort": "Pergolesi, Giovanni Battista",
+  "kind": "chorus",
+  "year_written": 1736,
+  "source": "hand",
+  "source_id": "pergolesi-stabat",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 悲しみの聖母は立ちぬ（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "II 嘆き悲しむその御魂（ソプラノ）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "III おお、なんと悲しく（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "IV 御母の悲しみを（アルト）",
+      "group_label": "全曲",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "V 誰か涙を流さぬ者が（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "VI 我が民の罪ゆえに（アルト）",
+      "group_label": "全曲",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "VII 御母よ、愛の泉よ（ソプラノ）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "VIII 我が心を燃え立たせ（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "IX 聖なる御母よ（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "X 我をして傷を負わせ（アルト）",
+      "group_label": "全曲",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "XI 我をして涙を（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "XII 肉体は朽ち果てるとも（二重唱・アーメン）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Stabat Mater",
+  "aliases": [
+    "ペルゴレージ"
+  ],
+  "duration_min": 40,
+  "language": "la"
+}
