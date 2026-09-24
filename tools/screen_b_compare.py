@@ -90,9 +90,37 @@ def 実装の字(paths):
 
 
 def 読む除外():
+  """★『わざと ちがえて いる』の 台帳を 読みます。
+
+     ★★★2026-09-24 ── ★形が **2つ** ある ことに 気づきました。
+       ★★古い 形 …… [{"text": …, "why": …, "trigger": …}, …]（★2026-09-16 の もの）
+       ★★新しい 形 … {"その 字": "わけ", …}
+     ★★★古い 形の 画面は、★くらべる たびに **落ちて** いました。
+       ★★`TypeError` です。★止まるので 気づける はず でした ──
+         ★けれど まとめて 回すと、★その 1枚だけ 静かに 消えて いました。
+       ★★★4枚が、★一度も くらべられて いません でした ──
+         ★台帳／書き出す／退会／通っているところ。
+       ★★どちらも 読みます。★古い 形を 書き直しません ──
+         ★あちらには `why_long`・`ruling`・`do_not` が 入って います。
+         ★★字を 減らす 直し方を しません。
+  """
   if not os.path.exists(除外): return {}
-  try: return json.load(open(除外, encoding="utf-8"))
+  try: 生 = json.load(open(除外, encoding="utf-8"))
   except Exception: return {}
+  出 = {}
+  for k, v in (生 or {}).items():
+    if k == "_": continue
+    if isinstance(v, dict):
+      出[k] = {str(a): str(b) for a, b in v.items()}
+    elif isinstance(v, list):
+      表 = {}
+      for x in v:
+        if isinstance(x, dict) and x.get("text"):
+          表[str(x["text"])] = str(x.get("why") or x.get("why_long") or "")
+        elif isinstance(x, str):
+          表[x] = ""
+      出[k] = 表
+  return 出
 
 
 def 見本の中身(key):

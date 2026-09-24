@@ -241,5 +241,109 @@
  "集まり具合": [
   "components/OpsDaihyo.jsx",
   "lib/opsDaihyo.js"
+ ],
+ "はじめの1週間": [
+  "components/OrgFirstWeek.jsx",
+  "lib/orgSummary.js"
+ ],
+ "スタッフの自分の予定": [
+  "components/KoenDayFlow.jsx",
+  "lib/myKoenDay.js"
+ ],
+ "プラン": [
+  "lib/planScreen.js"
+ ],
+ "レッスンの希望": [
+  "components/LessonPrefs.jsx",
+  "lib/lessonRound.js"
+ ],
+ "代役を 立てる": [
+  "components/Understudy.jsx",
+  "lib/understudy.js"
+ ],
+ "作品をさがす": [
+  "components/WorksSearch.jsx",
+  "lib/worksSearch.js"
+ ],
+ "公演の情報": [
+  "components/KoenInfo.jsx",
+  "lib/koenInfo.js"
+ ],
+ "公演の自分の予定": [
+  "components/KoenMySchedule.jsx",
+  "lib/myKoenDay.js"
+ ],
+ "公演の運営": [
+  "components/KoenArea.jsx",
+  "lib/koenArea.js"
+ ],
+ "出演者を招く": [
+  "components/KoenInvite.jsx",
+  "lib/koenInvite.js"
+ ],
+ "前3日": [
+  "components/LookBackPanel.jsx",
+  "components/LookBackV2.jsx",
+  "lib/lookBack.js"
+ ],
+ "前の公演から写す": [
+  "components/KoenCopyFrame.jsx",
+  "lib/koenExport.js"
+ ],
+ "半年のまとめ": [
+  "components/OrgSummary.jsx",
+  "lib/orgSummary.js"
+ ],
+ "回を始める": [
+  "components/RoundStart.jsx",
+  "lib/roundStart.js"
+ ],
+ "実技試験を組む": [
+  "components/JuryLayout.jsx",
+  "lib/juryLayout.js"
+ ],
+ "審査員を足す": [
+  "components/JuryPanel.jsx",
+  "lib/juryPanel.js"
+ ],
+ "希望の地図": [
+  "components/LessonPrefMap.jsx",
+  "lib/lessonRound.js"
+ ],
+ "担当の先生を選ぶ": [
+  "components/MonkaPickTeacher.jsx",
+  "lib/monkaWay.js"
+ ],
+ "授業の時間を出す": [
+  "components/ClassTimeShare.jsx",
+  "lib/timetableShare.js"
+ ],
+ "授業を入れる": [
+  "components/MyTimetable.jsx",
+  "lib/myTimetable.js"
+ ],
+ "書き出す（香盤表）": [
+  "components/KoenExport.jsx",
+  "lib/koenExport.js"
+ ],
+ "本番の日の流れ": [
+  "components/KoenDayFlow.jsx",
+  "lib/myKoenDay.js"
+ ],
+ "点を入れる": [
+  "components/OpsTenIreru.jsx",
+  "lib/evaluation.js"
+ ],
+ "自分のコマ": [
+  "components/MyTimetable.jsx",
+  "lib/myTimetable.js"
+ ],
+ "配役を決める": [
+  "components/KoenCast.jsx",
+  "lib/koenCast.js"
+ ],
+ "香盤表": [
+  "components/KoenSheet.jsx",
+  "lib/koenSheet.js"
  ]
 }

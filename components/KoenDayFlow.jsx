@@ -5,7 +5,7 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import {
   dayRows, myCallTime, hasAny, myRoomName,
-  DAY_HEAD, DAY_NOT_CALLED, DAY_MY_CALL, DAY_GO_MINE, DAY_ROOM, DAY_NOTE,
+  DAY_HEAD, DAY_NOT_CALLED, DAY_ALSO_YOU, DAY_MY_CALL, DAY_GO_MINE, DAY_ROOM, DAY_NOTE,
   MINE_HEAD, MINE_PAPER, STAFF_PAPER_WHY, STAFF_PLACE, STAFF_DAY, STAFF_NOTE
 } from "@/lib/myKoenDay";
 import { tx } from "@/lib/t";
@@ -102,12 +102,23 @@ export default function KoenDayFlow({
               <b>{r.time}</b>　{r.what}
               {r.who ? <span style={{ ...小, display: "block" }}>{r.who}</span> : null}
             </span>
-            {!isStaff && !r.mine ? (
-              <span style={小}>{tx(DAY_NOT_CALLED)}</span>
+            {/* ★★★呼ばれて **いる** ほうに 字を 置きます（★見本・2026-09-24）。
+                ★★逆に して いました ── ★呼ばれて いない 行 ぜんぶに
+                  ★「あなたは 呼ばれていません」が 並んで いました。
+                ★★薄さでも、★下の 註でも、★同じ ことを 言って います。
+                  ★★3度 言うと、★2度目からは 責める 字に なります。 */}
+            {!isStaff && r.mine ? (
+              <span style={小}>{tx(DAY_ALSO_YOU)}</span>
             ) : null}
           </div>
         ))}
       </div>
+
+      {/* ★★★1つも 呼ばれて いない ときだけ、★1度 だけ 申し上げます。
+          ★★行ごとに 繰り返しません。★それが これまでの 姿 でした。 */}
+      {!isStaff && 行.length > 0 && !行.some((r) => r.mine) ? (
+        <p style={{ ...小, margin: `${rem(6)} 0 0` }}>{tx(DAY_NOT_CALLED)}</p>
+      ) : null}
 
       <div style={{
         background: C.card, border: `1px solid ${C.line}`, borderRadius: 12,
