@@ -7,7 +7,10 @@ import { DAYS, periodsOf } from "@/lib/myTimetable";
 import { featureOn } from "@/lib/featureOn";
 import {
   LESSON_ROUND_KEY, COLS_ROUND, COLS_PREF, COLS_NG, COLS_TIMETABLE,
-  slotKey, canEdit, canConfirm, firstDateFor, slotOfLesson, placeableSlots
+  slotKey, canEdit, canConfirm, firstDateFor, slotOfLesson, placeableSlots,
+  HUB_WARN, HUB_WARN_DONE, HUB_NOW_HEAD, HUB_START, HUB_START_SUB,
+  HUB_ANSWERED, HUB_NOT_YET, HUB_PLACED, HUB_DUE,
+  HUB_STEPS_HEAD, HUB_STEPS, HUB_STEP_DONE, HUB_NOTES, hubCounts
 } from "@/lib/lessonRound";
 import LessonPrefs from "./LessonPrefs";
 import LessonPrefMap from "./LessonPrefMap";
@@ -52,6 +55,7 @@ import { tx } from "@/lib/t";
 const 小 = { ...TYPE.usual, color: C.inkSoft, lineHeight: 1.8 };
 
 /** ★いまの 立場で 見る 画面（★先生・事務）。 */
+const 入口 = "hub";
 const 地図 = "map";
 const 確定 = "done";
 const 置く = "place";
@@ -71,7 +75,7 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
   const [monka, setMonka] = useState([]);
   const [placed, setPlaced] = useState({});
   const [placedBy, setPlacedBy] = useState({});
-  const [view, setView] = useState(地図);
+  const [view, setView] = useState(入口);
   const [who, setWho] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -375,8 +379,93 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
           onClose={() => { setWho(null); setView(確定); }} />
       ) : (
         <>
+          {/* ==========================================================
+              ★★★入口の 一枚（★見本 `P_wari`・2026-09-24）。
+                ★★これが ありません でした。★開くと いきなり 地図 でした。
+                  ★★何を する 画面なのか、★いま どこまで 進んで いるのか、
+                    ★次に 何を 押せば よいのかが、★どこにも ありません でした。
+                ★★字も 数も `lib/lessonRound.js` が 持ちます。★ここで 数えません。
+             ========================================================== */}
+          {view === 入口 ? (() => {
+            const 数 = hubCounts({
+              monkaCount: monka.length, prefs: counts, placed
+            });
+            const 済 = round && round.status === "confirmed";
+            return (
+              <>
+                <div style={{
+                  background: C.band, border: `1px solid ${C.line}`, borderRadius: 12,
+                  padding: `${rem(10)} ${rem(12)}`, marginBottom: rem(10), ...小
+                }}>
+                  {(済 ? HUB_WARN_DONE : HUB_WARN).map((t) => (
+                    <span key={t} style={{ display: "block" }}>{tx(t)}</span>
+                  ))}
+                </div>
+
+                <p style={{ ...TYPE.li, color: C.ink, margin: `0 0 ${rem(4)}` }}>
+                  {tx(HUB_NOW_HEAD)}
+                </p>
+                <div style={{
+                  background: C.card, border: `1px solid ${C.line}`,
+                  borderRadius: 12, overflow: "hidden", marginBottom: rem(12)
+                }}>
+                  {[
+                    [tx(HUB_ANSWERED), `${数.answered} / ${数.total}人`],
+                    [tx(HUB_NOT_YET), `${数.notYet}人`],
+                    [tx(HUB_PLACED), `${数.placed} / ${数.total}人`],
+                    [tx(HUB_DUE), (round && round.due_on) || ""]
+                  ].map(([l, v], i, a) => (
+                    <div key={l} style={{
+                      display: "flex", justifyContent: "space-between", gap: rem(8),
+                      padding: `${rem(9)} ${rem(12)}`, ...TYPE.li,
+                      borderBottom: i === a.length - 1 ? "none" : `1px solid ${C.line2}`
+                    }}>
+                      <span>{l}</span><span style={{ color: C.inkSoft }}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <p style={{ ...TYPE.li, color: C.ink, margin: `0 0 ${rem(4)}` }}>
+                  {tx(HUB_STEPS_HEAD)}
+                </p>
+                <div style={{
+                  background: C.card, border: `1px solid ${C.line}`,
+                  borderRadius: 12, overflow: "hidden", marginBottom: rem(12)
+                }}>
+                  {HUB_STEPS.map((st, i) => (
+                    <button key={st.key} type="button"
+                      onClick={() => setView(st.key === "done" ? 確定 : 地図)}
+                      style={{
+                        display: "flex", width: "100%", justifyContent: "space-between",
+                        alignItems: "center", gap: rem(8), minHeight: 52,
+                        padding: `${rem(9)} ${rem(12)}`, background: "transparent",
+                        border: "none", textAlign: "left", color: C.ink,
+                        fontFamily: FONT_STACK, ...TYPE.li,
+                        borderBottom: i === HUB_STEPS.length - 1 ? "none" : `1px solid ${C.line2}`
+                      }}>
+                      <span>
+                        {tx(st.label)}
+                        <span style={{ ...小, display: "block" }}>{tx(st.sub)}</span>
+                      </span>
+                      <span style={{ color: C.inkSoft }}>
+                        {st.key === "done" && 済 ? tx(HUB_STEP_DONE) : "›"}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* ★★★4行 とも 確かめて から 書いて います（★わけは lib の 覚え書き）。 */}
+                <div style={{ ...小 }}>
+                  {HUB_NOTES.map((t) => (
+                    <span key={t} style={{ display: "block" }}>{tx(t)}</span>
+                  ))}
+                </div>
+              </>
+            );
+          })() : (
+          <>
           <div style={{ display: "flex", gap: rem(6), marginBottom: rem(10) }}>
-            {[[地図, "希望の 地図"], [確定, "確定して 配る"]].map(([v, w]) => (
+            {[[入口, "もどる"], [地図, "希望の 地図"], [確定, "確定して 配る"]].map(([v, w]) => (
               <button key={v} type="button" onClick={() => setView(v)}
                 style={{
                   minHeight: 44, padding: `0 ${rem(13)}`, borderRadius: 999,
@@ -395,6 +484,8 @@ export default function LessonRoundArea({ supabase, userId, role, features }) {
             <LessonRoundDone
               round={round} total={monka.length} placed={placed} notPlaced={notPlaced}
               onPlace={onPlaceStudent} onConfirm={onConfirm} busy={busy} />
+          )}
+          </>
           )}
         </>
       )}

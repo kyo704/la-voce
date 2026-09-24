@@ -157,6 +157,58 @@ console.log("\n⑧ 名前は 台帳の 道 から 引く");
 t(!/from\(\s*["']profiles["']\s*\)/.test(area), "★`profiles` を 直に 引いて いない");
 t(/rpc\(\s*["']get_connected_names["']/.test(area), "★`get_connected_names` を 通して いる");
 t(/rpc\(\s*["']pref_map["']/.test(area), "★濃さは `pref_map` が 数える（★画面で 数えない）");
+  // -------------------------------------------------------------------------
+  // ★入口の 一枚（★見本 `P_wari`・★2026-09-24・段3a A群）
+  //
+  //   ★★これが ありません でした。★開くと いきなり 地図 でした。
+  // -------------------------------------------------------------------------
+  {
+    const 画 = area;
+    const 束 = require("./_lessonRoundLib");
+    t(/view === 入口/.test(画), "★入口の 一枚が ある");
+    t(/useState\(入口\)/.test(画), "★はじめに 出るのが 入口");
+    ["HUB_WARN", "HUB_NOW_HEAD", "HUB_STEPS", "HUB_NOTES", "hubCounts"].forEach((w) =>
+      t(new RegExp(w).test(画), "★" + w + " を 出して いる"));
+    // ★★数えるのは 束 です。★画面で 数えません。
+    t(!/monka\.length - /.test(画) && !/Object\.keys\(counts\)\.length/.test(画),
+      "★画面で 数えて いない");
+    const c = 束.hubCounts({ monkaCount: 18, prefs: { "a:1": 2, "a:2": 2, "b:1": 2 }, placed: { a: 1 } });
+    t(c.total === 18 && c.answered === 2 && c.notYet === 16 && c.placed === 1,
+      "★数え方（出した2・まだ16・置いた1）");
+    // ★★註は 4行 とも、★確かめた もの だけ。
+    const 註 = 束.HUB_NOTES.join("");
+    ["担当の 先生と、日程を 組む 方だけ", "授業名は 出ません",
+      "催促は しません", "レッスンの 日程を 組む"].forEach((w) =>
+        t(註.includes(w), "★" + w + " が ある"));
+    // ★★★書いた 以上、★台帳が そう なって いる こと。
+    const rls = readRaw("supabase", "migrations", "20260101000009_base_09_rls.sql");
+    const i = rls.indexOf('create policy "lesson_prefs_read_staff"');
+    t(i > 0, "★較正 ── ★決まりが 読めて いる");
+    // ★★★次の `drop policy` の 手前 までで 切ります（★2026-09-24）。
+    //   ★★はじめ 700字で 切って いました。★隣の 決まりまで 入り、
+    //     ★そちらの `'meibo'` を 掴んで 落ちて いました。★窓の 誤り です。
+    const 本 = rls.slice(i, rls.indexOf("drop policy", i + 10));
+    t(/has_can\(r\.org_id, 'sched_all'/.test(本), "★日程を 組む 方");
+    t(/a\.teacher_id = auth\.uid\(\)/.test(本), "★担当の 先生");
+    t(!/monka_representative|'meibo'/.test(本), "★この 決まりに ほかの 道が ない");
+    // ★★★`lesson_prefs` の 決まりは 3つ だけ で ある こと。
+    //   ★★1つずつ 見ても、★4つ目が 足されたら 気づけません。
+    //   ★★★2026-09-24 ── ★1つの 紙 だけ を 見て いて、★2つ しか
+    //     ★数えられません でした。★3つ目（`lesson_prefs_read_own`）は
+    //     ★別の 紙（`20260923440003_opus_47_…`）に あります。
+    //     ★★台帳を 数えたら 3つ でした。★紙は 台帳では ありません。
+    //   ★★だから `supabase/migrations/` を **ぜんぶ** 見ます。
+    const 紙 = fs.readdirSync(path.join(ROOT, "supabase", "migrations"))
+      .filter((n) => n.endsWith(".sql"))
+      .map((n) => fs.readFileSync(path.join(ROOT, "supabase", "migrations", n), "utf8"))
+      .join("\n");
+    const 決 = new Set((紙.match(/create policy "?lesson_prefs_[a-z_]+"?/g) || [])
+      .map((x) => x.replace(/"/g, "").replace("create policy ", "")));
+    t(決.size === 3, "★決まりは 3つ だけ（" + 決.size + "：" + [...決].join("／") + "）");
+    // ★★催促の 道を、★この 画面に 作って いない こと。
+    t(!/nudge/.test(画), "★催促の 道が ない");
+  }
+
 
 console.log(落ち === 0 ? "\n★すべて 通りました" : "\n★" + 落ち + "件 落ちました");
 process.exit(落ち === 0 ? 0 : 1);

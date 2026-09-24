@@ -56,9 +56,28 @@ function t(cond, label) {
   t(戻 < 画.indexOf("<KoenCast"), "★null は 画面を 組み立てる 前");
 
   console.log("\n③ まだ 無い 行き先を 出さない");
-  t(L.NOT_MADE_YET.length >= 6, "★まだの ものを 数えて いる（" + L.NOT_MADE_YET.length + "）");
+  t(L.NOT_MADE_YET.length >= 5, "★まだの ものを 数えて いる（" + L.NOT_MADE_YET.length + "）");
   L.NOT_MADE_YET.forEach((w) =>
     t(!画.includes(w), "★「" + w + "」を 出して いない"));
+  // ★★★2026-09-24 ── ★「まだ」の 一覧が **古びて いない** こと。
+  //   ★★「公演を作る」が ここに 残って いました。★けれど 画面は あり、
+  //     ★呼ばれても いました。★記録が 嘘に なり、★入口を 置けなく して いました。
+  //   ★★だから、★品の 中に その 画面が 在る ものは、★ここに 置けません。
+  const 品 = ["components/KoenNew.jsx", "components/KoenCast.jsx",
+    "components/KoenSheet.jsx", "components/KoenInvite.jsx",
+    "components/KoenInfo.jsx", "components/KoenExport.jsx",
+    "components/KoenDayFlow.jsx", "components/KoenMySchedule.jsx",
+    "components/Understudy.jsx"];
+  const 名 = { "公演を作る": "components/KoenNew.jsx" };
+  Object.keys(名).forEach((w) => {
+    const 在 = fs.existsSync(path.join(ROOT, 名[w]));
+    const 呼 = readCode("components", "VocalTracker.jsx")
+      .includes("<" + path.basename(名[w], ".jsx"));
+    if (在 && 呼) t(!L.NOT_MADE_YET.includes(w),
+      "★「" + w + "」は 作って あり 呼ばれて います。★まだの 一覧から 外して ください");
+  });
+  t(品.filter((f) => fs.existsSync(path.join(ROOT, f))).length >= 8,
+    "★較正 ── ★公演の 画面が 読めて いる");
   // ★★`tabs()` と `nextSteps()` の 行き先が、★ぜんぶ 開ける こと
   const 先 = L.tabs({}).map((x) => x.key).concat(L.nextSteps({}).map((x) => x.key));
   先.forEach((k) => t(new RegExp('"' + k + '":').test(画) || new RegExp("\\b" + k + ":").test(画),
