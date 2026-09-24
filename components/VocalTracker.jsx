@@ -13726,7 +13726,12 @@ export default function VocalTracker({
         //   ★★つながりは 出来て います。★学校に 入る ところ だけ が 残ります。
         //   ★★★1度 だけ 出します。★閉じたら 出しません（★催促しません）。
         //     ★★もっと → 通って いる ところ から、★ご自分で 開けます。
-        setGuardianAsk({ orgId: enrollData.orgId || null, teacherId: pendingInvitation.teacherId || null });
+        setGuardianAsk({
+          orgId: enrollData.orgId || null,
+          // ★★学校の 名は 道が 返します ── ★画面から `organizations` は 引けません。
+          orgName: enrollData.orgName || "",
+          teacherId: pendingInvitation.teacherId || null
+        });
       } else if (enrollData.enrolled === false) {
         console.warn("先生が教室を持っていないため、在籍は作られませんでした。");
       }
@@ -28406,8 +28411,16 @@ export default function VocalTracker({
                         busy={guardianBusy}
                         done={guardianDone}
                         error={guardianError}
+                        orgName={guardianAsk.orgName || ""}
+                        teacherName={(pendingInvitation && pendingInvitation.teacher
+                          && pendingInvitation.teacher.display_name) || ""}
+                        studentName={profile?.display_name || ""}
                         onSend={(mail) => {
                           void handleAskGuardian(guardianAsk.orgId, guardianAsk.teacherId, mail);
+                        }}
+                        onResend={() => {
+                          setGuardianDone("");
+                          setGuardianError("");
                         }}
                         onClose={() => {
                           setGuardianAsk(null);

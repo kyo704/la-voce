@@ -151,6 +151,65 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(!/entries|my_timetable/.test(保), "★記録の 表に 触って います");
   });
 
+  // --------------------------------------------------------------------------
+  // ★お送りする 中身を、★先に お見せする（★2026-09-24・見本 `SC['保護者にお知らせ']`）
+  //
+  //   ★★何が 出て いくか 分からない まま、★お名前と メールを 預けて いただいて
+  //     いました。★見本には 節が あり、★画面には ありません でした。
+  // --------------------------------------------------------------------------
+  見る("★お送りする 中身を 先に 見せる", () => {
+    assert.ok(/mailPreviewLines/.test(ask), "★下書きを 作って いません");
+    assert.ok(/MAIL_PREVIEW_HEAD/.test(ask), "★見出しが ありません");
+    // ★★作った だけ で 出して いない、★を 通しません。
+    assert.ok(/\{下書き\.join/.test(ask), "★下書きを 画面に 出して いません");
+    const 行 = m.mailPreviewLines({ studentName: "み", orgName: "お", teacherName: "せ" });
+    const 字 = 行.join("\n");
+    // ★★下書きと 本物が、★同じ ところから 出て いる こと。
+    const 本 = m.mailLines({ studentName: "み", orgName: "お", teacherName: "せ", url: "U" });
+    assert.strictEqual(行.length, 本.length, "★下書きと 本物で 行数が ちがいます");
+    // ★★★下書きに 本当の 合言葉が 入って いない こと。
+    assert.ok(字.includes(m.PREVIEW_BUTTON), "★押す ところの 字が ありません");
+    assert.ok(!/https?:\/\//.test(字), "★下書きに 道が 入って います");
+  });
+
+  見る("★この 画面の 断り ── ★5行 ぜんぶ", () => {
+    const 字 = m.ASK_NOTES.join("\n");
+    [
+      "アカウントは 要りません",
+      "1通 お送りする",
+      "保護者の 方にも 見えません",
+      "書けなく なって",              // ★★わけ。★落とすと 隠して いるように 読めます
+      "学校に 何が 渡るか",
+      "学校には お伝えしません"        // ★★保護者の メールは 学校に 渡りません
+    ].forEach((w) => assert.ok(字.includes(w), "★" + w + " が 書かれて いません"));
+    assert.ok(/ASK_NOTES/.test(ask), "★画面が 出して いません");
+  });
+
+  見る("★宛先を 学校に 渡さない（★字だけ では なく 道も）", () => {
+    // ★★約束を 書いた 以上、★守って いる ことを ここで 確かめます。
+    //   ★★決まりは ご本人だけ。★取り消しの 関数も auth.uid() に 縛られて いる こと。
+    assert.ok(/guardian_email/.test(本文), "★列が ありません");
+    const 取 = 本文.split("withdraw_guardian_consent")[1] || "";
+    assert.ok(/g\.user_id = auth\.uid\(\)/.test(取), "★取り消しが ご本人に 縛られて いません");
+    // ★★共有の 一覧に 混ざって いない こと。
+    const 共 = readRaw("lib", "shareScope.js");
+    assert.ok(!/guardian_email/.test(共), "★共有の 一覧に 宛先が 入って います");
+  });
+
+  見る("★どの 学校の 話か 出す", () => {
+    assert.strictEqual(m.askSubline({ orgName: "お", teacherName: "せ" }), "お　／　せ 先生の 門下");
+    // ★★名が 無い ときは、★その ぶんを 落とします（★「○○」の ままでは 出しません）。
+    assert.strictEqual(m.askSubline({ orgName: "お" }), "お");
+    assert.strictEqual(m.askSubline({}), "");
+    const acr = readRaw("app", "api", "enrollment", "accept", "route.js");
+    assert.ok(/orgName/.test(acr), "★道が 学校の 名を 返して いません");
+  });
+
+  見る("★打ち間違いを 直せる", () => {
+    assert.ok(/RESEND_LABEL/.test(ask), "★入れ直す ところが ありません");
+    assert.ok(/onResend/.test(ask) && /onResend=/.test(vt), "★入れ直しが つながって いません");
+  });
+
   見る("★催促しない（★閉じる ところが ある）", () => {
     assert.ok(/onClose/.test(ask), "★閉じられません");
     assert.ok(/setGuardianAsk\(null\)/.test(vt), "★閉じても 残ります");

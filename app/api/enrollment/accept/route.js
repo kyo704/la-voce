@@ -135,10 +135,18 @@ export async function POST(request) {
       const { data: 同意 } = await admin
         .rpc("has_guardian_consent", { p_user_id: user.id, p_org_id: orgId });
       if (同意 !== true) {
+        // ★★学校の 名を 返します（★2026-09-24・見本 `SC['保護者にお知らせ']` の 2行目）。
+        //   ★★★画面からは `organizations` を 引けません ── ★在籍が まだ 無い ため です。
+        //     ★★名が 無い まま 出すと、★どの 学校の 話か 分からない まま
+        //       ★保護者の メールを 預けて いただく ことに なります。
+        //   ★★返すのは **名だけ** です。★ほかの 列を 足さない こと。
+        const { data: 校 } = await admin
+          .from("organizations").select("name").eq("id", orgId).maybeSingle();
         return NextResponse.json({
           ok: false,
           reason: "guardian_consent_required",
           orgId,
+          orgName: (校 && 校.name) || "",
           band: 帯
         }, { status: 200 });
       }
