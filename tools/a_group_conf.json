@@ -453,5 +453,17 @@
  "役職を変えた記録": [
   "components/OpsPermLog.jsx",
   "lib/permLog.js"
+ ],
+ "レッスン割を確定": [
+  "components/LessonRoundDone.jsx",
+  "lib/lessonRound.js"
+ ],
+ "あなたのページ": [
+  "components/PortfolioV2.jsx",
+  "lib/portfolio.js"
+ ],
+ "さがす": [
+  "components/MatchingSearch.jsx",
+  "lib/matchingSearch.js"
  ]
 }
