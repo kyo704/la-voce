@@ -402,10 +402,6 @@
   "components/KoenCast.jsx",
   "lib/koenCast.js"
  ],
- "公演": [
-  "components/KoenArea.jsx",
-  "lib/koenArea.js"
- ],
  "公演を作る": [
   "components/KoenNew.jsx",
   "lib/koenArea.js"
@@ -414,12 +410,8 @@
   "components/LessonRoundArea.jsx",
   "lib/lessonRound.js"
  ],
- "当日の進行": [
-  "components/KoenDayFlow.jsx",
-  "lib/myKoenDay.js"
- ],
  "自分の予定": [
-  "components/KoenMySchedule.jsx",
-  "lib/myKoenDay.js"
+  "components/VocalTracker.jsx",
+  "lib/myTimetable.js"
  ]
 }
