@@ -43,12 +43,32 @@ MIHON = [
 #       `SC['授業を入れる'](key)` …… ★'0-0' の ような 鍵の 字
 #       `SC['稽古'](i)`          …… ★番号
 #     ★★1つ しか 試さない と、★出来て いる 画面が「無い」に 見えます。
-JS = """(k) => {
+# ★★★下ごしらえ（★2026-09-25）
+#   ★見本の 画面の 中には、★前の 画面で 作った ものを 使う ものが あります。
+#   ★★いきなり 呼ぶと `undefined` を 読んで 落ちます。
+#     ★人が 触る ときは 前の 画面を 通って 来るので 落ちません。
+#   ★★`tools/mihon_prime.json` に、★その「通って 来た あと」の 姿を 作る 1行を 置きます。
+#     ★★★中身は 足しません。★空の 入れ物か、★見本が 自分で 持って いる 並びを 使います。
+#       ★足すと、★見本の 字では ない ものを くらべる ことに なります。
+下ごしらえ = {}
+try:
+  下ごしらえ = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                          "mihon_prime.json"), encoding="utf-8"))
+except Exception:
+  pass
+
+JS = """(a) => {
+  const k = a.k;
+  if (a.prime) { try { (0, eval)(a.prime); } catch (e) { return { threw: '下ごしらえ: ' + e.message }; } }
+  return (() => {
   if (typeof SC[k] !== 'function') return { missing: true };
   // ★★★番号を 1つ しか 試さない と、★前を 振り返る 画面が 落ちます。
   //   ★`SC['前3日'](i)` は `DAY[i-1]`〜`DAY[i-3]` を 読みます。★0 では 落ちます。
   //   ★★小さい 順に しません ── ★真ん中あたりの 番号から 試します。
-  const 試し = [3, 5, 1, 0, '0-0', undefined, {}];
+  // ★★下ごしらえの 紙で 渡す ものが 決まって いれば、★それを いちばん 先に 試します。
+  const 試し = (a.arg !== undefined && a.arg !== null && a.arg !== "")
+    ? [a.arg, 3, 5, 1, 0, '0-0', undefined, {}]
+    : [3, 5, 1, 0, '0-0', undefined, {}];
   let 最後 = '';
   for (const a of 試し) {
     let html = '';
@@ -59,6 +79,7 @@ JS = """(k) => {
     return { text: body.split('\\u0001'), ph, arg: String(a) };
   }
   return { threw: 最後 || '（何も 返りません）' };
+  })();
 }"""
 
 
@@ -85,7 +106,11 @@ async def 見本の字(key):
       await pg.goto("file://" + urllib.parse.quote(os.path.abspath(path)))
       await pg.wait_for_function("typeof SC==='object'")
       await pg.wait_for_timeout(300)
-      d = await pg.evaluate(JS, key)
+      下 = 下ごしらえ.get(key, "")
+      if isinstance(下, dict):
+        d = await pg.evaluate(JS, {"k": key, "prime": 下.get("prime", ""), "arg": 下.get("arg")})
+      else:
+        d = await pg.evaluate(JS, {"k": key, "prime": 下 or "", "arg": None})
       if d and d.get("text"):
         await b.close()
         return d, f
@@ -314,9 +339,25 @@ def main(key, paths):
   #   ★在りえない 字で 試すのは 足りません ── ★それは 見本にも 無いので ④に 落ちます
   #     （★2026-09-23、★その 形で 目盛りが 合いませんでした）。
   #   ★★ここは **通る はずの 道** を 通して 確かめます。
-  語0, 在0, _, _, _ = くらべる(見, 実, key, 中身, 本文)
+  語0, 在0, 無0, 除0, 中0 = くらべる(見, 実, key, 中身, 本文)
+  if not 語0:
+    print("★止まりました ── 見本から 字が 1つも 取れません"); return 2
   if not 在0:
-    print("★止まりました ── くらべる 字が 1つも ありません"); return 2
+    # ★★★2026-09-25 ── ★これは **道具の 行き止まり** では ありません。★答え です。
+    #   ★★見本の 字が 1つも 当たらない ＝
+    #     ★① 当てる 紙が ちがう か、★② その 画面が まだ 無い か。
+    #   ★★前は「くらべる 字が 1つも ありません」と 止めて いました。
+    #     ★★★「無い」と「見て いない」を 同じ 顔に して いました。★分けます。
+    print("  見える 字 …… %d ／ ①ある 0 ／ ②ない %d ／ ③わざと %d ／ ④中身 %d"
+          % (len(語0), len(無0), len(除0), len(中0)))
+    print("\n■ ★実装に 1つも 当たりません（%d）" % len(無0))
+    for w in 無0[:12]: print("    " + w)
+    print("\n★★これは 2つの どちらか です ──")
+    print("  ① 当てる 紙が ちがう（★対応表を 直します）")
+    print("  ② その 画面が まだ 無い（★C群 です）")
+    print("★★目盛り合わせは できません（★当たる 字が 無い ため）。★そう 書きます。")
+    print("RESULT: NO_MATCH（★当たり 0）")
+    return 3
   # ★★いちばん 長い 言葉で 試します。★短い 字は ほかの 言葉の 中に 紛れ込みます。
   #   ★★くらべるのは `字だけ()` に した 形 なので、★そちらから 消します
   #     （★実装では `‹ {tx("公演を作る")}` の ように 割れて いる ことが あります）。

@@ -3,10 +3,6 @@
   "components/MatchingReport.jsx",
   "lib/matchingReport.js"
  ],
- "その人": [
-  "components/OpsSettings.jsx",
-  "lib/orgRoster.js"
- ],
  "まだの人": [
   "components/OpsMada.jsx",
   "lib/opsMada.js"
@@ -54,10 +50,6 @@
  "同意を取り消す": [
   "components/GuardianAsk.jsx",
   "lib/guardianConsent.js"
- ],
- "型の中身": [
-  "components/OpsPresets.jsx",
-  "lib/lessonPresets.js"
  ],
  "学ぶ": [
   "components/VocalTracker.jsx",
@@ -346,16 +338,12 @@
   "components/KoenSheet.jsx",
   "lib/koenSheet.js"
  ],
- "コマの中身": [
-  "components/OpsSchedule.jsx",
-  "lib/opsSchedule.js"
- ],
  "公演の料金": [
   "components/KoenInfo.jsx",
   "lib/koenInfo.js"
  ],
  "受診プレビュー": [
-  "components/NotesV2.jsx",
+  "components/VocalTracker.jsx",
   "lib/clinicSheet.js"
  ],
  "組織": [
@@ -370,25 +358,9 @@
   "components/OpsKumu.jsx",
   "lib/opsKumu.js"
  ],
- "自分の門下": [
-  "components/Renraku.jsx",
-  "lib/renraku.js"
- ],
- "記事": [
-  "components/VocalTracker.jsx",
-  "lib/learnContent.js"
- ],
  "まだ": [
   "components/VocalTracker.jsx",
   "lib/itemLedger.js"
- ],
- "切ってある機能": [
-  "components/VocalTracker.jsx",
-  "lib/featureFlags.js"
- ],
- "見た目を選ぶ": [
-  "components/VocalTracker.jsx",
-  "lib/displayPrefs.js"
  ],
  "自分のコマの時間": [
   "components/MyTimetable.jsx",
@@ -438,17 +410,9 @@
   "components/OwnedLedger.jsx",
   "lib/itemLedger.js"
  ],
- "ノート本文": [
-  "components/NotesV2.jsx",
-  "lib/practiceNote.js"
- ],
  "コマの時間": [
   "components/OpsOrgMaster.jsx",
   "lib/orgMaster.js"
- ],
- "日を選ぶ": [
-  "components/RangeCalendar.jsx",
-  "lib/rangeCalendar.js"
  ],
  "役職を変えた記録": [
   "components/OpsPermLog.jsx",
