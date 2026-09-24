@@ -27,7 +27,11 @@ function t(cond, label) {
 (async () => {
   const 画 = readCode("components", "KoenArea.jsx");
   const 生 = readRaw("components", "KoenArea.jsx");
-  const src = fs.readFileSync(path.join(ROOT, "lib", "koenArea.js"), "utf8");
+  // ★★`@/` を 結び直します（★`lib/koenArea.js` が `lib/featureOn` を 読むように なりました）。
+  //   ★ほかの 見張りと 同じ 形 です（`contrast.test.js` の いきさつ）。
+  const src = fs.readFileSync(path.join(ROOT, "lib", "koenArea.js"), "utf8")
+    .replace(/from "@\/lib\/([a-zA-Z0-9]+)"/g, (mm, n) =>
+      `from "${"file://" + path.join(ROOT, "lib", n + ".js")}"`);
   const L = await import("data:text/javascript;base64," + Buffer.from(src).toString("base64"));
 
   console.log("① 7つの 画面が 開ける");

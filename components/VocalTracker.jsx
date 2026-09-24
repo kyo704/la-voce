@@ -85,6 +85,12 @@ import ClassTimeShare from "@/components/ClassTimeShare";
 // ★★★学校の 設定の 中の 3画面（★裁定183 P3・P4 ／ 裁定186・2026-09-24）。
 //   ★★見本では どれも 設定の 1節 です（`stYousu` ／ `stMonkaWay`）。
 //     ★★別の タブに しません。★毎日 見る ものでは ありません。
+// ★★★公演（★裁定141・176・2026-09-24）。★鍵（`koen`）が 開いて いる ときだけ 出ます。
+//   ★★`KoenArea` が 7画面の まとめ役、★`KoenNew` が 入口 です。
+//   ★★★判じるのは `KoenArea` の 中の `featureOn` **だけ** です。
+import KoenArea from "@/components/KoenArea";
+import KoenNew from "@/components/KoenNew";
+import { mayCreateKoen, KOEN_KEY } from "@/lib/koenArea";
 import OrgSummary from "@/components/OrgSummary";
 import OrgFirstWeek from "@/components/OrgFirstWeek";
 import MonkaWaySetting from "@/components/MonkaWaySetting";
@@ -5706,6 +5712,9 @@ export default function VocalTracker({
   //   ★★判じるのは `lib/monkaWay.js` です。★ここでは 読む だけ です。
   //   ★★読めなかった ときは null の まま ＝ ★出しません（★迷ったら 閉じる）。
   const [monkaSetting, setMonkaSetting] = useState(null);
+  // ★★★公演（★2026-09-24）。★`koenNew` …… 作って いる 途中、★`koenId` …… 開いて いる 公演。
+  const [koenNew, setKoenNew] = useState(false);
+  const [koenId, setKoenId] = useState(null);
   useEffect(() => {
     let 生きている = true;
     (async () => {
@@ -17569,11 +17578,36 @@ export default function VocalTracker({
                   onClose={() => { setSaitenEvent(null); setSaitenOne(null); }} />
               );
             }
+            // ★★★公演（★裁定141・176・2026-09-24）。
+            //   ★★鍵が 閉じて いれば、★`featureOn` が false で ここを 通りません。
+            //     ★★`KoenArea` の 中でも もう 一度 判じます ── ★入口と 中身は 別 です。
+            //   ★★作れるのは「公演」の できことを 持つ 方 だけ（★台帳も 止めます）。
+            if (tabKey === "events" && koenId) {
+              return (
+                <KoenArea supabase={featureClient} koenId={koenId} features={features}
+                  onBack={() => setKoenId(null)} />
+              );
+            }
+            if (tabKey === "events" && koenNew) {
+              return (
+                <KoenNew supabase={featureClient} orgId={opsOrgId} userId={userId}
+                  onMade={(id) => { setKoenNew(false); setKoenId(id); }}
+                  onBack={() => setKoenNew(false)} />
+              );
+            }
             if (tabKey === "events") {
               return (
                 <OpsEvents
                   /* ★★★採点へ（★裁定 その105・2026-09-20）。
                        ★★`saiten` を 持つ 方と、★審査員（門下を 持つ 先生）に 出します。 */
+                  /* ★★★公演を 作る（★裁定143・2026-09-24）。
+                       ★★3つ とも 要ります ──
+                         ① 鍵が 開いて いる（`featureOn`）
+                         ② 「公演」の できことを 持つ（`gyoji`）
+                       ★★★どれか 1つでも 欠けたら **渡しません** ＝ 札が 出ません。
+                         ★押せない 札を 置きません。★台帳も 同じ ところで 止めます。 */
+                  onNewKoen={mayCreateKoen(features, canOps(gate, "gyoji"))
+                    ? () => setKoenNew(true) : undefined}
                   onGoSaiten={(canOps(gate, "saiten")
                     || (orgAssignments[opsOrgId] || [])
                       .some((a) => a && a.teacher_id === userId && !a.ended_at))

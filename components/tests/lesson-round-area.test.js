@@ -81,8 +81,19 @@ const 判 = 紙.filter((f) => /\bfeatureOn\s*\(/.test(中[f]) && !/lib[\\/]featu
 const レ鍵 = 紙.filter((f) => /LESSON_ROUND_KEY/.test(中[f]) && !/lib[\\/]lessonRound\.js$/.test(f));
 t(レ鍵.length === 1 && path.basename(レ鍵[0]) === "LessonRoundArea.jsx",
   "★レッスン割の 鍵を 見るのは まとめ役 だけ（" + レ鍵.map((f) => path.basename(f)).join("／") + "）");
-t(判.every((f) => /Area\.jsx$/.test(f)),
-  "★`featureOn` を 呼ぶのは まとめ役 だけ（" + 判.map((f) => path.basename(f)).join("／") + "）");
+// ★★★`featureOn` を 呼んで よい ところ ──
+//   ★まとめ役（`*Area.jsx`）と、★その 機能の 決めを 持つ lib（`lib/koenArea.js` の
+//     `mayCreateKoen()` の ような もの）。
+//   ★★★画面が それぞれ 判じる のを 止めたい のです。★1機能 1か所 が 決め です。
+t(判.every((f) => /Area\.jsx$/.test(f) || /^lib[\\/]/.test(path.relative(ROOT, f))),
+  "★`featureOn` を 呼ぶのは まとめ役 か その lib（"
+    + 判.map((f) => path.basename(f)).join("／") + "）");
+// ★★**画面**が 自分で 組み立てて いない こと。
+//   ★lib は 組み立てて よい ところ です ── ★そこが 決めを 持つ 場所 だからです。
+const 組 = 紙.filter((f) => !/^lib[\\/]/.test(path.relative(ROOT, f))
+  && /featureOn\s*\([^)]*\)\s*&&/.test(中[f]));
+t(組.length === 0, "★★`featureOn(...) && …` を 画面で 組み立てて いない"
+  + (組.length ? "（" + 組.map((f) => path.basename(f)).join("／") + "）" : ""));
 t(判.length > 0, "★鍵を 見て いる ところが ある（" + 判.length + "か所）");
 
 console.log("\n③ 鍵の 字を 2か所に 書いて いない");

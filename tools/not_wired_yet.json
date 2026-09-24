@@ -11,6 +11,5 @@
   "KoenDayFlow": "★公演の 機能は 台帳の 鍵（`koen`）が off です。★いつ つなぐ …… `koen` を 開ける 前。★`featureOn(features,'koen')` の 中に 入れます",
   "KoenMySchedule": "★公演の 機能は 台帳の 鍵（`koen`）が off です。★いつ つなぐ …… `koen` を 開ける 前。★`featureOn(features,'koen')` の 中に 入れます",
   "JuryPanel": "★採点の 機能は 台帳の 鍵（`scoring`）が off です。★いつ つなぐ …… `scoring` を 開ける 前。★`featureOn(features,'scoring')` の 中に 入れます",
-  "JuryLayout": "★採点の 機能は 台帳の 鍵（`scoring`）が off です。★いつ つなぐ …… `scoring` を 開ける 前。★`featureOn(features,'scoring')` の 中に 入れます",
-  "KoenArea": "★公演の まとめ役 です。★7画面を ここから 開きます。★入口が まだ ありません ── ★見本では 行事の『＋ 公演を 作る』から 入り、★その 画面は まだ ありません。★いつ つなぐ …… `公演を作る` を 作った とき（★そこで 作った 公演を、★この まとめ役が 受け取ります）"
+  "JuryLayout": "★採点の 機能は 台帳の 鍵（`scoring`）が off です。★いつ つなぐ …… `scoring` を 開ける 前。★`featureOn(features,'scoring')` の 中に 入れます"
 }

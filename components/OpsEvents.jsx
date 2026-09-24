@@ -3,6 +3,7 @@
 import { useState } from "react";
 import useWindowWidth from "@/components/useWindowWidth";
 import { C } from "@/lib/tokens";
+import { TYPE } from "@/lib/uiKit";
 // ★★広い ときは 表（★2026-09-18・坂本さんの お決め Q4）。★名簿・役職と 同じ 形。
 import OpsEventTable from "@/components/OpsEventTable";
 import { showEventTable, timeSpan } from "@/lib/opsEventTable";
@@ -96,7 +97,11 @@ export default function OpsEvents({
   //   ★★1つも 無ければ、★その 列ごと 出しません（★押せない 札を 置きません）。
   grades = [], courses = [],
   // ★★★採点へ（★裁定 その105・2026-09-20）。★渡されなければ 出しません。
-  onGoSaiten}) {
+  onGoSaiten,
+  // ★★★公演を 作る（★裁定143・2026-09-24）。★渡されなければ 出しません。
+  //   ★★鍵（`koen`）が 閉じて いる ときは、★呼ぶ 側が 渡しません。
+  //   ★★「公演」の できことを 持たない 方にも 渡しません（★台帳も 止めます）。
+  onNewKoen}) {
   /**
    * ★対象の 1列（★学年 ／ 学科・コース）。
    *
@@ -150,6 +155,17 @@ export default function OpsEvents({
         {/* ★★題の 下の 1行（★見本の `.sub`・★お決め G5）。★字は lib が 持ちます。 */}
         <p style={small}>{SUB_LINE}</p>
       </div>
+
+      {/* ★★★公演を 作る（★見本 `P_gyoji` の 札・2026-09-24）。
+          ★★渡されなければ 出しません。★押せない 札を 置きません。 */}
+      {onNewKoen ? (
+        <button type="button" onClick={onNewKoen}
+          style={{
+            minHeight: 44, padding: "0 14px", borderRadius: 999,
+            border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+            ...TYPE.li
+          }}>＋ 公演を 作る</button>
+      ) : null}
 
       {/* ★★★広い ときは 表（★見本 `P_gyoji` の 7列・★お決め Q4）。
            ★★狭い ときは これまで どおり 札 です。★どちらも 残します。
