@@ -1,0 +1,197 @@
+{
+  "title": "妖精ヴィッリ",
+  "composer": "プッチーニ",
+  "composer_sort": "Puccini, Giacomo",
+  "kind": "opera",
+  "year_written": 1884,
+  "source": "hand",
+  "source_id": "puccini-villi",
+  "roles": [
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "ロベルト"
+    },
+    {
+      "label": "グリエルモ"
+    },
+    {
+      "label": "語り"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "婚約の祝い（合唱と踊り）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ",
+        "ロベルト",
+        "グリエルモ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アンナのロマンツァ（もし私が小さな花なら）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ"
+      ]
+    },
+    {
+      "label": "アンナとロベルトの二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ",
+        "ロベルト"
+      ]
+    },
+    {
+      "label": "祈りと旅立ち（第1幕フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ",
+        "ロベルト",
+        "グリエルモ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "交響的間奏曲 第1（別れ）",
+      "group_label": "間奏",
+      "roles": [
+        "語り"
+      ]
+    },
+    {
+      "label": "交響的間奏曲 第2（ヴィッリの魔宴）",
+      "group_label": "間奏",
+      "roles": [
+        "語り",
+        "合唱"
+      ]
+    },
+    {
+      "label": "グリエルモのアリア（いや、安らぎはない）",
+      "group_label": "第2幕",
+      "roles": [
+        "グリエルモ"
+      ]
+    },
+    {
+      "label": "ロベルトのアリア（お前が去って以来）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロベルト"
+      ]
+    },
+    {
+      "label": "アンナの亡霊との二重唱とフィナーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ",
+        "ロベルト",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

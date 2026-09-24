@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ポートフォリオの型 12種 ── Woolsong</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+ --paper:#FBF6EA;--card:#fff;--card2:#FDFAF3;
+ --line:#E4DAC4;--line2:#F0E9DA;--ink:#261913;--ink2:#5A4C40;
+ --ink3:#6B5C4E;--ink4:#706456;--gold:#8C6115;--ok:#3C6A56;
+ --s:"Noto Sans JP",system-ui,sans-serif;
+ --m:"Noto Serif JP",serif;
+ --c:"JetBrains Mono",monospace;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+ --paper:#1E1812;--card:#241D17;--card2:#2A2219;--line:#3A342E;
+ --line2:#2C2722;--ink:#EFE6D8;--ink2:#BCB1A3;--ink3:#A19383;--ink4:#A18C7A}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--s);
+ font-size:15px;line-height:1.75;
+ padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 16px 90px}
+h1{font-family:var(--m);font-size:24px;font-weight:600;margin:0 0 8px}
+.lead{color:var(--ink3);font-size:14px;line-height:1.95;margin:0 0 8px}
+.lead b{color:var(--ink2)}
+.k{background:var(--card2);border-left:2px solid var(--gold);padding:14px 16px;
+ border-radius:0 7px 7px 0;font-size:13.5px;line-height:1.95;margin:20px 0 34px}
+.k b{color:var(--ink2)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:26px}
+.item{min-width:0}
+.cap{margin-top:11px}
+.cap .nm{font-size:15px;font-weight:700;letter-spacing:.02em}
+.cap .for{font-size:12.5px;color:var(--gold);margin-top:2px}
+.cap .d{font-size:13px;color:var(--ink3);line-height:1.9;margin-top:6px}
+.cap .no{font-size:12.5px;color:var(--ink4);margin-top:5px}
+
+/* ═══ 紙（A4）═══ */
+.pg{background:#fff;color:#241C15;aspect-ratio:210/297;overflow:hidden;
+ border:1px solid var(--line);box-shadow:0 3px 14px rgba(90,72,48,.13);
+ display:flex;flex-direction:column;
+ font-size:clamp(5.4px,1.22vw,9.4px);line-height:1.66}
+.pg .ft{margin-top:auto;font-size:.84em;color:#9C8E7E}
+
+/* ═══ Web ═══ */
+.br{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--card)}
+.br .bar{background:var(--line2);padding:6px 11px;font-size:11.5px;color:var(--ink4);
+ display:flex;gap:5px;align-items:center}
+.br .bar i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.br .sc{height:430px;overflow-y:auto}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:top}
+th{font-weight:500;color:var(--ink4);font-size:12px;letter-spacing:.08em}
+.sech{font-size:12px;letter-spacing:.2em;color:var(--ink4);
+ border-bottom:1px solid var(--line);padding-bottom:7px;margin:48px 0 20px}
+</style></head><body><div class="wrap">
+
+<h1>ポートフォリオの型　12種</h1>
+<p class="lead">
+骨格 × ヒーロー × 配色の掛け算を、<b>12の完成した型</b>にしたもの。<br>
+利用者は <b>型を選ぶだけ</b>。中身は1つで、見せ方が変わります。
+</p>
+
+<div class="k">
+<b>調べて分かった3つ</b><br>
+① <b>作品は 3〜7点。5点が最適</b>。「見る人は、最も弱い1枚で全体を判断する」（Fstoppers）<br>
+② 本文は Web 15〜25px・印刷 10〜12pt。行間は和文 1.5〜2.0倍。行長は和文35字前後<br>
+③ <b>「微妙」の正体</b>は、作品を絞れていない・数値管理の欠如・テンプレ標準設定の放置
+</div>
+
+<!-- ══════ 紙 ══════ -->
+<div class="sech">紙 ／ A4・PDF　6種</div>
+<div class="grid">
+
+<!-- 1 ミニマル・エディトリアル -->
+<div class="item">
+<div class="pg" style="padding:12% 11% 8%;font-family:var(--m)">
+ <div style="font-size:2.6em;font-weight:500;letter-spacing:.12em;line-height:1.1">坂本 響</div>
+ <div style="font-size:.92em;letter-spacing:.42em;color:#8C7D6C;margin-top:1.4em">T E N O R E</div>
+ <div style="height:3.4em"></div>
+ <div style="font-size:1.02em;line-height:2.9;color:#3A302A">
+  ○○声楽コンクール　第二位<br>
+  『冬の旅』全曲　千葉文化会館<br>
+  『フィガロの結婚』ドン・バジリオ
+ </div>
+ <div style="height:2.4em"></div>
+ <div style="font-size:.9em;line-height:2.5;color:#8C7D6C">
+  ○○音楽院（イタリア）<br>高橋 のぞみ に師事
+ </div>
+ <div class="ft" style="font-size:.82em;letter-spacing:.1em">woolsong.app/p/7fk2m</div>
+</div>
+<div class="cap">
+ <div class="nm">① ミニマル・エディトリアル</div>
+ <div class="for">指揮者・ライター・格を示すとき</div>
+ <div class="d">明朝、余白7割、罫線なし。<b>3件しか書かない。</b><br>
+  「絞ること自体が価値の表明」になる型。</div>
+ <div class="no">紙◎　Web◎　情報量が多い人には向かない</div>
+</div></div>
+
+<!-- 2 ギャラリー・グリッド -->
+<div class="item">
+<div class="pg" style="padding:8% 7.5%">
+ <div style="display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1.6px solid #241C15;padding-bottom:.6em">
+  <span style="font-size:1.9em;font-weight:700;font-family:var(--m)">坂本 響</span>
+  <span style="font-size:.88em;letter-spacing:.2em;color:#8C7D6C">TENORE</span>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5em;margin-top:.9em">
+  <div style="aspect-ratio:4/3;background:#EFE9DC"></div>
+  <div style="aspect-ratio:4/3;background:#E4DAC4"></div>
+  <div style="aspect-ratio:4/3;background:#E8DFC8"></div>
+  <div style="aspect-ratio:4/3;background:#F0E9DA"></div>
+ </div>
+ <div style="margin-top:.9em;font-size:.94em;line-height:2.1">
+  <div style="display:flex;gap:.8em"><span style="color:#8C7D6C;width:22%">2026.11</span>『冬の旅』全曲</div>
+  <div style="display:flex;gap:.8em"><span style="color:#8C7D6C;width:22%">2026.07</span>『フィガロの結婚』</div>
+  <div style="display:flex;gap:.8em"><span style="color:#8C7D6C;width:22%">2025.12</span>『クリスマス・オラトリオ』</div>
+  <div style="display:flex;gap:.8em"><span style="color:#8C7D6C;width:22%">2025</span>○○コンクール 第2位</div>
+ </div>
+ <div class="ft">woolsong.app/p/7fk2m　／　2026.09.21</div>
+</div>
+<div class="cap">
+ <div class="nm">② ギャラリー・グリッド</div>
+ <div class="for">写真・イラスト・舞台写真がある人</div>
+ <div class="d">均等な4枠に写真。<b>粒度が揃っている</b>ときに効く。<br>
+  審査員は読み込み直後に6〜9件を見たい（CodeFronts）。</div>
+ <div class="no">紙○　Web◎　写真が無いと成立しない</div>
+</div></div>
+
+<!-- 3 スプリット・プロフィール -->
+<div class="item">
+<div class="pg" style="padding:0;flex-direction:row">
+ <div style="flex:0 0 38%;background:#241C15;color:#EFE6D8;padding:9% 7%;
+  display:flex;flex-direction:column">
+  <div style="width:100%;aspect-ratio:3/4;background:#3A302A;border-radius:2px;
+   display:flex;align-items:center;justify-content:center;color:#8C7D6C;font-size:.9em">宣材</div>
+  <div style="font-size:1.5em;font-weight:600;margin-top:1.1em;font-family:var(--m)">中村 みな</div>
+  <div style="font-size:.86em;color:#A0917F;margin-top:.3em">声優 ／ ナレーター</div>
+  <div style="margin-top:1.4em;font-size:.86em;line-height:2.1;color:#BCB1A3">
+   中〜高音域<br>少年・少女・青年女性<br>標準語・関西弁
+  </div>
+  <div style="margin-top:auto;font-size:.8em;color:#8C7D6C">woolsong.app<br>/p/3kd9n</div>
+ </div>
+ <div style="flex:1;padding:9% 7.5%;display:flex;flex-direction:column">
+  <div style="font-size:.84em;letter-spacing:.2em;color:#8C7D6C">持ち役</div>
+  <div style="margin-top:.6em;font-size:.94em;line-height:2.2">
+   <div>○○（アニメ）　<b>主人公</b></div>
+   <div>△△（ゲーム）　脇役3役</div>
+   <div>□□（企業VP）　ナレーション</div>
+  </div>
+  <div style="font-size:.84em;letter-spacing:.2em;color:#8C7D6C;margin-top:1.6em">経　歴</div>
+  <div style="margin-top:.6em;font-size:.94em;line-height:2.2">
+   <div>2024–　○○プロダクション 所属</div>
+   <div>2022–24　△△養成所 卒業</div>
+  </div>
+  <div style="font-size:.84em;letter-spacing:.2em;color:#8C7D6C;margin-top:1.6em">できること</div>
+  <div style="margin-top:.6em;font-size:.94em;line-height:2.2">
+   英語（日常）／普通自動車免許
+  </div>
+ </div>
+</div>
+<div class="cap">
+ <div class="nm">③ スプリット・プロフィール</div>
+ <div class="for">声優・俳優・アナウンサー</div>
+ <div class="d">左に<b>顔と声の条件</b>を固定、右に実績。<br>
+  審査員が探すもの（声質・方言）が、必ず左にある。</div>
+ <div class="no">紙◎　Web◎　ATS は読めない（紙で出す前提）</div>
+</div></div>
+
+<!-- 4 タイムライン・キャリア -->
+<div class="item">
+<div class="pg" style="padding:8% 7.5%">
+ <div style="font-size:1.8em;font-weight:600;font-family:var(--m)">坂本 響</div>
+ <div style="font-size:.88em;color:#8C7D6C;margin-top:.2em">テノール ／ Lirico</div>
+ <div style="height:1.4em"></div>
+ <div style="position:relative;padding-left:1.6em;flex:1">
+  <div style="position:absolute;left:.42em;top:.5em;bottom:2em;width:1px;background:#E4DAC4"></div>
+  <div style="position:relative;margin-bottom:1.5em">
+   <div style="position:absolute;left:-1.42em;top:.42em;width:.62em;height:.62em;
+    border-radius:50%;background:#8C6115"></div>
+   <div style="font-size:.86em;color:#8C7D6C">2026.11</div>
+   <div style="font-size:1.05em;font-weight:600">『冬の旅』全曲</div>
+   <div style="font-size:.9em;color:#6B5C4E">千葉文化会館</div>
+  </div>
+  <div style="position:relative;margin-bottom:1.5em">
+   <div style="position:absolute;left:-1.42em;top:.42em;width:.62em;height:.62em;
+    border-radius:50%;background:#E4DAC4"></div>
+   <div style="font-size:.86em;color:#8C7D6C">2025</div>
+   <div style="font-size:1.05em;font-weight:600">○○声楽コンクール 第2位</div>
+  </div>
+  <div style="position:relative;margin-bottom:1.5em">
+   <div style="position:absolute;left:-1.42em;top:.42em;width:.62em;height:.62em;
+    border-radius:50%;background:#E4DAC4"></div>
+   <div style="font-size:.86em;color:#8C7D6C">2024</div>
+   <div style="font-size:1.05em;font-weight:600">○○音楽院（イタリア）入学</div>
+   <div style="font-size:.9em;color:#6B5C4E">高橋 のぞみ に師事</div>
+  </div>
+  <div style="position:relative">
+   <div style="position:absolute;left:-1.42em;top:.42em;width:.62em;height:.62em;
+    border-radius:50%;background:#E4DAC4"></div>
+   <div style="font-size:.86em;color:#8C7D6C">2020–24</div>
+   <div style="font-size:1.05em;font-weight:600">○○音楽大学 声楽科 卒業</div>
+  </div>
+ </div>
+ <div class="ft">sakamoto@example.com　／　woolsong.app/p/7fk2m</div>
+</div>
+<div class="cap">
+ <div class="nm">④ タイムライン・キャリア</div>
+ <div class="for">経歴で語る人・留学した人</div>
+ <div class="d">縦の線で<b>歩みを見せる</b>。点が進歩を示す。<br>
+  「どこから来て、どこへ行くか」が一目で。</div>
+ <div class="no">紙◎　Web◎　件数が多いと2枚目に溢れる</div>
+</div></div>
+
+<!-- 5 クラシック・レジュメ -->
+<div class="item">
+<div class="pg" style="padding:9% 8%">
+ <div style="text-align:center;padding-bottom:.9em;border-bottom:.6px solid #241C15">
+  <div style="font-size:1.9em;font-weight:600;font-family:var(--m);letter-spacing:.08em">坂本 響</div>
+  <div style="font-size:.86em;color:#6B5C4E;margin-top:.4em">
+   テノール　／　sakamoto@example.com　／　090-0000-0000</div>
+ </div>
+ <div style="margin-top:1.2em;font-size:.94em">
+  <div style="font-size:.84em;letter-spacing:.24em;color:#8C7D6C;margin-bottom:.5em">学　歴</div>
+  <div style="display:flex;gap:1em;margin-bottom:.3em"><span style="width:24%;color:#8C7D6C">2024–</span>○○音楽院（イタリア）声楽科</div>
+  <div style="display:flex;gap:1em"><span style="width:24%;color:#8C7D6C">2020–24</span>○○音楽大学 声楽科 卒業</div>
+
+  <div style="font-size:.84em;letter-spacing:.24em;color:#8C7D6C;margin:1.3em 0 .5em">師　事</div>
+  <div style="display:flex;gap:1em;margin-bottom:.3em"><span style="width:24%;color:#8C7D6C">主に</span>高橋 のぞみ、斎藤 めぐみ</div>
+  <div style="display:flex;gap:1em"><span style="width:24%;color:#8C7D6C">公開講座</span>○○ 氏、△△ 氏</div>
+
+  <div style="font-size:.84em;letter-spacing:.24em;color:#8C7D6C;margin:1.3em 0 .5em">受　賞</div>
+  <div style="display:flex;gap:1em"><span style="width:24%;color:#8C7D6C">2025</span>○○声楽コンクール　第2位</div>
+
+  <div style="font-size:.84em;letter-spacing:.24em;color:#8C7D6C;margin:1.3em 0 .5em">演　奏</div>
+  <div style="display:flex;gap:1em;margin-bottom:.3em"><span style="width:24%;color:#8C7D6C">2026.11</span>Schubert『冬の旅』全曲　千葉文化会館</div>
+  <div style="display:flex;gap:1em;margin-bottom:.3em"><span style="width:24%;color:#8C7D6C">2026.07</span>Mozart『フィガロの結婚』ドン・バジリオ</div>
+  <div style="display:flex;gap:1em"><span style="width:24%;color:#8C7D6C">2025.12</span>Bach『クリスマス・オラトリオ』独唱</div>
+ </div>
+ <div class="ft">2026年9月21日 現在</div>
+</div>
+<div class="cap">
+ <div class="nm">⑤ クラシック・レジュメ</div>
+ <div class="for">日本の音大出願・コンクール</div>
+ <div class="d">単一段組、本文11pt相当、四辺に余白。<br>
+  <b>ATS が読める唯一の型</b>。師事を「主に／公開講座」で分ける。</div>
+ <div class="no">紙◎　Web△　最も安全。最も目立たない</div>
+</div></div>
+
+<!-- 6 和・縦書き -->
+<div class="item">
+<div class="pg" style="padding:9% 8%;background:#FDFCF8;
+ writing-mode:vertical-rl;font-family:var(--m);align-items:stretch">
+ <div style="border-left:.6px solid #C9BCA6;padding-left:1.2em;margin-left:1.2em">
+  <div style="font-size:2.3em;font-weight:500;letter-spacing:.24em">坂本　響</div>
+  <div style="font-size:.9em;color:#8C7D6C;margin-right:1.2em;letter-spacing:.3em">テノール</div>
+ </div>
+ <div style="font-size:.98em;line-height:2.5;letter-spacing:.1em;color:#3A302A">
+  令和八年十一月　冬の旅　全曲<br>
+  　　　　　　　　千葉文化会館<br><br>
+  令和七年　　　　○○声楽コンクール　第二位<br><br>
+  令和六年　　　　○○音楽院　入学<br>
+  　　　　　　　　高橋のぞみに師事
+ </div>
+ <div style="margin-right:auto;font-size:.8em;color:#9C8E7E;letter-spacing:.14em">
+  woolsong.app/p/7fk2m</div>
+</div>
+<div class="cap">
+ <div class="nm">⑥ 和・縦書き</div>
+ <div class="for">邦楽・和物・伝統芸能</div>
+ <div class="d">縦書き＋元号。<b>これを出せる相手は限られる</b>。<br>
+  だからこそ、合う場では他と並ばない。</div>
+ <div class="no">紙◎　Web○　洋楽・海外には使わない</div>
+</div></div>
+</div>
+
+<!-- ══════ Web ══════ -->
+<div class="sech">Web ／ 自分の URL　6種</div>
+<div class="grid">
+
+<!-- 7 フルスクリーン・シアター -->
+<div class="item">
+<div class="br"><div class="bar"><i></i><i></i><i></i>　woolsong.app/p/7fk2m</div>
+<div class="sc" style="background:#0F0C0A">
+ <div style="height:430px;position:relative;display:flex;align-items:flex-end;
+  background:linear-gradient(180deg,#1A1510 0%,#2E2620 55%,#0F0C0A 100%);padding:34px">
+  <div style="position:absolute;top:22px;right:26px;color:#8C7D6C;font-size:12px;
+   letter-spacing:.2em">TENORE</div>
+  <div>
+   <div style="font-family:var(--m);font-size:44px;font-weight:600;color:#EFE6D8;
+    line-height:1.1;letter-spacing:.04em">坂本 響</div>
+   <div style="color:#A0917F;font-size:14px;margin-top:14px;line-height:1.9;max-width:26em">
+    『冬の旅』全曲　千葉文化会館<br>2026年11月</div>
+   <div style="margin-top:22px;display:flex;gap:9px">
+    <span style="border:1px solid #5A4C40;color:#EFE6D8;padding:8px 18px;
+     border-radius:99px;font-size:13px">▶　聴く</span>
+    <span style="background:#EFE6D8;color:#241C15;padding:8px 18px;
+     border-radius:99px;font-size:13px">ご依頼</span>
+   </div>
+  </div>
+ </div>
+ <div style="padding:26px;color:#A0917F;font-size:13.5px;line-height:2.2">
+  ○○声楽コンクール 第2位<br>
+  ○○音楽院（イタリア）　高橋 のぞみ に師事
+ </div>
+</div></div>
+<div class="cap">
+ <div class="nm">⑦ フルスクリーン・シアター</div>
+ <div class="for">1作で覚えてもらう人</div>
+ <div class="d">最初の画面を<b>1件だけ</b>で埋める。<br>
+  没入感が要るとき。作品が少なく、1点が強いときに。</div>
+ <div class="no">Web◎　紙✕　絞れない人には向かない</div>
+</div></div>
+
+<!-- 8 App-shell -->
+<div class="item">
+<div class="br"><div class="bar"><i></i><i></i><i></i>　woolsong.app/p/7fk2m</div>
+<div class="sc" style="background:#14100D;display:flex">
+ <div style="flex:0 0 38%;padding:28px 20px;position:sticky;top:0;
+  display:flex;flex-direction:column">
+  <div style="font-family:var(--m);font-size:26px;font-weight:600;color:#EFE6D8;
+   line-height:1.2">坂本 響</div>
+  <div style="color:#8C6115;font-size:13px;margin-top:5px;font-family:var(--c)">Tenore / Lirico</div>
+  <div style="color:#8C7D6C;font-size:12.5px;margin-top:14px;line-height:1.9">
+   イタリア在住<br>東京・千葉で活動</div>
+  <div style="margin-top:22px;display:flex;flex-direction:column;gap:7px;font-size:12.5px">
+   <span style="color:#EFE6D8;border-left:2px solid #8C6115;padding-left:9px">演　奏</span>
+   <span style="color:#6B5C4E;padding-left:11px">レパートリー</span>
+   <span style="color:#6B5C4E;padding-left:11px">録　画</span>
+   <span style="color:#6B5C4E;padding-left:11px">経　歴</span>
+  </div>
+  <div style="margin-top:auto;color:#5A4C40;font-size:11.5px;font-family:var(--c)">
+   /p/7fk2m</div>
+ </div>
+ <div style="flex:1;padding:28px 22px 28px 0;color:#BCB1A3;font-size:13px">
+  <div style="color:#5A4C40;font-size:11px;letter-spacing:.2em;font-family:var(--c);
+   margin-bottom:12px">01 — PERFORMANCES</div>
+  <div style="border-left:1px solid #2C2722;padding-left:15px">
+   <div style="margin-bottom:15px">
+    <div style="color:#5A4C40;font-size:11.5px;font-family:var(--c)">2026.11</div>
+    <div style="color:#EFE6D8;font-size:14px;margin-top:2px">『冬の旅』全曲</div>
+    <div style="font-size:12.5px;margin-top:2px">千葉文化会館</div>
+    <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+     <span style="font-size:11px;padding:2px 8px;border-radius:3px;
+      background:#241D17;color:#8C6115;font-family:var(--c)">Schubert</span>
+     <span style="font-size:11px;padding:2px 8px;border-radius:3px;
+      background:#241D17;color:#8C6115;font-family:var(--c)">24 Lieder</span></div>
+   </div>
+   <div style="margin-bottom:15px">
+    <div style="color:#5A4C40;font-size:11.5px;font-family:var(--c)">2026.07</div>
+    <div style="color:#EFE6D8;font-size:14px;margin-top:2px">『フィガロの結婚』</div>
+    <div style="font-size:12.5px;margin-top:2px">ドン・バジリオ</div>
+   </div>
+   <div>
+    <div style="color:#5A4C40;font-size:11.5px;font-family:var(--c)">2025.12</div>
+    <div style="color:#EFE6D8;font-size:14px;margin-top:2px">『クリスマス・オラトリオ』</div>
+   </div>
+  </div>
+ </div>
+</div></div>
+<div class="cap">
+ <div class="nm">⑧ App-shell・テック</div>
+ <div class="for">情報量が多い人・海外向け</div>
+ <div class="d">左に固定、右をスクロール。<b>Brittany Chiang 型</b>。<br>
+  等幅書体でタグ。件数が多くても崩れない。</div>
+ <div class="no">Web◎　紙✕　スマホでは1列に畳む</div>
+</div></div>
+
+<!-- 9 bento -->
+<div class="item">
+<div class="br"><div class="bar"><i></i><i></i><i></i>　woolsong.app/p/7fk2m</div>
+<div class="sc" style="background:#F3EEE4;padding:18px">
+ <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px">
+  <div style="grid-column:span 2;background:#241C15;color:#EFE6D8;border-radius:14px;
+   padding:20px;display:flex;flex-direction:column;justify-content:flex-end;min-height:130px">
+   <div style="font-family:var(--m);font-size:25px;font-weight:600">坂本 響</div>
+   <div style="font-size:12.5px;color:#A0917F;margin-top:4px">テノール ／ Lirico</div></div>
+  <div style="background:#8C6115;color:#fff;border-radius:14px;padding:16px;
+   display:flex;flex-direction:column;justify-content:center;text-align:center">
+   <div style="font-size:11px;opacity:.85">コンクール</div>
+   <div style="font-size:26px;font-weight:700;line-height:1.2;margin-top:3px">2位</div></div>
+  <div style="grid-column:span 3;background:#1A1510;border-radius:14px;
+   aspect-ratio:21/9;display:flex;align-items:center;justify-content:center;
+   color:#8C7D6C;font-size:13px">▶　『冬の旅』第1曲</div>
+  <div style="grid-column:span 2;background:#fff;border-radius:14px;padding:16px">
+   <div style="font-size:11px;letter-spacing:.14em;color:#8C7D6C">レパートリー</div>
+   <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">
+    <span style="font-size:12px;padding:3px 10px;border-radius:99px;background:#F0E9DA">冬の旅</span>
+    <span style="font-size:12px;padding:3px 10px;border-radius:99px;background:#F0E9DA">Fauré</span>
+    <span style="font-size:12px;padding:3px 10px;border-radius:99px;background:#F0E9DA">Duparc</span>
+   </div></div>
+  <div style="background:#fff;border-radius:14px;padding:16px;
+   display:flex;flex-direction:column;justify-content:center">
+   <div style="font-size:11px;color:#8C7D6C">活動</div>
+   <div style="font-size:13.5px;margin-top:4px;line-height:1.7">東京<br>千葉</div></div>
+  <div style="grid-column:span 3;background:#241C15;color:#EFE6D8;border-radius:14px;
+   padding:15px;text-align:center;font-size:13.5px">ご依頼・お問い合わせ</div>
+ </div>
+</div></div>
+<div class="cap">
+ <div class="nm">⑨ bento・自己紹介1枚</div>
+ <div class="for">複数の顔を持つ人・SNSから来る人</div>
+ <div class="d">大小のタイルを詰める。<b>Bento.me が2026年2月に終了</b>。<br>
+  この需要の受け皿が空いています。</div>
+ <div class="no">Web◎　紙✕　読む順序を指示できない</div>
+</div></div>
+
+<!-- 10 ボイス -->
+<div class="item">
+<div class="br"><div class="bar"><i></i><i></i><i></i>　woolsong.app/p/3kd9n</div>
+<div class="sc" style="background:var(--card)">
+ <div style="background:linear-gradient(150deg,#2A2440,#4A3E66);color:#fff;padding:30px 24px">
+  <div style="font-family:var(--m);font-size:27px;font-weight:600">中村 みな</div>
+  <div style="font-size:13px;opacity:.72;margin-top:4px">声優 ／ ナレーター</div>
+  <div style="font-size:13.5px;margin-top:14px;line-height:1.9;opacity:.9">
+   中〜高音域。少年・少女・青年女性。<br>標準語・関西弁。</div>
+ </div>
+ <div style="padding:22px 24px">
+  <div style="font-size:11.5px;letter-spacing:.18em;color:var(--ink4);margin-bottom:11px">
+   声の サンプル</div>
+  <div style="display:flex;flex-direction:column;gap:9px">
+   <div style="border:1px solid var(--line);border-radius:10px;padding:13px 15px;
+    display:flex;gap:12px;align-items:center;background:var(--card2)">
+    <span style="width:30px;height:30px;border-radius:50%;background:#4A3E66;color:#fff;
+     display:flex;align-items:center;justify-content:center;font-size:12px;flex:none">▶</span>
+    <span style="flex:1;font-size:13.5px">快活な 少女</span>
+    <span style="color:var(--ink4);font-size:12px">0:30</span></div>
+   <div style="border:1px solid var(--line);border-radius:10px;padding:13px 15px;
+    display:flex;gap:12px;align-items:center;background:var(--card2)">
+    <span style="width:30px;height:30px;border-radius:50%;background:#4A3E66;color:#fff;
+     display:flex;align-items:center;justify-content:center;font-size:12px;flex:none">▶</span>
+    <span style="flex:1;font-size:13.5px">落ち着いた ナレーション</span>
+    <span style="color:var(--ink4);font-size:12px">0:45</span></div>
+   <div style="border:1px solid var(--line);border-radius:10px;padding:13px 15px;
+    display:flex;gap:12px;align-items:center;background:var(--card2)">
+    <span style="width:30px;height:30px;border-radius:50%;background:#4A3E66;color:#fff;
+     display:flex;align-items:center;justify-content:center;font-size:12px;flex:none">▶</span>
+    <span style="flex:1;font-size:13.5px">関西弁</span>
+    <span style="color:var(--ink4);font-size:12px">0:20</span></div>
+  </div>
+  <div style="font-size:11.5px;letter-spacing:.18em;color:var(--ink4);margin:22px 0 10px">
+   持ち役</div>
+  <div style="font-size:13.5px;line-height:2.1">
+   ○○（アニメ）　主人公<br>△△（ゲーム）　脇役3役</div>
+ </div>
+</div></div>
+<div class="cap">
+ <div class="nm">⑩ ボイス・サンプル</div>
+ <div class="for">声優・ナレーター・アナウンサー</div>
+ <div class="d">最初に<b>30秒×3本</b>。読むより聴くほうが早い。<br>
+  役の幅が、一度に伝わる。</div>
+ <div class="no">Web◎　紙✕　音源が無いと成立しない</div>
+</div></div>
+
+<!-- 11 ボールド -->
+<div class="item">
+<div class="br"><div class="bar"><i></i><i></i><i></i>　woolsong.app/p/5mt2p</div>
+<div class="sc" style="background:#FFFDF8">
+ <div style="padding:30px 24px 24px">
+  <div style="font-size:40px;font-weight:900;line-height:1.05;letter-spacing:-.02em">
+   小林<br>そら</div>
+  <div style="display:inline-block;background:#E04A2F;color:#fff;font-size:12.5px;
+   padding:4px 13px;border-radius:99px;margin-top:12px;font-weight:500">
+   俳優 ／ ミュージカル</div>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line2)">
+  <div style="aspect-ratio:1;background:#E8DFC8"></div>
+  <div style="aspect-ratio:1;background:#E04A2F"></div>
+  <div style="aspect-ratio:1;background:#241C15"></div>
+  <div style="aspect-ratio:1;background:#F0E9DA"></div>
+ </div>
+ <div style="padding:22px 24px">
+  <div style="font-size:19px;font-weight:700;line-height:1.5">
+   『○○』主演<br>
+   <span style="font-size:13.5px;font-weight:400;color:var(--ink3)">2026年9月　△△劇場</span></div>
+  <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:6px">
+   <span style="font-size:12.5px;padding:4px 11px;border:1.5px solid #241C15;
+    border-radius:99px">168cm</span>
+   <span style="font-size:12.5px;padding:4px 11px;border:1.5px solid #241C15;
+    border-radius:99px">メゾ A3–F5</span>
+   <span style="font-size:12.5px;padding:4px 11px;border:1.5px solid #241C15;
+    border-radius:99px">殺陣</span>
+   <span style="font-size:12.5px;padding:4px 11px;border:1.5px solid #241C15;
+    border-radius:99px">ジャズダンス</span></div>
+ </div>
+</div></div>
+<div class="cap">
+ <div class="nm">⑪ ボールド・ポップ</div>
+ <div class="for">俳優・ダンサー・若手</div>
+ <div class="d">極太ゴシック、差し色1つ、写真4枚。<br>
+  <b>勢いを見せる</b>型。落ち着きは出ません。</div>
+ <div class="no">Web◎　紙△　格を示す場では使わない</div>
+</div></div>
+
+<!-- 12 EPK -->
+<div class="item">
+<div class="br"><div class="bar"><i></i><i></i><i></i>　woolsong.app/p/7fk2m</div>
+<div class="sc" style="background:var(--card)">
+ <div style="aspect-ratio:16/9;background:linear-gradient(140deg,#241C15,#4A3B30);
+  display:flex;align-items:flex-end;padding:20px;position:relative">
+  <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+   width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(239,230,216,.5);
+   display:flex;align-items:center;justify-content:center;color:#EFE6D8;font-size:14px">▶</span>
+  <div style="color:#EFE6D8">
+   <div style="font-family:var(--m);font-size:22px;font-weight:600">坂本 響</div>
+   <div style="font-size:12px;opacity:.7;margin-top:2px">テノール</div></div>
+ </div>
+ <div style="padding:20px 22px">
+  <div style="font-size:11.5px;letter-spacing:.18em;color:var(--ink4)">これまで</div>
+  <div style="font-size:14px;line-height:2;margin-top:8px">
+   ○○音楽大学 声楽科 卒業。○○音楽院（イタリア）在学。<br>
+   2025年 ○○声楽コンクール 第2位。<br>
+   2026年11月、千葉文化会館で『冬の旅』全曲。</div>
+  <div style="font-size:11.5px;letter-spacing:.18em;color:var(--ink4);margin-top:20px">
+   音　源</div>
+  <div style="margin-top:9px;display:flex;flex-direction:column;gap:7px">
+   <div style="border:1px solid var(--line);border-radius:8px;padding:11px 14px;
+    display:flex;gap:11px;align-items:center;font-size:13.5px">
+    <span>▶</span><span style="flex:1">『冬の旅』第1曲</span>
+    <span style="color:var(--ink4);font-size:12px">Spotify</span></div>
+   <div style="border:1px solid var(--line);border-radius:8px;padding:11px 14px;
+    display:flex;gap:11px;align-items:center;font-size:13.5px">
+    <span>▶</span><span style="flex:1">Zueignung</span>
+    <span style="color:var(--ink4);font-size:12px">YouTube</span></div>
+  </div>
+  <div style="margin-top:18px;padding:13px;background:var(--card2);
+   border-radius:8px;font-size:13px;color:var(--ink3);text-align:center">
+   宣材写真・経歴（PDF）を ダウンロード</div>
+ </div>
+</div></div>
+<div class="cap">
+ <div class="nm">⑫ EPK・プレスキット</div>
+ <div class="for">主催者・事務所に渡す</div>
+ <div class="d">動画・経歴・音源・素材を1枚に。<br>
+  <b>「使う側」が必要なものを、探さずに取れる</b>形。</div>
+ <div class="no">Web◎　紙△　演奏会の主催者向け</div>
+</div></div>
+</div>
+
+<!-- ══════ 選び方 ══════ -->
+<div class="sech">どう選ぶか</div>
+<table>
+<tr><th style="width:23%">あなたは</th><th style="width:15%">型</th><th>理由</th></tr>
+<tr><td>日本の音大に出す</td><td><b>⑤</b> クラシック</td><td>慣習どおり。ATS が読める唯一の型</td></tr>
+<tr><td>欧州の音楽院に出す</td><td><b>①</b> ミニマル</td><td>絞ること自体が価値。写真・年齢なし</td></tr>
+<tr><td>声優・ナレーター</td><td><b>③</b>＋<b>⑩</b></td><td>紙は条件を左に固定、Webは声を先に</td></tr>
+<tr><td>俳優・ダンサー</td><td><b>③</b>＋<b>⑪</b></td><td>宣材必須。身長・できることが配役を決める</td></tr>
+<tr><td>伴奏者を探す</td><td><b>⑨</b> bento</td><td>スマホで一目。SNSから来る人に</td></tr>
+<tr><td>演奏依頼を受ける</td><td><b>⑫</b> EPK</td><td>主催者が素材を探さずに取れる</td></tr>
+<tr><td>経歴で語る</td><td><b>④</b> タイムライン</td><td>どこから来て、どこへ行くか</td></tr>
+<tr><td>写真がある</td><td><b>②</b> グリッド</td><td>粒度が揃っているときだけ効く</td></tr>
+<tr><td>1作で覚えてもらう</td><td><b>⑦</b> シアター</td><td>絞れる人のみ。絞れないなら使わない</td></tr>
+<tr><td>件数が多い・海外</td><td><b>⑧</b> App-shell</td><td>左固定・右スクロール。崩れない</td></tr>
+<tr><td>邦楽・和物</td><td><b>⑥</b> 縦書き</td><td>合う場では他と並ばない</td></tr>
+</table>
+
+<div class="k" style="margin-top:34px">
+<b>実装するとき</b><br>
+① 型は <b>骨格ごと変わります</b>。色と書体だけを変える形にしない<br>
+② 各型に <b>数値を埋め込む</b>（本文 Web16–18px／印刷11pt、行間 和文1.7、行長 和文35字、A4四辺1インチ）<br>
+③ <b>作品5点を既定</b>にし、6点目から折りたたむ。3点未満は警告<br>
+④ 分野（音楽／声／舞台）で、<b>出す欄が変わる</b>（裁定その119）<br>
+⑤ <b>紙に向かない型</b>：⑦⑧⑨⑩⑫。<b>ATS が読めない型</b>：③（2段組）
+</div>
+
+</div></body></html>

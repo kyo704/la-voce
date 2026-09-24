@@ -1,0 +1,149 @@
+{
+  "title": "黒塚",
+  "composer": "團伊玖磨",
+  "composer_sort": "Dan, Ikuma",
+  "kind": "opera",
+  "year_written": 1939,
+  "source": "hand",
+  "source_id": "dan-kurokami",
+  "roles": [
+    {
+      "label": "老女（鬼女）"
+    },
+    {
+      "label": "旅の僧"
+    },
+    {
+      "label": "従者"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "全1幕",
+      "roles": []
+    },
+    {
+      "label": "旅の僧の到着",
+      "group_label": "全1幕",
+      "roles": [
+        "旅の僧",
+        "従者",
+        "老女（鬼女）"
+      ]
+    },
+    {
+      "label": "糸繰りの歌",
+      "group_label": "全1幕",
+      "roles": [
+        "老女（鬼女）"
+      ]
+    },
+    {
+      "label": "禁じられた部屋",
+      "group_label": "全1幕",
+      "roles": [
+        "従者",
+        "旅の僧"
+      ]
+    },
+    {
+      "label": "鬼女の出現とフィナーレ",
+      "group_label": "全1幕",
+      "roles": [
+        "老女（鬼女）",
+        "旅の僧",
+        "従者",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "和の打楽器を含む"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★上演の機会が少なく、場面の立て方は目安。上演する際は楽譜で確かめること"
+}

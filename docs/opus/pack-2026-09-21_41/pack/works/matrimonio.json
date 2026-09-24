@@ -1,0 +1,239 @@
+{
+  "title": "秘密の結婚",
+  "composer": "チマローザ",
+  "composer_sort": "Cimarosa, Domenico",
+  "kind": "opera",
+  "year_written": 1792,
+  "source": "hand",
+  "source_id": "cimarosa-matrimonio",
+  "roles": [
+    {
+      "label": "カロリーナ"
+    },
+    {
+      "label": "パオリーノ"
+    },
+    {
+      "label": "ジェロニモ"
+    },
+    {
+      "label": "エリゼッタ"
+    },
+    {
+      "label": "フィダルマ"
+    },
+    {
+      "label": "ロビンソン伯爵"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "導入の二重唱（カラ、いとしい人よ）",
+      "group_label": "第1幕",
+      "roles": [
+        "カロリーナ",
+        "パオリーノ"
+      ]
+    },
+    {
+      "label": "ジェロニモの登場（耳が遠い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェロニモ",
+        "パオリーノ"
+      ]
+    },
+    {
+      "label": "エリゼッタとフィダルマの場",
+      "group_label": "第1幕",
+      "roles": [
+        "エリゼッタ",
+        "フィダルマ",
+        "カロリーナ"
+      ]
+    },
+    {
+      "label": "伯爵の登場（私は貴族だ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロビンソン伯爵",
+        "ジェロニモ",
+        "エリゼッタ",
+        "カロリーナ",
+        "フィダルマ",
+        "パオリーノ"
+      ]
+    },
+    {
+      "label": "伯爵とカロリーナの二重唱（私を見て）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロビンソン伯爵",
+        "カロリーナ"
+      ]
+    },
+    {
+      "label": "カロリーナのアリア（お願いです、伯爵様）",
+      "group_label": "第1幕",
+      "roles": [
+        "カロリーナ",
+        "ロビンソン伯爵"
+      ]
+    },
+    {
+      "label": "フィナーレ（第1幕・六重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "カロリーナ",
+        "パオリーノ",
+        "ジェロニモ",
+        "エリゼッタ",
+        "フィダルマ",
+        "ロビンソン伯爵"
+      ]
+    },
+    {
+      "label": "ジェロニモと伯爵の二重唱（持参金の話）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェロニモ",
+        "ロビンソン伯爵"
+      ]
+    },
+    {
+      "label": "パオリーノと伯爵の二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "パオリーノ",
+        "ロビンソン伯爵"
+      ]
+    },
+    {
+      "label": "フィダルマのアリア（この胸の中に）",
+      "group_label": "第2幕",
+      "roles": [
+        "フィダルマ"
+      ]
+    },
+    {
+      "label": "四重唱（静かに、静かに）",
+      "group_label": "第2幕",
+      "roles": [
+        "カロリーナ",
+        "エリゼッタ",
+        "フィダルマ",
+        "ジェロニモ"
+      ]
+    },
+    {
+      "label": "パオリーノのアリア（美しい希望よ）",
+      "group_label": "第2幕",
+      "roles": [
+        "パオリーノ"
+      ]
+    },
+    {
+      "label": "カロリーナのロンド（許してください）",
+      "group_label": "第2幕",
+      "roles": [
+        "カロリーナ"
+      ]
+    },
+    {
+      "label": "フィナーレ（第2幕・秘密が明かされる）",
+      "group_label": "第2幕",
+      "roles": [
+        "カロリーナ",
+        "パオリーノ",
+        "ジェロニモ",
+        "エリゼッタ",
+        "フィダルマ",
+        "ロビンソン伯爵"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Il matrimonio segreto",
+  "aliases": [
+    "Matrimonio"
+  ],
+  "duration_min": 150,
+  "language": "it"
+}

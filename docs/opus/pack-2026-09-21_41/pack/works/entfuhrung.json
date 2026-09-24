@@ -1,0 +1,286 @@
+{
+  "title": "後宮からの誘拐",
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1782,
+  "source": "hand",
+  "source_id": "mozart-entfuhrung",
+  "roles": [
+    {
+      "label": "コンスタンツェ"
+    },
+    {
+      "label": "ベルモンテ"
+    },
+    {
+      "label": "ブロンデ"
+    },
+    {
+      "label": "ペドリッロ"
+    },
+    {
+      "label": "オスミン"
+    },
+    {
+      "label": "太守セリム（語り）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1番 アリア（ここでお前に会えるのか）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベルモンテ"
+      ]
+    },
+    {
+      "label": "第2番 リートと二重唱（娘を見つけたら）",
+      "group_label": "第1幕",
+      "roles": [
+        "オスミン",
+        "ベルモンテ"
+      ]
+    },
+    {
+      "label": "第3番 アリア（そんな阿呆どもは）",
+      "group_label": "第1幕",
+      "roles": [
+        "オスミン"
+      ]
+    },
+    {
+      "label": "第4番 レチタティーヴォとアリア（何という胸の高鳴り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベルモンテ"
+      ]
+    },
+    {
+      "label": "第5番 合唱（太守の入場）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱",
+        "太守セリム（語り）",
+        "コンスタンツェ"
+      ]
+    },
+    {
+      "label": "第6番 アリア（私は恋をしていた）",
+      "group_label": "第1幕",
+      "roles": [
+        "コンスタンツェ"
+      ]
+    },
+    {
+      "label": "第7番 三重唱（第1幕フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベルモンテ",
+        "ペドリッロ",
+        "オスミン"
+      ]
+    },
+    {
+      "label": "第8番 アリア（優しさと媚びで）",
+      "group_label": "第2幕",
+      "roles": [
+        "ブロンデ"
+      ]
+    },
+    {
+      "label": "第9番 二重唱（さっさと出ていけ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ブロンデ",
+        "オスミン"
+      ]
+    },
+    {
+      "label": "第10番 レチタティーヴォとアリア（悲しみが私の運命に）",
+      "group_label": "第2幕",
+      "roles": [
+        "コンスタンツェ"
+      ]
+    },
+    {
+      "label": "第11番 アリア（あらゆる拷問が）",
+      "group_label": "第2幕",
+      "roles": [
+        "コンスタンツェ",
+        "太守セリム（語り）"
+      ]
+    },
+    {
+      "label": "第12番 アリア（なんという喜び）",
+      "group_label": "第2幕",
+      "roles": [
+        "ブロンデ"
+      ]
+    },
+    {
+      "label": "第13番 アリア（戦いだ、ただ勇気を）",
+      "group_label": "第2幕",
+      "roles": [
+        "ペドリッロ"
+      ]
+    },
+    {
+      "label": "第14番 二重唱（バッカス万歳）",
+      "group_label": "第2幕",
+      "roles": [
+        "ペドリッロ",
+        "オスミン"
+      ]
+    },
+    {
+      "label": "第15番 アリア（喜びの涙が流れるとき）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベルモンテ"
+      ]
+    },
+    {
+      "label": "第16番 四重唱（第2幕フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "コンスタンツェ",
+        "ベルモンテ",
+        "ブロンデ",
+        "ペドリッロ"
+      ]
+    },
+    {
+      "label": "第17番 アリア（誘拐の準備）",
+      "group_label": "第3幕",
+      "roles": [
+        "ベルモンテ"
+      ]
+    },
+    {
+      "label": "第18番 ロマンツェ（ムーア人の国で）",
+      "group_label": "第3幕",
+      "roles": [
+        "ペドリッロ"
+      ]
+    },
+    {
+      "label": "第19番 アリア（ああ、勝利だ）",
+      "group_label": "第3幕",
+      "roles": [
+        "オスミン"
+      ]
+    },
+    {
+      "label": "第20番 二重唱（何という運命）",
+      "group_label": "第3幕",
+      "roles": [
+        "コンスタンツェ",
+        "ベルモンテ"
+      ]
+    },
+    {
+      "label": "第21番 ヴォードヴィルとフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "コンスタンツェ",
+        "ベルモンテ",
+        "ブロンデ",
+        "ペドリッロ",
+        "オスミン",
+        "太守セリム（語り）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "トルコ風（大太鼓・シンバル・トライアングル）"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Die Entführung aus dem Serail",
+  "aliases": [
+    "後宮",
+    "Entfuhrung"
+  ],
+  "duration_min": 140,
+  "language": "de"
+}

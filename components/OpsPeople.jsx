@@ -21,6 +21,8 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
+import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
+import { tx } from "@/lib/t";
 // ★★学校の 形（★裁定 その98・2026-09-19）。★決めは lib が 持ちます。
 import {
   choosableFor, divisionOf, shapeLineOf, parentNameOf,
@@ -89,7 +91,12 @@ export default function OpsPeople({
   // ★★★確かめ（★見本 `P_setPost` の warn・2026-09-19）。
   //   ★★`verified_at` が 空なら「ご自分で 選んだまま」です。
   //   ★★渡されなければ、★その 節ごと 出しません（★押せない 札を 置きません）。
-  onVerify
+  onVerify,
+  // ★★★役職を 変えた 記録へ（★裁定194・2026-09-24）。
+  //   ★★渡されなければ 出しません。★渡すか どうかは 呼ぶ 側が 決めます
+  //     （★見本 `P_setPost`：`can('post')||can('master')`）。
+  //   ★★★「消しません」と 決めた 記録に、★読む 道を 付けます。
+  onGoPermLog
 }) {
   const [filter, setFilter] = useState({ k: "全て", v: "" });
   const [open, setOpen] = useState(null);   // ★いま 開いて いる 方の user_id
@@ -110,6 +117,16 @@ export default function OpsPeople({
 
   return (
     <div className="space-y-3">
+      {/* ★★★役職を 変えた 記録（★裁定194・2026-09-24）。
+          ★★渡されなければ 出しません。★押せない 札を 置きません。 */}
+      {onGoPermLog ? (
+        <button type="button" onClick={onGoPermLog}
+          style={{
+            minHeight: 44, padding: `0 ${rem(13)}`, borderRadius: 999,
+            border: `1px solid ${C.line}`, background: C.card, color: C.inkSoft,
+            fontFamily: FONT_STACK, marginBottom: rem(10), ...TYPE.li
+          }}>{tx("役職を 変えた 記録")}</button>
+      ) : null}
       <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
         <p style={{ fontSize: "0.8125rem", fontWeight: 700, color: C.ink, margin: 0 }}>
           ひとと 役職

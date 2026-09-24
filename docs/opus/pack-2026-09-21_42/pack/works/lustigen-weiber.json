@@ -1,0 +1,229 @@
+{
+  "title": "ウィンザーの陽気な女房たち",
+  "composer": "ニコライ",
+  "composer_sort": "Nicolai, Otto",
+  "kind": "opera",
+  "year_written": 1849,
+  "source": "hand",
+  "source_id": "nicolai-weiber",
+  "roles": [
+    {
+      "label": "フルート夫人"
+    },
+    {
+      "label": "ライヒ夫人"
+    },
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "フェントン"
+    },
+    {
+      "label": "ファルスタッフ"
+    },
+    {
+      "label": "フルート氏"
+    },
+    {
+      "label": "ライヒ氏"
+    },
+    {
+      "label": "シュペールリヒ"
+    },
+    {
+      "label": "カイウス博士"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "二重唱（手紙の発見）",
+      "group_label": "第1幕",
+      "roles": [
+        "フルート夫人",
+        "ライヒ夫人"
+      ]
+    },
+    {
+      "label": "アンナとフェントンの場",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ",
+        "フェントン",
+        "シュペールリヒ",
+        "カイウス博士"
+      ]
+    },
+    {
+      "label": "ファルスタッフの登場と洗濯かごの場",
+      "group_label": "第1幕",
+      "roles": [
+        "ファルスタッフ",
+        "フルート夫人",
+        "ライヒ夫人",
+        "フルート氏",
+        "合唱"
+      ]
+    },
+    {
+      "label": "酒場の場（ファルスタッフとフルート氏）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファルスタッフ",
+        "フルート氏",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アンナのアリア（忠実な心よ）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ"
+      ]
+    },
+    {
+      "label": "三重唱（求婚者たち）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ",
+        "シュペールリヒ",
+        "カイウス博士",
+        "フェントン"
+      ]
+    },
+    {
+      "label": "第2の悪だくみ（老婆に化ける）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファルスタッフ",
+        "フルート夫人",
+        "ライヒ夫人",
+        "フルート氏"
+      ]
+    },
+    {
+      "label": "月の出の合唱（ウィンザーの森）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "フェントンのアリアと二重唱",
+      "group_label": "第3幕",
+      "roles": [
+        "フェントン",
+        "アンナ"
+      ]
+    },
+    {
+      "label": "妖精の場とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ファルスタッフ",
+        "フルート夫人",
+        "ライヒ夫人",
+        "アンナ",
+        "フェントン",
+        "フルート氏",
+        "ライヒ氏",
+        "シュペールリヒ",
+        "カイウス博士",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

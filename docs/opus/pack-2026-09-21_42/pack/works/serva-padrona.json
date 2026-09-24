@@ -1,0 +1,127 @@
+{
+  "title": "奥様女中",
+  "composer": "ペルゴレージ",
+  "composer_sort": "Pergolesi, Giovanni Battista",
+  "kind": "opera",
+  "year_written": 1733,
+  "source": "hand",
+  "source_id": "pergolesi-serva",
+  "roles": [
+    {
+      "label": "セルピーナ"
+    },
+    {
+      "label": "ウベルト"
+    },
+    {
+      "label": "ヴェスポーネ（黙役）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "シンフォニア",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "ウベルトのアリア（三時間も待っている）",
+      "group_label": "第1部",
+      "roles": [
+        "ウベルト",
+        "ヴェスポーネ（黙役）"
+      ]
+    },
+    {
+      "label": "セルピーナのアリア（お黙りなさい）",
+      "group_label": "第1部",
+      "roles": [
+        "セルピーナ",
+        "ウベルト"
+      ]
+    },
+    {
+      "label": "二重唱（分かったか／分かりません）",
+      "group_label": "第1部",
+      "roles": [
+        "セルピーナ",
+        "ウベルト"
+      ]
+    },
+    {
+      "label": "セルピーナのアリア（私はお高くとまって）",
+      "group_label": "第2部",
+      "roles": [
+        "セルピーナ",
+        "ウベルト"
+      ]
+    },
+    {
+      "label": "ウベルトのアリア（私の胸は乱れて）",
+      "group_label": "第2部",
+      "roles": [
+        "ウベルト"
+      ]
+    },
+    {
+      "label": "テンペスタ大尉の策略",
+      "group_label": "第2部",
+      "roles": [
+        "セルピーナ",
+        "ウベルト",
+        "ヴェスポーネ（黙役）"
+      ]
+    },
+    {
+      "label": "フィナーレの二重唱（喜びのままに）",
+      "group_label": "第2部",
+      "roles": [
+        "セルピーナ",
+        "ウベルト"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "通奏低音"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "La serva padrona",
+  "aliases": [
+    "Serva"
+  ],
+  "duration_min": 45,
+  "language": "it"
+}

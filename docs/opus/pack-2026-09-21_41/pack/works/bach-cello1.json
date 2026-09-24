@@ -1,0 +1,70 @@
+{
+  "title": "無伴奏チェロ組曲第1番 ト長調",
+  "title_original": "Cellosuite Nr. 1 BWV 1007",
+  "aliases": [
+    "無伴奏チェロ"
+  ],
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chamber",
+  "year_written": 1720,
+  "source": "hand",
+  "source_id": "bach-cello-suite1",
+  "duration_min": 18,
+  "roles": [
+    {
+      "label": "チェロ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "アルマンド",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "クーラント",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "サラバンド",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "メヌエットI・II",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "ジーグ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

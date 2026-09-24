@@ -1,0 +1,158 @@
+{
+  "title": "グローリア",
+  "title_original": "Gloria",
+  "aliases": [],
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "chorus",
+  "year_written": 1959,
+  "source": "hand",
+  "source_id": "poulenc-gloria",
+  "duration_min": 28,
+  "language": "la",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I グローリア",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "II 地に平和を",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III 主なる神、天の王よ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV 主なる神、神の子羊",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "V 父の右に座したもう",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI ただひとり聖なる",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

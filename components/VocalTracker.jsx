@@ -95,6 +95,9 @@ import { mayCreateKoen, mayShowKoenMine, KOEN_KEY } from "@/lib/koenArea";
 //   ★★前から 出来て いて、★どこからも 呼ばれて いません でした。
 //   ★★★鍵（`scoring`）が 閉じて いる あいだは、★入口ごと 出しません（★裁定176 §3）。
 import KoenMine from "@/components/KoenMine";
+// ★★★役職を 変えた 記録（★裁定194・2026-09-24）。
+//   ★★「消しません」と 決めた 記録に、★読む 画面を 付けます。
+import OpsPermLog from "@/components/OpsPermLog";
 import JuryPanel from "@/components/JuryPanel";
 import JuryLayout from "@/components/JuryLayout";
 import OrgSummary from "@/components/OrgSummary";
@@ -14270,6 +14273,8 @@ export default function VocalTracker({
   const [saitenEvent, setSaitenEvent] = useState(null);
   // ★★採点の となりの 2枚（★2026-09-24）。★null なら 出しません。
   const [juryView, setJuryView] = useState(null);   // ★"judges" ／ "layout"
+  // ★★役職を 変えた 記録（★裁定194）。★null なら 出しません。
+  const [permLogOpen, setPermLogOpen] = useState(false);
   const [saitenOne, setSaitenOne] = useState(null);
   const [saitenScores, setSaitenScores] = useState([]);
   const [saitenReviews, setSaitenReviews] = useState([]);
@@ -18000,7 +18005,20 @@ export default function VocalTracker({
                       ) : null,
                       people: (canOps(gate, "post") || canOps(gate, "master")) ? (
                   <div style={{ marginTop: 16 }}>
-                    <OpsPeople
+{permLogOpen ? (
+                      <OpsPermLog
+                        supabase={featureClient} orgId={opsOrgId}
+                        nameOf={(id) => orgDisplayName(id) || ""}
+                        onBack={() => setPermLogOpen(false)} />
+                    ) : (
+                                        <OpsPeople
+                      /* ★★★役職を 変えた 記録へ（★裁定194・2026-09-24）。
+                           ★★見本 `P_setPost` は `can('post')||can('master')` です。
+                           ★★どちらも 無い 方には 渡しません ＝ 札が 出ません。
+                           ★★★読める かどうかを 決めるのは 台帳 です
+                             （`org_post_perm_log_select`）。★ここは 札の 出し分け だけ。 */
+                      onGoPermLog={canOps(gate, "post") || canOps(gate, "master")
+                        ? () => setPermLogOpen(true) : undefined}
                       members={opsMembers}
                       posts={orgPosts[opsOrgId] || []}
                       nameOf={(id) => orgDisplayName(id) || ""}
@@ -18028,7 +18046,7 @@ export default function VocalTracker({
                         // ★★`handleOrgPosts` は 断られた とき null を 返します。
                         //   ★★黙って 閉じません。★画面に 出します。
                         return r === null ? false : true;
-                      }} />
+                      }} />)}
                   </div>
                       ) : null,
                       org: canOps(gate, "master") ? (

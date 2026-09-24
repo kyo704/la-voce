@@ -1,0 +1,33 @@
+{
+  "title": "デンシティ 21.5",
+  "title_original": "Density 21.5",
+  "aliases": [],
+  "composer": "ヴァレーズ",
+  "composer_sort": "Varese, Edgard",
+  "kind": "chamber",
+  "year_written": 1936,
+  "source": "hand",
+  "source_id": "varese-density",
+  "duration_min": 4,
+  "roles": [
+    {
+      "label": "フルート独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": [
+        "フルート独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}

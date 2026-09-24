@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woolsong ホームページの型 ― レコード／総譜／座席表／切符（t20・t21・t26・t27）</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=BIZ+UDPGothic:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@400;600&family=Archivo:wght@400;700;900&family=Yomogi&family=Zen+Kurenaido&family=Courier+Prime:wght@400;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<style>
+  :root{--accent:#7A1F2E;--radius:12px;--space:1;--head:"Shippori Mincho",serif;--body:"BIZ UDPGothic",system-ui,sans-serif;--lat:"Cormorant Garamond",serif}
+  body[data-font="old"]{--head:"Zen Old Mincho",serif;--body:"Zen Old Mincho",serif}
+  body[data-font="gothic"]{--head:"BIZ UDPGothic",sans-serif;--body:"BIZ UDPGothic",sans-serif}
+  body[data-photo="square"]{--radius:0}
+  body[data-density="airy"]{--space:1.3}
+  *{box-sizing:border-box} html,body{margin:0;background:#DAD4C8;font-family:var(--body);-webkit-font-smoothing:antialiased}
+  body[data-headshot="off"] .headshot{display:none!important}
+  .headshot{background:linear-gradient(160deg,#8b7a72,#3b3230);position:relative;overflow:hidden;border-radius:var(--radius)}
+  .headshot::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 35%,rgba(255,255,255,.35),transparent 42%)}
+  article{display:none} article.on{display:block}
+  [data-sec][hidden]{display:none!important}
+  .ph{background:linear-gradient(160deg,#8b7a72,#3b3230);position:relative;overflow:hidden;border-radius:var(--radius)}
+  .ph::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 35%,rgba(255,255,255,.35),transparent 42%)}
+  .auto{display:inline-block;font-size:10px;border:1px solid currentColor;opacity:.55;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:98;background:rgba(20,18,16,.92);color:#fff;padding:8px 12px;display:flex;gap:6px;align-items:center;font-size:12px;flex-wrap:wrap}
+  .topbar b{opacity:.7;margin-right:4px;font-weight:500}
+  .topbar button{border:0;background:transparent;color:#fff;padding:5px 10px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:12px}
+  .topbar button[aria-pressed="true"]{background:#fff;color:#111}
+  .topbar .toggle{margin-left:auto;background:#7A1F2E}
+  .spacer{height:44px}
+  .panel{position:fixed;top:44px;left:0;bottom:0;width:280px;background:#1b1917;color:#eee;z-index:99;padding:16px;overflow:auto;font-size:12px;transform:translateX(-100%);transition:.25s}
+  .panel.open{transform:none}
+  .panel h3{font-size:12px;letter-spacing:.14em;margin:16px 0 8px;color:#bbb;font-weight:500}.panel h3:first-child{margin-top:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{border:1px solid #444;background:transparent;color:#eee;border-radius:999px;padding:5px 10px;cursor:pointer;font-family:inherit;font-size:12px}
+  .chips button[aria-pressed="true"]{background:#eee;color:#111;border-color:#eee}
+  .sw{display:flex;gap:6px;flex-wrap:wrap}.sw button{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer}.sw button[aria-pressed="true"]{border-color:#fff}
+  .secs div{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #2a2725}.secs label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer}.secs input{accent-color:#eee}
+  .secs button{border:1px solid #444;background:transparent;color:#eee;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px}
+  .hint{color:#8a8580;line-height:1.6;margin-top:14px}
+  /* ================= t20 レコード：盤とジャケット ================= */
+  .t20{background:#111;color:#EDE9E1;font-family:var(--body)}
+  .t20 .wrap{max-width:1140px;margin:0 auto;padding:40px 24px 80px}
+  .t20 .hero{display:grid;grid-template-columns:380px 1fr;gap:44px;align-items:center}
+  .t20 .disc{position:relative;width:380px;height:380px}
+  .t20 .disc .vinyl{position:absolute;inset:0;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,#1a1a1a 0 2px,#222 2px 4px);box-shadow:0 30px 60px rgba(0,0,0,.6)}
+  .t20 .disc .label{position:absolute;left:50%;top:50%;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--head);font-size:14px;line-height:1.4;color:#fff;padding:20px}
+  .t20 .disc .label::after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:#111}
+  .t20 .disc .headshot{position:absolute;left:-40px;top:20px;width:300px;height:300px;border-radius:2px;box-shadow:0 20px 40px rgba(0,0,0,.5)}
+  .t20 h1{font-family:var(--head);font-weight:600;font-size:clamp(38px,5.6vw,72px);margin:0;line-height:1.1;color:#fff}
+  .t20 h1 small{display:block;font-family:"Archivo",sans-serif;font-weight:700;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#a8a39a;margin-top:10px}
+  .t20 .hero p{margin:18px 0 0;line-height:1.85;color:#cfcac0;max-width:30em}
+  .t20 h2{font-family:"Archivo",sans-serif;font-weight:700;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#a8a39a;margin:calc(56px*var(--space)) 0 16px}
+  .t20 .albums{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .t20 .alb{aspect-ratio:1;background:linear-gradient(145deg,#2a2a2a,#4a4340);position:relative;border-radius:2px}
+  .t20 .alb:nth-child(2){background:linear-gradient(200deg,#3b3230,#8b7a72)}.t20 .alb:nth-child(3){background:linear-gradient(160deg,var(--accent),#2a1a1e)}.t20 .alb:nth-child(4){background:linear-gradient(120deg,#5c6b4a,#1e2419)}
+  .t20 .alb span{position:absolute;left:12px;bottom:12px;font-family:var(--head);font-size:15px;color:#fff}
+  .t20 .alb small{position:absolute;right:12px;bottom:12px;font-family:"Archivo";font-size:11px;color:#ddd}
+  .t20 .side{display:grid;grid-template-columns:1fr 1fr;gap:44px}
+  .t20 .tl{border-top:1px solid #333}
+  .t20 .tr{display:grid;grid-template-columns:34px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid #333;font-size:15px;align-items:baseline}
+  .t20 .tr .n{font-family:"Archivo";font-weight:700;color:#a8a39a}
+  .t20 .tr .w{font-family:var(--head);color:#fff}
+  .t20 .tr .w small{display:block;font-family:var(--body);font-size:12px;color:#a8a39a;margin-top:2px}
+  .t20 .tr .len{font-family:"Archivo";color:#a8a39a;font-variant-numeric:tabular-nums}
+  .t20 p{line-height:1.85;color:#cfcac0;margin:0 0 10px;font-size:14.5px}
+  .t20 .press{font-family:var(--head);font-size:15px;color:#fff;border-left:3px solid var(--accent);padding-left:12px}
+  .t20 .contact{margin-top:40px;border:1px solid #333;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px}
+  .t20 .contact a{color:#111;background:#EDE9E1;text-decoration:none;padding:10px 18px;font-weight:700;font-size:12px;letter-spacing:.14em;white-space:nowrap}
+  .t20 footer{padding:24px 0 0;font-size:12px;color:#777;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:860px){.t20 .hero{grid-template-columns:1fr}.t20 .disc{width:260px;height:260px;margin:0 auto}.t20 .disc .headshot{left:-20px;width:210px;height:210px}.t20 .disc .label{width:100px;height:100px;font-size:11px;padding:10px}.t20 .albums{grid-template-columns:1fr 1fr}.t20 .side{grid-template-columns:1fr}.t20 .contact{flex-direction:column;align-items:flex-start}}
+
+  /* ================= t21 総譜：楽譜の扉と楽章 ================= */
+  .t21{background:#FBF9F3;color:#161412;font-family:var(--body)}
+  .t21 .score{max-width:900px;margin:0 auto;padding:60px 32px 90px}
+  .t21 .title{text-align:center;padding:30px 0 40px;border-bottom:1px solid #161412;position:relative}
+  .t21 .title .op{font-family:var(--lat);font-size:15px;letter-spacing:.34em;text-transform:uppercase;color:#6a6258}
+  .t21 .title h1{font-family:var(--head);font-weight:600;font-size:clamp(40px,6.4vw,78px);margin:12px 0 4px;letter-spacing:.08em}
+  .t21 .title .for{font-family:var(--lat);font-style:italic;font-size:clamp(16px,2vw,22px);color:#6a6258}
+  .t21 .title .dedic{margin-top:26px;font-family:var(--lat);font-style:italic;font-size:14px;color:#6a6258}
+  .t21 .staff{margin:26px auto 0;width:100%;max-width:560px;display:block}
+  .t21 .title .headshot{width:150px;aspect-ratio:3/4;margin:22px auto 0;border-radius:0}
+  .t21 .mov{display:grid;grid-template-columns:110px 1fr;gap:24px;padding:calc(32px*var(--space)) 0 12px;border-bottom:1px solid #d9d2c5}
+  .t21 .mov .no{font-family:var(--lat);font-size:30px;line-height:1;color:#161412}
+  .t21 .mov .no small{display:block;font-family:var(--lat);font-style:italic;font-size:14px;color:#6a6258;margin-top:6px}
+  .t21 .mov h2{font-family:var(--head);font-weight:600;font-size:22px;margin:0 0 10px;letter-spacing:.04em}
+  .t21 p{margin:0 0 10px;line-height:1.95;font-size:15px}
+  .t21 .ev{display:grid;grid-template-columns:90px 1fr;gap:14px;padding:8px 0;border-top:1px dotted #c9c1b3;font-size:15px}
+  .t21 .ev time{font-family:var(--lat);font-size:18px}
+  .t21 .ev small{display:block;color:#6a6258;font-size:12.5px}
+  .t21 .rep{columns:2;column-gap:36px;font-size:15px;line-height:2}
+  .t21 .rep b{font-family:var(--head);font-weight:600}
+  .t21 .rep i{font-style:normal;color:#6a6258;font-size:12px;margin-left:6px}
+  .t21 .press{font-family:var(--head);font-size:16px;line-height:1.9}
+  .t21 .press cite{font-style:normal;font-family:var(--body);font-size:12px;color:#6a6258;display:block;margin-top:4px}
+  .t21 .video{aspect-ratio:21/9;background:#161412;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;border-radius:var(--radius)}
+  .t21 .fine{margin-top:40px;text-align:center;font-family:var(--lat);font-style:italic;font-size:22px;letter-spacing:.2em}
+  .t21 .contact{margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:2px solid #161412;border-bottom:1px solid #161412;padding:16px 0;font-size:14px}
+  .t21 .contact a{color:#161412;border:1px solid #161412;border-radius:999px;padding:9px 16px;text-decoration:none;white-space:nowrap;font-family:var(--head)}
+  .t21 footer{padding:26px 0 0;font-size:12px;color:#9a9186;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:700px){.t21 .mov{grid-template-columns:1fr;gap:6px}.t21 .rep{columns:1}.t21 .contact{flex-direction:column;align-items:flex-start}}
+
+  /* ================= t26 座席表：オーケストラの中の自分の席 ================= */
+  .t26{background:#F4F1EA;color:#171512;font-family:var(--body)}
+  .t26 .wrap{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
+  .t26 .head{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;margin-bottom:22px}
+  .t26 h1{font-family:var(--head);font-weight:600;font-size:clamp(34px,5vw,60px);margin:0;letter-spacing:.04em}
+  .t26 h1 small{display:block;font-family:var(--lat);font-size:16px;letter-spacing:.28em;text-transform:uppercase;color:#6d6559;margin-top:8px}
+  .t26 .seatnote{font-size:13px;color:#6d6559;text-align:right;line-height:1.7}
+  .t26 .seatnote b{display:block;font-family:var(--head);font-size:18px;color:var(--accent)}
+  .t26 .stagebox{position:relative;border:1px solid #171512;border-radius:240px 240px 0 0 / 150px 150px 0 0;padding:34px 24px 46px;background:#FBF9F3;overflow:hidden}
+  .t26 .arc{display:flex;justify-content:center;gap:5px;flex-wrap:nowrap;margin:0 auto 8px}
+  .t26 .arc .g{display:flex;flex-direction:column;align-items:center;gap:3px;margin:0 8px}
+  .t26 .arc .g em{font-style:normal;font-size:9.5px;letter-spacing:.1em;color:#6d6559;white-space:nowrap}
+  .t26 .arc .g .d{display:flex;gap:4px}
+  .t26 .head .headshot{width:110px;aspect-ratio:3/4}
+  .t26 .stagebox .cond{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:30px;height:30px;border-radius:50%;border:2px solid #171512;display:flex;align-items:center;justify-content:center;font-size:10px;background:#fff}
+  .t26 .rowlbl{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#6d6559;margin:6px 0 4px;text-align:center}
+  .t26 .seats{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+  .t26 .seats i{width:22px;height:22px;border-radius:50%;border:1.4px solid #171512;background:#fff;display:inline-block}
+  .t26 .seats i.me{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px rgba(0,0,0,.08)}
+  .t26 .seats i.sec{background:#171512}
+  .t26 .legend{display:flex;gap:18px;font-size:12px;color:#6d6559;margin:10px 0 0;justify-content:center}
+  .t26 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;border:1.4px solid #171512;vertical-align:middle;margin-right:6px}
+  .t26 .legend i.me{background:var(--accent);border-color:var(--accent)}.t26 .legend i.sec{background:#171512}
+  .t26 .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;margin-top:40px}
+  .t26 h2{font-family:var(--lat);font-weight:400;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#6d6559;margin:0 0 12px;display:flex;align-items:center;gap:12px}
+  .t26 h2::after{content:"";flex:1;height:1px;background:#d6cfc2}
+  .t26 .perf{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #e0d9cc;font-size:14.5px}
+  .t26 .perf time{font-family:var(--lat);font-size:17px}
+  .t26 .perf b{font-family:var(--head);font-weight:600}
+  .t26 .perf small{display:block;color:#6d6559;font-size:12.5px}
+  .t26 p{margin:0 0 10px;line-height:1.85;font-size:14.5px}
+  .t26 .label{border:1px solid #171512;padding:14px 16px;font-size:13px;line-height:1.7;background:#fff;margin-top:12px}
+  .t26 .label .cap{font-family:var(--lat);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#6d6559}
+  .t26 .label b{font-family:var(--head);font-size:17px;display:block}
+  .t26 .press{font-family:var(--head);font-size:15px;border-left:3px solid var(--accent);padding-left:12px}
+  .t26 .video{aspect-ratio:16/9;background:#171512;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:var(--radius)}
+  .t26 .contact{margin-top:34px;border:1px solid #171512;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px;background:#fff}
+  .t26 .contact a{color:#171512;border:1px solid #171512;border-radius:999px;padding:9px 16px;text-decoration:none;white-space:nowrap;font-family:var(--head)}
+  .t26 footer{padding:24px 0 0;font-size:12px;color:#9a9186;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:820px){.t26 .arc{flex-wrap:wrap}.t26 .head{grid-template-columns:1fr}.t26 .seatnote{text-align:left}.t26 .grid{grid-template-columns:1fr}.t26 .seats i{width:16px;height:16px}.t26 .contact{flex-direction:column;align-items:flex-start}}
+
+  /* ================= t27 切符：半券が並ぶ ================= */
+  .t27{background:#EFEAE0;color:#1c1916;font-family:var(--body)}
+  .t27 .wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+  .t27 .marquee{background:#1c1916;color:#F7F2E8;padding:34px 30px;border-radius:6px;position:relative;overflow:hidden}
+  .t27 .marquee::before,.t27 .marquee::after{content:"";position:absolute;left:0;right:0;height:10px;background:radial-gradient(circle,#F2C97D 2px,transparent 3px) 0 0/22px 10px repeat-x}
+  .t27 .marquee::before{top:6px}.t27 .marquee::after{bottom:6px}
+  .t27 .marquee h1{font-family:var(--head);font-weight:600;font-size:clamp(36px,5.6vw,68px);margin:0;letter-spacing:.06em;text-align:center;color:#fff}
+  .t27 .marquee p{text-align:center;font-family:var(--lat);letter-spacing:.3em;text-transform:uppercase;font-size:13px;color:#F2C97D;margin:12px 0 0}
+  .t27 .who{display:grid;grid-template-columns:140px 1fr;gap:22px;align-items:center;margin-top:22px}
+  .t27 .who .headshot{aspect-ratio:3/4;border-radius:4px;border:4px solid #fff;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+  .t27 .who p{margin:0;font-size:14.5px;line-height:1.85}
+  .t27 h2{font-family:var(--lat);font-weight:400;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#6a6258;margin:calc(44px*var(--space)) 0 14px}
+  .t27 .tickets{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .t27 .tk{display:grid;grid-template-columns:1fr 118px;background:#FBF7EE;border:1px solid #1c1916;position:relative;border-radius:8px;overflow:hidden}
+  .t27 .tk .main{padding:16px 18px}
+  .t27 .tk .main .d{font-family:"Archivo",sans-serif;font-weight:900;font-size:30px;letter-spacing:-.02em;line-height:1}
+  .t27 .tk .main .d small{font-size:11px;letter-spacing:.2em;font-weight:700;color:#6a6258;margin-left:8px}
+  .t27 .tk .main .w{font-family:var(--head);font-weight:600;font-size:17px;margin:8px 0 2px}
+  .t27 .tk .main .v{font-size:12.5px;color:#4a433c;line-height:1.6}
+  .t27 .tk .stub{border-left:2px dashed #1c1916;padding:14px 12px;display:flex;flex-direction:column;justify-content:space-between;background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(0,0,0,.03) 6px 12px)}
+  .t27 .tk .stub .no{font-family:"Archivo";font-weight:700;font-size:11px;letter-spacing:.2em;color:#6a6258;writing-mode:vertical-rl;transform:rotate(180deg)}
+  .t27 .tk .stub .seat{font-family:"Archivo";font-weight:900;font-size:22px;color:var(--accent)}
+  .t27 .tk::before,.t27 .tk::after{content:"";position:absolute;right:108px;width:18px;height:18px;border-radius:50%;background:#EFEAE0;border:1px solid #1c1916}
+  .t27 .tk::before{top:-10px}.t27 .tk::after{bottom:-10px}
+  .t27 .grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  .t27 p{margin:0 0 10px;line-height:1.85;font-size:14.5px}
+  .t27 .rep li{list-style:none;padding:7px 0;border-bottom:1px dotted #b9b0a0;font-size:14.5px}.t27 .rep ul{margin:0;padding:0}.t27 .rep b{font-family:var(--head);font-weight:600}
+  .t27 .press{font-family:var(--head);font-size:15px;border-left:3px solid var(--accent);padding-left:12px}
+  .t27 .video{aspect-ratio:16/9;background:#1c1916;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:var(--radius)}
+  .t27 .contact{margin-top:34px;background:#1c1916;color:#F7F2E8;padding:18px 22px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px}
+  .t27 .contact a{color:#1c1916;background:#F2C97D;text-decoration:none;padding:10px 18px;font-weight:700;font-size:12px;letter-spacing:.14em;white-space:nowrap;border-radius:3px}
+  .t27 footer{padding:24px 0 0;font-size:12px;color:#8a8175;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:820px){.t27 .who{grid-template-columns:100px 1fr}.t27 .tickets,.t27 .grid{grid-template-columns:1fr}.t27 .contact{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body data-font="mincho" data-photo="round" data-density="normal" data-headshot="on">
+<div class="topbar" role="group" aria-label="型"><b>型</b>
+  <button data-t="t20" aria-pressed="true">20 レコード</button><button data-t="t21">21 総譜</button><button data-t="t26">26 座席表</button><button data-t="t27">27 切符</button>
+  <button class="toggle" onclick="document.getElementById('panel').classList.toggle('open')">カスタマイズ</button>
+</div>
+<div class="spacer"></div>
+<aside class="panel" id="panel">
+  <h3>色（8色から）</h3><div class="sw" id="colors"></div>
+  <h3>宣材写真</h3><div class="chips" id="headshot"><button aria-pressed="true" data-v="on">置く</button><button aria-pressed="false" data-v="off">置かない</button></div>
+  <h3>書体</h3><div class="chips" id="fonts"><button aria-pressed="true" data-v="mincho">明朝＋ゴシック</button><button aria-pressed="false" data-v="old">明朝だけ</button><button aria-pressed="false" data-v="gothic">ゴシックだけ</button></div>
+  <h3>写真の形</h3><div class="chips" id="photo"><button aria-pressed="true" data-v="round">角丸</button><button aria-pressed="false" data-v="square">四角</button></div>
+  <h3>余白</h3><div class="chips" id="density"><button aria-pressed="true" data-v="normal">ふつう</button><button aria-pressed="false" data-v="airy">ゆったり</button></div>
+  <h3>節の表示と順番</h3><p class="hint" style="margin:0 0 6px">並べ替えるまでは、型が決めた順で出ます</p><div class="secs" id="secs"></div>
+  <p class="hint">色は8色に限ります。</p>
+</aside>
+<!-- ================= t20 レコード ================= -->
+<article id="t20" class="t20 on"><div class="wrap">
+  <div class="hero">
+    <div class="disc" aria-hidden="true"><div class="headshot" aria-label="宣材写真"></div><div class="vinyl"></div><div class="label">森 直哉<br>Op. 12<br>海の底</div></div>
+    <div><h1>森 直哉<small>Composer ・ Conductor</small></h1><p data-sec="profile">作曲家・指揮者。管弦楽・室内楽・合唱・吹奏楽の作品を手がけ、初演の多くを自ら指揮する。2024年より○○交響楽団正指揮者。作品は△△音楽出版・□□出版から刊行。</p></div>
+  </div>
+  <h2 data-sec="video">Releases ・ 録音</h2>
+  <div class="albums" data-sec="video"><div class="alb"><span>海の底 ― 交響曲 第1番</span><small>2026</small></div><div class="alb"><span>夜の草 ― 歌曲集</span><small>2025</small></div><div class="alb"><span>三つの断章</span><small>2024</small></div><div class="alb"><span>風の回廊 ― 吹奏楽</span><small>2023</small></div></div>
+  <div class="side">
+    <div data-sec="rep"><h2>Works ・ 作品<span class="auto">自動</span></h2><div class="tl">
+      <div class="tr"><span class="n">12</span><span class="w">交響曲 第1番「海の底」<small>管弦楽 ／ 初演 2026 ○○交響楽団 ／ △△音楽出版</small></span><span class="len">28:00</span></div>
+      <div class="tr"><span class="n">11</span><span class="w">弦楽四重奏曲 第2番<small>初演 2025 □□クァルテット ／ △△音楽出版</small></span><span class="len">18:00</span></div>
+      <div class="tr"><span class="n">10</span><span class="w">歌曲集「夜の草」<small>S・Pf ／ 初演 2025 白石 澪 ／ 貸譜</small></span><span class="len">14:00</span></div>
+      <div class="tr"><span class="n">09</span><span class="w">吹奏楽のための「風の回廊」<small>委嘱：◇◇高等学校 ／ □□出版</small></span><span class="len">9:00</span></div>
+    </div></div>
+    <div>
+      <div data-sec="events"><h2>Upcoming<span class="auto">自動</span></h2><div class="tl"><div class="tr"><span class="n">12.20</span><span class="w">○○交響楽団 定期<small>ブラームス：交響曲 第4番 ／ サントリーホール</small></span><span class="len">18:00</span></div><div class="tr"><span class="n">03.14</span><span class="w">「夜の草」再演<small>東京文化会館 小ホール</small></span><span class="len">14:00</span></div></div></div>
+      <div data-sec="press"><h2>Press</h2><p class="press">「初演の『海の底』は、静けさの中に構造がある」</p><p style="font-size:12px">― ○○新聞　2026年6月</p></div>
+    </div>
+  </div>
+  <div class="contact" data-sec="contact"><span>委嘱・客演のご相談は所属事務所へ。楽譜の貸出は出版社へ。本人へはフォームから（メールへ転送）。</span><a href="#">CONTACT</a></div>
+  <footer><span>© 2026 Naoya Mori</span><span>このページは Woolsong で作られています</span></footer>
+</div></article>
+
+<!-- ================= t21 総譜 ================= -->
+<article id="t21" class="t21"><div class="score">
+  <div class="title"><div class="op">Soprano</div><h1>白石 澪</h1><div class="for">per voce e pianoforte</div><div class="dedic">Tokyo — Bari</div><div class="headshot" aria-label="宣材写真"></div>
+  <svg class="staff" viewBox="0 0 560 80" aria-hidden="true"><g stroke="#161412" stroke-width="1"><path d="M0 20H560M0 30H560M0 40H560M0 50H560M0 60H560"/></g><text x="8" y="62" font-size="58" font-family="serif">𝄞</text><g stroke="#161412" stroke-width="1"><path d="M120 20v40M330 20v40M540 20v40"/></g><g fill="#161412"><ellipse cx="180" cy="45" rx="6" ry="4.5" transform="rotate(-20 180 45)"/><path d="M186 44v-24" stroke="#161412" stroke-width="1.4"/><ellipse cx="240" cy="35" rx="6" ry="4.5" transform="rotate(-20 240 35)"/><path d="M246 34v-24" stroke="#161412" stroke-width="1.4"/><ellipse cx="400" cy="40" rx="6" ry="4.5" transform="rotate(-20 400 40)"/><path d="M406 39v-24" stroke="#161412" stroke-width="1.4"/><ellipse cx="470" cy="30" rx="6" ry="4.5" transform="rotate(-20 470 30)"/><path d="M476 29v-24" stroke="#161412" stroke-width="1.4"/></g></svg></div>
+  <div class="mov" data-sec="events"><div class="no">I.<small>Allegro</small></div><div><h2>出演予定<span class="auto">自動</span></h2>
+    <div class="ev"><time>10.11</time><div>秋のコンサート<small>千葉県文化会館 小ホール　14:00　共演：○○（Pf）</small></div></div>
+    <div class="ev"><time>12.20</time><div>クリスマス・チャリティ<small>サントリーホール ブルーローズ　18:00</small></div></div>
+    <div class="ev"><time>'27 9.19</time><div>Le nozze di Figaro — Susanna<small>サントリーホール　17:00</small></div></div></div></div>
+  <div class="mov" data-sec="profile"><div class="no">II.<small>Andante</small></div><div><h2>プロフィール</h2><p>東京音楽大学声楽科卒業、同大学院修了。2026年よりイタリア・バーリ音楽院に留学。第○回日本声楽コンクール入選。これまでにモーツァルト『魔笛』パミーナ、プッチーニ『ラ・ボエーム』ムゼッタなどを歌う。二期会準会員。</p></div></div>
+  <div class="mov" data-sec="rep"><div class="no">III.<small>Scherzo</small></div><div><h2>レパートリー<span class="auto">自動</span></h2><div class="rep"><b>魔笛</b> パミーナ<i>Mozart</i><br><b>フィガロの結婚</b> スザンナ<i>Mozart</i><br><b>ラ・ボエーム</b> ムゼッタ<i>Puccini</i><br><b>リナルド</b> アルミレーナ<i>Händel</i><br><b>献呈・明日</b><i>R. Strauss</i><br><b>さくら横ちょう</b><i>中田喜直</i></div></div></div>
+  <div class="mov" data-sec="press"><div class="no">IV.<small>Adagio</small></div><div><h2>批評</h2><p class="press">「軽やかで、言葉が立つソプラノ」<cite>― ○○新聞　2026年7月</cite></p><p class="press">「ムゼッタの登場で舞台の温度が変わった」<cite>― 音楽の友　2026年8月</cite></p></div></div>
+  <div class="mov" data-sec="video"><div class="no">V.<small>Finale</small></div><div><h2>録音</h2><div class="video">▶ Lascia ch'io pianga（2026・ライブ）</div></div></div>
+  <div class="fine">Fine</div>
+  <div class="contact" data-sec="contact"><span>出演依頼・レッスン・取材はフォームから（本人のメールへ転送）</span><a href="#">お問い合わせ</a></div>
+  <footer><span>© 2026 Mio Shiraishi</span><span>このページは Woolsong で作られています</span></footer>
+</div></article>
+
+<!-- ================= t26 座席表 ================= -->
+<article id="t26" class="t26"><div class="wrap">
+  <div class="head"><div style="display:flex;gap:18px;align-items:end"><div class="headshot" aria-label="宣材写真"></div><h1>山田 悠<small>Viola</small></h1></div><div class="seatnote"><b>ヴィオラ ・ 第2プルト</b>○○交響楽団　2022年〜<br>室内楽と客演も</div></div>
+  <div class="stagebox" aria-hidden="true">
+    <div class="arc"><div class="g"><em>打楽器</em><div class="d"><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i></div></div><div class="g"><em>トランペット・トロンボーン・テューバ</em><div class="d"><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i></div></div><div class="g"><em>ホルン</em><div class="d"><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i></div></div></div>
+    <div class="arc"><div class="g"><em>フルート・オーボエ</em><div class="d"><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i></div></div><div class="g"><em>クラリネット・ファゴット</em><div class="d"><i class="sec"></i><i class="sec"></i><i class="sec"></i><i class="sec"></i></div></div><div class="g"><em>コントラバス</em><div class="d"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    <div class="arc"><div class="g"><em>第1ヴァイオリン</em><div class="d"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="g"><em>第2ヴァイオリン</em><div class="d"><i></i><i></i><i></i><i></i><i></i></div></div><div class="g"><em>ヴィオラ</em><div class="d"><i></i><i class="me" title="自分の席（第2プルト）"></i><i></i><i></i></div></div><div class="g"><em>チェロ</em><div class="d"><i></i><i></i><i></i><i></i></div></div></div>
+    <div class="cond">指</div>
+  </div>
+  <div class="legend"><span><i class="me"></i>自分の席</span><span><i></i>弦</span><span><i class="sec"></i>管・打</span></div>
+  <div class="grid">
+    <div data-sec="rep"><h2>出演歴<span class="auto">自動</span></h2>
+      <div class="perf"><time>2026</time><div><b>ブラームス：交響曲 第4番</b><small>○○交響楽団　指揮：△△△△　サントリーホール</small></div></div>
+      <div class="perf"><time>2026</time><div><b>シューベルト：弦楽五重奏曲</b><small>共演：○○（Vn）・△△（Vn）・□□（Vc）・◇◇（Vc）　紀尾井ホール</small></div></div>
+      <div class="perf"><time>2025</time><div><b>ウォルトン：ヴィオラ協奏曲</b><small>△△室内管弦楽団（客演ソロ）　指揮：□□□□</small></div></div>
+      <div class="perf"><time>2025</time><div><b>ブラームス：ピアノ四重奏曲 第1番</b><small>共演：△△△△（Pf）ほか　王子ホール</small></div></div>
+    </div>
+    <div>
+      <div data-sec="profile"><h2>プロフィール</h2><p>東京藝術大学音楽学部器楽科卒業。ヴァイオリンからヴィオラへ転向し、○○○○に師事。2022年○○交響楽団に入団。室内楽では□□クァルテットのメンバー。</p>
+        <div class="label"><div class="cap">Instrument</div><b>Gaetano Sgarabotto　1925</b>製作地：パルマ　／　弓：E. Sartory（貸与元：本人）</div></div>
+      <div data-sec="events" style="margin-top:26px"><h2>出演予定<span class="auto">自動</span></h2><div class="perf"><time>12.20</time><div><b>○○交響楽団 定期</b><small>ブラームス：交響曲 第4番　サントリーホール 18:00</small></div></div><div class="perf"><time>1.24</time><div><b>シューベルト：弦楽五重奏曲</b><small>紀尾井ホール 19:00</small></div></div></div>
+      <div data-sec="press" style="margin-top:26px"><h2>批評</h2><p class="press">「内声が、こんなに歌うとは」<br><span style="font-size:12px;color:#6d6559">― ○○新聞　2025年11月</span></p></div>
+      <div data-sec="video" style="margin-top:26px"><h2>録音</h2><div class="video">▶ ウォルトン：ヴィオラ協奏曲（2025・ライブ）</div></div>
+    </div>
+  </div>
+  <div class="contact" data-sec="contact"><span>客演・室内楽のご相談はフォームから（本人のメールへ転送）。楽団の公演は楽団へ。</span><a href="#">お問い合わせ</a></div>
+  <footer><span>© 2026 Haruka Yamada</span><span>このページは Woolsong で作られています</span></footer>
+</div></article>
+
+<!-- ================= t27 切符 ================= -->
+<article id="t27" class="t27"><div class="wrap">
+  <div class="marquee"><h1>藤井 和</h1><p>Violin ・ Tokyo / Berlin</p></div>
+  <div class="who"><div class="headshot" aria-label="宣材写真"></div><p>ヴァイオリン。東京とベルリンを拠点に、協奏曲・室内楽・リサイタル。2024年より○○財団の奨学生。</p></div>
+  <h2 data-sec="events">Tickets ・ 出演予定<span class="auto">自動</span></h2>
+  <div class="tickets" data-sec="events">
+    <div class="tk"><div class="main"><div class="d">10.11<small>SAT</small></div><div class="w">秋のコンサート</div><div class="v">千葉県文化会館 小ホール　14:00<br>共演：○○（Pf）</div></div><div class="stub"><span class="no">ADMIT ONE</span><span class="seat">14:00</span></div></div>
+    <div class="tk"><div class="main"><div class="d">12.20<small>SUN</small></div><div class="w">ベートーヴェン：ヴァイオリン協奏曲</div><div class="v">△△市民会館　18:00<br>△△管弦楽団　指揮：□□□□</div></div><div class="stub"><span class="no">ADMIT ONE</span><span class="seat">18:00</span></div></div>
+    <div class="tk"><div class="main"><div class="d">01.24<small>SAT</small></div><div class="w">シューベルト：弦楽五重奏曲</div><div class="v">紀尾井ホール　19:00<br>○○（Vn）・△△（Va）・□□（Vc）・◇◇（Vc）</div></div><div class="stub"><span class="no">ADMIT ONE</span><span class="seat">19:00</span></div></div>
+    <div class="tk"><div class="main"><div class="d">03.14<small>SUN</small></div><div class="w">バッハ：無伴奏パルティータ 第2番</div><div class="v">東京文化会館 小ホール　14:00<br>リサイタル</div></div><div class="stub"><span class="no">ADMIT ONE</span><span class="seat">14:00</span></div></div>
+  </div>
+  <div class="grid" style="margin-top:44px">
+    <div><div data-sec="profile"><h2 style="margin-top:0">Biography</h2><p>東京藝術大学音楽学部器楽科卒業、ベルリン芸術大学修士課程修了。第○回日本音楽コンクール第2位。○○○○、△△△△の各氏に師事。2024年より○○財団の奨学生。使用楽器は G. B. Guadagnini 1750（○○財団より貸与）、弓は F. N. Voirin。</p></div>
+      <div data-sec="press"><h2>Press</h2><p class="press">「ブラームスの緩徐楽章で、ホールの空気が一段静かになった」<br><span style="font-size:12px;color:#6a6258">― ○○新聞　2026年5月</span></p></div></div>
+    <div><div class="rep" data-sec="rep"><h2 style="margin-top:0">Repertoire<span class="auto">自動</span></h2><ul><li><b>Brahms</b> ヴァイオリン協奏曲</li><li><b>Mendelssohn</b> ヴァイオリン協奏曲 ホ短調</li><li><b>Beethoven</b> ヴァイオリン協奏曲</li><li><b>Bach</b> 無伴奏パルティータ 第2番</li><li><b>Ysaÿe</b> ソナタ 第3番</li><li><b>Schubert</b> 弦楽五重奏曲</li></ul></div>
+      <div data-sec="video"><h2>Video</h2><div class="video">▶ Bach — Chaconne（2026・ライブ）</div></div></div>
+  </div>
+  <div class="contact" data-sec="contact"><span>出演のご相談は所属事務所へ。本人へはフォームから（メールへ転送）。所属：○○アーティスト・マネジメント</span><a href="#">CONTACT</a></div>
+  <footer><span>© 2026 Nagomi Fujii</span><span>このページは Woolsong で作られています</span></footer>
+</div></article>
+<script>
+const btns=[...document.querySelectorAll('.topbar button[data-t]')];
+function show(id,btn){document.querySelectorAll('article').forEach(a=>a.classList.toggle('on',a.id===id));btns.forEach(b=>b.setAttribute('aria-pressed',b===btn));applySections();window.scrollTo(0,0);}
+btns.forEach(b=>b.onclick=()=>show(b.dataset.t,b));
+const colors=[['臙脂','#7A1F2E'],['藍','#3E5C8C'],['墨','#2B2320'],['苔','#5C6B4A'],['葡萄','#5B3A5E'],['琥珀','#8C5A2B'],['鉄','#4A5560'],['朱','#B0342B']];
+const cw=document.getElementById('colors');
+colors.forEach(([n,c],i)=>{const b=document.createElement('button');b.style.background=c;b.title=n;b.setAttribute('aria-pressed',i===0);b.onclick=()=>{document.documentElement.style.setProperty('--accent',c);cw.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));};cw.appendChild(b);});
+[['fonts','data-font'],['photo','data-photo'],['density','data-density'],['headshot','data-headshot']].forEach(([id,attr])=>{const g=document.getElementById(id);g.querySelectorAll('button').forEach(b=>b.onclick=()=>{document.body.setAttribute(attr,b.dataset.v);g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));});});
+const secNames={profile:'プロフィール',events:'出演予定',rep:'レパートリー／持ち役',press:'批評',video:'動画・音',contact:'お問い合わせ'};
+let secState=Object.keys(secNames).map(k=>({k,on:true}));let reordered=false;
+const secs=document.getElementById('secs');
+function renderPanel(){secs.innerHTML='';secState.forEach((s,i)=>{const row=document.createElement('div');row.innerHTML=`<label><input type="checkbox" ${s.on?'checked':''}> ${secNames[s.k]}</label><button title="上へ">↑</button><button title="下へ">↓</button>`;row.querySelector('input').onchange=e=>{s.on=e.target.checked;applySections();};const [up,down]=row.querySelectorAll('button');up.onclick=()=>{if(i>0){reordered=true;[secState[i-1],secState[i]]=[secState[i],secState[i-1]];renderPanel();applySections();}};down.onclick=()=>{if(i<secState.length-1){reordered=true;[secState[i+1],secState[i]]=[secState[i],secState[i+1]];renderPanel();applySections();}};secs.appendChild(row);});}
+function applySections(){const art=document.querySelector('article.on');if(!art)return;secState.forEach(s=>{art.querySelectorAll(`[data-sec="${s.k}"]`).forEach(el=>{el.hidden=!s.on;});});if(!reordered)return;
+  const parents=new Set();art.querySelectorAll('[data-sec]').forEach(el=>parents.add(el.parentElement));
+  parents.forEach(p=>{const items=[...p.querySelectorAll(':scope > [data-sec]')];const order=secState.map(s=>s.k);items.sort((a,b)=>order.indexOf(a.dataset.sec)-order.indexOf(b.dataset.sec));const anchor=items.length?items[items.length-1].nextSibling:null;items.forEach(el=>p.insertBefore(el,anchor));});}
+renderPanel();applySections();
+/* 縦組み（.v）を1文字ずつ積む */
+const ROT=new Set(['「','」','『','』','（','）','―','ー','〜','～','…']);
+document.querySelectorAll('.v').forEach(el=>{const txt=el.textContent.trim();el.textContent='';[...txt].forEach(ch=>{const sp=document.createElement('span');if(ch===' '){sp.className='sm';sp.textContent='\u3000';}else{sp.textContent=ch;if(ROT.has(ch))sp.className='r';}el.appendChild(sp);});});
+</script>
+</body>
+</html>

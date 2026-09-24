@@ -1,0 +1,58 @@
+{
+  "title": "チェロソナタ ニ短調",
+  "title_original": "Sonate pour violoncelle et piano",
+  "aliases": [],
+  "composer": "ドビュッシー",
+  "composer_sort": "Debussy, Claude",
+  "kind": "chamber",
+  "year_written": 1915,
+  "source": "hand",
+  "source_id": "debussy-cello-sonata",
+  "duration_min": 12,
+  "roles": [
+    {
+      "label": "チェロ"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 プロローグ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 セレナード",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 フィナーレ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

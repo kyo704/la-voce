@@ -27,7 +27,13 @@ const 小 = { ...TYPE.mini, color: C.inkSoft, lineHeight: 1.8 };
 
 export default function OpsOrgMaster({
   kind = "koma", periods = [], places = [], perms,
-  onAddPeriod, onSavePeriod, onDeletePeriod,
+  // ★★★2026-09-24・裁定194 §3 ── ★`onSavePeriod`／`onDeletePeriod` を 消しました。
+  //   ★★中で 1度も 使われず、★呼ぶ 側からも 渡されて いません でした。
+  //   ★★★「名前だけ ある」のが いちばん 危ない ── ★在ると 思われます。
+  //   ★★コマを 直す 画面は 作りません（★裁定194 §3）。
+  //     ★`org_periods` は 0行。★年に 1回 変わるか どうか の もの です。
+  //     ★直す ときは「作り直す」で 足ります。
+  onAddPeriod,
   onAddPlace, onDeletePlace, busy, error = ""
 }) {
   const 直せる = mayEditMaster(perms);

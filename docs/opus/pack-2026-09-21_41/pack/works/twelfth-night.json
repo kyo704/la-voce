@@ -1,0 +1,116 @@
+{
+  "title": "十二夜",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1602,
+  "source": "hand",
+  "source_id": "shakespeare-twelfth",
+  "roles": [
+    {
+      "label": "ヴァイオラ"
+    },
+    {
+      "label": "オーシーノ公爵"
+    },
+    {
+      "label": "オリヴィア"
+    },
+    {
+      "label": "セバスチャン"
+    },
+    {
+      "label": "マルヴォーリオ"
+    },
+    {
+      "label": "サー・トービー"
+    },
+    {
+      "label": "サー・アンドルー"
+    },
+    {
+      "label": "マライア"
+    },
+    {
+      "label": "フェステ（道化）"
+    },
+    {
+      "label": "アントーニオ"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 難破と宮廷",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴァイオラ",
+        "オーシーノ公爵",
+        "オリヴィア",
+        "マルヴォーリオ",
+        "フェステ（道化）"
+      ]
+    },
+    {
+      "label": "第2幕 手紙の計略",
+      "group_label": "第2幕",
+      "roles": [
+        "サー・トービー",
+        "サー・アンドルー",
+        "マライア",
+        "マルヴォーリオ",
+        "フェステ（道化）"
+      ]
+    },
+    {
+      "label": "第3幕 黄色い靴下",
+      "group_label": "第3幕",
+      "roles": [
+        "マルヴォーリオ",
+        "オリヴィア",
+        "ヴァイオラ",
+        "サー・トービー",
+        "サー・アンドルー"
+      ]
+    },
+    {
+      "label": "第4幕 セバスチャンの登場",
+      "group_label": "第4幕",
+      "roles": [
+        "セバスチャン",
+        "オリヴィア",
+        "アントーニオ",
+        "サー・トービー",
+        "フェステ（道化）"
+      ]
+    },
+    {
+      "label": "第5幕 取り違えの解決",
+      "group_label": "第5幕",
+      "roles": [
+        "ヴァイオラ",
+        "セバスチャン",
+        "オーシーノ公爵",
+        "オリヴィア",
+        "マルヴォーリオ",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "Twelfth Night",
+  "aliases": [],
+  "duration_min": 150,
+  "language": "en"
+}

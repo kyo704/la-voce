@@ -1,0 +1,198 @@
+{
+  "title": "パルジファル",
+  "title_original": "Parsifal",
+  "aliases": [],
+  "composer": "ワーグナー",
+  "composer_sort": "Wagner, Richard",
+  "kind": "opera",
+  "year_written": 1882,
+  "source": "hand",
+  "source_id": "wagner-parsifal",
+  "duration_min": 255,
+  "language": "de",
+  "roles": [
+    {
+      "label": "パルジファル"
+    },
+    {
+      "label": "クンドリ"
+    },
+    {
+      "label": "グルネマンツ"
+    },
+    {
+      "label": "アンフォルタス"
+    },
+    {
+      "label": "クリングゾル"
+    },
+    {
+      "label": "ティトゥレル"
+    },
+    {
+      "label": "花の乙女たち",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕への前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "第1幕 聖杯の森（グルネマンツの語り）",
+      "group_label": "第1幕",
+      "roles": [
+        "グルネマンツ",
+        "クンドリ",
+        "アンフォルタス",
+        "パルジファル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 聖杯の儀式",
+      "group_label": "第1幕",
+      "roles": [
+        "アンフォルタス",
+        "ティトゥレル",
+        "合唱",
+        "パルジファル"
+      ]
+    },
+    {
+      "label": "第2幕 クリングゾルの魔の城",
+      "group_label": "第2幕",
+      "roles": [
+        "クリングゾル",
+        "クンドリ",
+        "パルジファル",
+        "花の乙女たち"
+      ]
+    },
+    {
+      "label": "第3幕 聖金曜日の音楽",
+      "group_label": "第3幕",
+      "roles": [
+        "グルネマンツ",
+        "パルジファル",
+        "クンドリ"
+      ]
+    },
+    {
+      "label": "第3幕 聖杯の開扉（フィナーレ）",
+      "group_label": "第3幕",
+      "roles": [
+        "パルジファル",
+        "アンフォルタス",
+        "グルネマンツ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "鐘（パルジファルの鐘）",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "舞台裏の合唱",
+      "count": 0,
+      "section": "banda"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
