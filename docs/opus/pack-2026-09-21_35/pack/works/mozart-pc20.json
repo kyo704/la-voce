@@ -1,0 +1,106 @@
+{
+  "title": "ピアノ協奏曲第20番 ニ短調",
+  "title_original": "Klavierkonzert Nr. 20",
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "orchestra",
+  "year_written": 1785,
+  "source": "hand",
+  "source_id": "mozart-pc20",
+  "duration_min": 31,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 ロマンツェ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 ロンド アレグロ・アッサイ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 0,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "title": "オテロ",
+  "title_original": "Otello",
+  "aliases": [
+    "ヴェルディのオテロ"
+  ],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1887,
+  "duration_min": 145,
+  "language": "it",
+  "source": "hand",
+  "source_id": "verdi-otello",
+  "roles": [
+    {
+      "label": "オテロ"
+    },
+    {
+      "label": "デズデーモナ"
+    },
+    {
+      "label": "イアーゴ"
+    },
+    {
+      "label": "エミーリア"
+    },
+    {
+      "label": "カッシオ"
+    },
+    {
+      "label": "ロデリーゴ"
+    },
+    {
+      "label": "ロドヴィーコ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 嵐と喜びの炎",
+      "group_label": "第1幕",
+      "roles": [
+        "オテロ",
+        "イアーゴ",
+        "カッシオ",
+        "ロデリーゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 愛の二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "オテロ",
+        "デズデーモナ"
+      ]
+    },
+    {
+      "label": "第2幕 イアーゴの信条（クレド）",
+      "group_label": "第2幕",
+      "roles": [
+        "イアーゴ"
+      ]
+    },
+    {
+      "label": "第2幕 四重唱とハンカチ",
+      "group_label": "第2幕",
+      "roles": [
+        "オテロ",
+        "デズデーモナ",
+        "イアーゴ",
+        "エミーリア"
+      ]
+    },
+    {
+      "label": "第3幕 大使の場・フィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "オテロ",
+        "デズデーモナ",
+        "イアーゴ",
+        "ロドヴィーコ",
+        "カッシオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 柳の歌とアヴェ・マリア",
+      "group_label": "第4幕",
+      "roles": [
+        "デズデーモナ",
+        "エミーリア"
+      ]
+    },
+    {
+      "label": "第4幕 フィナーレ",
+      "group_label": "第4幕",
+      "roles": [
+        "オテロ",
+        "デズデーモナ",
+        "エミーリア",
+        "イアーゴ",
+        "カッシオ",
+        "ロドヴィーコ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

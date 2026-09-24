@@ -499,7 +499,7 @@ import {
   shouldAskAgeQuestion, mayAskForConsent, isTreatedAsMinor, hasAnsweredAgeQuestion,
   answerToProfilePatch, skipToProfilePatch, adoptSignupAnswer, adoptSignupBand,
   // ★3つの帯（2026-09-04）。★2択とは別の答えです。
-  shouldAskAgeBand, isTreatedAsMinorByBand, isUnder15Confirmed,
+  shouldAskAgeBand, isUnder15Confirmed,
   ageBandToProfilePatch, AGE_BANDS
 } from "@/lib/ageGate";
 import HealthInfo from "@/components/HealthInfo";
@@ -13593,6 +13593,12 @@ export default function VocalTracker({
   function isMinorLinkBlocked(error) {
     return !!error && /MINOR_TEACHER_LINK_BLOCKED/.test(String(error.message || ""));
   }
+  // ★★★2026-09-24・裁定192。★15〜17歳の 方 です。
+  //   ★★保護者の ひとことが あれば 通ります。★「つながれません」では ありません。
+  //   ★★★2つを 同じ 字に しません ── ★次に する ことが ちがいます。
+  function needsGuardianWord(error) {
+    return !!error && /MINOR_NEEDS_GUARDIAN/.test(String(error.message || ""));
+  }
   async function handleAcceptInvitation() {
     if (!pendingInvitation) return;
     if (acceptingInvitation) return;   // ★二度押しを、ここで止めます
@@ -13636,15 +13642,30 @@ export default function VocalTracker({
       setAskAgeBandFor("connection");
       return;
     }
-    if (isTreatedAsMinorByBand(profile)) {
-      // ★帯が分かっているので、言い方を分けられます。
-      //   ★どちらも、いまはつながれません。★理由が違うだけです。
-      //   ★★「法律で決まっているため」と書かないこと。
-      //     ★これは★私たちの決まりです。★断言しません。
+    // ==========================================================================
+    // ★★★2026-09-24・裁定192 ── ★15〜17歳の 方を、★ここで 止めるのを やめました。
+    //
+    //   ★★前は 帯が 分かった 時点で **両方** 止めて いました ──
+    //     「先生とつながるには、保護者の方の確認が必要です。
+    //       いま、その仕組みを準備しています。」
+    //   ★★★その 仕組みは、★もう 出来て います（★裁定107・2026-09-20）。
+    //     ★保護者に 1通 お送りし、★押して いただければ 入れます。
+    //   ★★★ここで 止めると、★合言葉を 入れる ところにも たどり着けません。
+    //     ★★つまり、★保護者の ひとことを いただく 道の **入口** を、
+    //       ★この 1行が 塞いで いました。
+    //
+    //   ★★いまは 15歳未満 だけ を 止めます。
+    //     ★15〜17歳の 方は、★そのまま お進み ください ──
+    //       ★`/api/enrollment/accept` が `guardian_consent_required` を 返し、
+    //       ★`GuardianAsk`（保護者に お送りする 1枚）が 開きます。
+    //     ★★台帳の 引き金も、★保護者の ひとことが 済んで いれば 通します
+    //       （`assert_student_is_adult`・`sql/76`）。
+    // ==========================================================================
+    if (isUnder15Confirmed(profile)) {
+      // ★★「法律で決まっているため」と書かないこと。
+      //   ★これは★私たちの決まりです。★断言しません。
       setInviteLookupError(
-        isUnder15Confirmed(profile)
-          ? "15歳未満の方は、いまは先生とつながることができません。私たちの決まりとして、そうしています。"
-          : "先生とつながるには、保護者の方の確認が必要です。いま、その仕組みを準備しています。"
+        "15歳未満の方は、いまは先生とつながることができません。私たちの決まりとして、そうしています。"
       );
       return;
     }
@@ -13683,8 +13704,13 @@ export default function VocalTracker({
       //   ★isMinorLinkBlocked も残します。トリガーが直に上げる場合に備えて。
       const m = String(linkError.message || "");
       setInviteLookupError(
-        m.includes("MINOR_NOT_ALLOWED") || isMinorLinkBlocked(linkError)
-          ? "いまはまだ、先生とつながることができません。保護者の方の確認の仕組みを準備しています。"
+        // ★★★2026-09-24・裁定192 ── ★15〜17歳の 方に「準備しています」と
+        //   ★申し上げるのを やめました。★もう 出来て います。
+        //   ★★保護者の ひとことを いただく ところへ ご案内します。
+        needsGuardianWord(linkError)
+          ? "保護者の 方の ひとことが 要ります。お送りする ところから お進み ください。"
+          : m.includes("MINOR_NOT_ALLOWED") || isMinorLinkBlocked(linkError)
+          ? "年齢を うかがって いません。「もっと」から お答え いただくと、お進みに なれます。"
           : m.includes("ALREADY_LINKED")
           ? "この先生とは、すでにつながっています。"
           : m.includes("INVITATION_NOT_USABLE")
@@ -15935,8 +15961,12 @@ export default function VocalTracker({
       // ★DBのトリガーが弾いたときは、その理由を日本語で出します
       //   （supabase/migration_block_minor_teacher_link.sql）。
       //   生の Postgres のメッセージを、そのまま先生に見せないこと。
-      alert(isMinorLinkBlocked(error)
-        ? "この生徒は、いま先生とつなぐことができません。保護者の方の確認の仕組みを準備しています。"
+      // ★★★2026-09-24・裁定192 ── ★「準備しています」を やめました。
+      //   ★もう 出来て います。★先生に「何が 足りないか」を お伝えします。
+      alert(needsGuardianWord(error)
+        ? "この方は 15〜17歳です。保護者の 方の ひとことを いただくと、おつなぎに なれます。ご本人の 画面から お送りいただけます。"
+        : isMinorLinkBlocked(error)
+        ? "この方は まだ 年齢を お答えに なって いません。お答えいただくと、おつなぎに なれます。"
         : "担当を割り当てられませんでした。時間をおいて、もう一度お試しください。");
       return;
     }

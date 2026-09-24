@@ -76,8 +76,23 @@ assertTrue(/isTreatedAsMinor\(profile\)/.test(vt), "招待を受ける側で、�
 assertTrue(!/profile\.is_under_18\s*===/.test(vt), "★画面が profile.is_under_18 を直に比べていない");
 assertTrue(!/is_under_18\s*===\s*false/.test(vt), "★「false なら成人」と画面に書いていない");
 // 2つの経路とも、日本語の理由を出すこと
-assertTrue((vt.match(/保護者の方の確認の仕組みを準備しています/g) || []).length >= 2,
-  "★招待を受ける側と、担当を割り当てる側の両方で理由を出す");
+// ★★★2026-09-24・裁定192 ── ★字を 覚えるのを やめました。
+//   ★★前は「保護者の方の確認の仕組みを準備しています」を 2回 数えて いました。
+//     ★★その 字は きょう 消しました ── ★仕組みは もう 出来て います。
+//     ★★「準備しています」は 嘘に なって いました。
+//   ★★★見張る べきは **字** では なく、★「2つの 道 とも、★わけを
+//     ★日本語で 出して いる こと」です。
+//   ★★いまは 理由が 2つ に 分かれます ──
+//     `MINOR_NEEDS_GUARDIAN`（15〜17歳・保護者の ひとこと）
+//     `MINOR_TEACHER_LINK_BLOCKED`（年齢が 未回答）
+assertTrue((vt.match(/needsGuardianWord\(/g) || []).length >= 3,
+  "★15〜17歳の わけを、★2つの 道 とも 見て いる（作る 1 ＋ 使う 2）");
+assertTrue((vt.match(/isMinorLinkBlocked\(/g) || []).length >= 3,
+  "★年齢が 未回答の わけを、★2つの 道 とも 見て いる");
+assertTrue((vt.match(/保護者の 方の ひとことを いただくと|保護者の 方の ひとことが 要ります/g) || []).length >= 2,
+  "★招待を受ける側と、担当を割り当てる側の両方で、★日本語の わけを 出す");
+// ★★★「準備しています」に 戻さない こと。★もう 出来て います。
+assertTrue(!/準備しています/.test(vt), "★『準備しています』を 書いて いない");
 
 console.log("\n=== ★画面の事前チェックだけに頼っていない、と書いてある ===");
 assertTrue(/ここを消しても、つながれるようにはなりません/.test(readRaw("components", "VocalTracker.jsx")),

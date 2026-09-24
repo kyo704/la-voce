@@ -1,0 +1,129 @@
+{
+  "title": "交響曲第7番 ハ長調「レニングラード」",
+  "title_original": "Sinfonie Nr. 7",
+  "aliases": [
+    "レニングラード"
+  ],
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "orchestra",
+  "year_written": 1941,
+  "source": "hand",
+  "source_id": "shostakovich-sym7",
+  "duration_min": 75,
+  "roles": [],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグレット（侵攻の主題）",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第2楽章 モデラート",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第3楽章 アダージョ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第4楽章 アレグロ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 8,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

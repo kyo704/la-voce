@@ -1,0 +1,47 @@
+{
+  "title": "クラリネットのための3つの小品",
+  "title_original": "Trois pièces pour clarinette",
+  "aliases": [],
+  "composer": "ストラヴィンスキー",
+  "composer_sort": "Stravinsky, Igor",
+  "kind": "chamber",
+  "year_written": 1919,
+  "source": "hand",
+  "source_id": "stravinsky-3pieces-clarinet",
+  "duration_min": 6,
+  "roles": [
+    {
+      "label": "クラリネット独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1曲",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット独奏"
+      ]
+    },
+    {
+      "label": "第2曲",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット独奏"
+      ]
+    },
+    {
+      "label": "第3曲",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "title": "ネルソン・ミサ",
+  "title_original": "Missa in angustiis",
+  "aliases": [
+    "ネルソン"
+  ],
+  "composer": "ハイドン",
+  "composer_sort": "Haydn, Joseph",
+  "kind": "chorus",
+  "year_written": 1798,
+  "source": "hand",
+  "source_id": "haydn-nelson-mass",
+  "duration_min": 42,
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "キリエ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "グローリア",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "クレド",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "サンクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ベネディクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アニュス・デイ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

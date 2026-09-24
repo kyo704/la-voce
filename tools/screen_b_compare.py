@@ -34,14 +34,31 @@ MIHON = [
   "00-動く見本-PC・iPad（個人）.html",
 ]
 
+# ★★★2026-09-24 ── ★2つを 分けました。
+#   ★前は「無い」も「呼んだら 落ちた」も、★同じ null を 返して いました。
+#     ★★道具は どちらも「見本に ありません」と 出して いました。
+#     ★★★「無い」と「聞けて いない」を 同じ 顔に しない ── ★この 蔵の 決め です。
+#   ★★あわせて、★渡す ものを 4つ 試します。
+#     ★見本の 画面は、★番号・鍵の 字・何も 無し・かたまり の どれかを 受け取ります。
+#       `SC['授業を入れる'](key)` …… ★'0-0' の ような 鍵の 字
+#       `SC['稽古'](i)`          …… ★番号
+#     ★★1つ しか 試さない と、★出来て いる 画面が「無い」に 見えます。
 JS = """(k) => {
-  if (!SC[k]) return null;
-  let html = '';
-  try { html = String(SC[k](0) ?? ''); } catch (e) { return null; }
-  // ★属性の 中の 字（placeholder・value）も 見える 字 です
-  const ph = [...html.matchAll(/placeholder="([^"]*)"/g)].map(m => m[1]);
-  const body = html.replace(/<[^>]*>/g, '\\u0001');
-  return { text: body.split('\\u0001'), ph };
+  if (typeof SC[k] !== 'function') return { missing: true };
+  // ★★★番号を 1つ しか 試さない と、★前を 振り返る 画面が 落ちます。
+  //   ★`SC['前3日'](i)` は `DAY[i-1]`〜`DAY[i-3]` を 読みます。★0 では 落ちます。
+  //   ★★小さい 順に しません ── ★真ん中あたりの 番号から 試します。
+  const 試し = [3, 5, 1, 0, '0-0', undefined, {}];
+  let 最後 = '';
+  for (const a of 試し) {
+    let html = '';
+    try { html = String(SC[k](a) ?? ''); } catch (e) { 最後 = String(e && e.message || e); continue; }
+    if (!html) continue;
+    const ph = [...html.matchAll(/placeholder="([^"]*)"/g)].map(m => m[1]);
+    const body = html.replace(/<[^>]*>/g, '\\u0001');
+    return { text: body.split('\\u0001'), ph, arg: String(a) };
+  }
+  return { threw: 最後 || '（何も 返りません）' };
 }"""
 
 
@@ -61,6 +78,7 @@ async def 見本の字(key):
   from playwright.async_api import async_playwright
   async with async_playwright() as p:
     b = await p.chromium.launch(); pg = await b.new_page()
+    落ち = {}
     for f in MIHON:
       path = os.path.join(PACK, f)
       if not os.path.exists(path): continue
@@ -68,11 +86,14 @@ async def 見本の字(key):
       await pg.wait_for_function("typeof SC==='object'")
       await pg.wait_for_timeout(300)
       d = await pg.evaluate(JS, key)
-      if d:
+      if d and d.get("text"):
         await b.close()
         return d, f
+      if d and d.get("threw"):
+        # ★★在るのに 呼べません。★黙って 次の 紙へ 行きません。
+        落ち[f] = d["threw"]
     await b.close()
-  return None, None
+  return (({"threw": 落ち} if 落ち else None), None)
 
 
 def 実装の字(paths):
@@ -277,6 +298,12 @@ def くらべる(見, 実, key, 中身, 本文):
 
 def main(key, paths):
   見, もと = asyncio.run(見本の字(key))
+  if 見 and 見.get("threw"):
+    # ★★★「無い」では ありません。★在るのに 呼べません。★別の 字で 言います。
+    print("★止まりました ── 見本の SC['%s'] を 呼べません" % key)
+    for f, e in 見["threw"].items(): print("    %s …… %s" % (f, e))
+    print("★★『無い』では ありません。★渡す ものを 増やすか、見本を 直します。")
+    return 2
   if not 見:
     print("★止まりました ── 見本に SC['%s'] が ありません" % key); return 2
   実 = 実装の字(paths)

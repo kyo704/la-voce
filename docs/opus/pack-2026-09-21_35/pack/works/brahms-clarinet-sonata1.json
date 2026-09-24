@@ -1,0 +1,66 @@
+{
+  "title": "クラリネットソナタ第1番 ヘ短調",
+  "title_original": "Klarinettensonate Nr. 1",
+  "aliases": [],
+  "composer": "ブラームス",
+  "composer_sort": "Brahms, Johannes",
+  "kind": "chamber",
+  "year_written": 1894,
+  "source": "hand",
+  "source_id": "brahms-clarinet-sonata1",
+  "duration_min": 24,
+  "roles": [
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・アパッショナート",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アンダンテ・ウン・ポコ・アダージョ",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アレグレット・グラツィオーソ",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第4楽章 ヴィヴァーチェ",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

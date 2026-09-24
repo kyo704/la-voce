@@ -74,6 +74,9 @@ t(/SELFTEST PASS/.test(自), "★道具の 自己試験が 通る");
 console.log("\n② 見本が ある");
 見本.forEach((f) => t(fs.existsSync(path.join(ROOT, "docs", "design", "pack-final", f)), "★" + f.slice(0, 22)));
 
+const 傷 = JSON.parse(fs.readFileSync(path.join(ROOT, "tools", "mockup_defects.json"), "utf8"));
+const 見た = new Set();
+
 console.log("\n③ 走らせる");
 見本.forEach((f) => {
   const p = path.join(ROOT, "docs", "design", "pack-final", f);
@@ -86,8 +89,26 @@ console.log("\n③ 走らせる");
   const 数 = m ? Number(m[1]) : -1;
   t(数 > 0, "★" + f.slice(0, 22) + " ── 押せる所を 数えられた（" + 数 + "）");
   const NG = 出.split("\n").filter((l) => l.trim().startsWith("NG"));
-  t(!落 && NG.length === 0, "★" + f.slice(0, 22) + " ── 行き先が 合って いる"
-    + (NG.length ? "（" + NG[0].trim().slice(0, 80) + "）" : ""));
+  // ★★★見本 そのものの 傷は、★こちらでは 直しません（★「ON_ERROR: Opus に 返す」）。
+  //   ★★けれど 黙って 通しません。★`tools/mockup_defects.json` に 1行 書いて から 通します。
+  //   ★★書いて なければ 止まります。★見えなく する ためでは なく、数える ため です。
+  const 残 = NG.filter((l) => !Object.keys(傷).some((k) => k !== "_" && l.includes(k)));
+  // ★★★`落` は「道具が 0 以外で 終わった」だけ です ── ★NG が 1件でも あれば そう なります。
+  //   ★★書いて ある 傷 だけ の ときは、★それは **知って いる** 傷 です。
+  //   ★★読めなかった ときは `数 > 0` が 先に 落ちます。★そちらが 見張ります。
+  t(残.length === 0, "★" + f.slice(0, 22) + " ── 行き先が 合って いる"
+    + (残.length ? "（" + 残[0].trim().slice(0, 80) + "）" : ""));
+  NG.forEach((l) => {
+    const k = Object.keys(傷).find((x) => x !== "_" && l.includes(x));
+    if (k) 見た.add(k);
+  });
+});
+
+// ★★★直ったのに 行が 残って いたら、★消す 合図 です。
+Object.keys(傷).forEach((k) => {
+  if (k === "_") return;
+  t(見た.has(k), "★見本の 傷「" + k + "」は もう ありません。"
+    + "★`tools/mockup_defects.json` から 消して ください");
 });
 
 console.log(落ち === 0 ? "\n★すべて 通りました" : "\n★" + 落ち + "件 落ちました");

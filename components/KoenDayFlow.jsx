@@ -5,7 +5,8 @@ import { C } from "@/lib/tokens";
 import { TYPE, rem, FONT_STACK } from "@/lib/uiKit";
 import {
   dayRows, myCallTime, hasAny, myRoomName,
-  DAY_HEAD, DAY_NOT_CALLED, DAY_ALSO_YOU, DAY_MY_CALL, DAY_GO_MINE, DAY_ROOM, DAY_NOTE,
+  DAY_HEAD, DAY_NOT_CALLED, DAY_NOT_CALLED_STAFF, DAY_ALSO_YOU,
+  DAY_MY_CALL, DAY_GO_MINE, DAY_ROOM, DAY_NOTE,
   MINE_HEAD, MINE_PAPER, STAFF_PAPER_WHY, STAFF_PLACE, STAFF_DAY, STAFF_NOTE
 } from "@/lib/myKoenDay";
 import { tx } from "@/lib/t";
@@ -117,7 +118,9 @@ export default function KoenDayFlow({
       {/* ★★★1つも 呼ばれて いない ときだけ、★1度 だけ 申し上げます。
           ★★行ごとに 繰り返しません。★それが これまでの 姿 でした。 */}
       {!isStaff && 行.length > 0 && !行.some((r) => r.mine) ? (
-        <p style={{ ...小, margin: `${rem(6)} 0 0` }}>{tx(DAY_NOT_CALLED)}</p>
+        <p style={{ ...小, margin: `${rem(6)} 0 0` }}>
+          {tx(isStaff ? DAY_NOT_CALLED_STAFF : DAY_NOT_CALLED)}
+        </p>
       ) : null}
 
       <div style={{

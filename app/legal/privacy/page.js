@@ -45,9 +45,19 @@ export default function PrivacyPage() {
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・健康に関する自由記述</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・レッスンの予定と出欠（教室・学校でお使いの場合）</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・年齢の区分（15歳未満／15〜17歳／18歳以上）</p>
+        {/* ★★★2026-09-24・裁定192 ── ★足しました。
+            ★★保護者の 方の メールアドレスを、★実際に お預かりして います
+              （`guardian_consents.guardian_email`）。★書いて ありません でした。
+            ★★★ご本人の ものでは ない 個人の 情報 です。★いちばん 書くべき ものでした。
+            ★★どこまで 見えるかも 書きます ── ★学校にも 先生にも 渡りません。
+              ★決まりは ご本人だけ（`auth.uid() = user_id`）です。 */}
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>・保護者の方のメールアドレス（15〜17歳の方が指導者と連携される場合のみ）</p>
         <p style={{ height: 10 }} />
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　生年月日は、お預かりしません。</p>
         <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　年齢の区分だけをお聞きし、それ以外は記録しません。</p>
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　保護者の方のメールアドレスは、ご承知をおたずねする1通をお送りするためだけに使います。</p>
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　学校にも指導者にもお伝えしません。保護者の方にアカウントをお作りいただく必要もありません。</p>
+        <p style={{ margin: "2px 0", whiteSpace: "pre-wrap" }}>　　　お子さまの記録は、保護者の方にもお見せしません。</p>
       </div>
       <p><strong style={{ color: C.ink }}>自動で記録されるもの</strong></p>
       <div className="legal-list" style={{ margin: "10px 0 18px", paddingLeft: 14, borderLeft: `2px solid ${C.line}` }}>
