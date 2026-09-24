@@ -176,6 +176,8 @@ import {
 } from "@/lib/practiceNote";
 import {
   CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_NOTICE, CLINIC_HEADINGS,
+  CLINIC_PAPER_HEAD, CLINIC_PAPER_NONAME, CLINIC_PAPER_SECTION,
+  CLINIC_PAPER_ABOUT_TITLE, CLINIC_PAPER_ABOUT, CLINIC_PAPER_FOOT,
   isOn, togglePick, readPick, writePick
 } from "@/lib/clinicSheet";
 import { ATTENDANCE_KEYS } from "@/lib/todayBand";
@@ -26932,9 +26934,16 @@ export default function VocalTracker({
                   </div>
 
                   <div id="clinic-summary-content" className="rounded-2xl p-5 border" style={{ background: C.card, borderColor: C.line }}>
+                    {/* ★★★ここから 下が、★印刷される ところ です（`no-print` が 付いて いません）。
+                        ★★お約束は、★この 中に だけ 書きます。★上の 箱は 印刷で 消えます。
+                        ★文は lib/clinicSheet.js が 持ちます。★ここで 書きません。 */}
                     <p className="text-xs mb-4 rounded-xl p-2.5" style={{ background: C.paper, color: C.inkSoft }}>
                       本書はご本人の自己申告に基づく記録です。医学的な診断や検査結果ではありません。
                     </p>
+                    <div className="text-xs mb-4" style={{ color: C.inkSoft, lineHeight: 1.9 }}>
+                      {CLINIC_PAPER_HEAD.map((line, i) => <p key={i}>{line}</p>)}
+                      {!isOn(clinicPick, "name") && <p>{CLINIC_PAPER_NONAME}</p>}
+                    </div>
                     <p className="text-xs mb-4" style={{ color: C.inkSoft }}>期間：{start} 〜 {end}</p>
 
                     {/* ★★「基本情報」は「足すなら」です。★既定は 載せません（★裁定 §14）。 */}
@@ -26967,6 +26976,8 @@ export default function VocalTracker({
                     {clinicSymptomsByLocation.length > 0 && (
                       <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{LOCATION_FOOTNOTE}</p>
                     )}
+                    {/* ★★ここに 並ぶ ことばは、★ご本人が 選んだ ものです。★病名では ありません。 */}
+                    <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{CLINIC_PAPER_SECTION.concerns}</p>
 
                     {/* ★§2 一緒に起きていたこと。★条件を満たしたものだけが出ます
                         （symptom.cooccurrence の表示ゲートを通ったものだけ）。 */}
@@ -27025,6 +27036,10 @@ export default function VocalTracker({
                     ) : (
                       <p className="text-xs mb-4" style={{ color: C.inkSoft }}>この期間に活動時間の記録はありません。</p>
                     )}
+                    {/* ★★見本は「1マス＝1日」ですが、★ここは 週ごとの 棒 です。
+                        ★★見本の 字を そのまま 写すと、★紙の 上で 嘘に なります。
+                          ★お約束の ところだけ 写しました。 */}
+                    <p className="text-xs mb-4" style={{ color: C.inkSoft }}>{CLINIC_PAPER_SECTION.chart}</p>
                     </div>
 
                     {/* ★★「睡眠時間の平均」は「足すなら」です。★既定は 載せません（★裁定 §14）。 */}
@@ -27050,6 +27065,22 @@ export default function VocalTracker({
                       placeholder="受診時に手書きで書き足す場合は、このまま余白としてご利用いただけます。"
                       className="w-full rounded-lg border p-2 text-xs no-print" rows={4} style={{ borderColor: C.line, background: C.paper }} />
                     <div className="hidden print:block" style={{ borderBottom: `1px solid ${C.line}`, height: 80 }} />
+                    </div>
+
+                    {/* ★★★紙の おわりの 箱（★2026-09-25）。
+                        ★★ここは `no-print` を 付けません。★渡る 紙に 残ります。
+                        ★★「渡す相手を、ご自分で 決めてください」が いちばん 下です。
+                          ★こちらでは 決めません。 */}
+                    <div className="rounded-xl p-3 mt-1" style={{ background: C.paper }}>
+                      <p className="text-xs font-medium mb-1">{CLINIC_PAPER_ABOUT_TITLE}</p>
+                      {CLINIC_PAPER_ABOUT.map((line, i) => (
+                        <p key={i} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.95 }}>・{line}</p>
+                      ))}
+                    </div>
+                    <div className="mt-3">
+                      {CLINIC_PAPER_FOOT.map((line, i) => (
+                        <p key={i} className="text-xs" style={{ color: C.inkSoft, lineHeight: 1.9 }}>{line}</p>
+                      ))}
                     </div>
                   </div>
                 </div>

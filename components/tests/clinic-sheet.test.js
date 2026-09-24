@@ -93,8 +93,33 @@ function ok(cond, label) {
   console.log("⑧ 画面に、★決めが 効いていること");
   const v = readRaw("components", "VocalTracker.jsx");
   // ★★足すものは ぜんぶ、★選ばれなければ 出ないこと。
-  const gated = (v.match(/isOn\(clinicPick, "/g) || []).length;
-  ok(gated === 6, "★足すものの 節が、★6つ とも 出し分けられている（いま " + gated + "）");
+  //
+  //   ★★★前は `isOn(clinicPick, "` の 数を 6 と 覚えて いました。
+  //     ★2026-09-25、★紙に「氏名は 入れていません」を 出す 1行を 足した とき、
+  //     ★7に なって 赤く なりました。★足した ものは 節では なく **文** です。
+  //     ★★覚えた 数は、★正しい 仕事を 止めます。
+  //   ★★いまは **節の 数を その場で 測ります** ── 節は 出し分けの 札
+  //     （`display: isOn(clinicPick, …)` か `&& isOn(clinicPick, …)`）を 持ちます。
+  //     ★文は 持ちません。
+  const 節 = new Set();
+  for (const m of v.matchAll(/(?:display: |&& )isOn\(clinicPick, "(\w+)"\)/g)) 節.add(m[1]);
+  //   ★★★`history`（既往・服薬）は、★節が あるのに `CLINIC_OPTIONAL` に
+  //     ★ありません。★`normalizePick` は 知らない 鍵を 落とすので、
+  //     ★★この 節は **誰も 開けません**。★いつも 閉じて います。
+  //     ★2026-09-25 に 見つけました。★直しは 坂本さんの 決め です ──
+  //       ★① 選ぶ 一覧に 足す ／ ★② 節ごと 消す。
+  //     ★★どちらかが 済むまで、★ここに 名前を 書いて 通します。
+  //       ★★ほかの 鍵が 増えたら、★この 見張りは 赤く なります。
+  const 開けない = ["history"];
+  const 足す = CLINIC_OPTIONAL.map((x) => x.key).concat(開けない);
+  const 余 = [...節].filter((k) => !足す.includes(k));
+  ok(余.length === 0,
+     "★出し分けの 札が、★足すもの 以外に 付いて います（" + 余.join("／") + "）");
+  for (const k of 開けない) {
+    ok(!CLINIC_OPTIONAL.some((x) => x.key === k),
+       "★「" + k + "」が 選べる ように なりました …… ★この 覚え書きを 消して ください");
+  }
+  ok(節.size >= 6, "★足すものの 節が 出し分けの 中（いま " + 節.size + "・" + [...節].join("／") + "）");
   ["name", "speech", "sleep", "history", "ownWords", "dinnerToBed"].forEach((k) => {
     ok(new RegExp('isOn\\(clinicPick, "' + k + '"\\)').test(v), "★「" + k + "」が 出し分けの 中");
   });
