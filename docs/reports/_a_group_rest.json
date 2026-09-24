@@ -1,6 +1,12 @@
 {
  "有": [
   [
+   "その人",
+   "components/VocalTracker.jsx",
+   2,
+   11
+  ],
+  [
    "公演",
    "lib/myKoenDay.js",
    6,
@@ -22,14 +28,11 @@
   "ページの型を見る",
   "ページをたしかめる",
   "レッスン",
-  "レッスン割を確定",
-  "予定の中身",
   "予定の名前",
-  "全部",
   "公開ページ",
   "写真",
   "出す",
-  "役職を変えた記録",
+  "切ってある機能",
   "整える",
   "日を選ぶ",
   "本番のふりかえり",
@@ -40,6 +43,9 @@
   "紙のポートフォリオ",
   "紙の型",
   "紙をたしかめる",
+  "自分の門下",
+  "見た目を選ぶ",
+  "記事",
   "記録のきまり",
   "録画を足す",
   "香盤表を見る"
@@ -51,19 +57,9 @@
    10
   ],
   [
-   "あなたのページ",
-   "lib/moreMenu.js",
-   19
-  ],
-  [
    "お仕事を選ぶ",
    "lib/storedValues.js",
    12
-  ],
-  [
-   "さがす",
-   "lib/drawerSearch.js",
-   6
   ],
   [
    "しらべていること",
@@ -71,9 +67,14 @@
    9
   ],
   [
-   "カレンダーにつなぐ",
-   "components/AppliedList.jsx",
-   13
+   "まだ使えません",
+   "app/billing/page.js",
+   12
+  ],
+  [
+   "コマの中身",
+   "components/ClassTimeShare.jsx",
+   16
   ],
   [
    "ページの型",
@@ -86,9 +87,9 @@
    13
   ],
   [
-   "休む",
-   "components/TellTeacher.jsx",
-   8
+   "予定の中身",
+   "components/RangeCalendar.jsx",
+   13
   ],
   [
    "公演に入る",
@@ -96,33 +97,22 @@
    12
   ],
   [
-   "場所を決める",
-   "lib/orgMaster.js",
-   1
-  ],
-  [
    "子どもの枠",
    "components/LessonPrefMap.jsx",
    19
   ],
   [
-   "年をたずねる",
-   "components/GuardianWithdraw.jsx",
-   12
+   "連絡先を見た記録",
+   "lib/opsAudit.js",
+   11
   ],
   [
    "門下を開いた記録",
    "app/api/cron/purge-audit/route.js",
    7
-  ],
-  [
-   "開いた記録",
-   "lib/renraku.js",
-   2
   ]
  ],
  "読めず": [
-  "コマの時間",
   "プランを選ぶ",
   "公演の出欠",
   "学科を決める",
