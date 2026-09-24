@@ -1,0 +1,90 @@
+{
+  "title": "弦楽四重奏曲 ヘ長調",
+  "title_original": "Quatuor à cordes",
+  "aliases": [],
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "chamber",
+  "year_written": 1903,
+  "source": "hand",
+  "source_id": "ravel-quartet",
+  "duration_min": 29,
+  "roles": [
+    {
+      "label": "第1ヴァイオリン"
+    },
+    {
+      "label": "第2ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 きわめて速く",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 とても遅く",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 生き生きと、興奮して",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "第1ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

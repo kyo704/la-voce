@@ -1,0 +1,235 @@
+{
+  "title": "スペードの女王",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr",
+  "kind": "opera",
+  "year_written": 1890,
+  "source": "hand",
+  "source_id": "tchaikovsky-pikovaya",
+  "roles": [
+    {
+      "label": "ゲルマン"
+    },
+    {
+      "label": "リーザ"
+    },
+    {
+      "label": "伯爵夫人"
+    },
+    {
+      "label": "トムスキー"
+    },
+    {
+      "label": "エレツキー公爵"
+    },
+    {
+      "label": "ポリーナ"
+    },
+    {
+      "label": "チェカリンスキー"
+    },
+    {
+      "label": "スーリン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "夏の庭（子どもたちの遊びと合唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "トムスキーのバラード（三枚のカード）",
+      "group_label": "第1幕",
+      "roles": [
+        "トムスキー",
+        "ゲルマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "リーザの部屋（ポリーナのロマンス）",
+      "group_label": "第1幕",
+      "roles": [
+        "リーザ",
+        "ポリーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ゲルマンの告白",
+      "group_label": "第1幕",
+      "roles": [
+        "ゲルマン",
+        "リーザ",
+        "伯爵夫人"
+      ]
+    },
+    {
+      "label": "舞踏会と間奏劇（誠実な羊飼いの女）",
+      "group_label": "第2幕",
+      "roles": [
+        "ポリーナ",
+        "エレツキー公爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "エレツキーのアリア（私はあなたを愛しています）",
+      "group_label": "第2幕",
+      "roles": [
+        "エレツキー公爵",
+        "リーザ"
+      ]
+    },
+    {
+      "label": "伯爵夫人の寝室（グレトリの歌と死）",
+      "group_label": "第2幕",
+      "roles": [
+        "伯爵夫人",
+        "ゲルマン",
+        "リーザ"
+      ]
+    },
+    {
+      "label": "兵営の場（亡霊の出現）",
+      "group_label": "第3幕",
+      "roles": [
+        "ゲルマン",
+        "伯爵夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "運河のほとり（リーザのアリアと死）",
+      "group_label": "第3幕",
+      "roles": [
+        "リーザ",
+        "ゲルマン"
+      ]
+    },
+    {
+      "label": "賭博場のフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ゲルマン",
+        "トムスキー",
+        "エレツキー公爵",
+        "チェカリンスキー",
+        "スーリン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・タンブリン・トライアングル"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "間奏劇のバンダ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Пиковая дама / The Queen of Spades",
+  "aliases": [],
+  "duration_min": 180,
+  "language": "ru"
+}

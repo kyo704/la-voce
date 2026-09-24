@@ -1,0 +1,43 @@
+{
+  "title": "前奏曲集 第1巻",
+  "title_original": "Préludes, Livre I",
+  "aliases": [
+    "亜麻色の髪の乙女",
+    "沈める寺"
+  ],
+  "composer": "ドビュッシー",
+  "composer_sort": "Debussy, Claude",
+  "kind": "chamber",
+  "year_written": 1910,
+  "source": "hand",
+  "source_id": "debussy-preludes1",
+  "duration_min": 40,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1番〜第6番（デルフィの舞姫〜雪の上の足跡）",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第7番〜第12番（西風の見たもの〜ミンストレル）",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

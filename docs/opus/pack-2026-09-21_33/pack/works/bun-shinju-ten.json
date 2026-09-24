@@ -1,0 +1,111 @@
+{
+  "title": "心中天網島",
+  "title_original": "心中天網島",
+  "aliases": [],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "drama",
+  "year_written": 1721,
+  "source": "hand",
+  "source_id": "bunraku-shinju-ten",
+  "duration_min": 150,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "小春"
+    },
+    {
+      "label": "治兵衛"
+    },
+    {
+      "label": "おさん"
+    },
+    {
+      "label": "太兵衛"
+    },
+    {
+      "label": "孫右衛門"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "北新地河庄の段",
+      "group_label": "上",
+      "roles": [
+        "小春",
+        "治兵衛",
+        "孫右衛門",
+        "太兵衛",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "天満紙屋内の段",
+      "group_label": "中",
+      "roles": [
+        "おさん",
+        "治兵衛",
+        "孫右衛門",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "大和屋の段",
+      "group_label": "下",
+      "roles": [
+        "小春",
+        "治兵衛",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "道行名残の橋づくし",
+      "group_label": "下",
+      "roles": [
+        "小春",
+        "治兵衛",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 0,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 0,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い",
+      "count": 0,
+      "section": "other",
+      "note": "三人遣い（主遣い・左遣い・足遣い）"
+    }
+  ],
+  "school": "義太夫節"
+}

@@ -166,6 +166,24 @@ def 数だけちがう(w, 実字):
   return all(字だけ(x) in 実字 for x in 片)
 
 
+def 見せかけか(w):
+  """★見本が 手で 書いた 中身か（★人の 名前・学年・値段・日・回数）。
+
+     ★★★2026-09-24、★ここに 移しました。
+       ★`tools/a_group_review.py` が 同じ 見分けを **もう 1つ** 持って いました。
+       ★★同じ 決めが 2か所に ある ── ★この 家の くり返す 不具合 です。
+       ★★★くらべる ことを 決めるのは この 紙 です。★あちらは ここに 尋ねます。
+  """
+  t = (w or "").strip()
+  if re.fullmatch(r"[一-龠ぁ-んァ-ヶ]{1,4}[ 　][一-龠ぁ-んァ-ヶー]{1,5}", t): return True
+  if re.search(r"[○□△●]{2}", t): return True
+  if re.fullmatch(r"[\d０-９]{1,2}年[ 　][一-龠ぁ-んァ-ヶー]{1,6}", t): return True
+  if re.fullmatch(r"[\d,０-９]+\s*(円（税込）|円|回目|件|人|日|分)\s*", t): return True
+  if re.fullmatch(r"\d{4}年\d{1,2}月\d{1,2}日", t): return True
+  if re.fullmatch(r"\d{1,2}月\d{1,2}日（[月火水木金土日]）", t): return True
+  return False
+
+
 def 中身か(w, 中, 本):
   """★その 字は「手で 書いた 中身」から 出て いるか。
 
@@ -211,6 +229,7 @@ def くらべる(見, 実, key, 中身, 本文):
     elif "　" in w and all(字だけ(x) in 実字 for x in w.split("　") if 字だけ(x)):
       在.append(w)
     elif w in ex or 字だけ(w) in [字だけ(x) for x in ex]: 除.append((w, ex.get(w, "")))
+    elif 見せかけか(w): 데.append(w)
     elif 数だけちがう(w, 実字): 데.append(w)
     elif 中身か(w, 中身, 本文): 데.append(w)
     else: 無.append(w)

@@ -1,0 +1,113 @@
+{
+  "title": "ファウスト 第1部",
+  "title_original": "Faust. Der Tragödie erster Teil",
+  "aliases": [
+    "ゲーテ"
+  ],
+  "composer": "ゲーテ",
+  "composer_sort": "Goethe, Johann Wolfgang von",
+  "kind": "drama",
+  "year_written": 1808,
+  "source": "hand",
+  "source_id": "goethe-faust1",
+  "duration_min": 180,
+  "language": "de",
+  "roles": [
+    {
+      "label": "ファウスト"
+    },
+    {
+      "label": "メフィストフェレス"
+    },
+    {
+      "label": "グレートヒェン"
+    },
+    {
+      "label": "ワーグナー"
+    },
+    {
+      "label": "マルテ"
+    },
+    {
+      "label": "ヴァレンティン"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "天上の序曲",
+      "group_label": "序",
+      "roles": [
+        "メフィストフェレス",
+        "その他"
+      ]
+    },
+    {
+      "label": "書斎（賭けと契約）",
+      "group_label": "第1部",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス",
+        "ワーグナー"
+      ]
+    },
+    {
+      "label": "アウエルバッハの酒場",
+      "group_label": "第1部",
+      "roles": [
+        "メフィストフェレス",
+        "ファウスト",
+        "その他"
+      ]
+    },
+    {
+      "label": "グレートヒェンとの出会い",
+      "group_label": "第1部",
+      "roles": [
+        "ファウスト",
+        "グレートヒェン",
+        "マルテ",
+        "メフィストフェレス"
+      ]
+    },
+    {
+      "label": "糸車の場・教会の場",
+      "group_label": "第1部",
+      "roles": [
+        "グレートヒェン",
+        "メフィストフェレス"
+      ]
+    },
+    {
+      "label": "ヴァレンティンの死とワルプルギスの夜",
+      "group_label": "第1部",
+      "roles": [
+        "ヴァレンティン",
+        "ファウスト",
+        "メフィストフェレス",
+        "その他"
+      ]
+    },
+    {
+      "label": "牢獄の場",
+      "group_label": "第1部",
+      "roles": [
+        "ファウスト",
+        "グレートヒェン",
+        "メフィストフェレス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}

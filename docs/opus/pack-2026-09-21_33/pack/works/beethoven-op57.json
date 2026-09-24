@@ -1,0 +1,49 @@
+{
+  "title": "ピアノソナタ第23番 ヘ短調「熱情」",
+  "title_original": "Klaviersonate Nr. 23",
+  "aliases": [
+    "アパッショナータ"
+  ],
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "chamber",
+  "year_written": 1805,
+  "source": "hand",
+  "source_id": "beethoven-appassionata",
+  "duration_min": 24,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・アッサイ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アンダンテ・コン・モート",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アレグロ・マ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "title": "ラシーヌ雅歌",
+  "composer": "フォーレ",
+  "composer_sort": "Faure, Gabriel",
+  "kind": "chorus",
+  "year_written": 1865,
+  "source": "hand",
+  "source_id": "faure-cantique",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "note": "または 弦とハープの版"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Cantique de Jean Racine",
+  "aliases": [
+    "ラシーヌ"
+  ],
+  "duration_min": 6,
+  "language": "fr"
+}

@@ -1,0 +1,185 @@
+{
+  "title": "カプレーティとモンテッキ",
+  "title_original": "I Capuleti e i Montecchi",
+  "aliases": [
+    "カプレーティ"
+  ],
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1830,
+  "duration_min": 150,
+  "language": "it",
+  "source": "hand",
+  "source_id": "bellini-capuleti",
+  "roles": [
+    {
+      "label": "ジュリエッタ"
+    },
+    {
+      "label": "ロメオ"
+    },
+    {
+      "label": "テバルド"
+    },
+    {
+      "label": "カペッリオ"
+    },
+    {
+      "label": "ロレンツォ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 カペッリオ家の広間",
+      "group_label": "第1幕",
+      "roles": [
+        "カペッリオ",
+        "テバルド",
+        "ロレンツォ",
+        "ロメオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ジュリエッタのアリア（ああ、幾たびか）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュリエッタ",
+        "ロレンツォ"
+      ]
+    },
+    {
+      "label": "第1幕 二重唱と婚礼の中断",
+      "group_label": "第1幕",
+      "roles": [
+        "ロメオ",
+        "ジュリエッタ",
+        "テバルド",
+        "カペッリオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 眠り薬",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリエッタ",
+        "ロレンツォ",
+        "カペッリオ"
+      ]
+    },
+    {
+      "label": "第2幕 ロメオとテバルドの対決",
+      "group_label": "第2幕",
+      "roles": [
+        "ロメオ",
+        "テバルド"
+      ]
+    },
+    {
+      "label": "第2幕 墓所・フィナーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "ロメオ",
+        "ジュリエッタ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true,
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

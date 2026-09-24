@@ -1,0 +1,80 @@
+{
+  "title": "サクソフォン四重奏曲 op.53",
+  "title_original": "Premier Quatuor",
+  "aliases": [],
+  "composer": "サンジュレー",
+  "composer_sort": "Singelee, Jean-Baptiste",
+  "kind": "chamber",
+  "year_written": 1857,
+  "source": "hand",
+  "source_id": "singelee-sax-quartet",
+  "duration_min": 12,
+  "roles": [
+    {
+      "label": "ソプラノサクソフォン"
+    },
+    {
+      "label": "アルトサクソフォン"
+    },
+    {
+      "label": "テナーサクソフォン"
+    },
+    {
+      "label": "バリトンサクソフォン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アンダンテ〜アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    },
+    {
+      "label": "第3楽章 フィナーレ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ソプラノサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "アルトサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "テナーサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "バリトンサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}
