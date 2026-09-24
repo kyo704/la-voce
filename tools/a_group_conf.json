@@ -428,7 +428,7 @@
  ],
  "開いた記録": [
   "components/VocalTracker.jsx",
-  "lib/monkaReadNotice.js"
+  "lib/renraku.js"
  ],
  "休む": [
   "components/TellTeacher.jsx",
