@@ -432,11 +432,6 @@
   "components/MatchingSearch.jsx",
   "lib/matchingSearch.js"
  ],
- "その人": [
-  "components/OpsRoster.jsx",
-  "lib/orgRoster.js",
-  "components/OpsMonkaHito.jsx"
- ],
  "型の中身": [
   "components/OpsPresets.jsx",
   "lib/lessonPresets.js"
