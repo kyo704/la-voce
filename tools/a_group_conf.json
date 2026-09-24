@@ -413,5 +413,33 @@
  "自分の予定": [
   "components/VocalTracker.jsx",
   "lib/myTimetable.js"
+ ],
+ "年をたずねる": [
+  "components/VocalTracker.jsx",
+  "lib/ageGate.js"
+ ],
+ "カレンダーにつなぐ": [
+  "components/VocalTracker.jsx",
+  "lib/calendarExport.js"
+ ],
+ "場所を決める": [
+  "components/OpsOrgMaster.jsx",
+  "lib/orgMaster.js"
+ ],
+ "開いた記録": [
+  "components/VocalTracker.jsx",
+  "lib/monkaReadNotice.js"
+ ],
+ "休む": [
+  "components/TellTeacher.jsx",
+  "lib/tellTeacher.js"
+ ],
+ "全部": [
+  "components/OwnedLedger.jsx",
+  "lib/itemLedger.js"
+ ],
+ "ノート本文": [
+  "components/NotesV2.jsx",
+  "lib/practiceNote.js"
  ]
 }

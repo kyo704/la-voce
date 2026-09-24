@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { C } from "@/lib/tokens";
 import { timeOf } from "@/lib/todayBand";
-import { NOTICES, noticeLabel, ONLY_TEACHER_LINE, NO_REASON_LINES } from "@/lib/tellTeacher";
+import {
+  NOTICES, noticeLabel, ONLY_TEACHER_LINE, NO_REASON_LINES,
+  TELL_NOTES, WHICH_LESSON_HEAD
+} from "@/lib/tellTeacher";
 
 // ============================================================================
 // 先生に 伝える ── 連絡板では ない、別の道（見本⑥ ／ 2026-09-10）
@@ -64,7 +67,7 @@ export default function TellTeacher({ lesson, teacherName, onTell, onClose }) {
       </div>
 
       <div style={card}>
-        <p style={small}>どの レッスン</p>
+        <p style={small}>{WHICH_LESSON_HEAD}</p>
         <p style={{ fontSize: "0.96875rem", color: C.ink, marginTop: 2 }}>{whenWord}</p>
         {lesson.note ? <p style={small}>{lesson.note}</p> : null}
       </div>
@@ -91,6 +94,10 @@ export default function TellTeacher({ lesson, teacherName, onTell, onClose }) {
 
       {/* ★★理由の 欄が ない ことを、★はっきり 書きます。 */}
       {NO_REASON_LINES.map((l) => <p key={l} style={small}>{l}</p>)}
+      {/* ★★★下の 1行（★見本 `SC['休む']` の note・2026-09-24）。
+          ★★後半は 見本と ちがいます ── ★わけは `lib/tellTeacher.js` に あります。
+            ★★伝えても 出欠は つきません。★つけるのは 先生 です。 */}
+      {TELL_NOTES.map((l) => <p key={l} style={small}>{l}</p>)}
 
       <button type="button" disabled={busy || !picked}
         onClick={async () => {

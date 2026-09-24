@@ -23,5 +23,7 @@
  "見た目を選ぶ": "★`lib/displayPrefs.js` が 設定の 見た目を 持ちます",
  "自分のコマの時間": "★`lib/myTimetable.js` が 時間割の 家 ぜんたいを 持ちます",
  "まだ": "★★画面は わざと 消して あります（★2026-09-11・坂本さんの お決め）。★`lib/itemLedger.js` は その 隣（台帳）です。★くらべるのは「消した ことが 守られて いるか」の ため です",
- "自分の予定": "★見本 SC['自分の予定'] は **先生の**「来られない」の 表 です（mineEdit・TBUSY）。★公演の 予定では ありません。★字は lib/myTimetable.js の MINE_HERE_LINE、★画面は VocalTracker.jsx の 中に あります。★2026-09-24 に ここを まちがえました ── KoenMySchedule に 当てて いました"
+ "自分の予定": "★見本 SC['自分の予定'] は **先生の**「来られない」の 表 です（mineEdit・TBUSY）。★公演の 予定では ありません。★字は lib/myTimetable.js の MINE_HERE_LINE、★画面は VocalTracker.jsx の 中に あります。★2026-09-24 に ここを まちがえました ── KoenMySchedule に 当てて いました",
+ "全部": "★もっているものの 3つの 帯（台帳／ぜんぶ／まだ）は 1枚の 中 です（components/OwnedLedger.jsx）。★lib/itemLedger.js が その 家 を 持ちます",
+ "ノート本文": "★ノートの 本文は NotesV2.jsx の 中の 書く ところ です。★別の 1枚では ありません。★lib/practiceNote.js が ノートの 家 を 持ちます"
 }
