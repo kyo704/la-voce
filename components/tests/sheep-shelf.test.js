@@ -86,7 +86,13 @@ function ok(cond, label) {
 
   console.log("⑦ 画面は 数えない");
   // ★★数え方が 2か所に 分かれると、★ノートと たなで ちがう 数が 出ます。
-  ok(!/repertoireLog|\.filter\(|\.reduce\(/.test(screen), "★画面の 中で 数えていない");
+  // ★★2026-09-24、★**呼んで いるか** を 見る ように しました。
+  //   ★★それまで `repertoireLog` の **字** を 見て いました。
+  //     ★下の 註（`SHELF_NOTES`）を 同じ 束から 取り込んだ ところで 落ちました。
+  //   ★★見張るのは「数えて いない こと」です。★取り込みでは ありません。
+  //     ★★束から 字を もらうのは、★むしろ この 家の 決め です。
+  ok(!/repertoireLog\(|shelfRows\(|\.filter\(|\.reduce\(/.test(screen),
+    "★画面の 中で 数えていない");
   ok(/rows\.map/.test(screen), "★渡された ものを 並べるだけ");
 
   console.log("⑧ 4つの 札");

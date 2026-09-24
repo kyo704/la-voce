@@ -15,7 +15,7 @@
 // ============================================================================
 
 const assert = require("assert");
-const { readCode, loadLib } = require("./_source");
+const { readCode, loadLib, readRaw} = require("./_source");
 
 let 数 = 0;
 function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
@@ -95,6 +95,66 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
     assert.ok(/onGoDaihyo=/.test(vt), "★入口が ありません");
     assert.ok(/onGoDaihyo/.test(readCode("components", "OpsMonka.jsx")),
       "★一覧に 札が ありません");
+  });
+
+  // -------------------------------------------------------------------------
+  // ★⑨「できます」と 書いた ことが、★台帳の 道でも できるか（★2026-09-24）
+  //
+  //   ★★段3a A群で 見つけました。★見本 `SC['集まり具合']` を 探して いて、
+  //     ★画面が 無い ことに 気づき、★道を 読みに 行きました。
+  //   ★★★`CAN_DO` の 2行が、★いま できません ──
+  //     ★`get_timetable_submitted` は has_can('meibo') か 担当の 先生 だけ。
+  //       ★★代表（学生）は **0行** です。★誤りにも なりません。★黙って 空 です。
+  //     ★`nudge_timetable` は has_can('meibo') が 無ければ 弾きます。
+  //   ★★字は 変えません ── ★裁定と ぶつかります。★見張りが 覚えて います。
+  //     ★直った 日に、★この 見張りが 静かに なります。
+  //     `docs/ledgers/08-保留している決め.md`
+  // -------------------------------------------------------------------------
+  見る("⑨『できます』が、★道でも できるか", () => {
+    const f2 = readRaw("supabase", "migrations", "20260101000006_base_06_functions_2.sql");
+    const f3 = readRaw("supabase", "migrations", "20260101000007_base_07_functions_3.sql");
+    const 見 = (本, 名) => {
+      const i = 本.indexOf("FUNCTION public." + 名);
+      assert.ok(i > 0, "★較正 ── ★" + 名 + " が 読めて いません");
+      return 本.slice(i, 本.indexOf("$function$;", i));
+    };
+    const 集 = 見(f2, "get_timetable_submitted");
+    const 知 = 見(f3, "nudge_timetable");
+    // ★★代表を 見る 1行が 道に あるか。
+    const 集が代表を見る = /monka_representative|is_representative/.test(集);
+    const 知が代表を見る = /monka_representative|is_representative/.test(知);
+    const 約 = m.CAN_DO.filter((c) => c.ok).map((c) => c.label);
+    const ずれ = [];
+    // ★★鍵は `CAN_DO` の 字 そのもの です。★写しを 作りません ──
+    //   ★字が 変われば 鍵も 変わり、★宣言が 外れて 落ちます。★それで 正しい。
+    const 当 = (正規) => 約.find((l) => 正規.test(l)) || "";
+    const 集約 = 当(/時間割の 集まりを 見る/);
+    if (集約 && !集が代表を見る) {
+      ずれ.push(集約 + " ── get_timetable_submitted は 代表を 見て いません");
+    }
+    const 知約 = 当(/1回だけ 知らせる/);
+    if (知約 && !知が代表を見る) {
+      ずれ.push(知約 + " ── nudge_timetable は has_can('meibo') だけ です");
+    }
+    // ★★直し方は 2つ あり、★どちらも 決めごと です。★だから ここでは 決めません。
+    //   ★① 道に 代表を 足す　★② `CAN_DO` を「できません」に する
+    // ★★だから **宣言**を 要ります。★`tools/promise_pending.json` に、
+    //   ★わけと「いつ 外すか」を 書いた ものだけ が 通ります。
+    // ★★★両方向に 落ちます ── ★宣言が 無ければ 落ち、
+    //   ★宣言が 在る のに 直って いたら も 落ちます（★宣言を 消す 合図）。
+    const 宣 = JSON.parse(readRaw("tools", "promise_pending.json"))["代表"] || {};
+    ずれ.forEach((z) => {
+      const 名 = z.split(" ── ")[0];
+      const d = 宣[名];
+      assert.ok(d, "★約束と 道が 食いちがって います …… " + z
+        + "\n      ★`tools/promise_pending.json` に わけと when を 書いて ください");
+      assert.ok(d.when && String(d.when).trim(), "★" + 名 + " に when が ありません");
+    });
+    Object.keys(宣).forEach((名) => {
+      assert.ok(ずれ.some((z) => z.startsWith(名)),
+        "★" + 名 + " は もう 食いちがって いません。"
+        + "★`tools/promise_pending.json` から 消して ください（" + 宣[名].when + "）");
+    });
   });
 
   console.log("\n★" + 数 + "つ 通りました。");

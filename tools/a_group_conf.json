@@ -1,0 +1,245 @@
+{
+ "こまったこと": [
+  "components/MatchingReport.jsx",
+  "lib/matchingReport.js"
+ ],
+ "その人": [
+  "components/OpsSettings.jsx",
+  "lib/orgRoster.js"
+ ],
+ "まだの人": [
+  "components/OpsMada.jsx",
+  "lib/opsMada.js"
+ ],
+ "もっと": [
+  "components/VocalTracker.jsx",
+  "lib/moreMenu.js"
+ ],
+ "やめるとどうなるか": [
+  "components/VocalTracker.jsx",
+  "lib/attendingPlaces.js"
+ ],
+ "代表を決める": [
+  "components/OpsDaihyo.jsx",
+  "lib/opsDaihyo.js"
+ ],
+ "伴奏をさがす": [
+  "components/VocalTracker.jsx",
+  "lib/matchingSearch.js"
+ ],
+ "保護者にお知らせ": [
+  "components/GuardianAsk.jsx",
+  "lib/guardianConsent.js"
+ ],
+ "保護者の画面": [
+  "components/GuardianAsk.jsx",
+  "lib/guardianConsent.js"
+ ],
+ "公開の範囲": [
+  "components/PortfolioV2.jsx",
+  "lib/portfolio.js"
+ ],
+ "募集を出す": [
+  "components/PostingForm.jsx",
+  "lib/postingForm.js"
+ ],
+ "台帳": [
+  "components/VocalTracker.jsx",
+  "lib/itemLedger.js"
+ ],
+ "合言葉で入る": [
+  "components/VocalTracker.jsx",
+  "lib/attendingPlaces.js"
+ ],
+ "同意を取り消す": [
+  "components/GuardianAsk.jsx",
+  "lib/guardianConsent.js"
+ ],
+ "型の中身": [
+  "components/OpsPresets.jsx",
+  "lib/lessonPresets.js"
+ ],
+ "学ぶ": [
+  "components/VocalTracker.jsx",
+  "lib/learnContent.js"
+ ],
+ "宛先": [
+  "components/OpsSettings.jsx",
+  "lib/orgBilling.js"
+ ],
+ "役職の一覧": [
+  "components/OpsPosts.jsx"
+ ],
+ "役職の中身": [
+  "components/OpsSettings.jsx",
+  "lib/opsPerms.js"
+ ],
+ "役職を変える": [
+  "components/OpsPeople.jsx"
+ ],
+ "応募した募集": [
+  "components/AppliedList.jsx",
+  "lib/appliedList.js"
+ ],
+ "応募する": [
+  "components/ApplyForm.jsx",
+  "lib/applyForm.js"
+ ],
+ "応募を選ぶ": [
+  "components/ChooseApplicant.jsx",
+  "lib/chooseApplicant.js"
+ ],
+ "応募者の詳細": [
+  "components/ApplicantDetail.jsx",
+  "lib/applicantDetail.js"
+ ],
+ "招かれている": [
+  "components/VocalTracker.jsx",
+  "lib/attendingPlaces.js"
+ ],
+ "招く": [
+  "components/OpsRoster.jsx",
+  "lib/studentInvite.js"
+ ],
+ "採点": [
+  "components/OpsEvalItems.jsx",
+  "lib/evaluation.js"
+ ],
+ "支払い方法": [
+  "components/OpsSettings.jsx",
+  "lib/orgBilling.js"
+ ],
+ "時間割": [
+  "components/LessonPrefs.jsx",
+  "lib/myTimetable.js"
+ ],
+ "曲": [
+  "components/NotesV2.jsx"
+ ],
+ "曲を足す": [
+  "components/NotesV2.jsx"
+ ],
+ "曲目を答える": [
+  "components/AnswerPiece.jsx",
+  "lib/answerPiece.js"
+ ],
+ "書き出す": [
+  "components/VocalTracker.jsx",
+  "lib/exportData.js"
+ ],
+ "未送信": [
+  "components/VocalTracker.jsx",
+  "lib/opsMisou.js"
+ ],
+ "稽古を書く": [
+  "components/NotesV2.jsx"
+ ],
+ "経歴": [
+  "components/PortfolioV2.jsx",
+  "lib/portfolio.js"
+ ],
+ "聞いてほしいこと": [
+  "components/DailyAskPicker.jsx"
+ ],
+ "行事を出す": [
+  "components/OpsEventTable.jsx",
+  "lib/orgEventForm.js"
+ ],
+ "見やすさ": [
+  "components/OpsSettingsHub.jsx"
+ ],
+ "設定": [
+  "components/OpsSettingsHub.jsx",
+  "lib/displayPrefs.js"
+ ],
+ "評価の型": [
+  "components/OpsEvalItems.jsx",
+  "lib/evaluation.js"
+ ],
+ "調べる": [
+  "components/CountV2.jsx"
+ ],
+ "請求書の宛名": [
+  "components/OpsSettings.jsx",
+  "lib/orgBilling.js"
+ ],
+ "退会": [
+  "components/VocalTracker.jsx",
+  "lib/accountDeletion.js"
+ ],
+ "通っているところ": [
+  "components/VocalTracker.jsx",
+  "lib/attendingPlaces.js"
+ ],
+ "通っているところの中身": [
+  "components/VocalTracker.jsx",
+  "lib/attendingPlaces.js"
+ ],
+ "重なり": [
+  "components/OpsKasaFix.jsx",
+  "lib/opsKasa.js"
+ ],
+ "重なりを直す": [
+  "components/OpsKasaFix.jsx",
+  "lib/opsKasa.js"
+ ],
+ "門下に招く": [
+  "components/OpsMonkaInvite.jsx",
+  "lib/monkaInvite.js"
+ ],
+ "門下の人": [
+  "components/OpsMonkaHito.jsx",
+  "lib/opsMonkaHito.js"
+ ],
+ "門下を開く": [
+  "components/Renraku.jsx",
+  "lib/renraku.js"
+ ],
+ "順番": [
+  "components/CompareV2.jsx",
+  "lib/compareOrder.js"
+ ],
+ "お知らせを書く": [
+  "components/AnnouncementCompose.jsx",
+  "lib/renraku.js"
+ ],
+ "たな": [
+  "components/SheepShelf.jsx",
+  "lib/repertoireLog.js"
+ ],
+ "出欠つけ": [
+  "components/OpsAttendance.jsx",
+  "lib/opsAttendance.js"
+ ],
+ "同意": [
+  "components/VocalTracker.jsx"
+ ],
+ "当日の進行を見る": [
+  "components/KoenDayFlow.jsx",
+  "lib/myKoenDay.js"
+ ],
+ "成立後": [
+  "components/AfterMatch.jsx",
+  "lib/afterMatch.js"
+ ],
+ "日程を組む": [
+  "components/OpsKumu.jsx",
+  "lib/opsKumu.js"
+ ],
+ "自動の条件": [
+  "components/OpsKumu.jsx",
+  "lib/opsKumu.js"
+ ],
+ "評価の項目": [
+  "components/OpsEvalItems.jsx",
+  "lib/evaluation.js"
+ ],
+ "門下": [
+  "components/Renraku.jsx",
+  "lib/renraku.js"
+ ],
+ "集まり具合": [
+  "components/OpsDaihyo.jsx",
+  "lib/opsDaihyo.js"
+ ]
+}

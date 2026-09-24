@@ -7,9 +7,11 @@ import { TABLE_CLASS, ANCHOR_CLASSES } from "@/lib/visualTokens";
 import {
   MARKS, mayMark, isActingFor, ACTING_NOTE,
   LOCKED_LINES, LOCKED_EMPTY, LOCKED_EMPTY_SUB, NOTES,
+  BULK_WARN, BULK_TAP_LINE,
   draftOf, setDraft, changedRows, bulkCountLine, saveWord,
   BACK_LABEL, BACK_MINE_LABEL
 } from "@/lib/opsAttendance";
+import { Warn } from "@/components/UiV2";
 import { timeOf } from "@/lib/todayBand";
 import { tx } from "@/lib/t";
 
@@ -92,6 +94,16 @@ export default function OpsAttendanceBulk({
           ) : null}
 
           {/* ★★★数（★裁定 その91 R5）。★率は 出しません（★裁定 その90）。 */}
+          {/* ==============================================================
+              ★★なぜ ぜんぶ「出席」で 始まるのか（★見本の warn・2026-09-24）。
+                ★★書いて いないと、★勝手に 付いて いる ように 見えます。
+             ============================================================== */}
+          <Warn>
+            {BULK_WARN.map((t) => (
+              <span key={t} style={{ display: "block" }}>{tx(t)}</span>
+            ))}
+          </Warn>
+
           <p style={{ ...TYPE.li, color: C.ink, margin: `${rem(9)} 0 ${rem(6)}` }}>
             {bulkCountLine(lessons, draft)}
           </p>
@@ -195,6 +207,11 @@ export default function OpsAttendanceBulk({
 
       <div style={{ marginTop: rem(10) }}>
         {/* ★★注記の 印（★段3a 段階2・2026-09-20）。★見た目は 変わりません。 */}
+        {/* ★★お名前が 押せる ことを 書きます（★見本の note・2026-09-24）。
+            ★★`›` だけ では 分かりません。 */}
+        {onOpenOne ? (
+          <p className="note" style={{ ...小, margin: 0 }}>{tx(BULK_TAP_LINE)}</p>
+        ) : null}
         {NOTES.map((t) => (<p key={t} className="note" style={{ ...小, margin: 0 }}>{t}</p>))}
       </div>
     </div>

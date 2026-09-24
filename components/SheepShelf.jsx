@@ -23,6 +23,7 @@
 // ============================================================================
 
 import { C } from "@/lib/tokens";
+import { SHELF_NOTES } from "@/lib/repertoireLog";
 import { TYPE, FONT_STACK, RADIUS, rem } from "@/lib/uiKit";
 import { Note } from "@/components/UiV2";
 
@@ -59,6 +60,18 @@ export default function SheepShelf({ rows = [] }) {
           </div>
         </div>
       ))}
+
+      {/* ==================================================================
+          ★★下の 註（★見本 `SC['たな']` の note・2026-09-24）。
+            ★★1行も ありません でした。
+            ★★見本の 3行の うち 2行 です。★書かなかった わけは
+              `lib/repertoireLog.js` の 覚え書き ── ★「同じ中身」では ありません。
+         ================================================================== */}
+      <Note style={{ marginTop: rem(11) }}>
+        {SHELF_NOTES.map((t, i) => (
+          <span key={t} style={{ display: "block" }}>{t}</span>
+        ))}
+      </Note>
     </div>
   );
 }

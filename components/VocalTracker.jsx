@@ -472,7 +472,8 @@ import { symptomsByLocation, dinnerToBedSummary, LOCATION_FOOTNOTE } from "@/lib
 //     「予定から活動の種類を先に選んでおく」は、まだ画面につながっていません。
 import OrgEventList from "@/components/OrgEventList";
 import { countHeldLessons, heldCountLine, attendanceOf } from "@/lib/lessonCounts";
-import { CONSENT_POLICY_VERSION, buildConsentRow, buildConsentWithdrawalRow } from "@/lib/consent";
+import { CONSENT_POLICY_VERSION, buildConsentRow, buildConsentWithdrawalRow, WITHDRAW_NOTES
+} from "@/lib/consent";
 import { mayWriteRecords, mayUseForAnalysis, withdrawnAt } from "@/lib/consentGate";
 import {
   pearson, rankArray, spearman, tDistPValue,
@@ -26051,6 +26052,24 @@ export default function VocalTracker({
                   <p className="text-xs mb-4" style={{ color: C.inkSoft }}>
                     もう一度同意すれば、また記録できるようになります。
                   </p>
+
+                  {/* ==========================================================
+                      ★★見本 `SC['同意']` の note（★2026-09-24）。★2つ です。
+                        ★★1つ目 …「消すのは 退会か、記録の 削除から」──
+                          ★どこで 消せるかを 言わないと、★「とりけせば 消える」と
+                          ★読まれます。★とりけしでは 1行も 消えません。
+                        ★★2つ目 …「契約では 代えられません」── ★学校が 束で
+                          ★契約しても、★同意は 束に なりません。
+                      ★★字は `lib/consent.js` が 持ちます。★ここで 書きません。
+                      ★★見本の 3つ目（★18歳未満）は 書いて いません ── ★この 品では
+                        ★保護者の ひとことが 要るのは 学校に 入る ときだけ です。
+                     ========================================================== */}
+                  <div className="text-xs mb-4 rounded-lg p-2.5"
+                    style={{ background: C.paper, color: C.inkSoft, lineHeight: 1.8 }}>
+                    {WITHDRAW_NOTES.map((t) => (
+                      <span key={t} style={{ display: "block" }}>{t}</span>
+                    ))}
+                  </div>
 
                   {/* ★文字だけの案内にしないこと。★押せる控えを置きます。 */}
                   <button type="button" onClick={startExport} disabled={exportStatus === "working"}
