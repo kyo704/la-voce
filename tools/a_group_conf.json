@@ -441,5 +441,13 @@
  "ノート本文": [
   "components/NotesV2.jsx",
   "lib/practiceNote.js"
+ ],
+ "コマの時間": [
+  "components/OpsOrgMaster.jsx",
+  "lib/orgMaster.js"
+ ],
+ "日を選ぶ": [
+  "components/RangeCalendar.jsx",
+  "lib/rangeCalendar.js"
  ]
 }
