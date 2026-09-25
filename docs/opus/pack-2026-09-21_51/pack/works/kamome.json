@@ -1,0 +1,58 @@
+{
+  "title": "木下牧子の合唱曲（鴎ほか）",
+  "title_original": "木下牧子の合唱曲（鴎ほか）",
+  "aliases": [
+    "鴎"
+  ],
+  "composer": "木下牧子",
+  "composer_sort": "Kinoshita, Makiko",
+  "kind": "chorus",
+  "year_written": 1990,
+  "source": "hand",
+  "source_id": "kinoshita-choral",
+  "duration_min": 15,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（混声4部）",
+      "is_group": true
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "鴎",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "いつからか野に立って",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "春に",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "★曲集としてではなく、単曲で演奏されることが多い／作詩: 三好達治ほか"
+}

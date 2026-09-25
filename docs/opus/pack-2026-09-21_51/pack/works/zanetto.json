@@ -1,0 +1,89 @@
+{
+  "title": "ザネット",
+  "title_original": "Zanetto",
+  "aliases": [],
+  "composer": "マスカーニ",
+  "composer_sort": "Mascagni, Pietro",
+  "kind": "opera",
+  "year_written": 1896,
+  "source": "hand",
+  "source_id": "mascagni-zanetto",
+  "duration_min": 45,
+  "language": "it",
+  "roles": [
+    {
+      "label": "シルヴィア"
+    },
+    {
+      "label": "ザネット"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲（弦とハープ）",
+      "group_label": "全1幕",
+      "roles": []
+    },
+    {
+      "label": "シルヴィアの独白",
+      "group_label": "全1幕",
+      "roles": [
+        "シルヴィア"
+      ]
+    },
+    {
+      "label": "ザネットの訪れ",
+      "group_label": "全1幕",
+      "roles": [
+        "ザネット",
+        "シルヴィア"
+      ]
+    },
+    {
+      "label": "別れ",
+      "group_label": "全1幕",
+      "roles": [
+        "シルヴィア",
+        "ザネット"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★弦とハープのみ。2人の小編成で、学校の実習に向く"
+}

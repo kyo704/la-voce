@@ -1,0 +1,135 @@
+{
+  "title": "アーサー王",
+  "title_original": "King Arthur",
+  "aliases": [
+    "冷たい精霊の歌"
+  ],
+  "composer": "パーセル",
+  "composer_sort": "Purcell, Henry",
+  "kind": "opera",
+  "year_written": 1691,
+  "duration_min": 120,
+  "language": "en",
+  "source": "hand",
+  "source_id": "purcell-king-arthur",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 生贄の場",
+      "group_label": "第1幕",
+      "roles": [
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 妖精の場",
+      "group_label": "第2幕",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 冷たい精霊の場（フロスト・シーン）",
+      "group_label": "第3幕",
+      "roles": [
+        "バス独唱",
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 セイレーンの場",
+      "group_label": "第4幕",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "第5幕 大団円（麗しのブリタニア）",
+      "group_label": "第5幕",
+      "roles": [
+        "テノール独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

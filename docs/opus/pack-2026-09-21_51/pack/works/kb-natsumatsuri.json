@@ -1,0 +1,87 @@
+{
+  "title": "夏祭浪花鑑",
+  "title_original": "夏祭浪花鑑",
+  "aliases": [
+    "夏祭"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "drama",
+  "year_written": 1745,
+  "source": "hand",
+  "source_id": "kabuki-natsumatsuri",
+  "duration_min": 180,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "団七九郎兵衛"
+    },
+    {
+      "label": "一寸徳兵衛"
+    },
+    {
+      "label": "お梶"
+    },
+    {
+      "label": "義平次"
+    },
+    {
+      "label": "徳兵衛女房お辰"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "住吉鳥居前の場",
+      "group_label": "序",
+      "roles": [
+        "団七九郎兵衛",
+        "一寸徳兵衛",
+        "お梶",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "釣船三婦内の場",
+      "group_label": "中",
+      "roles": [
+        "徳兵衛女房お辰",
+        "お梶",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "長町裏の場（泥場）",
+      "group_label": "終",
+      "roles": [
+        "団七九郎兵衛",
+        "義平次",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 0,
+      "section": "other"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽"
+    },
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "is_optional": true
+    }
+  ],
+  "school": "歌舞伎（上演の家により型が違う）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}

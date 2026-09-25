@@ -1,0 +1,158 @@
+{
+  "title": "アルルの女（チレア）",
+  "title_original": "L'arlesiana",
+  "aliases": [
+    "フェデリーコの嘆き"
+  ],
+  "composer": "チレア",
+  "composer_sort": "Cilea, Francesco",
+  "kind": "opera",
+  "year_written": 1897,
+  "duration_min": 110,
+  "language": "it",
+  "source": "hand",
+  "source_id": "cilea-arlesiana",
+  "roles": [
+    {
+      "label": "フェデリーコ"
+    },
+    {
+      "label": "ローザ・マメイ"
+    },
+    {
+      "label": "ヴィヴェッタ"
+    },
+    {
+      "label": "バルダッサーレ"
+    },
+    {
+      "label": "メティフィオ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 農場",
+      "group_label": "第1幕",
+      "roles": [
+        "ローザ・マメイ",
+        "ヴィヴェッタ",
+        "バルダッサーレ",
+        "フェデリーコ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 フェデリーコの嘆き（ありふれた話）",
+      "group_label": "第2幕",
+      "roles": [
+        "フェデリーコ",
+        "バルダッサーレ",
+        "ローザ・マメイ"
+      ]
+    },
+    {
+      "label": "第3幕 婚礼の支度と狂乱・フィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "フェデリーコ",
+        "ヴィヴェッタ",
+        "ローザ・マメイ",
+        "メティフィオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

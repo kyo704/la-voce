@@ -467,5 +467,14 @@
  "本番の前後": [
   "components/HonbanZengo.jsx",
   "lib/honbanZengo.js"
+ ],
+ "紙をたしかめる": [
+  "components/KamiTashikame.jsx",
+  "lib/kamiTashikame.js"
+ ],
+ "しらべていること": [
+  "components/Shirabeteiru.jsx",
+  "lib/shirabeteiru.js",
+  "lib/lagChoice.js"
  ]
 }

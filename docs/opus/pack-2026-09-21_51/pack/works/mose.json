@@ -1,0 +1,157 @@
+{
+  "title": "エジプトのモーゼ",
+  "title_original": "Mosè in Egitto",
+  "aliases": [
+    "モーゼ"
+  ],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1818,
+  "source": "hand",
+  "source_id": "rossini-mose",
+  "duration_min": 150,
+  "language": "it",
+  "roles": [
+    {
+      "label": "モーゼ"
+    },
+    {
+      "label": "ファラオーネ"
+    },
+    {
+      "label": "アメノフィ"
+    },
+    {
+      "label": "エルチア"
+    },
+    {
+      "label": "オジリデ"
+    },
+    {
+      "label": "アロンネ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 闇と光",
+      "group_label": "第1幕",
+      "roles": [
+        "モーゼ",
+        "ファラオーネ",
+        "アメノフィ",
+        "オジリデ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 王子と娘",
+      "group_label": "第2幕",
+      "roles": [
+        "オジリデ",
+        "エルチア",
+        "ファラオーネ",
+        "モーゼ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 紅海の祈り（汝の星をちりばめた王座に）",
+      "group_label": "第3幕",
+      "roles": [
+        "モーゼ",
+        "エルチア",
+        "アロンネ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
