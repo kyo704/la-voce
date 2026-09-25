@@ -498,5 +498,10 @@
  "整える": [
   "components/Totonoeru.jsx",
   "lib/totonoeru.js"
+ ],
+ "写真": [
+  "components/Shashin.jsx",
+  "lib/photoExif.js",
+  "app/api/portfolio-photo/route.js"
  ]
 }

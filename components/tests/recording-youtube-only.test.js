@@ -13,7 +13,7 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
-const { loadLib, readCode, ROOT } = require("./_source");
+const { loadLib, readCode, readRaw, ROOT } = require("./_source");
 
 let 数 = 0;
 function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
@@ -37,10 +37,34 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
         // ★動画を 受け取る 形 ── ★`accept` に 動画、★storage への 置き。
         if (/accept=["'][^"']*video/i.test(s)) 見つかった.push(p + "（accept に video）");
         if (/accept=["'][^"']*\.(mp4|mov|avi|mkv|webm)/i.test(s)) 見つかった.push(p + "（accept に 動画の 形）");
-        if (/\.storage\.from\(/.test(s)) 見つかった.push(p + "（storage に 置いて います）");
+        // ★★★2026-09-25 まで、★`.storage.from(` は どこに あっても 赤 でした。
+        //   ★★Storage を 1度も 使って いなかった ので、★それで 足りて いました。
+        //   ★★★裁定199 で 写真を 置く ことに なりました（★`portfolio-photos`）。
+        //     ★このままだと、★写真の 口が「動画の 口」として 赤く なります。
+        //   ★★★守る ものは 変わりません ──「動画そのものは お預かりしません」。
+        //     ★だから 見る ものを、★**何を 受け取るか** に 直します。
+        //     ★★置いて いても、★受け取る 形が 絵 だけ なら よい のです。
+        if (/\.storage\.from\(/.test(s)) {
+          // ★★★`mov` は `remove(` の 中に あります。★`avi` も 語の 中に よく 出ます。
+          //   ★★2026-09-25、★`.remove([path])` が「動画」と 見られました。
+          //     ★形の 名は **点の あと** か、★`video/` の 形で だけ 見ます。
+          const 絵だけ = /ACCEPT_TYPES/.test(s)
+            && !/video\//i.test(s)
+            && !/["'.\/](mp4|mov|avi|mkv|webm)\b/i.test(s);
+          if (!絵だけ) 見つかった.push(p + "（storage に 置いて います）");
+        }
       }
     };
     for (const d of ["components", "lib", "app"]) 歩く(path.join(ROOT, d));
+    // ★★★入れもの（bucket）の ほうも 見ます ── ★動画の 形を 受け取って いないか。
+    //   ★★画面が 絵だけ でも、★入れものが 動画を 通すなら 口が 開いて います。
+    const bucket = readRaw("supabase", "migration_portfolio_photos_bucket.sql");
+    if (/video\//i.test(bucket) || /["'.\/](mp4|mov|avi|mkv|webm)\b/i.test(bucket)) {
+      見つかった.push("supabase/migration_portfolio_photos_bucket.sql（入れものが 動画を 通します）");
+    }
+    if (!/allowed_mime_types/.test(bucket)) {
+      見つかった.push("supabase/migration_portfolio_photos_bucket.sql（受け取る 形を 決めて いません）");
+    }
     assert.deepStrictEqual(見つかった, [], "★動画を 受け取る 口が あります:\n" + 見つかった.join("\n"));
   });
 
