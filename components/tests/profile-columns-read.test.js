@@ -55,6 +55,20 @@ function readColumns() {
   const extras = readCode("lib", "profileExtras.js");
   const gm = /EXTRA_GROUPS = Object\.freeze\(\{([\s\S]*?)\}\);/.exec(extras);
   if (gm) for (const n of gm[1].matchAll(/"([a-z_][a-z0-9_]*)"/g)) names.add(n[1]);
+  // ★★★列の 名を 字で 書かず、★lib から 借りて いる ものも 数えます
+  //   （★2026-09-25・`WORK_FIELD_COL` ＝ `lib/workField.js` の `COL`）。
+  //   ★★★「列の 名を 2か所に 書かない」と「読んで いる 列だけ 使う」は、
+  //     ★どちらも 守る 決まり です。★片方の ために 片方を 捨てません。
+  //   ★★だから 見張りが **借り先を 開いて** 名を 取って きます。
+  //     ★★借りた 名は `const COL = "field";` の 形 です。★取り違えません。
+  for (const m of vt.matchAll(/\+\s*([A-Z][A-Z0-9_]*_COL)\s*;/g)) {
+    const 名 = m[1];
+    const im = new RegExp('COL as ' + 名 + '[\\s\\S]{0,200}?from "@/lib/([a-zA-Z]+)"').exec(vt);
+    if (!im) continue;
+    const 借 = readCode("lib", im[1] + ".js");
+    const cm = /export const COL = "([a-z_][a-z0-9_]*)"/.exec(借);
+    if (cm) names.add(cm[1]);
+  }
   return names;
 }
 

@@ -21,10 +21,12 @@ import {
   BACK_TO, isBundle, groupsOf, headOf, leadOf, notesOf
 } from "@/lib/moreBundles";
 
-export default function MoreBundle({ bundle, rights, onGo, onBack }) {
+export default function MoreBundle({ bundle, rights, canGo, onGo, onBack }) {
   // ★★知らない 束は 出しません。★勝手な 字を 画面に 通しません。
   if (!isBundle(bundle)) return null;
-  const 節 = groupsOf(bundle);
+  // ★★★`canGo` …… ★呼ぶ 側が「そこへ 行ける」と 答えた 行 だけ 出します。
+  //   ★★画面が あっても 道が 無い ことが あります。★押せない 札を 置きません。
+  const 節 = groupsOf(bundle, canGo);
   const 右 = rights || {};
 
   return (

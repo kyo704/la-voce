@@ -153,6 +153,12 @@ import { resolveTeaching, readViewAs, writeViewAs } from "@/lib/viewAs";
 import { moreSections, rightOf, MORE_NOTE, MORE_NOTE_BOLD } from "@/lib/moreMenu";
 // ★★さがす（マッチング）の 門。★9画面が 揃ったら 消します（★2026-09-21）。
 import { mayUseMatching } from "@/lib/matchingGate";
+// ★★束の 入口 7つ（★2026-09-25・D群）と、★お仕事を選ぶ（★裁定202）。
+import MoreBundle from "@/components/MoreBundle";
+import { isBundle, entrancesOf, ENTRANCE_NOTES } from "@/lib/moreBundles";
+import WorkField from "@/components/WorkField";
+import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
+  TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
 import { pickSchool, SCHOOL_KEY } from "@/lib/matchingSearch";
 import MatchingSearch from "@/components/MatchingSearch";
 import PostingForm from "@/components/PostingForm";
@@ -6575,7 +6581,13 @@ export default function VocalTracker({
         //     ★同じ形なので、★門は閉じたままです（★安全側です）。
         //   ★★ですが、★同意した方の記録が、★開き直すと消えて見えます。
         //     ★2026-09-03 と 2026-09-05 に、同じ形で2度つまずいています。
-        + "reflux_care_consent_at";
+        + "reflux_care_consent_at, "
+        // ★★★お仕事（★2026-09-25・裁定202・sql/90）。
+        //   ★★この 組に 入れる わけ ── ★本番に 当てたのは 今日 です。
+        //     ★★取れなくても、★`normalize(undefined)` が `music` に 倒します。
+        //       ★`music` は いまの 全員の 値 なので、★見え方は 変わりません。
+        //   ★★列の 名を 書き写しません ── `lib/workField.js` の `COL` が 持ちます。
+        + WORK_FIELD_COL;
       // ★読めなかったことを、★覚えておきます。★黙って「撤回していない」に
       //   倒さないためです。画面に出します（設定の同意欄）。
       let consentColumnMissing = false;
@@ -7770,9 +7782,13 @@ export default function VocalTracker({
   const [applyError, setApplyError] = useState("");
   // ★★★さがす（マッチング）の 門（★2026-09-21）。★既定は 閉 です。
   //   ★★9画面が 揃うまで、★名簿に 並べた 方 だけに 出します。
+  //   ★★★2026-09-25 ── ★お仕事（`field`）も 渡します（★裁定202）。
+  //     ★★見本『お仕事を選ぶ』の 約束 ──
+  //       「声の お仕事・舞台を えらぶと、「さがす」は 出ません。」
+  //     ★★判じるのは `lib/matchingGate.js` です。★ここで `=== "music"` と 書きません。
   const matchingOn = mayUseMatching(userId, {
     NEXT_PUBLIC_MATCHING_USER_IDS: process.env.NEXT_PUBLIC_MATCHING_USER_IDS
-  });
+  }, profile.field);
 
   // ★★★ここに 置く わけ（★2026-09-15）。
   //   ★★はじめ、★この 塊を ずっと 上（★:5872）に 書いて いました。
@@ -13252,6 +13268,51 @@ export default function VocalTracker({
   function inMore(section) {
     if (!layoutV2) return undefined;
     return moreSection === section ? undefined : "none";
+  }
+
+  // ==========================================================================
+  // ★★★束の 行き先（★2026-09-25・D群）
+  //
+  //   ★★★1つの 表に します。★`canGo` も `onGo` も **この 表から** 出します。
+  //     ★★2つに 分けると、★出して いる のに 行けない 行が 生まれます。
+  //       ★★それが まさに、★26枚の 画面に 道が 無かった 形 です。
+  //   ★★★書いて いない 行き先は 出ません（`entrancesOf`／`groupsOf` が 落とします）。
+  //     ★★道を 1本 つなぐ たびに、★この 表に 1行 足します。★それだけ で 出ます。
+  //   ★★「行ける か」に 門が ある ものは、★`null` を 返します（★出しません）。
+  //     ★★押せない 札を 置かない ため です。
+  // ==========================================================================
+  const 束の行き先 = {
+    // ★── しらべる
+    "書き出す": () => setMoreSection("じぶんの記録"),
+    // ★── つたえる
+    // ★── 学校
+    "通っているところ": () => setMoreSection("通っているところ"),
+    "担当の先生を選ぶ": studentCanChoose(monkaSetting)
+      ? () => setMoreSection("担当の先生") : null,
+    "授業の時間を出す": isEnrolledInOrg ? () => setMoreSection("授業の時間") : null,
+    // ★── 公演
+    "公演": mayShowKoenMine(features) ? () => setMoreSection("公演") : null,
+    // ★── さがす（★門は `matchingOn`。★お仕事と 名簿の 両方を 見て います）
+    "伴奏をさがす": matchingOn ? () => setMoreSection("さがす") : null,
+    // ★── 学ぶ
+    "学ぶ": () => {
+      setLearnProfession(learnProfession || profile.vocal_profession);
+      setActiveTab("learn");
+    },
+    // ★── アカウントと 設定
+    "設定": () => setMoreSection("設定"),
+    "聞いてほしいこと": () => setMoreSection("聞く"),
+    "お仕事を選ぶ": () => setMoreSection("お仕事を選ぶ"),
+    "プラン": () => setMoreSection("プラン"),
+    "記録のきまり": () => setRecordSheet("きまり"),
+    // ★★同意の とりけしは 別の タブ です（★2026-09-15）。★法で 求められる 道 です。
+    "同意": () => setActiveTab("withdrawConsent"),
+    "退会": () => setMoreSection("じぶんの記録")
+  };
+  const 束へ行ける = (to) => typeof 束の行き先[to] === "function";
+  function 束を開く(to) {
+    const f = 束の行き先[to];
+    if (typeof f === "function") f();
   }
 
   const [viewAs, setViewAs] = useState("auto");
@@ -27713,6 +27774,44 @@ export default function VocalTracker({
                 {layoutV2 && moreSection === null ? (
                   <div>
                     <ScreenHead title="もっと" />
+                    {/* ★★★束の 入口 7つ（★2026-09-25・見本 `SC['もっと']`・design-v75）。
+                        ★★★坂本さんの ご指摘 ──「もっとが ゴタゴタして いる」。
+                          ★19行が 1枚に 並んで いて、★探せませんでした。
+                        ★★★見本は この 7行 **だけ** の 1枚 です。
+                          ★★けれど 下の 19行の うち 11行は、★7つの 束の どこにも
+                            ★入って いません（★運営・招待・プロフィール・経歴・区切り・
+                              もっているもの・アカウント ほか）。
+                          ★★★だから いまは **足すだけ** に します。★消しません。
+                            ★★消すと、★その 11の 行き先に たどりつけなく なります。
+                            ★★どこへ 入れるかは 見本に 書いて ありません（★Opus へ）。
+                        ★★行と 字は `lib/moreBundles.js` が 持ちます。★ここで 決めません。
+                        ★★中身が 1行も 無い 束は 出ません（★開けて 空に しない ため）。 */}
+                    <Card>
+                      {entrancesOf({
+                        hasClass: myEnrollments.length > 0 || myOrgs.length > 0,
+                        canGo: 束へ行ける
+                      }).map((b, i, all) => (
+                        <button key={b.key} type="button"
+                          onClick={() => setMoreSection(b.key)}
+                          style={{ display: "block", width: "100%", textAlign: "left",
+                            background: "transparent", border: "none", padding: 0,
+                            minHeight: 44 }}>
+                          <Li right="›" last={i === all.length - 1}>
+                            {b.name}
+                            <span style={{ display: "block", ...TYPE.mini, color: C.inkSoft }}>
+                              {b.sub}
+                            </span>
+                          </Li>
+                        </button>
+                      ))}
+                    </Card>
+                    {/* ★★下の 2行は 約束 です（★見本の `.note`）。
+                        ★★「ここに 無いものは、下の タブに あります」── ★帯は 5つ です。 */}
+                    <Note>
+                      {ENTRANCE_NOTES.map((l, i) => (
+                        <span key={i}>{i > 0 ? <br /> : null}{l}</span>
+                      ))}
+                    </Note>
                     {moreSections({
                       hasOrgRole: myOrgs.some((mm) => mayEnterOpsHere(mm)),
                       // ★★生徒を 招待する（★2026-09-15・裁定 ㋒）。
@@ -27882,6 +27981,40 @@ export default function VocalTracker({
                 ) : null}
                 {/* ★★まとまりを 開いている あいだ、★戻る 道を 置きます。
                     ★出口の ない 画面を 作らないこと。 */}
+                {/* ★★★束の 1枚（★7つ とも この 1つ・2026-09-25）。
+                    ★★右の 字（数・値段）は まだ 渡して いません。
+                      ★★見本の「13件」「216人」は 見せかけ です。★台帳から 出す ものだけ
+                        ★渡します。★数える 道を つないだ 束から 順に 足します。 */}
+                {layoutV2 && isBundle(moreSection) ? (
+                  <MoreBundle bundle={moreSection}
+                    canGo={束へ行ける}
+                    onGo={束を開く}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★お仕事を選ぶ（★2026-09-25・裁定202・sql/90）。
+                    ★★記録は 1行も 触りません。★送るのは `field` 1列 だけ です。
+                    ★★選び直すと「さがす」の 出し分けが 変わります（★約束の 3行目）。 */}
+                {layoutV2 && moreSection === "お仕事を選ぶ" ? (
+                  <WorkField field={profile.field}
+                    onPick={async (next) => {
+                      const 前 = normalizeField(profile.field);
+                      if (前 === next) return;
+                      setProfile((p) => ({ ...p, field: next }));
+                      // ★★`upsert` を 使いません ── ★`profiles` は update だけ 通ります。
+                      const { error } = await featureClient.from("profiles")
+                        .update(fieldPatch(next)).eq("id", userId);
+                      if (error) {
+                        // ★★戻します。★画面と 台帳を 食い違わせません。
+                        setProfile((p) => ({ ...p, field: 前 }));
+                        setToastMessage("保存できませんでした。時間をおいて、もう一度お試しください。");
+                        setTimeout(() => setToastMessage(null), 3200);
+                        return;
+                      }
+                      setToastMessage(WORK_FIELD_TOAST);
+                      setTimeout(() => setToastMessage(null), 3200);
+                    }}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
                 {/* ★★毎日、聞いてほしいこと（★見本 A10 ／ 2026-09-11）。 */}
                 {layoutV2 && moreSection === "聞く" ? (
                   <DailyAskPicker value={dailyAsk}
