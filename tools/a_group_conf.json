@@ -563,5 +563,13 @@
  "あなたの重なり": [
   "components/Kasanari.jsx",
   "lib/kasanari.js"
+ ],
+ "学科を決める": [
+  "components/OpsOrgShape.jsx",
+  "lib/orgDivisions.js"
+ ],
+ "レッスン": [
+  "components/Yotei.jsx",
+  "lib/yotei.js"
  ]
 }

@@ -15,19 +15,28 @@
 import { C } from "@/lib/tokens";
 import { ScreenHead, Back, Box } from "@/components/UiV2";
 import {
-  BACK_TO, DASH, rowsOf, BTN_TELL, mayTell, toldWord, NOTE_LINES
+  BACK_TO, DASH, rowsOf, BTN_TELL, mayTell, toldWord, NOTE_LINES,
+  AS_LESSON, tellLessonWord, MEMO_HEAD, MEMO_ADD, NO_ORG_WORD, lessonNoteLines
 } from "@/lib/yotei";
 
-export default function Yotei({ lesson, teacherName, placeName, orgName, whenWord, onTell, onBack }) {
+export default function Yotei({
+  lesson, teacherName, placeName, orgName, whenWord, as: 姿,
+  onTell, onMemo, onBack
+}) {
   const l = lesson || {};
   const rows = rowsOf(l, { teacherName, placeName });
+  // ★★2つの 姿 ── ★よてい と レッスン。★行は 同じ、★断りが ちがいます。
+  const レッスン = 姿 === AS_LESSON;
+  const 断り = レッスン ? lessonNoteLines(orgName) : NOTE_LINES;
 
   return (
     <div>
       <Back onClick={onBack}>{BACK_TO}</Back>
       <ScreenHead title={(l.kind || "レッスン") + "　" + (teacherName || "")} />
+      {/* ★★教室が 無い ときは「あなただけの 予定」と 書きます（★見本の まま）。 */}
       <p style={{ fontSize: "0.8125rem", color: C.inkSoft, margin: "0 0 10px" }}>
-        {whenWord || DASH}{orgName ? "　／　" + orgName : ""}
+        {whenWord || DASH}
+        {orgName ? "　／　" + orgName : (レッスン ? "　／　" + NO_ORG_WORD : "")}
       </p>
 
       <Box>
@@ -51,17 +60,34 @@ export default function Yotei({ lesson, teacherName, placeName, orgName, whenWor
             minHeight: 44, marginTop: 12, padding: "0 14px", borderRadius: 10,
             border: `1px solid ${C.line}`, background: C.card,
             color: C.ink, fontSize: "0.875rem", cursor: "pointer"
-          }}>{BTN_TELL}</button>
+          }}>{レッスン ? tellLessonWord(teacherName) : BTN_TELL}</button>
       ) : l.student_notice ? (
         <p style={{ fontSize: "0.8125rem", color: C.inkSoft, marginTop: 12, lineHeight: 1.85 }}>
           {toldWord(teacherName)}
         </p>
       ) : null}
 
+      {/* ★★レッスンに だけ ある もの ── ★この日の 稽古メモ。
+          ★★渡されて いない ときは 出しません（★押せない 札を 置きません）。 */}
+      {レッスン && onMemo ? (
+        <>
+          <p style={{ fontSize: "0.8125rem", color: C.ink, margin: "16px 0 6px", fontWeight: 600 }}>
+            {MEMO_HEAD}
+          </p>
+          <button type="button" onClick={onMemo}
+            style={{
+              display: "block", width: "100%", minHeight: 44, borderRadius: 10,
+              border: `1px solid ${C.line}`, background: C.card,
+              color: C.ink, fontSize: "0.9375rem", cursor: "pointer"
+            }}>{MEMO_ADD}</button>
+        </>
+      ) : null}
+
       <div style={{ marginTop: 14 }}>
-        {NOTE_LINES.map((l2, i) => (
+        {断り.map((l2, i) => (
           <p key={i} style={{
-            fontSize: "0.8125rem", color: i === 2 ? C.ink : C.inkSoft, lineHeight: 1.9
+            fontSize: "0.8125rem",
+            color: i === (レッスン ? 1 : 2) ? C.ink : C.inkSoft, lineHeight: 1.9
           }}>{l2}</p>
         ))}
       </div>
