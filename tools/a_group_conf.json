@@ -443,5 +443,13 @@
  "記録のきまり": [
   "components/KirokuNoKimari.jsx",
   "lib/kirokuNoKimari.js"
+ ],
+ "門下を開いた記録": [
+  "components/VocalTracker.jsx",
+  "lib/renraku.js"
+ ],
+ "Woolsong": [
+  "components/Tsutaeru.jsx",
+  "lib/tsutaeru.js"
  ]
 }
