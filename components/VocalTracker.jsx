@@ -350,7 +350,7 @@ import {
 } from "@/components/RecordSheets";
 import {
   KOE, NEMURI, KARADA, TABE, sleepWord, ACCOUNT_ROWS, TSUCHI_ROWS, TSUCHI_NOTE,
-  YOUSU_CHOICES, YOUSU_NOTE, HONBAN, HITOKOTO, HONBAN_CHOICES, honbanChoiceOf
+  YOUSU_NOTE, HONBAN, HITOKOTO, HONBAN_CHOICES, honbanChoiceOf
 } from "@/lib/recordSheets";
 import LookBackV2 from "@/components/LookBackV2";
 import MyTimetable from "@/components/MyTimetable";

@@ -377,6 +377,10 @@
     "components/OpsRoster.jsx",
     "lib/studentInvite.js"
   ],
+  "授業の型": [
+    "components/OpsPresets.jsx",
+    "lib/lessonPresets.js"
+  ],
   "授業の時間を出す": [
     "components/ClassTimeShare.jsx",
     "lib/timetableShare.js"
@@ -401,6 +405,10 @@
     "components/Totonoeru.jsx",
     "lib/totonoeru.js"
   ],
+  "日を選ぶ": [
+    "components/DayPick.jsx",
+    "lib/dayPick.js"
+  ],
   "日程を組む": [
     "components/OpsKumu.jsx",
     "lib/opsKumu.js"
@@ -411,6 +419,11 @@
   ],
   "曲": [
     "components/NotesV2.jsx"
+  ],
+  "曲を直す": [
+    "components/KyokuNaosu.jsx",
+    "lib/kyokuNaosu.js",
+    "lib/practiceNote.js"
   ],
   "曲を足す": [
     "components/NotesV2.jsx"
@@ -435,6 +448,14 @@
   "未送信": [
     "components/VocalTracker.jsx",
     "lib/opsMisou.js"
+  ],
+  "本番のふりかえり": [
+    "components/HonbanFurikaeri.jsx",
+    "lib/honbanFurikaeri.js"
+  ],
+  "本番の予定": [
+    "components/HonbanYotei.jsx",
+    "lib/honbanYotei.js"
   ],
   "本番の前後": [
     "components/HonbanZengo.jsx",
@@ -499,6 +520,11 @@
     "components/OpsEventTable.jsx",
     "lib/orgEventForm.js"
   ],
+  "見た目を選ぶ": [
+    "components/PortfolioLook.jsx",
+    "lib/portfolioLook.js",
+    "lib/plans.js"
+  ],
   "見やすさ": [
     "components/OpsSettingsHub.jsx"
   ],
@@ -519,7 +545,9 @@
     "lib/evaluation.js"
   ],
   "調べる": [
-    "components/CountV2.jsx"
+    "components/CountV2.jsx",
+    "lib/countView.js",
+    "lib/plans.js"
   ],
   "請求書の宛名": [
     "components/OpsSettings.jsx",

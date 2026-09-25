@@ -875,5 +875,26 @@
    "decided": "2026-09-25",
    "decided_by": "Code"
   }
+ ],
+ "本番の予定": [
+  {
+   "text": "場所",
+   "why": "★台帳 `public.performances` に 場所の 列が ありません ── ★id／user_id／performed_on／kind／label／org_event_id／created_at／updated_at／repertoire_name／morning_words の 10列 です。★2026-09-25 に 本番の 台帳を 直に 数えました。",
+   "why_not_placeholder": "★置き場の 無い 欄は、★打てた ように 見えて 消えます。★押せない 札より たちが 悪い です。",
+   "trigger": "`performances` に 場所の 列が 足された とき（★Opus へ 差し戻し 済み）",
+   "decided": "2026-09-25",
+   "decided_by": "Code"
+  }
+ ],
+ "本番のふりかえり": [
+  {
+   "text": "10月11日の 本番",
+   "why": "★見本の 日 です。★台帳（`performances.performed_on`）から 出します。★書き写すと、★どの 方の 画面にも 10月11日と 出ます。",
+   "mockup_number_is_fixture": "★10月11日は 見せかけの 日 です。",
+   "why_not_placeholder": "―（★作りは 出来て います。★見せかけの 日を 置かない だけ です）",
+   "trigger": "―",
+   "decided": "2026-09-25",
+   "decided_by": "Code"
+  }
  ]
 }
