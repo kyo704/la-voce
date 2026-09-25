@@ -1,0 +1,141 @@
+{
+  "title": "アグリッピーナ",
+  "title_original": "Agrippina",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1709,
+  "source": "hand",
+  "source_id": "handel-agrippina",
+  "duration_min": 195,
+  "language": "it",
+  "roles": [
+    {
+      "label": "アグリッピーナ"
+    },
+    {
+      "label": "ポッペア"
+    },
+    {
+      "label": "ネローネ"
+    },
+    {
+      "label": "オットーネ"
+    },
+    {
+      "label": "クラウディオ"
+    },
+    {
+      "label": "パッランテ"
+    },
+    {
+      "label": "ナルチーゾ"
+    },
+    {
+      "label": "レスボ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 皇帝の死の誤報",
+      "group_label": "第1幕",
+      "roles": [
+        "アグリッピーナ",
+        "ネローネ",
+        "パッランテ",
+        "ナルチーゾ",
+        "クラウディオ",
+        "オットーネ",
+        "ポッペア"
+      ]
+    },
+    {
+      "label": "第2幕 凱旋と策謀",
+      "group_label": "第2幕",
+      "roles": [
+        "クラウディオ",
+        "オットーネ",
+        "ポッペア",
+        "アグリッピーナ",
+        "ネローネ",
+        "レスボ"
+      ]
+    },
+    {
+      "label": "第3幕 三重の隠れ場とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ポッペア",
+        "オットーネ",
+        "ネローネ",
+        "クラウディオ",
+        "アグリッピーナ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

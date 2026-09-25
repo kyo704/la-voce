@@ -1,0 +1,82 @@
+{
+  "title": "2つのヴァイオリンのための協奏曲 ニ短調",
+  "title_original": "Konzert für zwei Violinen BWV 1043",
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "orchestra",
+  "year_written": 1730,
+  "source": "hand",
+  "source_id": "bach-double-violin",
+  "duration_min": 15,
+  "roles": [
+    {
+      "label": "第1ヴァイオリン独奏"
+    },
+    {
+      "label": "第2ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 ヴィヴァーチェ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン独奏",
+        "第2ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 ラルゴ・マ・ノン・タント",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン独奏",
+        "第2ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン独奏",
+        "第2ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
