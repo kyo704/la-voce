@@ -518,5 +518,10 @@
   "components/Kaku.jsx",
   "lib/kaku.js",
   "lib/portfolio.js"
+ ],
+ "なにを書く": [
+  "components/NaniWoKaku.jsx",
+  "lib/naniwoKaku.js",
+  "lib/portfolio.js"
  ]
 }
