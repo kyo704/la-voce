@@ -459,5 +459,13 @@
  "希望がまだの方": [
   "components/WariMada.jsx",
   "lib/wariMada.js"
+ ],
+ "よてい": [
+  "components/Yotei.jsx",
+  "lib/yotei.js"
+ ],
+ "本番の前後": [
+  "components/HonbanZengo.jsx",
+  "lib/honbanZengo.js"
  ]
 }
