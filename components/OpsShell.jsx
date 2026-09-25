@@ -49,9 +49,17 @@ const small = { fontSize: "0.78125rem", color: C.inkSoft, lineHeight: 1.8 };
 //     ★使わないものを、★ここに 残しません。
 
 export default function OpsShell({ orgName, role, postName, myName,
-  scaleLabel, onCycleScale, onBack, renderTab, children }) {
+  scaleLabel, onCycleScale, onBack, renderTab, initialTab, children }) {
   const tabs = tabsFor(role);
-  const [tab, setTab] = useState(tabs.length > 0 ? tabs[0].key : null);
+  // ★★★`initialTab`（★2026-09-25・design-v76）。
+  //   ★★「この 教室の 運営」の 行から、★その 帯を 開いて 入ります。
+  //     ★★行の 名が「名簿」なのに、★ホームに 着くのでは 嘘に なります。
+  //   ★★★持って いない 帯は 開きません ── ★`tabs` に 無ければ 既定の まま です。
+  //     ★★渡された 名を そのまま 信じません。★できことで 絞った 一覧から 選びます。
+  const [tab, setTab] = useState(() => {
+    if (initialTab && tabs.some((t) => t.key === initialTab)) return initialTab;
+    return tabs.length > 0 ? tabs[0].key : null;
+  });
 
   // ★★★左の ナビ（★裁定 その78 §2）。
   //   ★★iPhone では 出しません。★下の 帯の まま です（★2026-09-09 の お決め）。

@@ -158,6 +158,7 @@ import MoreBundle from "@/components/MoreBundle";
 import { isBundle, entrancesOf, ENTRANCE_NOTES } from "@/lib/moreBundles";
 import WorkField from "@/components/WorkField";
 import Kugiri from "@/components/Kugiri";
+import KyoshitsuOps from "@/components/KyoshitsuOps";
 import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
   TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
 import { pickSchool, SCHOOL_KEY } from "@/lib/matchingSearch";
@@ -5886,6 +5887,11 @@ export default function VocalTracker({
   const [myNotes, setMyNotes] = useState([]);
   const [noteSaving, setNoteSaving] = useState(false);
   const [opsOrgId, setOpsOrgId] = useState(null);
+  // ★★★どの 帯・どの 節を 開いて 入るか（★2026-09-25・design-v76）。
+  //   ★★「この 教室の 運営」の 行から 入る ときだけ 入ります。
+  //   ★★★中は できことで 判じ直します（`OpsShell` / `OpsSettingsHub`）。
+  //     ★ここで 渡すのは 望み だけ です。★門では ありません。
+  const [opsWant, setOpsWant] = useState(null);
   // ★日程で 見ている日。★地図から 押すと、ここが 変わります。
   const [opsDate, setOpsDate] = useState(() => todayISO());
   // ★自分が作ったのに、自分の membership が無い教室（2026-09-02）。
@@ -13289,6 +13295,10 @@ export default function VocalTracker({
     // ★── つたえる
     // ★── 学校
     "通っているところ": () => setMoreSection("通っているところ"),
+    // ★★★この 教室の 運営 …… ★運営に 入れる 教室が **1つ** の 方だけ 出します。
+    //   ★★2つ 以上の 方は、★もっとの「○○ の 運営」から 入ります。
+    //     ★★どれか を こちらで 勝手に 選びません。
+    "教室の運営": 運営できる教室.length === 1 ? () => setMoreSection("教室の運営") : null,
     "担当の先生を選ぶ": studentCanChoose(monkaSetting)
       ? () => setMoreSection("担当の先生") : null,
     "授業の時間を出す": isEnrolledInOrg ? () => setMoreSection("授業の時間") : null,
@@ -13312,6 +13322,40 @@ export default function VocalTracker({
     "退会": () => setMoreSection("じぶんの記録")
   };
   const 束へ行ける = (to) => typeof 束の行き先[to] === "function";
+
+  // ==========================================================================
+  // ★★★「この 教室の 運営」の 行き先（★2026-09-25・design-v76）
+  //
+  //   ★★束と 同じ 形 です ── ★1つの 表。★`canGo` も `onGo` も ここから。
+  //   ★★★どの 帯・どの 節を 開くかを **名ざし** で 渡します。
+  //     ★★行の 名が「名簿」なのに ホームに 着くのでは、★札が 嘘を つきます。
+  //   ★★中の 門は そのまま です ── ★`OpsShell` も `OpsSettingsHub` も
+  //     ★できことで 判じ直します。★ここで 渡すのは 望み だけ です。
+  // ==========================================================================
+  const 運営できる教室 = myOrgs.filter((mm) => mayEnterOpsHere(mm));
+  const 教室の運営の行き先 = {
+    "名簿": { tab: "roster" },
+    "役職の一覧": { tab: "settings", section: "post" },
+    "組織": { tab: "settings", section: "org" },
+    "場所を決める": { tab: "settings", section: "place" },
+    "プランを選ぶ": { tab: "settings", section: "bill" },
+    // ★★生徒を 招く …… ★もっとの「招待」と **同じ 1枚** です。
+    //   ★★2つの 入口・1つの 画面 です（★Opus・2026-09-25）。
+    //   ★★持って いない 方には 出しません（★`canSeeBetaFeatures`）。
+    "招く": canSeeBetaFeatures(profile) ? { lesson: true } : null
+  };
+  const 教室の運営へ行ける = (to) => !!教室の運営の行き先[to];
+  function 教室の運営を開く(to, orgId) {
+    const 先 = 教室の運営の行き先[to];
+    if (!先) return;
+    if (先.lesson) {
+      setLessonRoleChoice("teach");
+      setActiveTab("lesson");
+      return;
+    }
+    setOpsWant({ tab: 先.tab, section: 先.section || null });
+    setOpsOrgId(orgId);
+  }
   function 束を開く(to) {
     const f = 束の行き先[to];
     if (typeof f === "function") f();
@@ -17167,6 +17211,7 @@ export default function VocalTracker({
         <OpsShell
           orgName={membership && membership.org ? membership.org.name : "教室"}
           role={gate}
+          initialTab={opsWant ? opsWant.tab : null}
           // ★★役職の 名と お名前（★2026-09-18・裁定 ⑧）。
           //   ★★名は `opsPostsById` に あります。★できことと 同じ ところ から 取ります。
           //   ★★お名前は いま 画面に 居る ご本人 です。★ほかの 方の 名では ありません。
@@ -18007,6 +18052,7 @@ export default function VocalTracker({
                         ★★新しい 門を 作りません。 */}
                   <OpsSettingsHub
                     perms={gate}
+                    initialSection={opsWant ? opsWant.section : null}
                     /* ★★★契約者 ご本人か（★裁定 その116・2026-09-20）。
                          ★★できことでは ありません。★台帳の 1列 を 見ます。 */
                     /* ★★★`myOrgs` の `org` には この 列が ありません（★2026-09-20）。
@@ -27991,6 +28037,25 @@ export default function VocalTracker({
                   <MoreBundle bundle={moreSection}
                     canGo={束へ行ける}
                     onGo={束を開く}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★この 教室の 運営（★2026-09-25・design-v76）。
+                    ★★「運営は 何の 運営か」の お尋ねへの 答え から 生まれた 1枚 です。
+                      ★★答え ── ★学校・教室ごと。★公演でも Woolsong 自体でも ありません。
+                    ★★どの 教室かは、★いま 1つ だけ 選べる 形に します ──
+                      ★運営に 入れる 教室が 1つの 方は その 教室。
+                      ★★2つ 以上の 方は、★いままでどおり もっとの「○○ の 運営」から 入ります
+                        （★どれか を ここで 勝手に 選びません）。 */}
+                {layoutV2 && moreSection === "教室の運営" && 運営できる教室.length === 1 ? (
+                  <KyoshitsuOps
+                    orgName={運営できる教室[0].org ? 運営できる教室[0].org.name : "教室"}
+                    postName={運営できる教室[0].post_id && myOrgPosts[運営できる教室[0].post_id]
+                      ? myOrgPosts[運営できる教室[0].post_id].name : null}
+                    myName={profile.display_name || null}
+                    perms={運営できる教室[0].post_id && myOrgPosts[運営できる教室[0].post_id]
+                      ? permSet(myOrgPosts[運営できる教室[0].post_id].perms) : null}
+                    canGo={教室の運営へ行ける}
+                    onGo={(to) => 教室の運営を開く(to, 運営できる教室[0].org_id)}
                     onBack={() => setMoreSection(null)} />
                 ) : null}
                 {/* ★★★お仕事を選ぶ（★2026-09-25・裁定202・sql/90）。

@@ -1,0 +1,108 @@
+{
+  "title": "タルチュフ",
+  "composer": "モリエール",
+  "composer_sort": "Moliere",
+  "kind": "drama",
+  "year_written": 1664,
+  "source": "hand",
+  "source_id": "moliere-tartuffe",
+  "roles": [
+    {
+      "label": "タルチュフ"
+    },
+    {
+      "label": "オルゴン"
+    },
+    {
+      "label": "エルミール"
+    },
+    {
+      "label": "マリアーヌ"
+    },
+    {
+      "label": "ダミス"
+    },
+    {
+      "label": "ドリーヌ"
+    },
+    {
+      "label": "クレアント"
+    },
+    {
+      "label": "ペルネル夫人"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ペルネル夫人の説教",
+      "group_label": "第1幕",
+      "roles": [
+        "ペルネル夫人",
+        "ドリーヌ",
+        "エルミール",
+        "ダミス",
+        "マリアーヌ",
+        "クレアント"
+      ]
+    },
+    {
+      "label": "第2幕 縁談の強制",
+      "group_label": "第2幕",
+      "roles": [
+        "オルゴン",
+        "マリアーヌ",
+        "ドリーヌ"
+      ]
+    },
+    {
+      "label": "第3幕 タルチュフの誘惑",
+      "group_label": "第3幕",
+      "roles": [
+        "タルチュフ",
+        "エルミール",
+        "ダミス",
+        "オルゴン",
+        "ドリーヌ"
+      ]
+    },
+    {
+      "label": "第4幕 机の下の場",
+      "group_label": "第4幕",
+      "roles": [
+        "タルチュフ",
+        "エルミール",
+        "オルゴン",
+        "クレアント",
+        "マリアーヌ"
+      ]
+    },
+    {
+      "label": "第5幕 逆転と王の裁き",
+      "group_label": "第5幕",
+      "roles": [
+        "オルゴン",
+        "タルチュフ",
+        "クレアント",
+        "ペルネル夫人",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "Le Tartuffe",
+  "aliases": [],
+  "duration_min": 130,
+  "language": "fr"
+}

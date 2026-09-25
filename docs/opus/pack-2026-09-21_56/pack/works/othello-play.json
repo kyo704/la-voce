@@ -1,0 +1,109 @@
+{
+  "title": "オセロー",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1604,
+  "source": "hand",
+  "source_id": "shakespeare-othello",
+  "roles": [
+    {
+      "label": "オセロー"
+    },
+    {
+      "label": "デズデモーナ"
+    },
+    {
+      "label": "イアーゴー"
+    },
+    {
+      "label": "エミリア"
+    },
+    {
+      "label": "キャシオー"
+    },
+    {
+      "label": "ロダリーゴー"
+    },
+    {
+      "label": "ブラバンショー"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ヴェニス・元老院",
+      "group_label": "第1幕",
+      "roles": [
+        "オセロー",
+        "デズデモーナ",
+        "イアーゴー",
+        "ブラバンショー",
+        "ロダリーゴー",
+        "その他"
+      ]
+    },
+    {
+      "label": "第2幕 キプロス・祝宴と酔乱",
+      "group_label": "第2幕",
+      "roles": [
+        "オセロー",
+        "イアーゴー",
+        "キャシオー",
+        "ロダリーゴー",
+        "その他"
+      ]
+    },
+    {
+      "label": "第3幕 ハンカチの計略",
+      "group_label": "第3幕",
+      "roles": [
+        "オセロー",
+        "イアーゴー",
+        "デズデモーナ",
+        "エミリア",
+        "キャシオー"
+      ]
+    },
+    {
+      "label": "第4幕 疑いの深まり",
+      "group_label": "第4幕",
+      "roles": [
+        "オセロー",
+        "デズデモーナ",
+        "エミリア",
+        "イアーゴー"
+      ]
+    },
+    {
+      "label": "第5幕 寝室・フィナーレ",
+      "group_label": "第5幕",
+      "roles": [
+        "オセロー",
+        "デズデモーナ",
+        "エミリア",
+        "イアーゴー",
+        "キャシオー",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "Othello",
+  "aliases": [
+    "オセロ"
+  ],
+  "duration_min": 165,
+  "language": "en"
+}

@@ -1,0 +1,181 @@
+{
+  "title": "清教徒",
+  "title_original": "I puritani",
+  "aliases": [
+    "ピューリタニ"
+  ],
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1835,
+  "duration_min": 160,
+  "language": "it",
+  "source": "hand",
+  "source_id": "bellini-puritani",
+  "roles": [
+    {
+      "label": "エルヴィーラ"
+    },
+    {
+      "label": "アルトゥーロ"
+    },
+    {
+      "label": "リッカルド"
+    },
+    {
+      "label": "ジョルジョ"
+    },
+    {
+      "label": "エンリケッタ"
+    },
+    {
+      "label": "ヴァルトン卿"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 城砦の朝",
+      "group_label": "第1幕",
+      "roles": [
+        "リッカルド",
+        "ヴァルトン卿",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 エルヴィーラとジョルジョ",
+      "group_label": "第1幕",
+      "roles": [
+        "エルヴィーラ",
+        "ジョルジョ"
+      ]
+    },
+    {
+      "label": "第1幕 婚礼と逃亡",
+      "group_label": "第1幕",
+      "roles": [
+        "アルトゥーロ",
+        "エルヴィーラ",
+        "エンリケッタ",
+        "リッカルド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 狂乱の場（優しい声が）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルヴィーラ",
+        "ジョルジョ",
+        "リッカルド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 二重唱（ラッパの響き）",
+      "group_label": "第2幕",
+      "roles": [
+        "リッカルド",
+        "ジョルジョ"
+      ]
+    },
+    {
+      "label": "第3幕 再会とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "アルトゥーロ",
+        "エルヴィーラ",
+        "リッカルド",
+        "ジョルジョ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

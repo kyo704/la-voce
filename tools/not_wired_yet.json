@@ -8,7 +8,8 @@
   "★2026-09-24 …… JuryPanel・JuryLayout を つなぎました。★鍵（scoring）が 閉じて いる あいだは 入口ごと 出ません（裁定176 §3）。",
   "★2026-09-24 …… KoenDayFlow・KoenMySchedule を つなぎました。★出演者の 側の まとめ画面（components/KoenMine.jsx）を 作り、★もっと → 公演 から 届きます。★鍵（koen）が 閉じて いる あいだは 行ごと 出ません。",
   "★2026-09-25 …… ★見張りの 数える 先を 対応表から **置場そのもの** に 変えました。★それまで `tools/screen_impl.json`（26枚）だけを 数えて いた ので、★書き忘れた 26枚が 1度も 数えられて いませんでした。★下に 26枚 足しました。",
-  "★2026-09-25 …… MoreBundle（束の 入口7）と WorkField（お仕事を選ぶ）を つなぎました。★束の 行き先は components/VocalTracker.jsx の `束の行き先` が 1つの 表で 持ちます。★表に 無い 行き先は 出ません。★道を 1本 つなぐ たびに 1行 足します。"
+  "★2026-09-25 …… MoreBundle（束の 入口7）と WorkField（お仕事を選ぶ）を つなぎました。★束の 行き先は components/VocalTracker.jsx の `束の行き先` が 1つの 表で 持ちます。★表に 無い 行き先は 出ません。★道を 1本 つなぐ たびに 1行 足します。",
+  "★2026-09-25 …… KyoshitsuOps（この 教室の 運営）を つなぎました。★行き先は components/VocalTracker.jsx の `教室の運営の行き先`。★`OpsShell` に `initialTab`、`OpsSettingsHub` に `initialSection` を 足しました。★どちらも 中で できことを 判じ直します ── ★渡した 名を そのまま 信じません。"
  ],
  "Understudy": "★画面は できて います。★けれど **稽古の 1回**（`koen_sessions`）が 無いと 中身が 出ません（`koen_understudy_needed(p_session)`）。★いつ つなぐ …… `稽古を組む` を 作った とき。★押せる のに 空、は 押せない 札より たちが 悪い ので 出しません",
  "Dasu": "★画面は できて います。★けれど 入口の 中継 ── `MoreBundle`（束の 入口 7つ）が まだ 「もっと」に つながって いません。★いつ つなぐ …… `MoreBundle` を つないだ とき。（つたえる機能 の 束）",

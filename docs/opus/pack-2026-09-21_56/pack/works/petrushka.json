@@ -1,0 +1,171 @@
+{
+  "title": "ペトルーシュカ",
+  "title_original": "Петрушка",
+  "aliases": [
+    "ペトルーシカ"
+  ],
+  "composer": "ストラヴィンスキー",
+  "composer_sort": "Stravinsky, Igor",
+  "kind": "dance",
+  "year_written": 1911,
+  "duration_min": 35,
+  "source": "hand",
+  "source_id": "stravinsky-petrushka",
+  "roles": [
+    {
+      "label": "ペトルーシュカ"
+    },
+    {
+      "label": "バレリーナ"
+    },
+    {
+      "label": "ムーア人"
+    },
+    {
+      "label": "老魔術師"
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1場 謝肉祭の市場",
+      "group_label": "第1場",
+      "roles": [
+        "老魔術師",
+        "ペトルーシュカ",
+        "バレリーナ",
+        "ムーア人",
+        "群舞"
+      ]
+    },
+    {
+      "label": "第2場 ペトルーシュカの部屋",
+      "group_label": "第2場",
+      "roles": [
+        "ペトルーシュカ",
+        "バレリーナ"
+      ]
+    },
+    {
+      "label": "第3場 ムーア人の部屋",
+      "group_label": "第3場",
+      "roles": [
+        "ムーア人",
+        "バレリーナ",
+        "ペトルーシュカ"
+      ]
+    },
+    {
+      "label": "第4場 市場の夕べとフィナーレ",
+      "group_label": "第4場",
+      "roles": [
+        "群舞",
+        "ペトルーシュカ",
+        "ムーア人",
+        "老魔術師"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "title": "ソロモン（オラトリオ）",
+  "title_original": "Solomon",
+  "aliases": [
+    "シバの女王の入城"
+  ],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1748,
+  "source": "hand",
+  "source_id": "handel-solomon",
+  "duration_min": 150,
+  "language": "en",
+  "roles": [
+    {
+      "label": "ソロモン"
+    },
+    {
+      "label": "王妃"
+    },
+    {
+      "label": "シバの女王"
+    },
+    {
+      "label": "ザドク"
+    },
+    {
+      "label": "二人の遊女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 神殿の奉献",
+      "group_label": "第1部",
+      "roles": [
+        "ソロモン",
+        "ザドク",
+        "王妃",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 ソロモンの裁き",
+      "group_label": "第2部",
+      "roles": [
+        "ソロモン",
+        "二人の遊女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3部 シバの女王の入城",
+      "group_label": "第3部",
+      "roles": [
+        "シバの女王",
+        "ソロモン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -46,6 +46,15 @@ async function main() {
   });
 
   console.log("=== 一 ★表の 鍵は ぜんぶ 見本の 行き先 ===");
+  // ★★★「この 教室の 運営」の 行も 行き先 です（★2026-09-25・design-v76）。
+  //   ★★束の 行では ありませんが、★同じ 表が 引きます。
+  //     ★★`組織` と `場所を決める` は 束に ありません ── ★あちらの 6行 です。
+  const ko = await import("data:text/javascript;base64," + Buffer.from(
+    readRaw("lib", "kyoshitsuOps.js")
+      .replace('"@/lib/opsPerms"', JSON.stringify("data:text/javascript;base64," + Buffer.from(
+        readRaw("lib", "opsPerms.js"), "utf-8").toString("base64"))),
+    "utf-8").toString("base64"));
+  ko.ROWS.forEach((r) => to.push(r.to));
   const 迷 = 鍵.filter((k) => !to.includes(k));
   t(迷.length === 0,
     `★出どころの 無い 鍵が ない${迷.length ? "（★" + 迷.join("／") + "）" : ""}`);

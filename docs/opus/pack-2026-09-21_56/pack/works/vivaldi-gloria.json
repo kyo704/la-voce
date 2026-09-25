@@ -1,0 +1,158 @@
+{
+  "title": "グローリア RV589",
+  "composer": "ヴィヴァルディ",
+  "composer_sort": "Vivaldi, Antonio",
+  "kind": "chorus",
+  "year_written": 1715,
+  "source": "hand",
+  "source_id": "vivaldi-gloria",
+  "roles": [
+    {
+      "label": "ソプラノ独唱I"
+    },
+    {
+      "label": "ソプラノ独唱II"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I グローリア・イン・エクセルシス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "II エト・イン・テラ・パクス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III ラウダムス・テ（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱I",
+        "ソプラノ独唱II"
+      ]
+    },
+    {
+      "label": "IV グラティアス／プロプテル・マニャム",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "V ドミネ・デウス",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱I"
+      ]
+    },
+    {
+      "label": "VI ドミネ・フィリ・ウニジェニテ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "VII ドミネ・デウス、アニュス・デイ",
+      "group_label": "全曲",
+      "roles": [
+        "アルト独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VIII クイ・トリス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "IX クイ・セデス",
+      "group_label": "全曲",
+      "roles": [
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "X クオニアム・トゥ・ソルス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "XI クム・サンクト・スピリトゥ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "continuo"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Gloria RV 589",
+  "aliases": [
+    "グロリア"
+  ],
+  "duration_min": 30,
+  "language": "la"
+}

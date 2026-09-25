@@ -17,8 +17,8 @@ import { C } from "@/lib/tokens";
 import { ScreenHead, Back } from "@/components/UiV2";
 import {
   COPY, markerDates, hasMarker,
-  LIST_BACK_TO, LIST_TITLE, LIST_HEAD_LINES, LIST_EMPTY, LIST_ADD,
-  LIST_NOTES, LIST_NOTES_STRONG
+  LIST_BACK_TO, LIST_TITLE, LIST_HEAD_LINES, LIST_HEAD_STRONG, LIST_EMPTY, LIST_ADD,
+  LIST_NOTES, LIST_NOTES_STRONG, LIST_NOTES_SMALL
 } from "@/lib/periodMarkers";
 
 export default function Kugiri({ markers, today, busy, onToggle, onBack }) {
@@ -36,7 +36,10 @@ export default function Kugiri({ markers, today, busy, onToggle, onBack }) {
         background: C.paper, border: `1px solid ${C.line}`
       }}>
         {LIST_HEAD_LINES.map((l, i) => (
-          <p key={i} style={{ fontSize: "0.8125rem", color: C.ink, lineHeight: 1.9 }}>{l}</p>
+          <p key={i} style={{
+            fontSize: "0.8125rem", color: C.ink, lineHeight: 1.9,
+            fontWeight: LIST_HEAD_STRONG.includes(i) ? 600 : 400
+          }}>{l}</p>
         ))}
       </div>
 
@@ -81,9 +84,12 @@ export default function Kugiri({ markers, today, busy, onToggle, onBack }) {
       ) : null}
 
       <div style={{ marginTop: 14 }}>
+        {/* ★★4行目は 小さな 字 です（★見本の `<span class="usu">`）。
+            ★★「（いまは まだです）」── ★くらべるが 区切りを 使い 始めた 日に 外します。 */}
         {LIST_NOTES.map((l, i) => (
           <p key={i} style={{
-            fontSize: "0.75rem", lineHeight: 1.9,
+            fontSize: LIST_NOTES_SMALL.includes(i) ? "0.6875rem" : "0.75rem",
+            lineHeight: 1.9,
             color: LIST_NOTES_STRONG.includes(i) ? C.ink : C.inkSoft,
             fontWeight: LIST_NOTES_STRONG.includes(i) ? 600 : 400
           }}>{l}</p>

@@ -93,11 +93,19 @@ export default function OpsSettingsHub({
   // ★節の 中身。★上から 渡します（★ここで 組み立てません）。
   panes = {},
   // ★見やすさ（★個人の 画面と 同じ 道 を 渡して いただきます）。
-  scale, onPickScale, scaleBusy
+  scale, onPickScale, scaleBusy,
+  // ★★★はじめに 開く 節（★2026-09-25・design-v76）。
+  //   ★★「この 教室の 運営」の 行（★役職／学部・学科／場所／プラン）から 入る ため です。
+  //   ★★★開けない 節は 開きません ── ★`mayOpen` が 断れば 既定の まま です。
+  //     ★★渡された 名を そのまま 信じません。★できことで 判じ直します。
+  initialSection
 }) {
   const width = useWindowWidth();
   const 二面 = isTwoPane(width);
-  const [open, setOpen] = useState(() => firstSection(perms));
+  const [open, setOpen] = useState(() => (
+    initialSection && mayOpen(perms, initialSection, { isContractOwner })
+      ? initialSection : firstSection(perms)
+  ));
   const 一覧 = sectionsFor(perms, { isContractOwner });
   const まだ = notYetSections(perms, { isContractOwner });
   const いま = mayOpen(perms, open, { isContractOwner })
