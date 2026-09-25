@@ -555,5 +555,13 @@
  "公演の一覧": [
   "components/KoenList.jsx",
   "lib/koenList.js"
+ ],
+ "予定の名前": [
+  "components/YoteiNoNamae.jsx",
+  "lib/yoteiNoNamae.js"
+ ],
+ "あなたの重なり": [
+  "components/Kasanari.jsx",
+  "lib/kasanari.js"
  ]
 }
