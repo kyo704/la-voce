@@ -481,5 +481,10 @@
   "components/Dasu.jsx",
   "lib/dasu.js",
   "lib/portfolio.js"
+ ],
+ "録画を足す": [
+  "components/RokugaTasu.jsx",
+  "lib/rokugaTasu.js",
+  "lib/portfolio.js"
  ]
 }
