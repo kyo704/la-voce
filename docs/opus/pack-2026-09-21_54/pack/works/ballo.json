@@ -1,0 +1,191 @@
+{
+  "title": "仮面舞踏会",
+  "title_original": "Un ballo in maschera",
+  "aliases": [
+    "仮面"
+  ],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1859,
+  "duration_min": 145,
+  "language": "it",
+  "source": "hand",
+  "source_id": "verdi-ballo",
+  "roles": [
+    {
+      "label": "リッカルド"
+    },
+    {
+      "label": "アメーリア"
+    },
+    {
+      "label": "レナート"
+    },
+    {
+      "label": "ウルリカ"
+    },
+    {
+      "label": "オスカル"
+    },
+    {
+      "label": "サムエル"
+    },
+    {
+      "label": "トム"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 宮廷（オスカルの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "リッカルド",
+        "オスカル",
+        "レナート",
+        "サムエル",
+        "トム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ウルリカの占い",
+      "group_label": "第1幕",
+      "roles": [
+        "ウルリカ",
+        "リッカルド",
+        "アメーリア",
+        "オスカル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 処刑場の丘（愛の二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "アメーリア",
+        "リッカルド",
+        "レナート",
+        "サムエル",
+        "トム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 レナートの怒り（お前こそ心を汚す者）",
+      "group_label": "第3幕",
+      "roles": [
+        "レナート",
+        "アメーリア"
+      ]
+    },
+    {
+      "label": "第3幕 仮面舞踏会とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "リッカルド",
+        "アメーリア",
+        "レナート",
+        "オスカル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チンバッソ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

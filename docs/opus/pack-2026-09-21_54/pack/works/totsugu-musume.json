@@ -1,0 +1,72 @@
+{
+  "title": "嫁ぐ娘に",
+  "title_original": "嫁ぐ娘に",
+  "aliases": [],
+  "composer": "三善晃",
+  "composer_sort": "Miyoshi, Akira",
+  "kind": "chorus",
+  "year_written": 1973,
+  "source": "hand",
+  "source_id": "miyoshi-totsugu-musume",
+  "duration_min": 20,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（女声3部）",
+      "is_group": true
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1 十代の歌",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（女声3部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "2 夕暮れ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（女声3部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "3 素直な疑問符",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（女声3部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "4 母よ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（女声3部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "5 かどで",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（女声3部）",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "作詩: 高田敏子"
+}

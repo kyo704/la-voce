@@ -571,5 +571,10 @@
  "レッスン": [
   "components/Yotei.jsx",
   "lib/yotei.js"
+ ],
+ "自分の門下": [
+  "components/JibunNoMonka.jsx",
+  "lib/jibunNoMonka.js",
+  "lib/renraku.js"
  ]
 }

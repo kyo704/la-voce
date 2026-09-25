@@ -1,0 +1,149 @@
+{
+  "title": "ジゼル",
+  "composer": "アダン",
+  "composer_sort": "Adam, Adolphe",
+  "kind": "dance",
+  "year_written": 1841,
+  "source": "hand",
+  "source_id": "adam-giselle",
+  "roles": [
+    {
+      "label": "主役（女性）"
+    },
+    {
+      "label": "主役（男性）"
+    },
+    {
+      "label": "ソリスト",
+      "is_group": true
+    },
+    {
+      "label": "コール・ド・バレエ",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 村の祭り",
+      "group_label": "第1幕",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）",
+        "ソリスト",
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第1幕 狂乱の場",
+      "group_label": "第1幕",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）",
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第2幕 ウィリたちの森",
+      "group_label": "第2幕",
+      "roles": [
+        "主役（女性）",
+        "ソリスト",
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第2幕 パ・ド・ドゥとフィナーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "コルネット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Giselle",
+  "aliases": [],
+  "duration_min": 110
+}
