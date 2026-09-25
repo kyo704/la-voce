@@ -551,5 +551,9 @@
  "アカウントと設定": [
   "components/MoreBundle.jsx",
   "lib/moreBundles.js"
+ ],
+ "公演の一覧": [
+  "components/KoenList.jsx",
+  "lib/koenList.js"
  ]
 }
