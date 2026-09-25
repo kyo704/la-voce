@@ -1,0 +1,111 @@
+{
+  "title": "守銭奴",
+  "composer": "モリエール",
+  "composer_sort": "Moliere",
+  "kind": "drama",
+  "year_written": 1668,
+  "source": "hand",
+  "source_id": "moliere-avare",
+  "roles": [
+    {
+      "label": "アルパゴン"
+    },
+    {
+      "label": "クレアント"
+    },
+    {
+      "label": "エリーズ"
+    },
+    {
+      "label": "ヴァレール"
+    },
+    {
+      "label": "マリアーヌ"
+    },
+    {
+      "label": "フロジーヌ"
+    },
+    {
+      "label": "ラ・フレーシュ"
+    },
+    {
+      "label": "アンセルム"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 恋の告白と父の計画",
+      "group_label": "第1幕",
+      "roles": [
+        "エリーズ",
+        "ヴァレール",
+        "クレアント",
+        "アルパゴン",
+        "ラ・フレーシュ"
+      ]
+    },
+    {
+      "label": "第2幕 借金と仲立ち",
+      "group_label": "第2幕",
+      "roles": [
+        "クレアント",
+        "ラ・フレーシュ",
+        "フロジーヌ",
+        "アルパゴン"
+      ]
+    },
+    {
+      "label": "第3幕 晩餐の支度",
+      "group_label": "第3幕",
+      "roles": [
+        "アルパゴン",
+        "マリアーヌ",
+        "フロジーヌ",
+        "クレアント",
+        "エリーズ",
+        "その他"
+      ]
+    },
+    {
+      "label": "第4幕 金庫の盗難",
+      "group_label": "第4幕",
+      "roles": [
+        "アルパゴン",
+        "クレアント",
+        "ラ・フレーシュ"
+      ]
+    },
+    {
+      "label": "第5幕 取り調べと結末",
+      "group_label": "第5幕",
+      "roles": [
+        "アルパゴン",
+        "アンセルム",
+        "ヴァレール",
+        "マリアーヌ",
+        "クレアント",
+        "エリーズ",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "L'Avare",
+  "aliases": [
+    "アヴァール"
+  ],
+  "duration_min": 130,
+  "language": "fr"
+}

@@ -1,0 +1,181 @@
+{
+  "title": "シチリア島の夕べの祈り",
+  "title_original": "I vespri siciliani",
+  "aliases": [
+    "ヴェスプリ"
+  ],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1855,
+  "source": "hand",
+  "source_id": "verdi-vespri",
+  "duration_min": 195,
+  "language": "it",
+  "roles": [
+    {
+      "label": "エレナ"
+    },
+    {
+      "label": "アッリーゴ"
+    },
+    {
+      "label": "モンフォルテ"
+    },
+    {
+      "label": "プローチダ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 パレルモの広場",
+      "group_label": "第1幕",
+      "roles": [
+        "エレナ",
+        "アッリーゴ",
+        "モンフォルテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 プローチダの帰還（おお、パレルモよ）",
+      "group_label": "第2幕",
+      "roles": [
+        "プローチダ",
+        "エレナ",
+        "アッリーゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 バレエ「四季」と舞踏会",
+      "group_label": "第3幕",
+      "roles": [
+        "モンフォルテ",
+        "アッリーゴ",
+        "エレナ",
+        "プローチダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 牢獄",
+      "group_label": "第4幕",
+      "roles": [
+        "エレナ",
+        "アッリーゴ",
+        "プローチダ",
+        "モンフォルテ"
+      ]
+    },
+    {
+      "label": "第5幕 婚礼と晩鐘",
+      "group_label": "第5幕",
+      "roles": [
+        "エレナ",
+        "アッリーゴ",
+        "プローチダ",
+        "モンフォルテ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チンバッソ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

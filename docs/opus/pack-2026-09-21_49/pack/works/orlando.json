@@ -1,0 +1,128 @@
+{
+  "title": "オルランド",
+  "title_original": "Orlando",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1733,
+  "source": "hand",
+  "source_id": "handel-orlando",
+  "duration_min": 180,
+  "language": "it",
+  "roles": [
+    {
+      "label": "オルランド"
+    },
+    {
+      "label": "アンジェリカ"
+    },
+    {
+      "label": "メドーロ"
+    },
+    {
+      "label": "ドリンダ"
+    },
+    {
+      "label": "ゾロアストロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 魔術師の予言",
+      "group_label": "第1幕",
+      "roles": [
+        "ゾロアストロ",
+        "オルランド",
+        "アンジェリカ",
+        "メドーロ",
+        "ドリンダ"
+      ]
+    },
+    {
+      "label": "第2幕 嫉妬と狂乱の場",
+      "group_label": "第2幕",
+      "roles": [
+        "オルランド",
+        "アンジェリカ",
+        "メドーロ",
+        "ドリンダ"
+      ]
+    },
+    {
+      "label": "第3幕 治癒とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ゾロアストロ",
+        "オルランド",
+        "アンジェリカ",
+        "メドーロ",
+        "ドリンダ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

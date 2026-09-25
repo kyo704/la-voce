@@ -1,0 +1,118 @@
+{
+  "title": "交響曲第4番 ト長調",
+  "title_original": "Sinfonie Nr. 4",
+  "aliases": [],
+  "composer": "マーラー",
+  "composer_sort": "Mahler, Gustav",
+  "kind": "orchestra",
+  "year_written": 1900,
+  "source": "hand",
+  "source_id": "mahler-sym4",
+  "duration_min": 55,
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 ゆったりと、急がずに",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第2楽章 くつろいだ動きで",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第3楽章 静かに",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第4楽章 天上の生活（ソプラノ独唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

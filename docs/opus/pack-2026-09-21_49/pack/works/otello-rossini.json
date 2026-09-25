@@ -1,0 +1,166 @@
+{
+  "title": "オテッロ（ロッシーニ）",
+  "title_original": "Otello",
+  "aliases": [
+    "ロッシーニのオテロ"
+  ],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1816,
+  "source": "hand",
+  "source_id": "rossini-otello",
+  "duration_min": 165,
+  "language": "it",
+  "roles": [
+    {
+      "label": "オテッロ"
+    },
+    {
+      "label": "デズデーモナ"
+    },
+    {
+      "label": "ロドリーゴ"
+    },
+    {
+      "label": "イアーゴ"
+    },
+    {
+      "label": "エルミーロ"
+    },
+    {
+      "label": "エミーリア"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ヴェネツィアの凱旋",
+      "group_label": "第1幕",
+      "roles": [
+        "オテッロ",
+        "イアーゴ",
+        "ロドリーゴ",
+        "エルミーロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 手紙の計略",
+      "group_label": "第2幕",
+      "roles": [
+        "デズデーモナ",
+        "ロドリーゴ",
+        "オテッロ",
+        "イアーゴ",
+        "エミーリア"
+      ]
+    },
+    {
+      "label": "第3幕 柳の歌と祈り",
+      "group_label": "第3幕",
+      "roles": [
+        "デズデーモナ",
+        "エミーリア"
+      ]
+    },
+    {
+      "label": "第3幕 フィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "オテッロ",
+        "デズデーモナ",
+        "エルミーロ",
+        "ロドリーゴ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

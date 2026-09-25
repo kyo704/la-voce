@@ -1,0 +1,88 @@
+{
+  "title": "旅",
+  "title_original": "旅",
+  "aliases": [],
+  "composer": "佐藤眞",
+  "composer_sort": "Sato, Shin",
+  "kind": "chorus",
+  "year_written": 1968,
+  "source": "hand",
+  "source_id": "sato-tabi",
+  "duration_min": 28,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（混声4部）",
+      "is_group": true
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1 旅立つ日",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "2 村の小径で",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "3 旅の夜",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "4 行こうふたたび",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "5 光と影と",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "6 雨の日に",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "7 そして旅へ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "作詩: 田中清光"
+}

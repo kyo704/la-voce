@@ -1,0 +1,99 @@
+{
+  "title": "松風",
+  "title_original": "松風",
+  "aliases": [],
+  "composer": "能（三番目（鬘））",
+  "composer_sort": "Noh 三番目（鬘）",
+  "kind": "drama",
+  "year_written": 1400,
+  "source": "hand",
+  "source_id": "noh-matsukaze-kanze",
+  "duration_min": 95,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（松風）"
+    },
+    {
+      "label": "ツレ（村雨）"
+    },
+    {
+      "label": "ワキ（旅僧）"
+    },
+    {
+      "label": "アイ（里人）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "旅僧と塩屋",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（旅僧）",
+        "アイ（里人）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "汐汲みの姉妹",
+      "group_label": "前段",
+      "roles": [
+        "シテ（松風）",
+        "ツレ（村雨）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "行平の形見の烏帽子",
+      "group_label": "後段",
+      "roles": [
+        "シテ（松風）",
+        "ツレ（村雨）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "破ノ舞・松を行平と見る",
+      "group_label": "後段",
+      "roles": [
+        "シテ（松風）",
+        "囃子方",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う"
+}

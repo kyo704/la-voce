@@ -1,0 +1,297 @@
+{
+  "title": "ラ・ボエーム",
+  "composer": "プッチーニ",
+  "composer_sort": "Puccini, Giacomo",
+  "kind": "opera",
+  "year_written": 1896,
+  "source": "hand",
+  "source_id": "puccini-boheme",
+  "instrumentation": [
+    "管弦楽"
+  ],
+  "roles": [
+    {
+      "label": "ミミ"
+    },
+    {
+      "label": "ロドルフォ"
+    },
+    {
+      "label": "ムゼッタ"
+    },
+    {
+      "label": "マルチェッロ"
+    },
+    {
+      "label": "ショナール"
+    },
+    {
+      "label": "コッリーネ"
+    },
+    {
+      "label": "ベノア"
+    },
+    {
+      "label": "アルチンドロ"
+    },
+    {
+      "label": "パルピニョール"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "屋根裏部屋（冒頭）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドルフォ",
+        "マルチェッロ",
+        "コッリーネ",
+        "ショナール"
+      ]
+    },
+    {
+      "label": "ベノアの場",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドルフォ",
+        "マルチェッロ",
+        "コッリーネ",
+        "ショナール",
+        "ベノア"
+      ]
+    },
+    {
+      "label": "冷たい手を（ロドルフォのアリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドルフォ"
+      ]
+    },
+    {
+      "label": "私の名はミミ（ミミのアリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミミ"
+      ]
+    },
+    {
+      "label": "二重唱（おお、麗しい乙女よ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミミ",
+        "ロドルフォ"
+      ]
+    },
+    {
+      "label": "カルチェ・ラタンの賑わい",
+      "group_label": "第2幕",
+      "roles": [
+        "ロドルフォ",
+        "ミミ",
+        "マルチェッロ",
+        "コッリーネ",
+        "ショナール",
+        "パルピニョール",
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "ムゼッタのワルツ（私が街を歩けば）",
+      "group_label": "第2幕",
+      "roles": [
+        "ムゼッタ",
+        "マルチェッロ",
+        "アルチンドロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "フィナーレ（第2幕・軍楽隊）",
+      "group_label": "第2幕",
+      "roles": [
+        "ミミ",
+        "ロドルフォ",
+        "ムゼッタ",
+        "マルチェッロ",
+        "ショナール",
+        "コッリーネ",
+        "アルチンドロ",
+        "合唱",
+        "児童合唱"
+      ],
+      "forces": [
+        "管弦楽",
+        "舞台上の楽隊"
+      ]
+    },
+    {
+      "label": "関所の朝",
+      "group_label": "第3幕",
+      "roles": [
+        "ミミ",
+        "マルチェッロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ミミとロドルフォの別れ（さようなら）",
+      "group_label": "第3幕",
+      "roles": [
+        "ミミ",
+        "ロドルフォ"
+      ]
+    },
+    {
+      "label": "四重唱（第3幕フィナーレ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ミミ",
+        "ロドルフォ",
+        "ムゼッタ",
+        "マルチェッロ"
+      ]
+    },
+    {
+      "label": "屋根裏部屋の再会",
+      "group_label": "第4幕",
+      "roles": [
+        "ロドルフォ",
+        "マルチェッロ",
+        "ショナール",
+        "コッリーネ"
+      ]
+    },
+    {
+      "label": "古い外套よ（コッリーネのアリア）",
+      "group_label": "第4幕",
+      "roles": [
+        "コッリーネ"
+      ]
+    },
+    {
+      "label": "フィナーレ（ミミの死）",
+      "group_label": "第4幕",
+      "roles": [
+        "ミミ",
+        "ロドルフォ",
+        "ムゼッタ",
+        "マルチェッロ",
+        "ショナール",
+        "コッリーネ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "バストロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "大太鼓・小太鼓・シンバル・トライアングル・グロッケン・鐘・木琴"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "第2幕の軍楽隊"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "La bohème",
+  "aliases": [
+    "ボエーム",
+    "Boheme"
+  ],
+  "duration_min": 115,
+  "language": "it"
+}

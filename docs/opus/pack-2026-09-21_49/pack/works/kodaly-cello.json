@@ -1,0 +1,48 @@
+{
+  "title": "無伴奏チェロソナタ 作品8",
+  "title_original": "Sonata for Solo Cello",
+  "aliases": [],
+  "composer": "コダーイ",
+  "composer_sort": "Kodaly, Zoltan",
+  "kind": "chamber",
+  "year_written": 1915,
+  "source": "hand",
+  "source_id": "kodaly-solo-cello",
+  "duration_min": 32,
+  "roles": [
+    {
+      "label": "チェロ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・マエストーソ・マ・アパッショナート",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アレグロ・モルト・ヴィヴァーチェ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ],
+  "note": "★スコルダトゥーラ（低弦を半音下げる）"
+}
