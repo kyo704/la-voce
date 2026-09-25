@@ -513,5 +513,10 @@
   "components/NoteBody.jsx",
   "lib/noteBody.js",
   "lib/notes.js"
+ ],
+ "書く": [
+  "components/Kaku.jsx",
+  "lib/kaku.js",
+  "lib/portfolio.js"
  ]
 }
