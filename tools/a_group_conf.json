@@ -490,5 +490,13 @@
  "子どもの枠": [
   "components/KodomoNoWaku.jsx",
   "lib/kodomoNoWaku.js"
+ ],
+ "緊急の連絡先": [
+  "components/KinkyuRenrakusaki.jsx",
+  "lib/kinkyuRenrakusaki.js"
+ ],
+ "整える": [
+  "components/Totonoeru.jsx",
+  "lib/totonoeru.js"
  ]
 }
