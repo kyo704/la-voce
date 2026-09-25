@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woolsong ホームページの型 ― 黒板／フライヤー／短冊／掲示板（t24・t25・t28・t29）</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=BIZ+UDPGothic:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@400;600&family=Archivo:wght@400;700;900&family=Yomogi&family=Zen+Kurenaido&family=Courier+Prime:wght@400;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<style>
+  :root{--accent:#7A1F2E;--radius:12px;--space:1;--head:"Shippori Mincho",serif;--body:"BIZ UDPGothic",system-ui,sans-serif;--lat:"Cormorant Garamond",serif}
+  body[data-font="old"]{--head:"Zen Old Mincho",serif;--body:"Zen Old Mincho",serif}
+  body[data-font="gothic"]{--head:"BIZ UDPGothic",sans-serif;--body:"BIZ UDPGothic",sans-serif}
+  body[data-photo="square"]{--radius:0}
+  body[data-density="airy"]{--space:1.3}
+  *{box-sizing:border-box} html,body{margin:0;background:#DAD4C8;font-family:var(--body);-webkit-font-smoothing:antialiased}
+  body[data-headshot="off"] .headshot,body[data-headshot="off"] .headshot-wrap{display:none!important}
+  .headshot{background:linear-gradient(160deg,#8b7a72,#3b3230);position:relative;overflow:hidden;border-radius:var(--radius)}
+  .headshot::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 35%,rgba(255,255,255,.35),transparent 42%)}
+  article{display:none} article.on{display:block}
+  [data-sec][hidden]{display:none!important}
+  .ph{background:linear-gradient(160deg,#8b7a72,#3b3230);position:relative;overflow:hidden;border-radius:var(--radius)}
+  .ph::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 35%,rgba(255,255,255,.35),transparent 42%)}
+  .auto{display:inline-block;font-size:10px;border:1px solid currentColor;opacity:.55;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:98;background:rgba(20,18,16,.92);color:#fff;padding:8px 12px;display:flex;gap:6px;align-items:center;font-size:12px;flex-wrap:wrap}
+  .topbar b{opacity:.7;margin-right:4px;font-weight:500}
+  .topbar button{border:0;background:transparent;color:#fff;padding:5px 10px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:12px}
+  .topbar button[aria-pressed="true"]{background:#fff;color:#111}
+  .topbar .toggle{margin-left:auto;background:#7A1F2E}
+  .spacer{height:44px}
+  .panel{position:fixed;top:44px;left:0;bottom:0;width:280px;background:#1b1917;color:#eee;z-index:99;padding:16px;overflow:auto;font-size:12px;transform:translateX(-100%);transition:.25s}
+  .panel.open{transform:none}
+  .panel h3{font-size:12px;letter-spacing:.14em;margin:16px 0 8px;color:#bbb;font-weight:500}.panel h3:first-child{margin-top:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{border:1px solid #444;background:transparent;color:#eee;border-radius:999px;padding:5px 10px;cursor:pointer;font-family:inherit;font-size:12px}
+  .chips button[aria-pressed="true"]{background:#eee;color:#111;border-color:#eee}
+  .sw{display:flex;gap:6px;flex-wrap:wrap}.sw button{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer}.sw button[aria-pressed="true"]{border-color:#fff}
+  .secs div{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #2a2725}.secs label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer}.secs input{accent-color:#eee}
+  .secs button{border:1px solid #444;background:transparent;color:#eee;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px}
+  .hint{color:#8a8580;line-height:1.6;margin-top:14px}
+  /* ================= t24 黒板：稽古場の黒板にチョークで ================= */
+  .t24{background:#2E3B34;color:#EDE7D8;font-family:"Yomogi",var(--body),sans-serif}
+  .t24 .board{max-width:1100px;margin:36px auto 60px;border:16px solid #6B4A2E;border-radius:6px;background:radial-gradient(ellipse at 30% 20%,#3a4a41,#2E3B34 60%,#26312b);padding:40px 44px 34px;box-shadow:inset 0 0 60px rgba(0,0,0,.35),0 20px 40px rgba(0,0,0,.35);position:relative}
+  .t24 .board::after{content:"";position:absolute;left:10%;right:10%;bottom:-30px;height:14px;background:#6B4A2E;border-radius:0 0 6px 6px}
+  .t24 .headshot{position:absolute;right:44px;top:40px;width:150px;aspect-ratio:3/4;border:6px solid #F7EFD9;border-radius:2px;transform:rotate(-2deg);box-shadow:0 10px 24px rgba(0,0,0,.4)}
+  .t24 h1{font-family:"Yomogi",var(--head);font-size:clamp(40px,6vw,70px);margin:0;letter-spacing:.06em;color:#fff;text-shadow:0 0 6px rgba(255,255,255,.25)}
+  .t24 h1 small{display:block;font-size:16px;letter-spacing:.2em;color:#F2D98B;margin-top:4px}
+  .t24 .under{height:6px;width:220px;background:linear-gradient(90deg,#F2D98B,transparent);border-radius:3px;margin:8px 0 20px;opacity:.9}
+  .t24 .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:34px}
+  .t24 h2{font-size:22px;margin:0 0 8px;color:#F2D98B;font-family:"Yomogi",var(--head)}
+  .t24 .line{display:flex;gap:12px;padding:6px 0;font-size:18px;line-height:1.6;border-bottom:1px dashed rgba(255,255,255,.18)}
+  .t24 .line time{min-width:5.5em;color:#fff}
+  .t24 .line small{display:block;font-size:14px;color:#cfd6c9}
+  .t24 p{font-size:17px;line-height:1.85;margin:0 0 8px}
+  .t24 .chips{display:flex;flex-wrap:wrap;gap:8px 12px;font-size:17px}
+  .t24 .chips span{border:1.5px solid #EDE7D8;border-radius:999px;padding:2px 12px}
+  .t24 .press{font-size:18px;color:#fff}
+  .t24 .press small{display:block;font-size:13px;color:#cfd6c9}
+  .t24 .video{aspect-ratio:16/9;border:2px dashed #EDE7D8;display:flex;align-items:center;justify-content:center;font-size:15px;border-radius:8px}
+  .t24 .tray{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:22px;font-size:16px}
+  .t24 .tray a{color:#2E3B34;background:#F2D98B;text-decoration:none;padding:8px 18px;border-radius:3px;font-weight:700;white-space:nowrap}
+  .t24 footer{max-width:1100px;margin:0 auto;padding:0 24px 60px;font-size:12px;color:#8fa093;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--body)}
+  @media (max-width:820px){.t24 .headshot{position:static;transform:none;width:130px;margin-bottom:12px}.t24 .board{margin:20px 12px 50px;padding:26px 20px;border-width:10px}.t24 .grid{grid-template-columns:1fr}.t24 .tray{flex-direction:column;align-items:flex-start}}
+
+  /* ================= t25 フライヤー：壁に貼った紙が重なる ================= */
+  .t25{background:#9C9A94;color:#151515;font-family:var(--body);background-image:radial-gradient(rgba(0,0,0,.08) 1px,transparent 1px);background-size:5px 5px}
+  .t25 .wall{max-width:1140px;margin:0 auto;padding:40px 24px 90px;position:relative}
+  .t25 .paper{background:#F6F1E6;box-shadow:0 12px 26px rgba(0,0,0,.35);position:relative;padding:22px 24px}
+  .t25 .paper::before{content:"";position:absolute;left:50%;top:-12px;width:70px;height:22px;background:rgba(255,255,220,.55);transform:translateX(-50%) rotate(-2deg);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .t25 .big{transform:rotate(-1.5deg);padding:34px 32px 30px;background:#F6F1E6}
+  .t25 .big{display:grid;grid-template-columns:1fr 200px;gap:24px;align-items:end}
+  .t25 .big .headshot{aspect-ratio:3/4;border-radius:0;border:6px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3);transform:rotate(2deg)}
+  .t25 .big h1{font-family:"Archivo",sans-serif;font-weight:900;font-size:clamp(46px,8vw,110px);line-height:.9;letter-spacing:-.04em;margin:0;text-transform:uppercase}
+  .t25 .big h1 span{color:var(--accent)}
+  .t25 .big .jp{font-family:var(--head);font-weight:600;font-size:clamp(20px,2.4vw,30px);margin:10px 0 0}
+  .t25 .big p{margin:12px 0 0;font-size:14.5px;line-height:1.8;max-width:34em}
+  .t25 .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:-10px;align-items:start}
+  .t25 .fly{transform:rotate(1.2deg)}.t25 .fly:nth-child(2){transform:rotate(-2deg);margin-top:26px}.t25 .fly:nth-child(3){transform:rotate(.8deg);margin-top:8px}
+  .t25 .fly .d{font-family:"Archivo";font-weight:900;font-size:40px;letter-spacing:-.03em;line-height:1}
+  .t25 .fly .d small{display:block;font-size:11px;letter-spacing:.3em;font-weight:700;color:#555}
+  .t25 .fly .w{font-family:var(--head);font-weight:600;font-size:18px;margin:10px 0 4px}
+  .t25 .fly .v{font-size:12.5px;color:#444;line-height:1.6}
+  .t25 .fly .stripe{height:8px;background:var(--accent);margin:14px -24px -22px}
+  .t25 .lower{display:grid;grid-template-columns:1.2fr .8fr;gap:26px;margin-top:34px;align-items:start}
+  .t25 .lower .paper{transform:rotate(-.6deg)}.t25 .lower .paper:last-child{transform:rotate(1.4deg);background:#FFF8B8}
+  .t25 h2{font-family:"Archivo";font-weight:700;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#555;margin:0 0 10px}
+  .t25 p{margin:0 0 10px;font-size:14.5px;line-height:1.85}
+  .t25 ul{list-style:none;margin:0;padding:0}.t25 li{padding:6px 0;border-bottom:1px dashed #b9b0a0;font-size:14.5px}
+  .t25 .press{font-family:var(--head);font-size:15px}
+  .t25 .video{aspect-ratio:16/9;background:#151515;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:10px}
+  .t25 .contact{margin-top:34px;transform:rotate(.5deg);display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px}
+  .t25 .contact a{color:#fff;background:#151515;text-decoration:none;padding:10px 18px;font-weight:700;font-size:12px;letter-spacing:.14em;white-space:nowrap}
+  .t25 footer{padding:30px 0 0;font-size:12px;color:#333;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:820px){.t25 .big{grid-template-columns:1fr}.t25 .big .headshot{max-width:160px}.t25 .row,.t25 .lower{grid-template-columns:1fr}.t25 .fly,.t25 .fly:nth-child(2),.t25 .fly:nth-child(3){margin-top:14px}.t25 .contact{flex-direction:column;align-items:flex-start}}
+
+  /* ================= t28 短冊：吊るした短冊に縦書き ================= */
+  .t28{background:#EFE9DA;color:#1a1714;font-family:var(--body);background-image:linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px);background-size:28px 100%}
+  .t28 .rail{max-width:1140px;margin:0 auto;padding:36px 24px 0}
+  .t28 .rope{height:4px;background:#5a4a3a;border-radius:2px;position:relative}
+  .t28 .rope::before,.t28 .rope::after{content:"";position:absolute;top:-6px;width:16px;height:16px;border-radius:50%;background:#5a4a3a}
+  .t28 .rope::before{left:-4px}.t28 .rope::after{right:-4px}
+  .t28 .strips{display:flex;justify-content:center;gap:22px;align-items:flex-start;padding:0 12px;flex-wrap:wrap}
+  .t28 .strip{width:112px;min-height:420px;background:#FBF7EC;box-shadow:0 10px 24px rgba(0,0,0,.18);position:relative;padding:44px 0 26px;display:flex;flex-direction:column;align-items:center;border-top:6px solid var(--accent)}
+  .t28 .strip::before{content:"";position:absolute;top:-22px;left:50%;width:2px;height:22px;background:#5a4a3a;transform:translateX(-50%)}
+  .t28 .strip::after{content:"";position:absolute;top:14px;left:50%;width:10px;height:10px;border-radius:50%;background:#fff;border:1.5px solid #1a1714;transform:translateX(-50%)}
+  .t28 .strip.photo{width:150px;min-height:0;padding:44px 12px 14px}
+  .t28 .strip.photo .headshot{width:100%;aspect-ratio:3/4;border-radius:0}
+  .t28 .strip.name{width:150px;min-height:520px;background:#1a1714;color:#F7F1E3;border-top-color:#F2D98B}
+  .t28 .strip.name .v{font-family:"Yuji Syuku",var(--head),serif;font-size:56px;line-height:1.02}
+  .t28 .strip.name .v span{height:1.02em}
+  .t28 .strip.name .v.kana{font-family:var(--body);font-size:12px;color:#cdbf9f;margin-top:10px}
+  .t28 .v{display:flex;flex-direction:column;align-items:center;line-height:1.2;font-size:15px}
+  .t28 .v span{display:block;height:1.2em;text-align:center}.t28 .v span.r{transform:rotate(90deg)}
+  .t28 .strip h2{margin:0 0 10px;font-family:var(--head);font-weight:800;font-size:15px;letter-spacing:.2em;color:var(--accent);writing-mode:horizontal-tb}
+  .t28 .strip .v.t{font-family:var(--head);font-weight:600;font-size:16px}
+  .t28 .strip .v.sub{font-size:11px;color:#6a6258;margin-top:6px}
+  .t28 .strip .gap{height:16px}
+  .t28 .below{max-width:1140px;margin:40px auto 0;padding:0 24px 80px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  .t28 h3{font-family:var(--head);font-weight:800;font-size:14px;letter-spacing:.24em;color:var(--accent);margin:0 0 10px}
+  .t28 p{margin:0 0 10px;line-height:1.9;font-size:14.5px}
+  .t28 .video{aspect-ratio:16/9;background:#1a1714;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px}
+  .t28 .contact{grid-column:1/-1;border-top:2px solid #1a1714;border-bottom:1px solid #1a1714;padding:14px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px}
+  .t28 .contact a{color:#1a1714;border:1.5px solid #1a1714;padding:8px 16px;text-decoration:none;white-space:nowrap;font-family:var(--head)}
+  .t28 footer{grid-column:1/-1;font-size:12px;color:#8a8175;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:820px){.t28 .strips{gap:12px}.t28 .strip{width:92px;min-height:340px;padding-top:36px}.t28 .strip.name{width:120px;min-height:400px}.t28 .strip.name .v{font-size:42px}.t28 .v{font-size:13px}.t28 .below{grid-template-columns:1fr}.t28 .contact{flex-direction:column;align-items:flex-start}}
+
+  /* ================= t29 掲示板：教室のコルクボード ================= */
+  .t29{background:#C9A876;color:#2b2119;font-family:var(--body);background-image:radial-gradient(rgba(0,0,0,.12) 1px,transparent 1.5px),radial-gradient(rgba(255,255,255,.18) 1px,transparent 1.5px);background-size:7px 7px,11px 11px;background-position:0 0,3px 4px}
+  .t29 .cork{max-width:1120px;margin:0 auto;padding:40px 24px 80px;border:0}
+  .t29 .pin{position:absolute;left:50%;top:-8px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,var(--accent) 60%);transform:translateX(-50%);box-shadow:0 3px 5px rgba(0,0,0,.35)}
+  .t29 .note{background:#FBF7EC;box-shadow:0 12px 24px rgba(0,0,0,.3);position:relative;padding:22px 24px}
+  .t29 .title{transform:rotate(-1deg);padding:30px 30px 26px;display:grid;grid-template-columns:1fr 160px;gap:22px;align-items:center}
+  .t29 .title .headshot{aspect-ratio:3/4;border-radius:0;border:6px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3);transform:rotate(2deg)}
+  .t29 .title h1{font-family:var(--head);font-weight:600;font-size:clamp(34px,5vw,58px);margin:0;letter-spacing:.06em}
+  .t29 .title h1 small{display:block;font-family:var(--body);font-weight:700;font-size:14px;letter-spacing:.2em;color:var(--accent);margin-top:6px}
+  .t29 .title p{margin:12px 0 0;line-height:1.85;font-size:15px;max-width:36em}
+  .t29 .row{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;margin-top:30px;align-items:start}
+  .t29 .tt{transform:rotate(.8deg)}
+  .t29 .tt h2,.t29 h2{font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:.3em;color:var(--accent);margin:0 0 12px}
+  .t29 table{width:100%;border-collapse:collapse;font-size:14px}
+  .t29 th{background:#2b2119;color:#fff;font-weight:700;font-size:12px;padding:6px 4px}
+  .t29 td{border:1px solid #cfc3ad;padding:8px 6px;text-align:center;height:40px;vertical-align:middle}
+  .t29 td.on{background:var(--accent);color:#fff;font-weight:700}
+  .t29 td.on small{display:block;font-weight:400;font-size:11px}
+  .t29 .yellow{background:#FFF3A8;transform:rotate(-1.6deg);font-family:"Zen Kurenaido",var(--body);font-size:17px;line-height:1.8}
+  .t29 .yellow b{display:block;font-family:var(--body);font-size:12px;letter-spacing:.2em;color:var(--accent);margin-bottom:6px}
+  .t29 .yellow .price{font-family:var(--head);font-size:24px;margin-top:6px}
+  .t29 .row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:30px;align-items:start}
+  .t29 .row2 .note:nth-child(1){transform:rotate(1.2deg)}.t29 .row2 .note:nth-child(2){transform:rotate(-1deg);margin-top:16px}.t29 .row2 .note:nth-child(3){transform:rotate(.6deg)}
+  .t29 ul{list-style:none;margin:0;padding:0}.t29 li{padding:6px 0;border-bottom:1px dotted #b9b0a0;font-size:14px}
+  .t29 p{margin:0 0 8px;font-size:14.5px;line-height:1.8}
+  .t29 .press{font-family:var(--head);font-size:15px}
+  .t29 .video{aspect-ratio:16/9;background:#2b2119;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px}
+  .t29 .contact{margin-top:30px;transform:rotate(-.5deg);display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px}
+  .t29 .contact a{color:#fff;background:var(--accent);text-decoration:none;padding:10px 18px;font-weight:700;white-space:nowrap;border-radius:3px}
+  .t29 footer{padding:30px 0 0;font-size:12px;color:#5a4a3a;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:820px){.t29 .title{grid-template-columns:1fr}.t29 .title .headshot{max-width:140px}.t29 .row,.t29 .row2{grid-template-columns:1fr}.t29 .row2 .note:nth-child(2){margin-top:0}.t29 table{font-size:12px}.t29 .contact{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body data-font="mincho" data-photo="round" data-density="normal" data-headshot="on">
+<div class="topbar" role="group" aria-label="型"><b>型</b>
+  <button data-t="t24" aria-pressed="true">24 黒板</button><button data-t="t25">25 フライヤー</button><button data-t="t28">28 短冊</button><button data-t="t29">29 掲示板</button>
+  <button class="toggle" onclick="document.getElementById('panel').classList.toggle('open')">カスタマイズ</button>
+</div>
+<div class="spacer"></div>
+<aside class="panel" id="panel">
+  <h3>色（8色から）</h3><div class="sw" id="colors"></div>
+  <h3>宣材写真</h3><div class="chips" id="headshot"><button aria-pressed="true" data-v="on">置く</button><button aria-pressed="false" data-v="off">置かない</button></div>
+  <h3>書体</h3><div class="chips" id="fonts"><button aria-pressed="true" data-v="mincho">明朝＋ゴシック</button><button aria-pressed="false" data-v="old">明朝だけ</button><button aria-pressed="false" data-v="gothic">ゴシックだけ</button></div>
+  <h3>写真の形</h3><div class="chips" id="photo"><button aria-pressed="true" data-v="round">角丸</button><button aria-pressed="false" data-v="square">四角</button></div>
+  <h3>余白</h3><div class="chips" id="density"><button aria-pressed="true" data-v="normal">ふつう</button><button aria-pressed="false" data-v="airy">ゆったり</button></div>
+  <h3>節の表示と順番</h3><p class="hint" style="margin:0 0 6px">並べ替えるまでは、型が決めた順で出ます</p><div class="secs" id="secs"></div>
+  <p class="hint">色は8色に限ります。</p>
+</aside>
+<!-- ================= t24 黒板 ================= -->
+<article id="t24" class="t24 on"><div class="board">
+  <div class="headshot" aria-label="宣材写真"></div>
+  <h1>高橋 凜<small>ダンサー・振付　／　ジャズ・コンテンポラリー</small></h1><div class="under"></div>
+  <div class="grid">
+    <div>
+      <div data-sec="events"><h2>今月の予定<span class="auto">自動</span></h2>
+        <div class="line"><time>10.11 土</time><div>秋のコンサート　ゲスト出演<small>千葉県文化会館 小ホール　14:00</small></div></div>
+        <div class="line"><time>10.18 土</time><div>ワークショップ「体の中の拍」<small>△△スタジオ　13:00〜15:00</small></div></div>
+        <div class="line"><time>11.14 土</time><div>『レ・ミゼラブル』振付稽古<small>○○劇場 稽古場</small></div></div>
+        <div class="line"><time>12.05 金</time><div>『レ・ミゼラブル』初日<small>○○劇場</small></div></div>
+      </div>
+      <div data-sec="rep" style="margin-top:22px"><h2>出演歴・振付<span class="auto">自動</span></h2><div class="chips"><span>レ・ミゼラブル（振付助手）</span><span>ロミオとジュリエット（舞踏会）</span><span>コンテンポラリー「海の底」</span><span>CM『△△』</span><span>ミュージカル『××』アンサンブル</span></div></div>
+    </div>
+    <div>
+      <div data-sec="profile"><h2>プロフィール</h2><p>ジャズを軸に、タップとバレエの基礎。振付は2024年から。身長 165、靴 24.0。○○事務所所属。教えることも好きで、月に一度ワークショップを開きます。</p></div>
+      <div data-sec="press" style="margin-top:16px"><h2>批評</h2><p class="press">「舞踏会の場面の空気は、彼女の振付で決まった」<small>― ○○演劇評　2025年</small></p></div>
+      <div data-sec="video" style="margin-top:16px"><h2>動画</h2><div class="video">▶ ダンス・リール（1:30）</div></div>
+    </div>
+  </div>
+  <div class="tray" data-sec="contact"><span>出演・振付・ワークショップのご相談はフォームから（本人のメールへ転送）</span><a href="#">お問い合わせ</a></div>
+</div><footer><span>© 2026 Rin Takahashi</span><span>このページは Woolsong で作られています</span></footer></article>
+
+<!-- ================= t25 フライヤー ================= -->
+<article id="t25" class="t25"><div class="wall">
+  <div class="paper big"><div><h1>Haru<span>Sato</span></h1><div class="jp">佐藤 陽　／　俳優・ミュージカル</div><p data-sec="profile">殺陣とダンスと歌。2026年12月『レ・ミゼラブル』東京公演にアンサンブルで出演、マリウスのカバー。○○事務所所属。身長 172、靴 26.0、声域 G2–A4。</p></div><div class="headshot" aria-label="宣材写真"></div></div>
+  <div class="row" data-sec="events">
+    <div class="paper fly"><div class="d">12.05<small>FRI ・ 初日</small></div><div class="w">『レ・ミゼラブル』</div><div class="v">○○劇場　12.5〜12.28<br>アンサンブル／マリウス（カバー）</div><div class="stripe"></div></div>
+    <div class="paper fly"><div class="d">10.11<small>SAT</small></div><div class="w">秋のコンサート</div><div class="v">千葉県文化会館 小ホール　14:00<br>ミュージカル・ナンバー</div><div class="stripe"></div></div>
+    <div class="paper fly"><div class="d">2.20<small>FRI ・ 2027</small></div><div class="w">『十二夜』再演</div><div class="v">□□小劇場　セバスチャン<br>2.20〜2.28</div><div class="stripe"></div></div>
+  </div>
+  <div class="lower">
+    <div class="paper" data-sec="rep"><h2>Stage / Screen</h2><ul><li>2026 『レ・ミゼラブル』アンサンブル／マリウス（カバー）　○○劇場</li><li>2025 『ロミオとジュリエット』マキューシオ　△△シアター</li><li>2024 『十二夜』セバスチャン　□□小劇場</li><li>2026 ドラマ『××』第3話　○○テレビ</li><li>2025 CM『△△』</li></ul></div>
+    <div class="paper" data-sec="press"><h2>Press</h2><p class="press">「マキューシオの死で客席の空気が変わった」</p><p style="font-size:12px;color:#555">― ○○演劇評　2025年</p><p class="press">「殺陣の切れと、歌の柔らかさが同居している」</p><p style="font-size:12px;color:#555">― △△誌　2026年</p></div>
+  </div>
+  <div class="paper" data-sec="video" style="margin-top:26px;transform:rotate(.4deg)"><h2>Reel</h2><div class="video">▶ ダンス・リール（1:30）／ 歌唱（『レ・ミゼラブル』より）</div></div>
+  <div class="paper contact" data-sec="contact"><span>出演・オーディションのご相談は所属事務所へ。本人へはフォームから（メールへ転送）。</span><a href="#">CONTACT</a></div>
+  <footer><span>© 2026 Haru Sato</span><span>このページは Woolsong で作られています</span></footer>
+</div></article>
+
+<!-- ================= t28 短冊 ================= -->
+<article id="t28" class="t28">
+  <div class="rail"><div class="rope"></div></div>
+  <div class="strips">
+    <div class="strip name"><div class="v">小林 匠</div><div class="v kana">こばやし たくみ ― 能楽師 シテ方</div></div>
+    <div class="strip photo headshot-wrap"><div class="headshot" aria-label="宣材写真"></div></div>
+    <div class="strip" data-sec="events"><h2>公演</h2><div class="v t">十月十一日 秋の演能</div><div class="v sub">千葉県文化会館</div><div class="gap"></div><div class="v t">十一月三日 定例能「羽衣」</div><div class="v sub">○○能楽堂</div></div>
+    <div class="strip" data-sec="rep"><h2>曲目</h2><div class="v t">羽衣</div><div class="gap"></div><div class="v t">敦盛</div><div class="gap"></div><div class="v t">船弁慶</div><div class="gap"></div><div class="v t">井筒</div></div>
+    <div class="strip" data-sec="profile"><h2>流儀</h2><div class="v t">○○流</div><div class="gap"></div><div class="v">平成六年生まれ</div><div class="gap"></div><div class="v">○○○○に師事</div><div class="gap"></div><div class="v">初舞台 平成十一年</div></div>
+    <div class="strip" data-sec="press"><h2>評</h2><div class="v">「若さの中に 静けさがある」</div><div class="gap"></div><div class="v sub">（○○新聞）</div></div>
+  </div>
+  <div class="below">
+    <div data-sec="profile"><h3>プロフィール</h3><p>能楽師シテ方。○○流。○○○○に師事。定例能のほか、学校や海外での公演・ワークショップを行う。装束と面の解説つきの公演を、年に数回。</p></div>
+    <div data-sec="video"><h3>映像</h3><div class="video">▶「羽衣」序ノ舞（2026・○○能楽堂）</div></div>
+    <div class="contact" data-sec="contact"><span>公演・ワークショップのご相談はフォームから（本人のメールへ転送）</span><a href="#">お問い合わせ</a></div>
+    <footer><span>© 2026 Takumi Kobayashi</span><span>このページは Woolsong で作られています</span></footer>
+  </div>
+</article>
+
+<!-- ================= t29 掲示板 ================= -->
+<article id="t29" class="t29"><div class="cork">
+  <div class="note title"><div class="pin"></div><div><h1>白石 澪 声楽教室<small>ソプラノ ・ 東京（月2回）とオンライン</small></h1><p data-sec="profile">初心者から音大受験まで。イタリア語の発音と、無理のない発声の基礎から。講師は東京音楽大学卒・同大学院修了、2026年よりイタリア・バーリ音楽院に留学中。二期会準会員。</p></div><div class="headshot" aria-label="宣材写真"></div></div>
+  <div class="row">
+    <div class="note tt" data-sec="events"><div class="pin"></div><h2>空いている枠<span class="auto">自動</span></h2>
+      <table><tr><th></th><th>火</th><th>木</th><th>土</th><th>日</th></tr><tr><td>10:00</td><td></td><td class="on">空き<small>オンライン</small></td><td class="on">空き</td><td></td></tr><tr><td>13:00</td><td class="on">空き<small>オンライン</small></td><td></td><td></td><td class="on">空き</td></tr><tr><td>16:00</td><td></td><td></td><td class="on">空き</td><td></td></tr><tr><td>19:00</td><td class="on">空き<small>オンライン</small></td><td class="on">空き<small>オンライン</small></td><td></td><td></td></tr></table>
+      <p style="font-size:12px;margin-top:8px;color:#5a4a3a">日本時間。留学中はオンラインが中心です。</p></div>
+    <div class="note yellow"><div class="pin"></div><b>レッスン</b>声楽 60分　8,000円（月2回から）<br>オンライン 45分　6,000円<br>受験対策 90分　12,000円<div class="price">体験 30分　無料</div></div>
+  </div>
+  <div class="row2">
+    <div class="note" data-sec="rep"><div class="pin"></div><h2>教えている曲</h2><ul><li>イタリア古典歌曲</li><li>モーツァルトのアリア</li><li>日本歌曲</li><li>ミュージカル</li></ul></div>
+    <div class="note" data-sec="press"><div class="pin"></div><h2>受講者の声</h2><p class="press">「高音が怖くなくなりました」</p><p style="font-size:12px;color:#5a4a3a">（30代・会社員）</p><p class="press">「イタリア語の母音が変わったと先生に言われました」</p><p style="font-size:12px;color:#5a4a3a">（音大受験生）</p></div>
+    <div class="note" data-sec="video"><div class="pin"></div><h2>教室の様子</h2><div class="video">▶ 発表会（2026・3月）</div></div>
+  </div>
+  <div class="note contact" data-sec="contact"><div class="pin"></div><span>体験レッスンのお申し込みはフォームから（本人のメールへ転送）。場所は駅名と徒歩の分数だけお伝えします。</span><a href="#">体験を申し込む</a></div>
+  <footer><span>© 2026 白石澪声楽教室</span><span>このページは Woolsong で作られています</span></footer>
+</div></article>
+<script>
+const btns=[...document.querySelectorAll('.topbar button[data-t]')];
+function show(id,btn){document.querySelectorAll('article').forEach(a=>a.classList.toggle('on',a.id===id));btns.forEach(b=>b.setAttribute('aria-pressed',b===btn));applySections();window.scrollTo(0,0);}
+btns.forEach(b=>b.onclick=()=>show(b.dataset.t,b));
+const colors=[['臙脂','#7A1F2E'],['藍','#3E5C8C'],['墨','#2B2320'],['苔','#5C6B4A'],['葡萄','#5B3A5E'],['琥珀','#8C5A2B'],['鉄','#4A5560'],['朱','#B0342B']];
+const cw=document.getElementById('colors');
+colors.forEach(([n,c],i)=>{const b=document.createElement('button');b.style.background=c;b.title=n;b.setAttribute('aria-pressed',i===0);b.onclick=()=>{document.documentElement.style.setProperty('--accent',c);cw.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));};cw.appendChild(b);});
+[['fonts','data-font'],['photo','data-photo'],['density','data-density'],['headshot','data-headshot']].forEach(([id,attr])=>{const g=document.getElementById(id);g.querySelectorAll('button').forEach(b=>b.onclick=()=>{document.body.setAttribute(attr,b.dataset.v);g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));});});
+const secNames={profile:'プロフィール',events:'出演予定',rep:'レパートリー／持ち役',press:'批評',video:'動画・音',contact:'お問い合わせ'};
+let secState=Object.keys(secNames).map(k=>({k,on:true}));let reordered=false;
+const secs=document.getElementById('secs');
+function renderPanel(){secs.innerHTML='';secState.forEach((s,i)=>{const row=document.createElement('div');row.innerHTML=`<label><input type="checkbox" ${s.on?'checked':''}> ${secNames[s.k]}</label><button title="上へ">↑</button><button title="下へ">↓</button>`;row.querySelector('input').onchange=e=>{s.on=e.target.checked;applySections();};const [up,down]=row.querySelectorAll('button');up.onclick=()=>{if(i>0){reordered=true;[secState[i-1],secState[i]]=[secState[i],secState[i-1]];renderPanel();applySections();}};down.onclick=()=>{if(i<secState.length-1){reordered=true;[secState[i+1],secState[i]]=[secState[i],secState[i+1]];renderPanel();applySections();}};secs.appendChild(row);});}
+function applySections(){const art=document.querySelector('article.on');if(!art)return;secState.forEach(s=>{art.querySelectorAll(`[data-sec="${s.k}"]`).forEach(el=>{el.hidden=!s.on;});});if(!reordered)return;
+  const parents=new Set();art.querySelectorAll('[data-sec]').forEach(el=>parents.add(el.parentElement));
+  parents.forEach(p=>{const items=[...p.querySelectorAll(':scope > [data-sec]')];const order=secState.map(s=>s.k);items.sort((a,b)=>order.indexOf(a.dataset.sec)-order.indexOf(b.dataset.sec));const anchor=items.length?items[items.length-1].nextSibling:null;items.forEach(el=>p.insertBefore(el,anchor));});}
+renderPanel();applySections();
+/* 縦組み（.v）を1文字ずつ積む */
+const ROT=new Set(['「','」','『','』','（','）','―','ー','〜','～','…']);
+document.querySelectorAll('.v').forEach(el=>{const txt=el.textContent.trim();el.textContent='';[...txt].forEach(ch=>{const sp=document.createElement('span');if(ch===' '){sp.className='sm';sp.textContent='\u3000';}else{sp.textContent=ch;if(ROT.has(ch))sp.className='r';}el.appendChild(sp);});});
+</script>
+</body>
+</html>

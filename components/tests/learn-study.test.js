@@ -274,12 +274,21 @@ async function main() {
       "3問そろった時点で、はじめて箱に入れている");
     assertTrue(/next_due_at: next\.nextDueAt/.test(uiCode),
       "列名とプログラムの名前の橋渡しをしている（snake_case ↔ camelCase）");
-    // ★はじめて答えた日を、外の挙動に預けない。
-    //   undefined を渡して「送られないはず」に頼らず、鍵ごと作らない。
-    assertTrue(!/first_read_at:[^\n]*undefined/.test(uiCode),
-      "★first_read_at に undefined を渡していない（落ちる前提にしない）");
-    assertTrue(/if \(!current\.lastAnsweredAt\) row\.first_read_at/.test(uiCode),
-      "はじめてのときだけ、鍵を作って入れている");
+    // ★★★`first_read_at` は もう 書きません（★2026-09-25・坂本さんの お決め）。
+    //
+    //   ★★ここには「はじめて答えた日を 上書きしない」ことを 見る 行が ありました。
+    //     ★正しい 見張りでした ── ★列が ある あいだは。
+    //   ★★★見本の 約束 ──「誰が 読んだかは 記録しません」。
+    //     ★`first_read_at` は まさに「★この方が いつ はじめて 読んだか」です。
+    //     ★読む ところが 1つも ありませんでした。★書いて いただけ です。
+    //   ★移行 `article_read_off_ledger`（本番・2026-09-25）で 列ごと 外しました。
+    //
+    //   ★★だから 見る ものが 変わります ──
+    //     ★「★上書きしない」から「★★1文字も 書かない」へ。★強く なって います。
+    assertTrue(!/(?<![a-z_])first_read_at(?![a-z_])/.test(uiCode),
+      "★first_read_at を 1度も 書いていない（★誰が いつ 読んだかを 残さない）");
+    assertTrue(!/(?<![a-z_])read_at(?![a-z_])/.test(uiCode),
+      "★read_at を 1度も 書いていない（★読んだ印は 端末に だけ）");
 
     console.log("     ★出す場所は「学ぶ」の中だけ。ホームにも通知にも渡さない。");
     // ★import の行から数え始めない。読み込んでいることと、

@@ -174,6 +174,7 @@ import { readAsk, writeAsk } from "@/lib/dailyAsk";
 import {
   notesForRepertoire, practiceTitle, REPERTOIRE_FIELDS, REPERTOIRE_STATUS
 } from "@/lib/practiceNote";
+import { READ_PROMISE, readMarks, writeMark, BUMP_FN } from "@/lib/articleRead";
 import {
   CLINIC_ALWAYS, CLINIC_OPTIONAL, CLINIC_NOTICE, CLINIC_HEADINGS,
   CLINIC_PAPER_HEAD, CLINIC_PAPER_NONAME, CLINIC_PAPER_SECTION,
@@ -13997,11 +13998,12 @@ export default function VocalTracker({
       chapters.forEach((c) => { map[`${c.profession_key}:${c.chapter}`] = c.is_open; });
       setLearnOpenChapters(map);
     }
+    // ★★★読んだ印は 台帳から 取りません（★2026-09-25・坂本さんの お決め）。
+    //   ★★端末に だけ 残ります。★決めは lib/articleRead.js が 持ちます。
+    //   ★移行 `article_read_off_ledger` で `read_at` 列を 外しました。
+    setLearnReadArticles(readMarks());
     const { data: progress } = await supabase.from("article_progress").select(COLS_ARTICLE_PROGRESS).eq("user_id", userId);
     if (progress) {
-      const map = {};
-      progress.forEach((p) => { if (p.read_at) map[p.article_id] = p.read_at; });
-      setLearnReadArticles(map);
       // 間隔をあけて出し直すための箱と、次に出す日。
       // ★列は snake_case、lib/learnStudy.js は camelCase。境目はここ1か所。
       const prog = {};
@@ -14027,16 +14029,14 @@ export default function VocalTracker({
     const next = afterReviewAnswer(current, allCorrect, todayISO);
     setArticleProgress((prev) => ({ ...prev, [articleId]: { articleId, ...next } }));
     const supabase = createClient();
-    // ★first_read_at は「はじめて答えた日」で、あとから上書きしない。
-    //   以前は undefined を入れて「送られないはず」に頼っていた。
-    //   JSON.stringify は undefined の項目を落とすので実際には動くが、
-    //   時刻を守る判断を、確かめていない外の挙動に預けるのはやめる。
-    //   ★入れないときは、鍵ごと作らない。
+    // ★★★`first_read_at` を 書くのを やめました（★2026-09-25・坂本さんの お決め）。
+    //   ★★あれは「★この方が いつ はじめて 読んだか」です。
+    //     ★読む ところが 1つも ありませんでした。★書いて いただけ です。
+    //   ★移行 `article_read_off_ledger` で 列ごと 外しました。
     const row = {
       user_id: userId, article_id: articleId,
       box: next.box, next_due_at: next.nextDueAt, last_answered_at: next.lastAnsweredAt
     };
-    if (!current.lastAnsweredAt) row.first_read_at = new Date().toISOString();
     await supabase.from("article_progress").upsert(row, { onConflict: "user_id,article_id" });
   }
 
@@ -14095,16 +14095,19 @@ export default function VocalTracker({
   }
   // §7.1: 既読は自動でつける（最後までスクロールしたら）。手動でも外せる。
   async function handleMarkArticleRead(articleId, read) {
-    setLearnReadArticles((prev) => {
-      const next = { ...prev };
-      if (read) next[articleId] = new Date().toISOString(); else delete next[articleId];
-      return next;
-    });
-    const supabase = createClient();
-    await supabase.from("article_progress").upsert(
-      { user_id: userId, article_id: articleId, read_at: read ? new Date().toISOString() : null },
-      { onConflict: "user_id,article_id" }
-    );
+    // ★★★印は 端末に だけ 書きます（★2026-09-25・坂本さんの お決め）。
+    //   ★★時刻を 持ちません。★いつ 読んだかも 残しません。
+    //   ★★数える ほうは `bump_article_read` を 呼びます ──
+    //     ★人の 番号を 引数に 取りません。★中で `auth.uid()` を 使いません。
+    //     ★`article_read_counts` に 人の 列が ありません。
+    //   ★★はじめて 印が ついた ときだけ 押します。★2度 数えません。
+    const r = writeMark(readMarks(), articleId, read);
+    setLearnReadArticles(r.marks);
+    if (r.数える) {
+      const supabase = createClient();
+      // ★数が 増えなくても 画面は 動きます。★印は 端末に 残って います。
+      await supabase.rpc(BUMP_FN, { p_article_id: articleId });
+    }
   }
   // §7.3: 記事メモ。ハイライトメモと記事メモの両方をこの1関数でまとめて扱う。
   async function fetchArticleNotes(articleId) {
