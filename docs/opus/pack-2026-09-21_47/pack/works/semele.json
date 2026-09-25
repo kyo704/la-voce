@@ -1,0 +1,169 @@
+{
+  "title": "セメレ",
+  "title_original": "Semele",
+  "aliases": [
+    "あなたはどこを歩いても"
+  ],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1744,
+  "duration_min": 170,
+  "language": "en",
+  "source": "hand",
+  "source_id": "handel-semele",
+  "roles": [
+    {
+      "label": "セメレ"
+    },
+    {
+      "label": "ジュピター"
+    },
+    {
+      "label": "ジュノー"
+    },
+    {
+      "label": "イーノ"
+    },
+    {
+      "label": "アタマス"
+    },
+    {
+      "label": "ソムヌス"
+    },
+    {
+      "label": "カドモス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 婚礼の中断とセメレの拉致",
+      "group_label": "第1幕",
+      "roles": [
+        "セメレ",
+        "アタマス",
+        "カドモス",
+        "イーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ジュノーの怒りとジュピターの宮殿",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュノー",
+        "イーノ",
+        "ジュピター",
+        "セメレ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 あなたはどこを歩いても",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュピター",
+        "セメレ"
+      ]
+    },
+    {
+      "label": "第3幕 ソムヌスの洞窟",
+      "group_label": "第3幕",
+      "roles": [
+        "ソムヌス",
+        "ジュノー",
+        "イーノ"
+      ]
+    },
+    {
+      "label": "第3幕 セメレの炎上とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "セメレ",
+        "ジュピター",
+        "ジュノー",
+        "カドモス",
+        "アタマス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    }
+  ]
+}

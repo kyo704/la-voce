@@ -1,0 +1,87 @@
+{
+  "title": "弦楽四重奏曲第12番 ヘ長調「アメリカ」",
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvorak, Antonin",
+  "kind": "chamber",
+  "year_written": 1893,
+  "source": "hand",
+  "source_id": "dvorak-american",
+  "roles": [
+    {
+      "label": "第1ヴァイオリン"
+    },
+    {
+      "label": "第2ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・マ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 レント",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 モルト・ヴィヴァーチェ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 フィナーレ ヴィヴァーチェ・マ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "第1ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

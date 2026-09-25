@@ -1,0 +1,61 @@
+{
+  "title": "謝肉祭 作品9",
+  "title_original": "Carnaval",
+  "aliases": [],
+  "composer": "シューマン",
+  "composer_sort": "Schumann, Robert",
+  "kind": "chamber",
+  "year_written": 1835,
+  "source": "hand",
+  "source_id": "schumann-carnaval",
+  "duration_min": 30,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前口上",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "ピエロ〜アルルカン",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "高貴なワルツ〜オイゼビウス・フロレスタン",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "蝶々〜ショパン・パガニーニ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "ダヴィッド同盟員のフィリシテ人への行進",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

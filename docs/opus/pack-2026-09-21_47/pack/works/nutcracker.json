@@ -1,0 +1,183 @@
+{
+  "title": "くるみ割り人形",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr",
+  "kind": "dance",
+  "year_written": 1892,
+  "source": "hand",
+  "source_id": "tchaikovsky-nutcracker",
+  "roles": [
+    {
+      "label": "主役（女性）"
+    },
+    {
+      "label": "主役（男性）"
+    },
+    {
+      "label": "ソリスト",
+      "is_group": true
+    },
+    {
+      "label": "コール・ド・バレエ",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 クリスマスのパーティ",
+      "group_label": "第1幕",
+      "roles": [
+        "主役（女性）",
+        "ソリスト",
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第1幕 ねずみの王との戦い",
+      "group_label": "第1幕",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）",
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第1幕 雪片のワルツ",
+      "group_label": "第1幕",
+      "roles": [
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第2幕 ディヴェルティスマン（各国の踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "ソリスト",
+        "コール・ド・バレエ"
+      ]
+    },
+    {
+      "label": "第2幕 花のワルツ",
+      "group_label": "第2幕",
+      "roles": [
+        "コール・ド・バレエ",
+        "ソリスト"
+      ]
+    },
+    {
+      "label": "第2幕 グラン・パ・ド・ドゥ",
+      "group_label": "第2幕",
+      "roles": [
+        "主役（女性）",
+        "主役（男性）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard",
+      "note": "金平糖の精"
+    },
+    {
+      "part": "児童合唱",
+      "count": 0,
+      "section": "other",
+      "note": "雪片のワルツ"
+    }
+  ],
+  "title_original": "Щелкунчик / The Nutcracker",
+  "aliases": [
+    "くるみ割り",
+    "Nutcracker"
+  ],
+  "duration_min": 95
+}

@@ -1,0 +1,155 @@
+{
+  "title": "ブルスキーノ氏",
+  "title_original": "Il signor Bruschino",
+  "aliases": [],
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1813,
+  "source": "hand",
+  "source_id": "rossini-bruschino",
+  "duration_min": 85,
+  "language": "it",
+  "roles": [
+    {
+      "label": "ソフィア"
+    },
+    {
+      "label": "フロルヴィル"
+    },
+    {
+      "label": "ガウデンツィオ"
+    },
+    {
+      "label": "ブルスキーノ（父）"
+    },
+    {
+      "label": "フィリベルト"
+    },
+    {
+      "label": "マリアンナ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲（弓で譜面台を叩く）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "全1幕 宿屋の取り違え",
+      "group_label": "全1幕",
+      "roles": [
+        "ソフィア",
+        "フロルヴィル",
+        "フィリベルト",
+        "マリアンナ"
+      ]
+    },
+    {
+      "label": "全1幕 偽の息子",
+      "group_label": "全1幕",
+      "roles": [
+        "フロルヴィル",
+        "ガウデンツィオ",
+        "ブルスキーノ（父）"
+      ]
+    },
+    {
+      "label": "全1幕 露見とフィナーレ",
+      "group_label": "全1幕",
+      "roles": [
+        "ソフィア",
+        "フロルヴィル",
+        "ガウデンツィオ",
+        "ブルスキーノ（父）",
+        "フィリベルト",
+        "マリアンナ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "title": "アンティゴネー",
+  "composer": "ソポクレス",
+  "composer_sort": "Sophocles",
+  "kind": "drama",
+  "year_written": -441,
+  "source": "hand",
+  "source_id": "sophocles-antigone",
+  "roles": [
+    {
+      "label": "アンティゴネー"
+    },
+    {
+      "label": "イスメーネー"
+    },
+    {
+      "label": "クレオン"
+    },
+    {
+      "label": "ハイモン"
+    },
+    {
+      "label": "テイレシアス"
+    },
+    {
+      "label": "エウリュディケー"
+    },
+    {
+      "label": "見張りの兵"
+    },
+    {
+      "label": "伝令"
+    },
+    {
+      "label": "合唱隊",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロロゴス（姉妹の対話）",
+      "group_label": "全曲",
+      "roles": [
+        "アンティゴネー",
+        "イスメーネー"
+      ]
+    },
+    {
+      "label": "パロドス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第1エペイソディオン（クレオンの布告・見張りの報告）",
+      "group_label": "全曲",
+      "roles": [
+        "クレオン",
+        "見張りの兵",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第2エペイソディオン（アンティゴネーの捕縛）",
+      "group_label": "全曲",
+      "roles": [
+        "アンティゴネー",
+        "クレオン",
+        "イスメーネー",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第3エペイソディオン（ハイモンの説得）",
+      "group_label": "全曲",
+      "roles": [
+        "ハイモン",
+        "クレオン",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第4エペイソディオン（アンティゴネーの退場）",
+      "group_label": "全曲",
+      "roles": [
+        "アンティゴネー",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "第5エペイソディオン（テイレシアスの警告）",
+      "group_label": "全曲",
+      "roles": [
+        "テイレシアス",
+        "クレオン",
+        "合唱隊"
+      ]
+    },
+    {
+      "label": "エクソドス（伝令とエウリュディケー）",
+      "group_label": "全曲",
+      "roles": [
+        "伝令",
+        "エウリュディケー",
+        "クレオン",
+        "合唱隊"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "Ἀντιγόνη / Antigone",
+  "aliases": [
+    "アンティゴネ"
+  ],
+  "duration_min": 95,
+  "language": "el"
+}
