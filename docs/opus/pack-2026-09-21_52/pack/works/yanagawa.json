@@ -1,0 +1,51 @@
+{
+  "title": "柳河風俗詩",
+  "title_original": "柳河風俗詩",
+  "aliases": [],
+  "composer": "多田武彦",
+  "composer_sort": "Tada, Takehiro",
+  "kind": "chorus",
+  "year_written": 1955,
+  "source": "hand",
+  "source_id": "tada-yanagawa",
+  "duration_min": 15,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（男声4部）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1 柳河",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（男声4部）"
+      ]
+    },
+    {
+      "label": "2 紺屋のおろく",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（男声4部）"
+      ]
+    },
+    {
+      "label": "3 かきつばた",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（男声4部）"
+      ]
+    },
+    {
+      "label": "4 梅雨の晴れ間",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（男声4部）"
+      ]
+    }
+  ],
+  "instruments": [],
+  "note": "★無伴奏（ア・カペラ）／作詩: 北原白秋"
+}

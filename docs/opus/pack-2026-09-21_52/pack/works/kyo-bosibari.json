@@ -1,0 +1,63 @@
+{
+  "title": "棒縛",
+  "title_original": "棒縛",
+  "aliases": [],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "drama",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "kyogen-bosibari-okura",
+  "duration_min": 25,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "太郎冠者"
+    },
+    {
+      "label": "次郎冠者"
+    },
+    {
+      "label": "主人"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主人の外出と縛り",
+      "group_label": "全",
+      "roles": [
+        "主人",
+        "太郎冠者",
+        "次郎冠者"
+      ]
+    },
+    {
+      "label": "縛られたまま酒を飲む",
+      "group_label": "全",
+      "roles": [
+        "太郎冠者",
+        "次郎冠者"
+      ]
+    },
+    {
+      "label": "主人の帰宅と追い込み",
+      "group_label": "全",
+      "roles": [
+        "主人",
+        "太郎冠者",
+        "次郎冠者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による（笛・小鼓・大鼓・太鼓）"
+    }
+  ],
+  "school": "大蔵流",
+  "note": "★大蔵流で書いた。和泉流では 曲名や科白の運びが違うことがある"
+}

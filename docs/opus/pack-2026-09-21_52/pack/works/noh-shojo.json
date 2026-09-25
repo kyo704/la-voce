@@ -1,0 +1,82 @@
+{
+  "title": "猩々",
+  "title_original": "猩々",
+  "aliases": [],
+  "composer": "能（五番目（切））",
+  "composer_sort": "Noh 五番目（切）",
+  "kind": "drama",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "noh-shojo-kanze",
+  "duration_min": 30,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（猩々）"
+    },
+    {
+      "label": "ワキ（高風）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "高風の名ノリ",
+      "group_label": "全",
+      "roles": [
+        "ワキ（高風）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "猩々の出現と酒宴",
+      "group_label": "全",
+      "roles": [
+        "シテ（猩々）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "猩々乱（舞）",
+      "group_label": "全",
+      "roles": [
+        "シテ（猩々）",
+        "囃子方",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う"
+}

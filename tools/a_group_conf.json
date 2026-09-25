@@ -486,5 +486,9 @@
   "components/RokugaTasu.jsx",
   "lib/rokugaTasu.js",
   "lib/portfolio.js"
+ ],
+ "子どもの枠": [
+  "components/KodomoNoWaku.jsx",
+  "lib/kodomoNoWaku.js"
  ]
 }
