@@ -11,18 +11,31 @@
 // ============================================================================
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { C } from "@/lib/tokens";
 import { ScreenHead, Back } from "@/components/UiV2";
 import {
-  rebuild, mayAddPhoto, countLine, FACE_MARK, NOTE_LINES, ACCEPT_TYPES, MAX_PHOTOS
+  rebuild, mayAddPhoto, countLine, FACE_MARK, NOTE_LINES, ACCEPT_TYPES,
+  fetchSignedUrls, UPLOAD_ENDPOINT
 } from "@/lib/photoExif";
 
-export default function Shashin({ photos, urlOf, onAdded, onRemove, onBack }) {
+export default function Shashin({ photos, onAdded, onRemove, onBack }) {
   const 枚 = Array.isArray(photos) ? photos : [];
   const 口 = useRef(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  // ★★★署名つきの 道は 短い（★10分）ので、★画面で 持ちます。★しまいません。
+  //   ★★しまうと、★切れた 道を いつまでも 使い続けます。
+  const [urls, setUrls] = useState({});
+
+  const 鍵 = 枚.map((p) => p.id).join(",");
+  useEffect(() => {
+    let 生きて = true;
+    const ids = 鍵 ? 鍵.split(",") : [];
+    if (ids.length === 0) { setUrls({}); return undefined; }
+    void fetchSignedUrls(ids).then((u) => { if (生きて) setUrls(u); });
+    return () => { 生きて = false; };
+  }, [鍵]);
 
   async function 足す(file) {
     if (!file) return;
@@ -34,7 +47,7 @@ export default function Shashin({ photos, urlOf, onAdded, onRemove, onBack }) {
       fd.append("file", blob, "p.webp");
       fd.append("w", String(w));
       fd.append("h", String(h));
-      const r = await fetch("/api/portfolio-photo", { method: "POST", body: fd });
+      const r = await fetch(UPLOAD_ENDPOINT, { method: "POST", body: fd });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.ok) { setErr(j.line || "上げられませんでした。"); return; }
       if (onAdded) onAdded(j);
@@ -62,9 +75,11 @@ export default function Shashin({ photos, urlOf, onAdded, onRemove, onBack }) {
             overflow: "hidden", background: C.paper, border: `1px solid ${C.line}`
           }}>
             {/* ★★署名つきの 道 だけ を 使います。★道を 組み立てません。 */}
-            {urlOf && urlOf(p) ? (
+            {/* ★★署名つきの 道 だけ を 使います。★道を 組み立てません。
+                ★★まだ 来て いない ときは 何も 出しません ── ★壊れた 絵を 出しません。 */}
+            {urls[p.id] ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={urlOf(p)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={urls[p.id]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : null}
             {i === 0 ? (
               <span style={{

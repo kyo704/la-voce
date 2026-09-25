@@ -130,6 +130,31 @@ const iMark = route.indexOf("rpc(MARK_FN");
 // ★★断った ものを 残さない こと。
 よし(/\.remove\(\[path\]\)/.test(route), "★③ 片づけて いません（★行の 無い ファイルが 残ります）");
 
+// ── ★★★署名つきの 道 ── ★他人の 道を 渡せない こと ─────────────
+const sign = readCode("app", "api", "portfolio-photo", "url", "route.js");
+よし(sign.length > 0, "★署名つきの 道が ありません");
+// ★★`path` を 受け取って いない こと。★受け取ると 他人の 道を 渡されます。
+よし(!/body\.path|body\["path"\]|\bpath:\s*body/.test(sign),
+     "★★道（path）を 外から 受け取って います（★他人の 写真が 出ます）");
+// ★★`id` から 引いて いる こと。
+よし(/\.in\("id", ids\)/.test(sign), "★id から 引いて いません");
+// ★★★その方の 鍵で 引いて いる こと ── ★決まりに 判じさせる ため です。
+const iAdmin = sign.indexOf("createAdminClient()");
+const iSel = sign.indexOf('from("portfolio_photos")');
+よし(iSel >= 0 && iAdmin > iSel,
+     "★★管理の 鍵で 行を 引いて います（★決まりを 飛び越えます）");
+// ★★署名の 長さを 書き写して いない こと。
+よし(/SIGNED_URL_SECONDS/.test(sign) && !/\b600\b|60 \* 10/.test(sign),
+     "★署名の 長さを 書き写して います（★lib から 引いて ください）");
+// ★★なぜ 見えないかを 言って いない こと。
+よし(!/exif|印が 立って/.test(sign.replace(/\/\/.*$/gm, "")),
+     "★見えない わけを 画面に 返して います（★その方の 事情を 漏らします）");
+// ★★入れものが 公開に なって いない こと。
+const bk = readRaw("supabase", "migration_portfolio_photos_bucket.sql");
+よし(/public\s*=\s*false|,\s*false,/.test(bk), "★入れものが 公開に なって います");
+よし(!/create policy[\s\S]{0,200}storage\.objects/.test(bk),
+     "★入れものに 決まりを 作って います（★管理の 鍵だけ に して ください）");
+
 // ── ★約束の 字 ───────────────────────────────────────
 const raw = readRaw("lib", "photoExif.js");
 for (const s of ["上げる ときに 1度だけ 小さく します（長い辺 1,200px）。",

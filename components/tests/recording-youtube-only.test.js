@@ -48,10 +48,15 @@ function 見る(名, f) { f(); 数 += 1; console.log("  ○ " + 名); }
           // ★★★`mov` は `remove(` の 中に あります。★`avi` も 語の 中に よく 出ます。
           //   ★★2026-09-25、★`.remove([path])` が「動画」と 見られました。
           //     ★形の 名は **点の あと** か、★`video/` の 形で だけ 見ます。
-          const 絵だけ = /ACCEPT_TYPES/.test(s)
-            && !/video\//i.test(s)
-            && !/["'.\/](mp4|mov|avi|mkv|webm)\b/i.test(s);
-          if (!絵だけ) 見つかった.push(p + "（storage に 置いて います）");
+          // ★★★見るのは「★**受け取って いるか**」です。★触って いるか では ありません。
+          //   ★2026-09-25、★署名を 付ける だけ の 道（`…/url/route.js`）が
+          //   ★赤く なりました。★あれは 1バイトも 受け取りません。
+          //   ★★受け取る 口の 印 …… `formData()` ／ `.upload(` ／ `<input type="file"`。
+          const 受け取る = /formData\(\)|\.upload\(|type="file"/.test(s);
+          const 動画 = /video\//i.test(s) || /["'.\/](mp4|mov|avi|mkv|webm)\b/i.test(s);
+          const 絵だけ = /ACCEPT_TYPES/.test(s) && !動画;
+          if (受け取る && !絵だけ) 見つかった.push(p + "（storage に 置いて います）");
+          if (!受け取る && 動画) 見つかった.push(p + "（動画の 形を 書いて います）");
         }
       }
     };
