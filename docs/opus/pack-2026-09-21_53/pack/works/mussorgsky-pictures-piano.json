@@ -1,0 +1,70 @@
+{
+  "title": "展覧会の絵（ピアノ原曲）",
+  "title_original": "Картинки с выставки",
+  "aliases": [
+    "展覧会の絵 ピアノ"
+  ],
+  "composer": "ムソルグスキー",
+  "composer_sort": "Mussorgsky, Modest",
+  "kind": "chamber",
+  "year_written": 1874,
+  "source": "hand",
+  "source_id": "mussorgsky-pictures-piano",
+  "duration_min": 33,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロムナードと小人",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "古城〜テュイルリー",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "ビドロ〜卵の殻をつけた雛",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "サムエルとシュムイレ〜リモージュ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "カタコンブ〜バーバ・ヤガー",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "キエフの大門",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -31,10 +31,31 @@ function t(cond, label) {
   else { console.log("  ✗ " + label); ng++; }
 }
 
+// ★★★2026-09-25、★design-v63 で 見本の「もっと」が 変わりました ──
+//   ★19行の 平らな 一覧 → ★7つの 束の 入口。
+//   ★★★だから 4行の 注記は、★いまの 見本の「もっと」に ありません。
+//
+//   ★★★けれど 4行は **生きて いる 約束** です ──
+//     ★38名の 方の「もっと」は 平らな 一覧の まま です（★`layoutV2` の 外）。
+//     ★★見本が 先に 進んだ から といって、★出して いる 約束を 消しません。
+//
+//   ★★★出どころは 残します ── ★`docs/opus/pack-2026-09-21_52`（★design-v51）。
+//     ★「私の 造語で ない」ことを 確かめる のが この 行の 仕事 です。
+//     ★★その 仕事は 古い 束でも できます。★消さずに 向きを 変えます。
+const MI_OLD = path.join(ROOT, "docs", "opus", "pack-2026-09-21_52", "pack",
+  "00-動く見本（さわれる・全画面）.html");
+
 const mihon = fs.readFileSync(MI, "utf8");
-const i = mihon.indexOf("SC['もっと']=function()");
-const seg = mihon.slice(i, mihon.indexOf("\nSC['設定']", i));
+const 旧 = fs.readFileSync(MI_OLD, "utf8");
+const i = 旧.indexOf("SC['もっと']=function()");
+const seg = 旧.slice(i, 旧.indexOf("\nSC['設定']", i));
 const flat = seg.replace(/<[^>]*>/g, "");
+
+// ★★いまの 見本の「もっと」は 7つの 束に なって いる こと（★確かめ）。
+const iNow = mihon.indexOf("SC['もっと']=function()");
+const segNow = mihon.slice(iNow, iNow + 1600);
+t(/しらべる機能[\s\S]{0,900}アカウントと設定/.test(segNow),
+  "★いまの 見本の「もっと」は 7つの 束（★design-v63）");
 
 const lib = readCode("lib", "moreMenu.js");
 const ui = readCode("components", "VocalTracker.jsx");

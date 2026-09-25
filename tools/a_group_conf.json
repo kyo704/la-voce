@@ -523,5 +523,33 @@
   "components/NaniWoKaku.jsx",
   "lib/naniwoKaku.js",
   "lib/portfolio.js"
+ ],
+ "しらべる機能": [
+  "components/MoreBundle.jsx",
+  "lib/moreBundles.js"
+ ],
+ "つたえる機能": [
+  "components/MoreBundle.jsx",
+  "lib/moreBundles.js"
+ ],
+ "学校の機能": [
+  "components/MoreBundle.jsx",
+  "lib/moreBundles.js"
+ ],
+ "公演の機能": [
+  "components/MoreBundle.jsx",
+  "lib/moreBundles.js"
+ ],
+ "さがす機能": [
+  "components/MoreBundle.jsx",
+  "lib/moreBundles.js"
+ ],
+ "学ぶ機能": [
+  "components/MoreBundle.jsx",
+  "lib/moreBundles.js"
+ ],
+ "アカウントと設定": [
+  "components/MoreBundle.jsx",
+  "lib/moreBundles.js"
  ]
 }

@@ -1,0 +1,63 @@
+{
+  "title": "無伴奏ヴァイオリンのためのパルティータ第2番 ニ短調",
+  "title_original": "Partita Nr. 2 BWV 1004",
+  "aliases": [
+    "シャコンヌ"
+  ],
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chamber",
+  "year_written": 1720,
+  "source": "hand",
+  "source_id": "bach-partita2",
+  "duration_min": 30,
+  "roles": [
+    {
+      "label": "ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "アルマンド",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "クーラント",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "サラバンド",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "ジーグ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "★シャコンヌ",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}
