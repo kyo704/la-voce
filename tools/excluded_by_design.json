@@ -537,5 +537,191 @@
  },
  "前3日": {
   "声の 出来　△出づらい": "★見本が 手で 書いた 中身 です。★実装は 記録から 出します（`lib/lookBack.js` の `LOOK_BACK_ROWS`）"
- }
+ },
+ "自分のコマ": [
+  {
+   "text": "学校の 基本",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "いまは 学校の 基本の ままです。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "はじめは 学校の 基本を 写します。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "れい：学校の 90分を",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "に 割る／10分 ずらす／昼を 長くする。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "10分 ずらす",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "昼を 長くする。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "レッスンは 45分・30分・60分と、先生ごとに 違います。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "だから 自分で 決められます。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "下の ボタンで、自分の コマを 作れます。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "学校の 基本を 変えても、",
+   "why": "★「1回だけ 知らせが 来ます」の 道が ありません。★`timetable_nudges` は 事務が 生徒に「出して ください」と 押す 表 で（`sent_by`／`sent_at`）、★学校の 基本が 変わった ことを 伝える ものでは ありません。★★変わる もと（`org_periods`）が 0行 なので、★変わる ことも 起きません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "自分で 決めた コマは 動きません",
+   "why": "★「1回だけ 知らせが 来ます」の 道が ありません。★`timetable_nudges` は 事務が 生徒に「出して ください」と 押す 表 で（`sent_by`／`sent_at`）、★学校の 基本が 変わった ことを 伝える ものでは ありません。★★変わる もと（`org_periods`）が 0行 なので、★変わる ことも 起きません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "（1回だけ 知らせが 来ます）。",
+   "why": "★「1回だけ 知らせが 来ます」の 道が ありません。★`timetable_nudges` は 事務が 生徒に「出して ください」と 押す 表 で（`sent_by`／`sent_at`）、★学校の 基本が 変わった ことを 伝える ものでは ありません。★★変わる もと（`org_periods`）が 0行 なので、★変わる ことも 起きません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "事務の 側は、これを",
+   "why": "★★これは **ほんとう** です ── ★`get_teacher_periods`（SECURITY DEFINER）が `has_can(p_org_id, 'sched_all')` で 事務に 読ませ、★返すのは `id, ord, name, start_min, end_min` だけ です（★中身の `my_timetable` に 触りません）。★書く 道は `my_periods` の update／delete の 決まり だけ で、★どちらも `auth.uid() = user_id` です。★★けれど いま `my_periods` は 22行 ぜんぶ `org_id` なし で、★`get_teacher_periods` は `p.org_id = p_org_id` で しぼるので **1行も 出ません**。★★★「事務は 見るだけ」と 書くと、★出して いない ものを 出して いる ように 読まれます。★代わりに `NO_ORG_LINES`（どこにも 属さない／どの 学校からも 見えません）を 出して います。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "見るだけ",
+   "why": "★★これは **ほんとう** です ── ★`get_teacher_periods`（SECURITY DEFINER）が `has_can(p_org_id, 'sched_all')` で 事務に 読ませ、★返すのは `id, ord, name, start_min, end_min` だけ です（★中身の `my_timetable` に 触りません）。★書く 道は `my_periods` の update／delete の 決まり だけ で、★どちらも `auth.uid() = user_id` です。★★けれど いま `my_periods` は 22行 ぜんぶ `org_id` なし で、★`get_teacher_periods` は `p.org_id = p_org_id` で しぼるので **1行も 出ません**。★★★「事務は 見るだけ」と 書くと、★出して いない ものを 出して いる ように 読まれます。★代わりに `NO_ORG_LINES`（どこにも 属さない／どの 学校からも 見えません）を 出して います。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "です。直せません。",
+   "why": "★★これは **ほんとう** です ── ★`get_teacher_periods`（SECURITY DEFINER）が `has_can(p_org_id, 'sched_all')` で 事務に 読ませ、★返すのは `id, ord, name, start_min, end_min` だけ です（★中身の `my_timetable` に 触りません）。★書く 道は `my_periods` の update／delete の 決まり だけ で、★どちらも `auth.uid() = user_id` です。★★けれど いま `my_periods` は 22行 ぜんぶ `org_id` なし で、★`get_teacher_periods` は `p.org_id = p_org_id` で しぼるので **1行も 出ません**。★★★「事務は 見るだけ」と 書くと、★出して いない ものを 出して いる ように 読まれます。★代わりに `NO_ORG_LINES`（どこにも 属さない／どの 学校からも 見えません）を 出して います。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "事務の 側からは",
+   "why": "★★これは **ほんとう** です ── ★`get_teacher_periods`（SECURITY DEFINER）が `has_can(p_org_id, 'sched_all')` で 事務に 読ませ、★返すのは `id, ord, name, start_min, end_min` だけ です（★中身の `my_timetable` に 触りません）。★書く 道は `my_periods` の update／delete の 決まり だけ で、★どちらも `auth.uid() = user_id` です。★★けれど いま `my_periods` は 22行 ぜんぶ `org_id` なし で、★`get_teacher_periods` は `p.org_id = p_org_id` で しぼるので **1行も 出ません**。★★★「事務は 見るだけ」と 書くと、★出して いない ものを 出して いる ように 読まれます。★代わりに `NO_ORG_LINES`（どこにも 属さない／どの 学校からも 見えません）を 出して います。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "見えますが、直せません",
+   "why": "★★これは **ほんとう** です ── ★`get_teacher_periods`（SECURITY DEFINER）が `has_can(p_org_id, 'sched_all')` で 事務に 読ませ、★返すのは `id, ord, name, start_min, end_min` だけ です（★中身の `my_timetable` に 触りません）。★書く 道は `my_periods` の update／delete の 決まり だけ で、★どちらも `auth.uid() = user_id` です。★★けれど いま `my_periods` は 22行 ぜんぶ `org_id` なし で、★`get_teacher_periods` は `p.org_id = p_org_id` で しぼるので **1行も 出ません**。★★★「事務は 見るだけ」と 書くと、★出して いない ものを 出して いる ように 読まれます。★代わりに `NO_ORG_LINES`（どこにも 属さない／どの 学校からも 見えません）を 出して います。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "での コマです。ほかの 学校とは 混ぜません。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "あなたは、その 中で",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "自分の レッスンの コマ",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "を 決められます。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  },
+  {
+   "text": "「日程を 組む」の 表は、自分の コマで 出ます。",
+   "why": "★`org_periods`（学校の 基本の コマ）は 台帳に あります が **0行** です。★そして `components/MyTimetable.jsx` は `org_id` を 1度も 見て いません ── ★`periodsOf` は 行が 無ければ `DEFAULT_PERIODS`（決め打ちの 6コマ）を 返します。★★だから「学校の 基本」は 画面の どこにも ありません。★写す もとが ありません。",
+   "trigger": "かけもち（学校ごとの コマ）を 作る と 決まった 日 ── ★`org_periods` に 行が 入り、★`MyTimetable` が `org_id` を 見る ように なった とき",
+   "decided": "2026-09-25",
+   "decided_by": "Code",
+   "evidence": "本番の 台帳を 直に 見ました（2026-09-25）── org_periods 0行 ／ my_periods 22行 ぜんぶ org_id なし ／ get_teacher_periods は p.org_id = p_org_id で しぼる ／ my_periods の 書く 決まりは auth.uid() = user_id だけ"
+  }
+ ]
 }

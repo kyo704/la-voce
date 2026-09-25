@@ -11,7 +11,7 @@ import {
 } from "@/components/UiV2";
 import { COLS_MY_PERIODS, COLS_MY_TIMETABLE } from "@/lib/dbColumns";
 import {
-  DAYS, TT_COPY, TT_FREE_LABEL, TT_EDIT_HINT, TT_LEGEND, TT_GRID_NOTES,
+  DAYS, TT_COPY, TT_FREE_LABEL, TT_EDIT_HINT, TT_LEGEND, TT_GRID_NOTES, NO_ORG_LINES,
   CELL_NOT_PICKED, CELL_NOT_PICKED_HOW,
   hhmm, periodsOf, isOwnPeriods,
   buildGrid, freeCount, cellLabel, DEFAULT_PERIODS
@@ -439,6 +439,17 @@ function PeriodsScreen({ supabase, userId, periods, onBack }) {
       <Back onClick={onBack}>{TT_COPY.title}</Back>
       <ScreenHead title={TT_COPY.periodsTitle}
         right={<Usu style={{ marginTop: 0 }}>{own ? TT_COPY.periodsMine : TT_COPY.periodsNone}</Usu>} />
+
+      {/* ★★★いま どの 学校からも 見えません（★2026-09-25）。
+          ★★台帳で 確かめました ── `my_periods` 22行 ぜんぶ `org_id` なし。
+            ★読む 道は `get_teacher_periods` 1本 で、`p.org_id = p_org_id` で
+            ★しぼって います。★だから 1行も 出ません。
+          ★★見本の「事務の 側は 見るだけ」は 書いて いません ──
+            ★学校に 入って からの 話 で、★いまは 見えても いません。
+          ★文は lib/myTimetable.js が 持ちます。 */}
+      {NO_ORG_LINES.map((line, i) => (
+        <Usu key={i} style={{ marginTop: i === 0 ? 6 : 0 }}>{line}</Usu>
+      ))}
 
       <Box>
         {list.map((p, i) => (

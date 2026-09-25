@@ -1,0 +1,158 @@
+{
+  "title": "友人フリッツ",
+  "title_original": "L'amico Fritz",
+  "aliases": [
+    "さくらんぼの二重唱"
+  ],
+  "composer": "マスカーニ",
+  "composer_sort": "Mascagni, Pietro",
+  "kind": "opera",
+  "year_written": 1891,
+  "duration_min": 105,
+  "language": "it",
+  "source": "hand",
+  "source_id": "mascagni-amico-fritz",
+  "roles": [
+    {
+      "label": "スーゼル"
+    },
+    {
+      "label": "フリッツ"
+    },
+    {
+      "label": "ダヴィド"
+    },
+    {
+      "label": "ベッペ"
+    },
+    {
+      "label": "カテリーナ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 フリッツの家",
+      "group_label": "第1幕",
+      "roles": [
+        "フリッツ",
+        "ダヴィド",
+        "ベッペ",
+        "スーゼル",
+        "カテリーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 農場（さくらんぼの二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "スーゼル",
+        "フリッツ",
+        "ダヴィド"
+      ]
+    },
+    {
+      "label": "第3幕 告白とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "フリッツ",
+        "スーゼル",
+        "ダヴィド",
+        "ベッペ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

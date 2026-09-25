@@ -1,0 +1,265 @@
+{
+  "title": "蝶々夫人",
+  "composer": "プッチーニ",
+  "composer_sort": "Puccini, Giacomo",
+  "kind": "opera",
+  "year_written": 1904,
+  "source": "hand",
+  "source_id": "puccini-butterfly",
+  "instrumentation": [
+    "管弦楽"
+  ],
+  "roles": [
+    {
+      "label": "蝶々さん"
+    },
+    {
+      "label": "ピンカートン"
+    },
+    {
+      "label": "シャープレス"
+    },
+    {
+      "label": "スズキ"
+    },
+    {
+      "label": "ゴロー"
+    },
+    {
+      "label": "ボンゾ"
+    },
+    {
+      "label": "ヤマドリ"
+    },
+    {
+      "label": "ケート"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "導入（家の紹介）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピンカートン",
+        "ゴロー",
+        "スズキ"
+      ]
+    },
+    {
+      "label": "二重唱（世界中どこでも）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピンカートン",
+        "シャープレス"
+      ]
+    },
+    {
+      "label": "蝶々さんの登場（合唱つき）",
+      "group_label": "第1幕",
+      "roles": [
+        "蝶々さん",
+        "合唱"
+      ]
+    },
+    {
+      "label": "結婚の場とボンゾの呪い",
+      "group_label": "第1幕",
+      "roles": [
+        "蝶々さん",
+        "ピンカートン",
+        "シャープレス",
+        "ゴロー",
+        "ボンゾ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "愛の二重唱（夜が来た）",
+      "group_label": "第1幕",
+      "roles": [
+        "蝶々さん",
+        "ピンカートン"
+      ]
+    },
+    {
+      "label": "ある晴れた日に（蝶々さんのアリア）",
+      "group_label": "第2幕 第1場",
+      "roles": [
+        "蝶々さん"
+      ]
+    },
+    {
+      "label": "シャープレスの手紙の場",
+      "group_label": "第2幕 第1場",
+      "roles": [
+        "蝶々さん",
+        "シャープレス"
+      ]
+    },
+    {
+      "label": "ヤマドリの求婚",
+      "group_label": "第2幕 第1場",
+      "roles": [
+        "蝶々さん",
+        "ゴロー",
+        "ヤマドリ",
+        "シャープレス"
+      ]
+    },
+    {
+      "label": "花の二重唱",
+      "group_label": "第2幕 第1場",
+      "roles": [
+        "蝶々さん",
+        "スズキ"
+      ]
+    },
+    {
+      "label": "ハミング・コーラス",
+      "group_label": "第2幕 第1場",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "間奏曲",
+      "group_label": "第2幕 第2場",
+      "roles": []
+    },
+    {
+      "label": "ピンカートンの別れ（さらば愛の家よ）",
+      "group_label": "第2幕 第2場",
+      "roles": [
+        "ピンカートン",
+        "シャープレス",
+        "スズキ"
+      ]
+    },
+    {
+      "label": "ケートとの対面",
+      "group_label": "第2幕 第2場",
+      "roles": [
+        "蝶々さん",
+        "ケート",
+        "シャープレス",
+        "スズキ"
+      ]
+    },
+    {
+      "label": "フィナーレ（蝶々さんの死）",
+      "group_label": "第2幕 第2場",
+      "roles": [
+        "蝶々さん",
+        "ピンカートン",
+        "スズキ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "バストロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "大太鼓・小太鼓・シンバル・タムタム・鐘・ヴィブラフォン・鳥笛"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "舞台裏の楽器",
+      "count": 0,
+      "section": "banda",
+      "note": "鐘・サムライの声・ヴィオラダモーレ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Madama Butterfly",
+  "aliases": [
+    "Butterfly"
+  ],
+  "duration_min": 145,
+  "language": "it"
+}

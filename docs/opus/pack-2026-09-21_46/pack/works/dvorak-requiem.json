@@ -1,0 +1,173 @@
+{
+  "title": "レクイエム 作品89",
+  "title_original": "Requiem",
+  "aliases": [],
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvorak, Antonin",
+  "kind": "chorus",
+  "year_written": 1890,
+  "source": "hand",
+  "source_id": "dvorak-requiem",
+  "duration_min": 95,
+  "language": "la",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 入祭唱",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "II 昇階唱",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "III 続唱 怒りの日",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "IV 奉献唱",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "V サンクトゥスとベネディクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI アニュス・デイ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

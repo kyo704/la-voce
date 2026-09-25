@@ -1,0 +1,112 @@
+{
+  "title": "バスティアンとバスティエンヌ",
+  "title_original": "Bastien und Bastienne",
+  "aliases": [
+    "バスティアン"
+  ],
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1768,
+  "duration_min": 50,
+  "language": "de",
+  "source": "hand",
+  "source_id": "mozart-bastien",
+  "roles": [
+    {
+      "label": "バスティエンヌ"
+    },
+    {
+      "label": "バスティアン"
+    },
+    {
+      "label": "コラス"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序奏",
+      "group_label": "序奏",
+      "roles": []
+    },
+    {
+      "label": "バスティエンヌの嘆き",
+      "group_label": "全1幕",
+      "roles": [
+        "バスティエンヌ"
+      ]
+    },
+    {
+      "label": "コラスの魔法",
+      "group_label": "全1幕",
+      "roles": [
+        "コラス",
+        "バスティエンヌ"
+      ]
+    },
+    {
+      "label": "バスティアンの帰還",
+      "group_label": "全1幕",
+      "roles": [
+        "バスティアン",
+        "コラス"
+      ]
+    },
+    {
+      "label": "仲直りの二重唱とフィナーレ",
+      "group_label": "全1幕",
+      "roles": [
+        "バスティエンヌ",
+        "バスティアン",
+        "コラス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

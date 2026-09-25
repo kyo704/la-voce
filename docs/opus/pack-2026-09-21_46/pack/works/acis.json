@@ -1,0 +1,139 @@
+{
+  "title": "エイシスとガラテア",
+  "title_original": "Acis and Galatea",
+  "aliases": [
+    "アシスとガラテア"
+  ],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1718,
+  "duration_min": 95,
+  "language": "en",
+  "source": "hand",
+  "source_id": "handel-acis",
+  "roles": [
+    {
+      "label": "ガラテア"
+    },
+    {
+      "label": "エイシス"
+    },
+    {
+      "label": "ポリフェモス"
+    },
+    {
+      "label": "デイモン"
+    },
+    {
+      "label": "コリドン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1部 牧歌の合唱",
+      "group_label": "第1部",
+      "roles": [
+        "合唱",
+        "ガラテア",
+        "エイシス",
+        "デイモン"
+      ]
+    },
+    {
+      "label": "第2部 ポリフェモスの登場（おお、愛らしい姿よ）",
+      "group_label": "第2部",
+      "roles": [
+        "ポリフェモス",
+        "ガラテア",
+        "デイモン",
+        "コリドン"
+      ]
+    },
+    {
+      "label": "第2部 三重唱と殺害",
+      "group_label": "第2部",
+      "roles": [
+        "エイシス",
+        "ガラテア",
+        "ポリフェモス"
+      ]
+    },
+    {
+      "label": "第2部 嘆きと泉への変身",
+      "group_label": "第2部",
+      "roles": [
+        "ガラテア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "title": "交響曲第5番 ニ短調",
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "orchestra",
+  "year_written": 1937,
+  "source": "hand",
+  "source_id": "shostakovich-sym5",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "第1楽章 モデラート",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第2楽章 アレグレット",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第3楽章 ラルゴ",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第4楽章 アレグロ・ノン・トロッポ",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "エスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion",
+      "note": "大太鼓・小太鼓・シンバル・タムタム・シロフォン・グロッケン"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

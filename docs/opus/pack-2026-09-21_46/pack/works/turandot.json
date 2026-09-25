@@ -1,0 +1,267 @@
+{
+  "title": "トゥーランドット",
+  "composer": "プッチーニ",
+  "composer_sort": "Puccini, Giacomo",
+  "kind": "opera",
+  "year_written": 1926,
+  "source": "hand",
+  "source_id": "puccini-turandot",
+  "roles": [
+    {
+      "label": "トゥーランドット"
+    },
+    {
+      "label": "カラフ"
+    },
+    {
+      "label": "リュー"
+    },
+    {
+      "label": "ティムール"
+    },
+    {
+      "label": "ピン"
+    },
+    {
+      "label": "パン"
+    },
+    {
+      "label": "ポン"
+    },
+    {
+      "label": "アルトゥム皇帝"
+    },
+    {
+      "label": "役人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "役人の布告と群衆",
+      "group_label": "第1幕",
+      "roles": [
+        "役人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ティムールとリューの登場",
+      "group_label": "第1幕",
+      "roles": [
+        "カラフ",
+        "ティムール",
+        "リュー"
+      ]
+    },
+    {
+      "label": "月よ昇れ（児童合唱と処刑）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "三大臣の制止（ピン・パン・ポン）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピン",
+        "パン",
+        "ポン",
+        "カラフ"
+      ]
+    },
+    {
+      "label": "お聞きください、王子様（リューのアリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "リュー",
+        "カラフ",
+        "ティムール"
+      ]
+    },
+    {
+      "label": "銅鑼の場（第1幕フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "カラフ",
+        "リュー",
+        "ティムール",
+        "ピン",
+        "パン",
+        "ポン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "三大臣の場（ホナンに家がある）",
+      "group_label": "第2幕",
+      "roles": [
+        "ピン",
+        "パン",
+        "ポン"
+      ]
+    },
+    {
+      "label": "謎解きの場（この宮殿の中で）",
+      "group_label": "第2幕",
+      "roles": [
+        "トゥーランドット",
+        "カラフ",
+        "アルトゥム皇帝",
+        "役人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "誰も寝てはならぬ（カラフのアリア）",
+      "group_label": "第3幕",
+      "roles": [
+        "カラフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "リューの拷問と死（氷のような姫君の心も）",
+      "group_label": "第3幕",
+      "roles": [
+        "リュー",
+        "トゥーランドット",
+        "カラフ",
+        "ティムール",
+        "ピン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "二重唱とフィナーレ（アルファーノ補筆）",
+      "group_label": "第3幕",
+      "roles": [
+        "トゥーランドット",
+        "カラフ",
+        "アルトゥム皇帝",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 6,
+      "section": "percussion",
+      "note": "銅鑼・シロフォン・グロッケン・チューブラーベル・大太鼓・シンバル ほか"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "トランペット・トロンボーン・サクソフォン・銅鑼"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Turandot",
+  "aliases": [],
+  "duration_min": 120,
+  "language": "it"
+}

@@ -1,0 +1,68 @@
+{
+  "title": "靭猿",
+  "title_original": "靭猿",
+  "aliases": [],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "drama",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "kyogen-utsubozaru-okura",
+  "duration_min": 40,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "大名"
+    },
+    {
+      "label": "太郎冠者"
+    },
+    {
+      "label": "猿曳"
+    },
+    {
+      "label": "子猿"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "大名と猿曳の出会い",
+      "group_label": "全",
+      "roles": [
+        "大名",
+        "太郎冠者",
+        "猿曳"
+      ]
+    },
+    {
+      "label": "猿の皮を所望する",
+      "group_label": "全",
+      "roles": [
+        "大名",
+        "猿曳",
+        "子猿"
+      ]
+    },
+    {
+      "label": "子猿の芸と大名の改心",
+      "group_label": "全",
+      "roles": [
+        "大名",
+        "猿曳",
+        "子猿",
+        "太郎冠者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による（笛・小鼓・大鼓・太鼓）"
+    }
+  ],
+  "school": "大蔵流",
+  "note": "★大蔵流で書いた。和泉流では 曲名や科白の運びが違うことがある"
+}
