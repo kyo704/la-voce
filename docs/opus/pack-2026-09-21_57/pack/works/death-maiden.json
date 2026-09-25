@@ -1,0 +1,87 @@
+{
+  "title": "弦楽四重奏曲第14番 ニ短調「死と乙女」",
+  "composer": "シューベルト",
+  "composer_sort": "Schubert, Franz",
+  "kind": "chamber",
+  "year_written": 1824,
+  "source": "hand",
+  "source_id": "schubert-death-maiden",
+  "roles": [
+    {
+      "label": "第1ヴァイオリン"
+    },
+    {
+      "label": "第2ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 アンダンテ・コン・モート",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 スケルツォ",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 プレスト",
+      "group_label": "全曲",
+      "roles": [
+        "第1ヴァイオリン",
+        "第2ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "第1ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

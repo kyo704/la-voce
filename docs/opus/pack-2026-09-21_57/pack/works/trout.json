@@ -1,0 +1,110 @@
+{
+  "title": "ピアノ五重奏曲 イ長調「ます」",
+  "composer": "シューベルト",
+  "composer_sort": "Schubert, Franz",
+  "kind": "chamber",
+  "year_written": 1819,
+  "source": "hand",
+  "source_id": "schubert-trout",
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    },
+    {
+      "label": "コントラバス"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・ヴィヴァーチェ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ",
+        "コントラバス"
+      ]
+    },
+    {
+      "label": "第2楽章 アンダンテ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ",
+        "コントラバス"
+      ]
+    },
+    {
+      "label": "第3楽章 スケルツォ プレスト",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ",
+        "コントラバス"
+      ]
+    },
+    {
+      "label": "第4楽章 主題と変奏（ます）",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ",
+        "コントラバス"
+      ]
+    },
+    {
+      "label": "第5楽章 フィナーレ アレグロ・ジュスト",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ",
+        "コントラバス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "title": "テオドーラ（オラトリオ）",
+  "title_original": "Theodora",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1750,
+  "source": "hand",
+  "source_id": "handel-theodora",
+  "duration_min": 170,
+  "language": "en",
+  "roles": [
+    {
+      "label": "テオドーラ"
+    },
+    {
+      "label": "ディディムス"
+    },
+    {
+      "label": "セプティミウス"
+    },
+    {
+      "label": "ヴァレンス"
+    },
+    {
+      "label": "イレーネ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 迫害の布告",
+      "group_label": "第1部",
+      "roles": [
+        "ヴァレンス",
+        "セプティミウス",
+        "テオドーラ",
+        "イレーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 牢獄と救出",
+      "group_label": "第2部",
+      "roles": [
+        "テオドーラ",
+        "ディディムス",
+        "イレーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3部 殉教（フィナーレ）",
+      "group_label": "第3部",
+      "roles": [
+        "テオドーラ",
+        "ディディムス",
+        "ヴァレンス",
+        "イレーネ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

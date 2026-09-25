@@ -1,0 +1,176 @@
+{
+  "title": "海賊（ベッリーニ）",
+  "title_original": "Il pirata",
+  "aliases": [
+    "イル・ピラータ"
+  ],
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1827,
+  "duration_min": 150,
+  "language": "it",
+  "source": "hand",
+  "source_id": "bellini-pirata",
+  "roles": [
+    {
+      "label": "イモジェーネ"
+    },
+    {
+      "label": "グァルティエーロ"
+    },
+    {
+      "label": "エルネスト"
+    },
+    {
+      "label": "イトゥルボ"
+    },
+    {
+      "label": "ゴッフレード"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 難破と再会",
+      "group_label": "第1幕",
+      "roles": [
+        "グァルティエーロ",
+        "イトゥルボ",
+        "ゴッフレード",
+        "イモジェーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 二重唱（イモジェーネとグァルティエーロ）",
+      "group_label": "第1幕",
+      "roles": [
+        "イモジェーネ",
+        "グァルティエーロ"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ",
+      "group_label": "第1幕",
+      "roles": [
+        "イモジェーネ",
+        "グァルティエーロ",
+        "エルネスト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 決闘とエルネストの死",
+      "group_label": "第2幕",
+      "roles": [
+        "グァルティエーロ",
+        "エルネスト",
+        "イモジェーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 狂乱の場（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "イモジェーネ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true,
+      "note": "レチタティーヴォ"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

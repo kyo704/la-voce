@@ -1,0 +1,235 @@
+{
+  "title": "ヘンゼルとグレーテル",
+  "composer": "フンパーディンク",
+  "composer_sort": "Humperdinck, Engelbert",
+  "kind": "opera",
+  "year_written": 1893,
+  "source": "hand",
+  "source_id": "humperdinck-hansel",
+  "instrumentation": [
+    "管弦楽"
+  ],
+  "roles": [
+    {
+      "label": "ヘンゼル"
+    },
+    {
+      "label": "グレーテル"
+    },
+    {
+      "label": "母（ゲルトルート）"
+    },
+    {
+      "label": "父（ペーター）"
+    },
+    {
+      "label": "魔女"
+    },
+    {
+      "label": "眠りの精"
+    },
+    {
+      "label": "露の精"
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "家の場（踊りの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘンゼル",
+        "グレーテル"
+      ]
+    },
+    {
+      "label": "母の帰宅",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘンゼル",
+        "グレーテル",
+        "母（ゲルトルート）"
+      ]
+    },
+    {
+      "label": "父の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "父（ペーター）",
+        "母（ゲルトルート）"
+      ]
+    },
+    {
+      "label": "森の場（こだまの歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘンゼル",
+        "グレーテル"
+      ]
+    },
+    {
+      "label": "眠りの精",
+      "group_label": "第2幕",
+      "roles": [
+        "眠りの精",
+        "ヘンゼル",
+        "グレーテル"
+      ]
+    },
+    {
+      "label": "夕べの祈り",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘンゼル",
+        "グレーテル"
+      ]
+    },
+    {
+      "label": "夢のパントマイム",
+      "group_label": "第2幕",
+      "roles": []
+    },
+    {
+      "label": "露の精と目覚め",
+      "group_label": "第3幕",
+      "roles": [
+        "露の精",
+        "ヘンゼル",
+        "グレーテル"
+      ]
+    },
+    {
+      "label": "お菓子の家と魔女",
+      "group_label": "第3幕",
+      "roles": [
+        "魔女",
+        "ヘンゼル",
+        "グレーテル"
+      ]
+    },
+    {
+      "label": "魔女の踊りと最期",
+      "group_label": "第3幕",
+      "roles": [
+        "魔女",
+        "ヘンゼル",
+        "グレーテル"
+      ]
+    },
+    {
+      "label": "フィナーレ（子どもたちの解放）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヘンゼル",
+        "グレーテル",
+        "父（ペーター）",
+        "母（ゲルトルート）",
+        "児童合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Hänsel und Gretel",
+  "aliases": [
+    "ヘンゼル",
+    "Hansel"
+  ],
+  "duration_min": 105,
+  "language": "de"
+}

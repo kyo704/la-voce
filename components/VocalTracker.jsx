@@ -158,6 +158,7 @@ import MoreBundle from "@/components/MoreBundle";
 import { isBundle, entrancesOf, ENTRANCE_NOTES } from "@/lib/moreBundles";
 import WorkField from "@/components/WorkField";
 import Kugiri from "@/components/Kugiri";
+import DayPick from "@/components/DayPick";
 import KyoshitsuOps from "@/components/KyoshitsuOps";
 import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
   TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
@@ -13292,6 +13293,10 @@ export default function VocalTracker({
     // ★── しらべる
     "書き出す": () => setMoreSection("じぶんの記録"),
     "区切り": () => setMoreSection("区切り"),
+    // ★★★受診用の 1枚（★しらべるの 束の 行「受診用の 1枚」）。
+    //   ★★日を 選んで から、★受診用サマリーへ 行きます。
+    //     ★★前は 期間を 選ぶ ところが 分析の 奥に しか ありませんでした。
+    "日を選ぶ": () => setMoreSection("日を選ぶ"),
     // ★── つたえる
     // ★── 学校
     "通っているところ": () => setMoreSection("通っているところ"),
@@ -28316,6 +28321,23 @@ export default function VocalTracker({
                     ★★記録の 画面の 札（`PeriodMarkerButton`）は そのまま 残します。
                       ★同じ 台帳・同じ 言葉 です。★道を 消しません。
                     ★★理由を 書く ところは ありません（★設計 §9 の 8番）。 */}
+                {/* ★★★日を 選ぶ（★2026-09-26・C群）。
+                    ★★選んだ 範囲を そのまま 受診用サマリーに 渡します ──
+                      ★`clinicPeriodMode` を `custom` に して、★始めと 終わりを 入れます。
+                    ★★★台帳を 1つも 触りません。★選んだ 日を 返すだけ です。 */}
+                {layoutV2 && moreSection === "日を選ぶ" ? (
+                  <DayPick mode="range" from="しらべる"
+                    value={clinicCustomStart && clinicCustomEnd
+                      ? { from: clinicCustomStart, to: clinicCustomEnd } : {}}
+                    onOk={(sel) => {
+                      setClinicPeriodMode("custom");
+                      setClinicCustomStart(sel.from || "");
+                      setClinicCustomEnd(sel.to || "");
+                      setMoreSection(null);
+                      setActiveTab("clinicSummary");
+                    }}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
                 {layoutV2 && moreSection === "区切り" ? (
                   <Kugiri markers={periodMarkers} today={todayISOUTC()}
                     busy={markerBusy} onToggle={handleTogglePeriodMarker}

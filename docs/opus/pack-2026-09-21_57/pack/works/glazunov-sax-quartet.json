@@ -1,0 +1,77 @@
+{
+  "title": "サクソフォン四重奏曲 変ロ長調 作品109",
+  "composer": "グラズノフ",
+  "composer_sort": "Glazunov, Alexander",
+  "kind": "chamber",
+  "year_written": 1932,
+  "source": "hand",
+  "source_id": "glazunov-sax-quartet",
+  "roles": [
+    {
+      "label": "ソプラノサクソフォン"
+    },
+    {
+      "label": "アルトサクソフォン"
+    },
+    {
+      "label": "テナーサクソフォン"
+    },
+    {
+      "label": "バリトンサクソフォン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    },
+    {
+      "label": "第2楽章 主題と変奏",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    },
+    {
+      "label": "第3楽章 フィナーレ",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノサクソフォン",
+        "アルトサクソフォン",
+        "テナーサクソフォン",
+        "バリトンサクソフォン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ソプラノサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "アルトサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "テナーサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "バリトンサクソフォン",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}
