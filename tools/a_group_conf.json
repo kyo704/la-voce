@@ -99,6 +99,10 @@
     "components/CalendarConnect.jsx",
     "lib/calendarSub.js"
   ],
+  "コマの中身": [
+    "components/KomaNoNakami.jsx",
+    "lib/komaNoNakami.js"
+  ],
   "コマの時間": [
     "components/OpsOrgMaster.jsx",
     "lib/orgMaster.js"
@@ -136,6 +140,10 @@
   "レッスン割を確定": [
     "components/LessonRoundDone.jsx",
     "lib/lessonRound.js"
+  ],
+  "予定の中身": [
+    "components/YoteiNoNakami.jsx",
+    "lib/yoteiNoNakami.js"
   ],
   "予定の名前": [
     "components/YoteiNoNamae.jsx",
