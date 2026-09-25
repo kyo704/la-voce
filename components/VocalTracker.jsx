@@ -157,6 +157,7 @@ import { mayUseMatching } from "@/lib/matchingGate";
 import MoreBundle from "@/components/MoreBundle";
 import { isBundle, entrancesOf, ENTRANCE_NOTES } from "@/lib/moreBundles";
 import WorkField from "@/components/WorkField";
+import Kugiri from "@/components/Kugiri";
 import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
   TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
 import { pickSchool, SCHOOL_KEY } from "@/lib/matchingSearch";
@@ -13284,6 +13285,7 @@ export default function VocalTracker({
   const 束の行き先 = {
     // ★── しらべる
     "書き出す": () => setMoreSection("じぶんの記録"),
+    "区切り": () => setMoreSection("区切り"),
     // ★── つたえる
     // ★── 学校
     "通っているところ": () => setMoreSection("通っているところ"),
@@ -28241,17 +28243,18 @@ export default function VocalTracker({
                   </div>
                 ) : null}
 
+                {/* ★★★区切り（★2026-09-25・design-v76 で 一覧の 1枚に なりました）。
+                    ★★置き所が「しらべる」の 束に 変わりました（★Opus）。
+                      ★わけ ── ★使うのは **くらべる とき** だから です。
+                    ★★前は 1日ぶんの 札 だけ でした。★置いた 日の 一覧が 見えず、
+                      ★外すには その 日へ 戻る しか ありませんでした。
+                    ★★記録の 画面の 札（`PeriodMarkerButton`）は そのまま 残します。
+                      ★同じ 台帳・同じ 言葉 です。★道を 消しません。
+                    ★★理由を 書く ところは ありません（★設計 §9 の 8番）。 */}
                 {layoutV2 && moreSection === "区切り" ? (
-                  <div>
-                    <p style={{ ...TYPE.usual, marginBottom: 9 }}>
-                      {formatDateLabel(selectedDate, language)}
-                    </p>
-                    {/* ★★★6段に します ── ★ここは 門の 中の 置き所 です（★お決め D66(a)）。
-                         ★★同じ 札が、★古い 画面（18395行）にも 出ます。
-                         ★★あちらには 渡しません。 */}
-                    <PeriodMarkerButton dateISO={selectedDate} markers={periodMarkers}
-                      busy={markerBusy} onToggle={handleTogglePeriodMarker} 六段 />
-                  </div>
+                  <Kugiri markers={periodMarkers} today={todayISOUTC()}
+                    busy={markerBusy} onToggle={handleTogglePeriodMarker}
+                    onBack={() => setMoreSection(null)} />
                 ) : null}
                 {/* ★★★戻る 道を、★1つの 部品に そろえました（★2026-09-16）。
                     ★★ここは 手で 書いた ボタン でした ── ★13px・灰色（ink2）。

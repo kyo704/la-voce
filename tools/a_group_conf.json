@@ -40,6 +40,11 @@
     "components/MoreBundle.jsx",
     "lib/moreBundles.js"
   ],
+  "その人": [
+    "components/SonoHito.jsx",
+    "lib/sonoHito.js",
+    "lib/orgRoster.js"
+  ],
   "たな": [
     "components/SheepShelf.jsx",
     "lib/repertoireLog.js"
@@ -238,6 +243,10 @@
   "募集を出す": [
     "components/PostingForm.jsx",
     "lib/postingForm.js"
+  ],
+  "区切り": [
+    "components/Kugiri.jsx",
+    "lib/periodMarkers.js"
   ],
   "半年のまとめ": [
     "components/OrgSummary.jsx",

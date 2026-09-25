@@ -1,0 +1,73 @@
+{
+  "title": "教皇マルチェルスのミサ",
+  "title_original": "Missa Papae Marcelli",
+  "aliases": [],
+  "composer": "パレストリーナ",
+  "composer_sort": "Palestrina, Giovanni Pierluigi da",
+  "kind": "chorus",
+  "year_written": 1562,
+  "source": "hand",
+  "source_id": "palestrina-marcellus",
+  "duration_min": 30,
+  "language": "la",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "キリエ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "グローリア",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "クレド",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "サンクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ベネディクトゥス",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "アニュス・デイ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "is_optional": true,
+      "note": "無伴奏が基本"
+    }
+  ],
+  "note": "★無伴奏（ア・カペラ）。6声"
+}

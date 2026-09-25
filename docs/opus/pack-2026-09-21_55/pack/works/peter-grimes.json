@@ -1,0 +1,215 @@
+{
+  "title": "ピーター・グライムズ",
+  "title_original": "Peter Grimes",
+  "aliases": [
+    "グライムズ",
+    "4つの海の間奏曲"
+  ],
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1945,
+  "duration_min": 150,
+  "language": "en",
+  "source": "hand",
+  "source_id": "britten-peter-grimes",
+  "roles": [
+    {
+      "label": "ピーター・グライムズ"
+    },
+    {
+      "label": "エレン・オーフォード"
+    },
+    {
+      "label": "バルストロード"
+    },
+    {
+      "label": "アーンティ"
+    },
+    {
+      "label": "スウォロー"
+    },
+    {
+      "label": "セドリー夫人"
+    },
+    {
+      "label": "ボブ・ボウルズ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ 検死審問",
+      "group_label": "プロローグ",
+      "roles": [
+        "ピーター・グライムズ",
+        "スウォロー",
+        "エレン・オーフォード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 第1場 浜辺（間奏曲 夜明け）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱",
+        "バルストロード",
+        "アーンティ",
+        "ピーター・グライムズ"
+      ]
+    },
+    {
+      "label": "第1幕 第2場 酒場（嵐）",
+      "group_label": "第1幕",
+      "roles": [
+        "アーンティ",
+        "バルストロード",
+        "ボブ・ボウルズ",
+        "ピーター・グライムズ",
+        "エレン・オーフォード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 第1場 日曜の朝",
+      "group_label": "第2幕",
+      "roles": [
+        "エレン・オーフォード",
+        "ピーター・グライムズ",
+        "セドリー夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 第2場 小屋（少年の死）",
+      "group_label": "第2幕",
+      "roles": [
+        "ピーター・グライムズ"
+      ]
+    },
+    {
+      "label": "第3幕 第1場 村の踊りと捜索",
+      "group_label": "第3幕",
+      "roles": [
+        "セドリー夫人",
+        "スウォロー",
+        "アーンティ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 第2場 霧の中（グライムズの狂気とフィナーレ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ピーター・グライムズ",
+        "エレン・オーフォード",
+        "バルストロード",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "酒場・村の踊り"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
