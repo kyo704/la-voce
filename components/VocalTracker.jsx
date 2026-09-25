@@ -336,6 +336,7 @@ import {
   gradeFilterOptions, GRADE_FILTER_ALL
 } from "@/lib/orgRoster";
 import RecordV2Head from "@/components/RecordV2Head";
+import KirokuNoKimari from "@/components/KirokuNoKimari";
 import {
   KoeSheet, NemuriSheet, MarksSheet, SheetRow, ListSheet, HonbanSheet, HitokotoSheet
 } from "@/components/RecordSheets";
@@ -19988,6 +19989,7 @@ export default function VocalTracker({
                     entry={formData}
                     dateBand={dateBandNode}
                     saved={saveStatus === "saved"}
+                    onOpenKimari={() => setRecordSheet("きまり")}
                     onPickEdema={(w) => { const n = applyEdemaWord(formData, w); setFormData(n); handleSave(n); }}
                     onPickThroat={(w) => { const n = applyThroatWord(formData, w); setFormData(n); handleSave(n); }}
                     onPickDeki={(w) => { const n = applyDekiWord(formData, w); setFormData(n); handleSave(n); }}
@@ -30001,6 +30003,14 @@ export default function VocalTracker({
       {/* ★★下から 上がる 1枚（★2026-09-11・第1便）。
           ★★いちばん 外に 置きます。★後ろの 画面より 上に 出すためです。
           ★★門の 中の 方だけです。★38人の 画面は 変わりません。 */}
+      {/* ★★この画面の きまり（★2026-09-25・C群 第1段）。
+          ★★台帳を 引きません。★約束の 字を 出す だけ です。
+          ★★`formData` を 見ません ── ★記録が まだ 無くても 読めます。
+            ★★★約束は、★書く 前に 読める ほうが よい から です。 */}
+      {layoutV2 && recordSheet === "きまり" && (
+        <KirokuNoKimari onBack={() => setRecordSheet(null)} />
+      )}
+
       {layoutV2 && formData && recordSheet === "ねむり" && (
         // ★★きのうの 値を 渡します（★2026-09-11・お決め D-1）。
         //   ★★1枚が「きのうの値を 初めから 入れています」と 言っているので、

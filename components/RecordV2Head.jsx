@@ -34,9 +34,12 @@ import { Card, Warn, Note, Two, Btn, H3 } from "@/components/UiV2";
 //     ★★見本は「3つ」と 出しますが、★見本自身が「この見本の 説明用です」と
 //       断っています。★この家では 出しません。
 //
-//   ★★「?（記録のきまり）」を 置いていません。
-//     ★見本には ありますが、★行き先の 画面が まだ ありません。
-//     ★★押せない ボタンを 置かない、という 決めです。
+//   ★★「?（記録のきまり）」を 置きました（★2026-09-25）。
+//     ★★2026-09-11 から、★ここには こう 書いて ありました ──
+//       「★行き先の 画面が まだ ありません。★押せない ボタンを 置かない」
+//     ★★★その 行き先を 作りました ── `components/KirokuNoKimari.jsx`。
+//       ★だから 引き金が 引かれ、★「?」を 置いて います。
+//     ★★字は `lib/kirokuNoKimari.js` が 持ちます。★ここでは 決めません。
 //
 //   ★見張り components/tests/record-v2.test.js
 //         components/tests/a03-kiroku.test.js
@@ -125,7 +128,7 @@ export default function RecordV2Head({
   entry, saved, dateBand,
   onPickEdema, onPickThroat, onPickDeki,
   sleepRow, koeRow, addRows,
-  onSkip, onSubmit
+  onSkip, onSubmit, onOpenKimari
 }) {
   const quick = mayUseQuickCondition(entry);
   const throatNow = readThroatValue(entry);
@@ -149,6 +152,19 @@ export default function RecordV2Head({
         <h2 style={TYPE.title}>記録</h2>
         {saved ? (
           <span style={{ fontSize: rem(12.5), color: C.sage }}>保存しました</span>
+        ) : null}
+        {/* ★★「?」── ★この画面の きまり へ（★2026-09-25）。
+            ★★渡されて いない ときは 出しません ── ★押せない 札を 置きません。
+              ★これまで 置いて いなかった 理由が それ です。 */}
+        {!saved && onOpenKimari ? (
+          <button type="button" onClick={onOpenKimari}
+            aria-label="この画面の きまり"
+            style={{
+              minWidth: 44, minHeight: 44, border: "none", background: "none",
+              // ★★15 では なく 15.5 です ── ★6段（12／12.5／13／13.5／14.5／15.5）の 中。
+              //   ★大きさは lib/uiKit.js の 段が 決めます。★見本の 生の 数では ありません。
+              color: C.inkSoft, fontSize: rem(15.5), cursor: "pointer"
+            }}>?</button>
         ) : null}
       </div>
 

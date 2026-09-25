@@ -435,5 +435,13 @@
  "型の中身": [
   "components/OpsPresets.jsx",
   "lib/lessonPresets.js"
+ ],
+ "切ってある機能": [
+  "app/admin/kitte/page.js",
+  "lib/kitteAruKinou.js"
+ ],
+ "記録のきまり": [
+  "components/KirokuNoKimari.jsx",
+  "lib/kirokuNoKimari.js"
  ]
 }

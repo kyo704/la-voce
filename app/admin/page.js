@@ -283,8 +283,17 @@ export default async function AdminPage() {
       <h1 className="ff-display italic" style={{ fontSize: "2.25rem", color: C.curtain }}>
         管理者画面
       </h1>
-      <p style={{ color: C.inkSoft, fontSize: "0.8125rem", marginTop: 4, marginBottom: 24 }}>
+      <p style={{ color: C.inkSoft, fontSize: "0.8125rem", marginTop: 4, marginBottom: 12 }}>
         ログイン中: {user.email}
+      </p>
+
+      {/* ★★切ってある 機能の 一覧（★裁定176・裁定171／2026-09-25）。
+          ★★出発の 朝に ここから 見ます。★利用者の 画面には 出しません ──
+            ★だから「もっと」では なく、★ここに 入口を 置きます。 */}
+      <p style={{ marginBottom: 24 }}>
+        <a href="/admin/kitte" style={{ color: C.curtain, fontSize: "0.875rem" }}>
+          切ってある 機能を 見る ›
+        </a>
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
