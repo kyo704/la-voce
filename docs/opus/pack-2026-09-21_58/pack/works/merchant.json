@@ -1,0 +1,117 @@
+{
+  "title": "ヴェニスの商人",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1597,
+  "source": "hand",
+  "source_id": "shakespeare-merchant",
+  "roles": [
+    {
+      "label": "シャイロック"
+    },
+    {
+      "label": "ポーシャ"
+    },
+    {
+      "label": "アントーニオ"
+    },
+    {
+      "label": "バサーニオ"
+    },
+    {
+      "label": "ジェシカ"
+    },
+    {
+      "label": "ロレンゾー"
+    },
+    {
+      "label": "ネリッサ"
+    },
+    {
+      "label": "グラシアーノ"
+    },
+    {
+      "label": "公爵"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 証文の約束",
+      "group_label": "第1幕",
+      "roles": [
+        "アントーニオ",
+        "バサーニオ",
+        "シャイロック",
+        "グラシアーノ"
+      ]
+    },
+    {
+      "label": "第2幕 箱選びとジェシカの駆け落ち",
+      "group_label": "第2幕",
+      "roles": [
+        "ポーシャ",
+        "ネリッサ",
+        "ジェシカ",
+        "ロレンゾー",
+        "シャイロック",
+        "その他"
+      ]
+    },
+    {
+      "label": "第3幕 難破の報せ",
+      "group_label": "第3幕",
+      "roles": [
+        "シャイロック",
+        "バサーニオ",
+        "ポーシャ",
+        "ネリッサ",
+        "アントーニオ"
+      ]
+    },
+    {
+      "label": "第4幕 法廷の場",
+      "group_label": "第4幕",
+      "roles": [
+        "ポーシャ",
+        "シャイロック",
+        "アントーニオ",
+        "バサーニオ",
+        "公爵",
+        "ネリッサ",
+        "グラシアーノ"
+      ]
+    },
+    {
+      "label": "第5幕 指輪の場",
+      "group_label": "第5幕",
+      "roles": [
+        "ポーシャ",
+        "バサーニオ",
+        "ネリッサ",
+        "グラシアーノ",
+        "ロレンゾー",
+        "ジェシカ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "The Merchant of Venice",
+  "aliases": [
+    "ベニスの商人"
+  ],
+  "duration_min": 160,
+  "language": "en"
+}

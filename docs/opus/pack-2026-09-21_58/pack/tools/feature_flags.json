@@ -1,0 +1,16 @@
+{
+  "_note": "★本番の feature_flags から 写したもの（2026-09-24）。★足したら ここも 直す",
+  "keys": [
+    "cal_sub",
+    "homepage",
+    "koen",
+    "koen_children",
+    "lesson_rounds",
+    "matching",
+    "portfolio_public",
+    "pricing",
+    "scoring",
+    "student_price",
+    "works_catalog"
+  ]
+}

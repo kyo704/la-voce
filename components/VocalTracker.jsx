@@ -159,6 +159,25 @@ import { isBundle, entrancesOf, ENTRANCE_NOTES } from "@/lib/moreBundles";
 import WorkField from "@/components/WorkField";
 import Kugiri from "@/components/Kugiri";
 import DayPick from "@/components/DayPick";
+import Tsutaeru from "@/components/Tsutaeru";
+import NaniWoKaku from "@/components/NaniWoKaku";
+import HonbanYotei from "@/components/HonbanYotei";
+import KoenList from "@/components/KoenList";
+import { COLS as HONBAN_COLS, patchOf as honbanPatch, SAVED as HONBAN_SAVED }
+  from "@/lib/honbanYotei";
+import { mayShowTsutaeru } from "@/lib/tsutaeru";
+import {
+  COLS_KOEN as KOEN_LIST_COLS, COLS_MY_MEMBER as KOEN_LIST_MY_COLS, rowOf as koenRowOf
+} from "@/lib/koenList";
+import Shirabeteiru from "@/components/Shirabeteiru";
+import Totonoeru from "@/components/Totonoeru";
+import PortfolioLook from "@/components/PortfolioLook";
+import { readOrder as readCompareOrder, writeOrder as writeCompareOrder }
+  from "@/lib/compareOrder";
+import { COLS_SECTION as PAGE_SECTION_COLS } from "@/lib/totonoeru";
+// ★★しらべている ことの 組は「順番」の 上から です。★鍵は `lib/lagChoice.js` が 持ちます。
+import { ITEMS as COMPARE_ITEMS } from "@/lib/lagChoice";
+import { patchOf as lookPatch } from "@/lib/portfolioLook";
 import KyoshitsuOps from "@/components/KyoshitsuOps";
 import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
   TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
@@ -5893,6 +5912,13 @@ export default function VocalTracker({
   //   ★★★中は できことで 判じ直します（`OpsShell` / `OpsSettingsHub`）。
   //     ★ここで 渡すのは 望み だけ です。★門では ありません。
   const [opsWant, setOpsWant] = useState(null);
+  // ★★★本番の 予定（★2026-09-26・`public.performances`）。
+  //   ★★書くのは 1件ずつ です。★一覧は まだ 作って いません（★見本にも ありません）。
+  const [honbanDraft, setHonbanDraft] = useState(null);
+  const [honbanSaved, setHonbanSaved] = useState("");
+  // ★★★公演の 一覧（★出る 方の 側）。★`KoenMine` と 同じ 2表 を 引きます。
+  //   ★★あちらは「いまの 公演」、★こちらは「掛け持ちも まとめて」です（★別の 見本）。
+  const [koenListRows, setKoenListRows] = useState(null);
   // ★日程で 見ている日。★地図から 押すと、ここが 変わります。
   const [opsDate, setOpsDate] = useState(() => todayISO());
   // ★自分が作ったのに、自分の membership が無い教室（2026-09-02）。
@@ -13293,11 +13319,21 @@ export default function VocalTracker({
     // ★── しらべる
     "書き出す": () => setMoreSection("じぶんの記録"),
     "区切り": () => setMoreSection("区切り"),
+    // ★★★しらべている こと（★組と 時間差）。★順番は `lib/compareOrder.js` が 持ちます。
+    "しらべていること": () => setMoreSection("しらべていること"),
     // ★★★受診用の 1枚（★しらべるの 束の 行「受診用の 1枚」）。
     //   ★★日を 選んで から、★受診用サマリーへ 行きます。
     //     ★★前は 期間を 選ぶ ところが 分析の 奥に しか ありませんでした。
     "日を選ぶ": () => setMoreSection("日を選ぶ"),
     // ★── つたえる
+    // ★★★何を 足しますか（★書く ものを 選ぶ 1枚）。
+    "なにを書く": () => setMoreSection("なにを書く"),
+    // ★★★整える（★ページの 色・文字・写真の かたち・節の 順番）。
+    "整える": () => setMoreSection("整える"),
+    // ★★★見た目を 選ぶ（★組み方・録画の 並び・ことば）。★`portfolios.theme` に 入ります。
+    "見た目を選ぶ": () => setMoreSection("見た目を選ぶ"),
+    // ★★★Woolsong に ついて（★買う 前の 1枚）。★鍵が 閉じて いれば 出しません。
+    "Woolsong": mayShowTsutaeru(features) ? () => setMoreSection("Woolsong") : null,
     // ★── 学校
     "通っているところ": () => setMoreSection("通っているところ"),
     // ★★★この 教室の 運営 …… ★運営に 入れる 教室が **1つ** の 方だけ 出します。
@@ -13309,6 +13345,10 @@ export default function VocalTracker({
     "授業の時間を出す": isEnrolledInOrg ? () => setMoreSection("授業の時間") : null,
     // ★── 公演
     "公演": mayShowKoenMine(features) ? () => setMoreSection("公演") : null,
+    // ★★★公演の 一覧（★掛け持ちも まとめて）。★鍵は 同じ もの を 見ます。
+    "公演の一覧": mayShowKoenMine(features) ? () => setMoreSection("公演の一覧") : null,
+    // ★★★本番前の ことば。★台帳は `performances`（★誰の 鍵も 要りません）。
+    "本番の予定": () => setMoreSection("本番の予定"),
     // ★── さがす（★門は `matchingOn`。★お仕事と 名簿の 両方を 見て います）
     "伴奏をさがす": matchingOn ? () => setMoreSection("さがす") : null,
     // ★── 学ぶ
@@ -13326,6 +13366,57 @@ export default function VocalTracker({
     "同意": () => setActiveTab("withdrawConsent"),
     "退会": () => setMoreSection("じぶんの記録")
   };
+  // ==========================================================================
+  // ★★★つないだ 画面の 読み込み（★2026-09-26）
+  //   ★★開いた ときだけ 引きます。★もっとを 出すだけで 引きません。
+  // ==========================================================================
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "本番の予定" || !userId) return;
+    let 生 = true;
+    (async () => {
+      // ★★いちばん 近い 先の 1件。★無ければ 新しく 書く 形 です。
+      const { data } = await featureClient.from("performances")
+        .select(HONBAN_COLS).eq("user_id", userId)
+        .gte("performed_on", todayISOUTC())
+        .order("performed_on", { ascending: true }).limit(1);
+      if (!生) return;
+      setHonbanDraft((data && data[0]) ? data[0] : { performed_on: "", label: "", morning_words: "" });
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, featureClient]);
+
+  const [pageSections, setPageSections] = useState(null);
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "整える" || !userId) return;
+    let 生 = true;
+    (async () => {
+      const { data } = await featureClient.from("page_sections")
+        .select(PAGE_SECTION_COLS).eq("user_id", userId).order("sort_order");
+      if (生) setPageSections(data || []);
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, featureClient]);
+
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "公演の一覧" || !userId) return;
+    let 生 = true;
+    (async () => {
+      const { data: mem } = await featureClient.from("koen_members")
+        .select(KOEN_LIST_MY_COLS).eq("user_id", userId).is("left_at", null);
+      const ids = (mem || []).map((m) => m.koen_id).filter(Boolean);
+      if (ids.length === 0) { if (生) setKoenListRows([]); return; }
+      const { data: ks } = await featureClient.from("koen")
+        .select(KOEN_LIST_COLS).in("id", ids);
+      if (!生) return;
+      const 表 = {};
+      (ks || []).forEach((k) => { 表[k.id] = k; });
+      setKoenListRows((mem || [])
+        .filter((m) => 表[m.koen_id])
+        .map((m) => koenRowOf(表[m.koen_id], m, "", "")));
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, featureClient]);
+
   const 束へ行ける = (to) => typeof 束の行き先[to] === "function";
 
   // ==========================================================================
@@ -28321,6 +28412,100 @@ export default function VocalTracker({
                     ★★記録の 画面の 札（`PeriodMarkerButton`）は そのまま 残します。
                       ★同じ 台帳・同じ 言葉 です。★道を 消しません。
                     ★★理由を 書く ところは ありません（★設計 §9 の 8番）。 */}
+                {/* ★★★しらべている こと（★2026-09-26 に つなぎました）。
+                    ★★組は 順番の 1番目 です。★好きに 選べません（★くらべると 同じ 決め）。
+                    ★★順番の 出どころは `lib/compareOrder.js` 1つ です。 */}
+                {layoutV2 && moreSection === "しらべていること" ? (
+                  <Shirabeteiru
+                    pairs={readCompareOrder(COMPARE_ITEMS.map((x) => x.key)).slice(0, 5)
+                      .map((k) => ({ key: k, item: k }))}
+                    lag={null}
+                    paid={subscribed === true}
+                    onChangeItem={(from, to) => {
+                      const 次 = readCompareOrder(COMPARE_ITEMS.map((x) => x.key))
+                        .map((k) => (k === from ? to : k));
+                      writeCompareOrder(次, COMPARE_ITEMS.map((x) => x.key));
+                    }}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★整える（★`page_sections` と `portfolios.theme`）。 */}
+                {layoutV2 && moreSection === "整える" && pageSections ? (
+                  <Totonoeru theme={portfolio ? portfolio.theme : null}
+                    sections={pageSections}
+                    onTheme={(next) => { void handleSavePortfolio({ theme: next }); }}
+                    onSections={async (next) => {
+                      // ★★節の 順番だけ 直します。★題も 見える・見えないも 触りません。
+                      //   ★★1行ずつ 送ります ── ★`upsert` は 使いません
+                      //     （★`page_sections` の 決まりは 直しだけ を 許して います）。
+                      const 列 = Array.isArray(next) ? next : [];
+                      for (let i = 0; i < 列.length; i += 1) {
+                        const r = 列[i];
+                        if (!r || !r.id) continue;
+                        await featureClient.from("page_sections")
+                          .update({ sort_order: i }).eq("id", r.id).eq("user_id", userId);
+                      }
+                      setPageSections(列.map((r, i) => ({ ...r, sort_order: i })));
+                    }}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★見た目を 選ぶ（★`portfolios.theme` に 入ります。★列は 増やしません）。
+                    ★★払って いない 方の 組み方・ことばは 隠しません。★右に「Woolsong」。 */}
+                {layoutV2 && moreSection === "見た目を選ぶ" ? (
+                  <PortfolioLook theme={portfolio ? portfolio.theme : null}
+                    paid={subscribed === true}
+                    onPick={(next) => {
+                      const 形 = lookPatch(portfolio ? portfolio.theme : null, next,
+                        subscribed === true);
+                      void handleSavePortfolio(形);
+                    }}
+                    onPreview={() => setMoreSection("経歴")}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★なにを 書く（★2026-09-26 に つなぎました）。
+                    ★★お仕事（`field`）で 出る 種が 変わります（★裁定202）。 */}
+                {layoutV2 && moreSection === "なにを書く" ? (
+                  <NaniWoKaku field={profile.field} entries={portfolioEntries}
+                    onPick={() => setMoreSection("経歴")}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★Woolsong に ついて（★買う 前の 1枚）。
+                    ★★鍵が 閉じて いれば 中で 何も 返しません（★入口も 出て いません）。 */}
+                {layoutV2 && moreSection === "Woolsong" ? (
+                  <Tsutaeru features={features}
+                    onStart={() => setMoreSection("プラン")}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★本番の 予定（★`public.performances`）。
+                    ★★書いた ことばは そのまま 残します。★整えません（★約束②）。 */}
+                {layoutV2 && moreSection === "本番の予定" && honbanDraft ? (
+                  <>
+                    <HonbanYotei value={honbanDraft}
+                      onChange={setHonbanDraft}
+                      onSave={async (v) => {
+                        const 形 = honbanPatch(v);
+                        if (!形) return;
+                        const r = v.id
+                          ? await featureClient.from("performances")
+                            .update(形).eq("id", v.id).eq("user_id", userId)
+                          : await featureClient.from("performances")
+                            .insert({ ...形, user_id: userId });
+                        if (r.error) { setHonbanSaved("保存できませんでした。"); return; }
+                        setHonbanSaved(HONBAN_SAVED);
+                      }}
+                      onBack={() => { setHonbanSaved(""); setMoreSection(null); }} />
+                    {honbanSaved ? (
+                      <p style={{ ...TYPE.note, color: C.inkSoft, marginTop: 9 }}>{honbanSaved}</p>
+                    ) : null}
+                  </>
+                ) : null}
+                {/* ★★★公演の 一覧（★出る 方の 側・掛け持ちも まとめて）。
+                    ★★終わった 公演も 消しません。★見るだけに します。 */}
+                {layoutV2 && moreSection === "公演の一覧" && koenListRows ? (
+                  <KoenList rows={koenListRows} nowId={koenId}
+                    canManage={koenListRows.some((r) => r && r.canManage)}
+                    onOpen={(id) => { setKoenId(id); setMoreSection("公演"); }}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
                 {/* ★★★日を 選ぶ（★2026-09-26・C群）。
                     ★★選んだ 範囲を そのまま 受診用サマリーに 渡します ──
                       ★`clinicPeriodMode` を `custom` に して、★始めと 終わりを 入れます。

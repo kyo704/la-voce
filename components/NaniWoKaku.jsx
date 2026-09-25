@@ -11,7 +11,7 @@
 
 import { C } from "@/lib/tokens";
 import { ScreenHead, Back, Box } from "@/components/UiV2";
-import { TITLE, BACK_TO, rowsOf, NOTE_LINES } from "@/lib/naniwoKaku";
+import { TITLE, BACK_TO, rowsOf, NOTE_LINES, NOTE_STRONG } from "@/lib/naniwoKaku";
 
 export default function NaniWoKaku({ field, entries, onPick, onBack }) {
   const 行 = rowsOf(field, entries);
@@ -40,6 +40,7 @@ export default function NaniWoKaku({ field, entries, onPick, onBack }) {
       </Box>
 
       <div style={{ marginTop: 14 }}>
+        {/* ★★4行目は design-v80 で 足された 約束 です（★お仕事を 変えても 消えません）。 */}
         {NOTE_LINES.map((l, i) => (
           <p key={i} style={{
             fontSize: "0.75rem", color: i === 0 ? C.ink : C.inkSoft, lineHeight: 1.9

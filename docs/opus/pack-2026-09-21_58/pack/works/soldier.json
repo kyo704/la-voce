@@ -1,0 +1,105 @@
+{
+  "title": "兵士の物語",
+  "title_original": "L'Histoire du soldat",
+  "aliases": [
+    "兵士"
+  ],
+  "composer": "ストラヴィンスキー",
+  "composer_sort": "Stravinsky, Igor",
+  "kind": "drama",
+  "year_written": 1918,
+  "duration_min": 60,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "stravinsky-soldier",
+  "roles": [
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "兵士"
+    },
+    {
+      "label": "悪魔"
+    },
+    {
+      "label": "王女（黙役・踊り）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 兵士の行進",
+      "group_label": "第1部",
+      "roles": [
+        "語り手",
+        "兵士"
+      ]
+    },
+    {
+      "label": "第1部 悪魔との取引（本とヴァイオリン）",
+      "group_label": "第1部",
+      "roles": [
+        "兵士",
+        "悪魔",
+        "語り手"
+      ]
+    },
+    {
+      "label": "第2部 王女の病と3つの踊り（タンゴ・ワルツ・ラグタイム）",
+      "group_label": "第2部",
+      "roles": [
+        "兵士",
+        "王女（黙役・踊り）",
+        "語り手"
+      ]
+    },
+    {
+      "label": "第2部 悪魔の踊りと勝利の行進",
+      "group_label": "第2部",
+      "roles": [
+        "兵士",
+        "悪魔",
+        "王女（黙役・踊り）",
+        "語り手"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "コルネット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion",
+      "note": "1人で多数"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

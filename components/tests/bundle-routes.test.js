@@ -55,9 +55,23 @@ async function main() {
         readRaw("lib", "opsPerms.js"), "utf-8").toString("base64"))),
     "utf-8").toString("base64"));
   ko.ROWS.forEach((r) => to.push(r.to));
+  // ★★★束の 行でも、★教室の 運営の 行でも ない 行き先（★2026-09-26）。
+  //   ★★見本では **別の 画面の 中から** 押します。★束には 出て きません。
+  //   ★★★それでも 表に 要ります ── ★`moreSection` を 開く 道は 1つ だから です。
+  //     ★★ここに 名と 親を 書きます。★書いて あれば 通します。
+  //       ★打ち間違えれば、★名が 合わず 落ちます（★較正 済み）。
+  const 別の親 = {
+    "見た目を選ぶ": "経歴（★見本 `nRep` の 行「見た目を 選ぶ」）",
+    "日を選ぶ": "しらべる（★受診用の 1枚）"
+  };
+  Object.keys(別の親).forEach((k) => to.push(k));
   const 迷 = 鍵.filter((k) => !to.includes(k));
   t(迷.length === 0,
     `★出どころの 無い 鍵が ない${迷.length ? "（★" + 迷.join("／") + "）" : ""}`);
+
+  Object.entries(別の親).forEach(([k, v]) => {
+    t(鍵.includes(k) && !!v.trim(), `★${k} …… 親を 書いて ある（${v.slice(0, 20)}…）`);
+  });
 
   console.log("=== 二 ★`canGo` と `onGo` は 同じ 表から ===");
   t(/const 束へ行ける = \(to\) => typeof 束の行き先\[to\] === "function"/.test(vt),

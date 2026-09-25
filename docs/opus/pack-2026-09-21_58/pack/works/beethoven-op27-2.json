@@ -1,0 +1,49 @@
+{
+  "title": "ピアノソナタ第14番 嬰ハ短調「月光」",
+  "title_original": "Klaviersonate Nr. 14",
+  "aliases": [
+    "月光"
+  ],
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "chamber",
+  "year_written": 1801,
+  "source": "hand",
+  "source_id": "beethoven-moonlight",
+  "duration_min": 15,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アダージョ・ソステヌート",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アレグレット",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第3楽章 プレスト・アジタート",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

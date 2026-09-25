@@ -1,0 +1,89 @@
+{
+  "title": "木管五重奏曲 作品43",
+  "composer": "ニールセン",
+  "composer_sort": "Nielsen, Carl",
+  "kind": "chamber",
+  "year_written": 1922,
+  "source": "hand",
+  "source_id": "nielsen-wind-quintet",
+  "roles": [
+    {
+      "label": "フルート"
+    },
+    {
+      "label": "オーボエ"
+    },
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "ホルン"
+    },
+    {
+      "label": "ファゴット"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・ベン・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "オーボエ",
+        "クラリネット",
+        "ホルン",
+        "ファゴット"
+      ]
+    },
+    {
+      "label": "第2楽章 メヌエット",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "オーボエ",
+        "クラリネット",
+        "ホルン",
+        "ファゴット"
+      ]
+    },
+    {
+      "label": "第3楽章 前奏曲と主題と変奏",
+      "group_label": "全曲",
+      "roles": [
+        "フルート",
+        "オーボエ",
+        "クラリネット",
+        "ホルン",
+        "ファゴット"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}

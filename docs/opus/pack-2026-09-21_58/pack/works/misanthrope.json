@@ -1,0 +1,98 @@
+{
+  "title": "人間嫌い",
+  "composer": "モリエール",
+  "composer_sort": "Moliere",
+  "kind": "drama",
+  "year_written": 1666,
+  "source": "hand",
+  "source_id": "moliere-misanthrope",
+  "roles": [
+    {
+      "label": "アルセスト"
+    },
+    {
+      "label": "セリメーヌ"
+    },
+    {
+      "label": "フィラント"
+    },
+    {
+      "label": "エリアント"
+    },
+    {
+      "label": "オロント"
+    },
+    {
+      "label": "アルシノエ"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 友との論争・ソネットの場",
+      "group_label": "第1幕",
+      "roles": [
+        "アルセスト",
+        "フィラント",
+        "オロント"
+      ]
+    },
+    {
+      "label": "第2幕 セリメーヌの客間",
+      "group_label": "第2幕",
+      "roles": [
+        "アルセスト",
+        "セリメーヌ",
+        "エリアント",
+        "その他"
+      ]
+    },
+    {
+      "label": "第3幕 アルシノエの訪問",
+      "group_label": "第3幕",
+      "roles": [
+        "アルシノエ",
+        "セリメーヌ",
+        "アルセスト"
+      ]
+    },
+    {
+      "label": "第4幕 手紙の疑い",
+      "group_label": "第4幕",
+      "roles": [
+        "アルセスト",
+        "セリメーヌ",
+        "エリアント",
+        "フィラント"
+      ]
+    },
+    {
+      "label": "第5幕 決別",
+      "group_label": "第5幕",
+      "roles": [
+        "アルセスト",
+        "セリメーヌ",
+        "フィラント",
+        "エリアント",
+        "オロント",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "title_original": "Le Misanthrope",
+  "aliases": [],
+  "duration_min": 130,
+  "language": "fr"
+}
