@@ -1,0 +1,62 @@
+{
+  "title": "関羽",
+  "title_original": "関羽",
+  "aliases": [],
+  "composer": "歌舞伎（市川宗家 歌舞伎十八番）",
+  "composer_sort": "Kabuki Juhachiban",
+  "kind": "drama",
+  "year_written": 1700,
+  "source": "hand",
+  "source_id": "kabuki-kanu",
+  "duration_min": 40,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "関羽"
+    },
+    {
+      "label": "関平"
+    },
+    {
+      "label": "周倉"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全場（上演の形により変わる）",
+      "group_label": "全",
+      "roles": [
+        "関羽",
+        "関平",
+        "周倉",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線（舞台上の雛壇）"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽（舞台袖）"
+    }
+  ],
+  "note": "★復活上演の演目／★型（音羽屋型・成田屋型など）により 演出が変わる",
+  "school": "成田屋（市川宗家）"
+}

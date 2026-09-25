@@ -455,5 +455,9 @@
  "配る": [
   "components/KoenHaifu.jsx",
   "lib/koenHaifu.js"
+ ],
+ "希望がまだの方": [
+  "components/WariMada.jsx",
+  "lib/wariMada.js"
  ]
 }

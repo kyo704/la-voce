@@ -1,0 +1,99 @@
+{
+  "title": "ワーニャ伯父さん",
+  "title_original": "Дядя Ваня",
+  "aliases": [],
+  "composer": "チェーホフ",
+  "composer_sort": "Chekhov, Anton",
+  "kind": "drama",
+  "year_written": 1899,
+  "source": "hand",
+  "source_id": "chekhov-uncle-vanya",
+  "duration_min": 140,
+  "language": "ru",
+  "roles": [
+    {
+      "label": "ワーニャ"
+    },
+    {
+      "label": "ソーニャ"
+    },
+    {
+      "label": "エレーナ"
+    },
+    {
+      "label": "アーストロフ"
+    },
+    {
+      "label": "セレブリャコーフ"
+    },
+    {
+      "label": "マリーナ"
+    },
+    {
+      "label": "テレーギン"
+    },
+    {
+      "label": "ヴォイニーツカヤ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 庭",
+      "group_label": "第1幕",
+      "roles": [
+        "ワーニャ",
+        "アーストロフ",
+        "マリーナ",
+        "エレーナ",
+        "セレブリャコーフ",
+        "ソーニャ",
+        "テレーギン"
+      ]
+    },
+    {
+      "label": "第2幕 夜の食堂",
+      "group_label": "第2幕",
+      "roles": [
+        "セレブリャコーフ",
+        "エレーナ",
+        "ソーニャ",
+        "ワーニャ",
+        "アーストロフ"
+      ]
+    },
+    {
+      "label": "第3幕 客間（発砲）",
+      "group_label": "第3幕",
+      "roles": [
+        "ワーニャ",
+        "セレブリャコーフ",
+        "エレーナ",
+        "ソーニャ",
+        "アーストロフ",
+        "ヴォイニーツカヤ",
+        "テレーギン"
+      ]
+    },
+    {
+      "label": "第4幕 出発と「生きていきましょう」",
+      "group_label": "第4幕",
+      "roles": [
+        "ワーニャ",
+        "ソーニャ",
+        "アーストロフ",
+        "マリーナ",
+        "テレーギン",
+        "ヴォイニーツカヤ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}

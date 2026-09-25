@@ -1,0 +1,173 @@
+{
+  "title": "火刑台上のジャンヌ・ダルク",
+  "title_original": "Jeanne d'Arc au bûcher",
+  "aliases": [],
+  "composer": "オネゲル",
+  "composer_sort": "Honegger, Arthur",
+  "kind": "chorus",
+  "year_written": 1938,
+  "source": "hand",
+  "source_id": "honegger-jeanne",
+  "duration_min": 75,
+  "language": "fr",
+  "roles": [
+    {
+      "label": "語り（ジャンヌ）"
+    },
+    {
+      "label": "語り（ドミニック）"
+    },
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1〜4場 天からの声と裁き",
+      "group_label": "全曲",
+      "roles": [
+        "語り（ジャンヌ）",
+        "語り（ドミニック）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5〜8場 カードの王たちと民衆",
+      "group_label": "全曲",
+      "roles": [
+        "語り（ジャンヌ）",
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "第9〜11場 火刑と昇天",
+      "group_label": "全曲",
+      "roles": [
+        "語り（ジャンヌ）",
+        "ソプラノ独唱",
+        "合唱",
+        "児童合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "バスクラリネット"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オンド・マルトノ",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

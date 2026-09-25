@@ -1,0 +1,113 @@
+{
+  "title": "から騒ぎ",
+  "title_original": "Much Ado About Nothing",
+  "aliases": [],
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1599,
+  "source": "hand",
+  "source_id": "shakespeare-much-ado",
+  "duration_min": 150,
+  "language": "en",
+  "roles": [
+    {
+      "label": "ベアトリス"
+    },
+    {
+      "label": "ベネディック"
+    },
+    {
+      "label": "ヒーロー"
+    },
+    {
+      "label": "クローディオ"
+    },
+    {
+      "label": "ドン・ペドロ"
+    },
+    {
+      "label": "ドン・ジョン"
+    },
+    {
+      "label": "レオナート"
+    },
+    {
+      "label": "ドグベリー"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 凱旋と再会",
+      "group_label": "第1幕",
+      "roles": [
+        "ベアトリス",
+        "ベネディック",
+        "ヒーロー",
+        "クローディオ",
+        "ドン・ペドロ",
+        "レオナート"
+      ]
+    },
+    {
+      "label": "第2幕 仮面舞踏会と計略",
+      "group_label": "第2幕",
+      "roles": [
+        "ベアトリス",
+        "ベネディック",
+        "ドン・ペドロ",
+        "ドン・ジョン",
+        "クローディオ",
+        "その他"
+      ]
+    },
+    {
+      "label": "第3幕 盗み聞きの場",
+      "group_label": "第3幕",
+      "roles": [
+        "ベアトリス",
+        "ベネディック",
+        "ヒーロー",
+        "ドグベリー"
+      ]
+    },
+    {
+      "label": "第4幕 破談の教会",
+      "group_label": "第4幕",
+      "roles": [
+        "クローディオ",
+        "ヒーロー",
+        "レオナート",
+        "ベアトリス",
+        "ベネディック",
+        "その他"
+      ]
+    },
+    {
+      "label": "第5幕 真相とフィナーレ",
+      "group_label": "第5幕",
+      "roles": [
+        "ベアトリス",
+        "ベネディック",
+        "クローディオ",
+        "ヒーロー",
+        "ドン・ペドロ",
+        "ドグベリー",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}
