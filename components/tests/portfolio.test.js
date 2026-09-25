@@ -56,13 +56,25 @@ const 素 = fs.readFileSync(SQL, "utf8")
     assert.ok(/default 'self'/.test(素), "★台帳の 既定が ちがいます");
   });
 
-  見る("③ 18歳未満の 方に `link` を 出さない", () => {
+  // ★★★鍵が `link` → `public` に 変わりました（★2026-09-25）。
+  //   ★★`link` は 台帳の 縛り（`portfolios_visibility_check`）を **通りません**。
+  //     ★通るのは `self`／`org`／`public` の 3つ だけ です（★sql/78）。
+  //   ★★見本『出す』も「どなたでも」に「18歳以上」の 錠を かけて います。
+  //   ★★★見る ものは 変わりません ── ★18歳未満に「外に 出す」を 出さない こと。
+  //     ★鍵の 名だけ 直します。
+  //   ★★台帳の 3つを その場で 確かめます ── ★覚えません。
+  見る("③ 18歳未満の 方に `public` を 出さない", () => {
     const 子 = { age_band: "under15" };
     const 十代 = { age_band: "teen" };
     const 大人 = { age_band: "adult" };
-    assert.ok(!P.scopesFor(子).some((s) => s.key === "link"), "★15歳未満に 出て います");
-    assert.ok(!P.scopesFor(十代).some((s) => s.key === "link"), "★18歳未満に 出て います");
-    assert.ok(P.scopesFor(大人).some((s) => s.key === "link"), "★大人に 出て いません");
+    const 台帳の3つ = ["self", "org", "public"];
+    P.SCOPES.forEach((s) => {
+      assert.ok(台帳の3つ.includes(s.key),
+        "★台帳が 通さない 鍵が あります …… " + s.key);
+    });
+    assert.ok(!P.scopesFor(子).some((s) => s.key === "public"), "★15歳未満に 出て います");
+    assert.ok(!P.scopesFor(十代).some((s) => s.key === "public"), "★18歳未満に 出て います");
+    assert.ok(P.scopesFor(大人).some((s) => s.key === "public"), "★大人に 出て いません");
     assert.ok(!P.mayUseScope(十代, "link"), "★18歳未満が 選べます");
     // ★★答えて いない 方は、★安全な 側（＝出さない）へ 倒します。
     assert.ok(!P.mayUseScope(null, "link"), "★分からない 方に 出て います");
