@@ -451,5 +451,9 @@
  "Woolsong": [
   "components/Tsutaeru.jsx",
   "lib/tsutaeru.js"
+ ],
+ "配る": [
+  "components/KoenHaifu.jsx",
+  "lib/koenHaifu.js"
  ]
 }
