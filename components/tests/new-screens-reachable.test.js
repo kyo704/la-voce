@@ -44,31 +44,45 @@ const 中 = {};
     .replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^\s*\/\/.*$/gm, " ");
 });
 
-const 対 = JSON.parse(fs.readFileSync(path.join(ROOT, "tools", "screen_impl.json"), "utf8"));
 const 待 = JSON.parse(fs.readFileSync(path.join(ROOT, "tools", "not_wired_yet.json"), "utf8"));
 
-const 部品 = [];
-Object.keys(対).filter((k) => !k.startsWith("_")).forEach((k) => {
-  (対[k] || []).forEach((p) => {
-    if (!/^components\/.*\.jsx$/.test(p)) return;
-    const n = path.basename(p, ".jsx");
-    if (!部品.includes(n)) 部品.push(n);
-  });
-});
+// ★★★2026-09-25 ── ★数える 先を **対応表から 置場そのもの** に 変えました。
+//   ★★それまでは `tools/screen_impl.json`（★26枚）だけを 数えて いました。
+//     ★★あの 紙に 書き忘れた 画面は、★1枚も 数えられて いませんでした ──
+//       ★★実際に 27枚が 抜けて いました（★作って、見本と 見比べ、見張りも 付けた のに、
+//         ★どこからも 呼ばれて いない 画面 です）。
+//   ★★★対応表は 人が 書きます。★置場は 書き忘れられません。
+//     ★★だから 源は 置場 です。★`components/*.jsx` を ぜんぶ 数えます。
+//   ★★`VocalTracker` は 入口 そのもの なので 除きます。
+const 部品 = fs.readdirSync(path.join(ROOT, "components"))
+  .filter((n) => n.endsWith(".jsx"))
+  .map((n) => path.basename(n, ".jsx"))
+  .filter((n) => n !== "VocalTracker")
+  .sort();
 
 console.log("① 作った 画面の 部品");
 t(部品.length > 0, "★部品が ある（" + 部品.length + "本）");
 
 console.log("\n② 呼ばれて いるか");
+// ★★★呼ばれ方は 2つ あります ──
+//   ①★札として 置く（`<Yotei …>`）── ★画面 です
+//   ②★名を もらう（`import { ScreenHead } from "@/components/UiV2"`）── ★部品 です
+//   ★★★②を 数えて いなかった ので、★`UiV2` や `RecordSheets` のような
+//     ★みんなが 使う 部品まで「呼ばれて いない」に 出て いました。
+//     ★★出す 側に 倒すのは 安全 ですが、★本物の 27枚が 紛れます。
+const 使われる = (n) => 紙.filter((f) => {
+  if (path.basename(f) === n + ".jsx") return false;
+  const s = 中[f];
+  if (new RegExp("<" + n + "\\b").test(s)) return true;
+  return new RegExp('from\\s+["\'](?:@/components/|\\./)' + n + '["\']').test(s);
+});
+
 const 未 = [];
 部品.forEach((n) => {
-  const 呼 = 紙.filter((f) =>
-    path.basename(f) !== n + ".jsx" && new RegExp("<" + n + "\\b").test(中[f]));
-  if (呼.length === 0) 未.push(n);
+  if (使われる(n).length === 0) 未.push(n);
 });
 部品.forEach((n) => {
-  const 呼 = 紙.filter((f) =>
-    path.basename(f) !== n + ".jsx" && new RegExp("<" + n + "\\b").test(中[f]));
+  const 呼 = 使われる(n);
   const 書 = Object.prototype.hasOwnProperty.call(待, n);
   if (呼.length > 0) {
     t(!書, "★" + n + " ── 呼ばれて いる（★待ちの 紙に 書いて いない）");

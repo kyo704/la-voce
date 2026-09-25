@@ -19,7 +19,11 @@ function t(c, label) {
 
 async function main() {
   const src = fs.readFileSync(path.join(ROOT, "lib", "matchingGate.js"), "utf-8");
-  const m = await import("data:text/javascript;base64," + Buffer.from(src, "utf-8").toString("base64"));
+  // ★★`@/` を 解けないので、★読み込みの 道だけを 本物の 中身に すり替えます。
+  const b64 = (...q) => "data:text/javascript;base64,"
+    + Buffer.from(fs.readFileSync(path.join(ROOT, ...q), "utf-8"), "utf-8").toString("base64");
+  const 解 = src.replace('"@/lib/workField"', JSON.stringify(b64("lib", "workField.js")));
+  const m = await import("data:text/javascript;base64," + Buffer.from(解, "utf-8").toString("base64"));
   const 名 = m.MATCHING_ENV;
   const 私 = "99b695d8-ae90-43a5-9767-a8d073a4003d";
   const よそ = "11111111-1111-4111-8111-111111111111";
@@ -34,6 +38,26 @@ async function main() {
   t(m.mayUseMatching(私, { [名]: 私 }) === true, "★名簿に 居れば 開く");
   t(m.mayUseMatching(私, { [名]: `${よそ}, ${私}` }) === true, "★並べた 中に 居れば 開く");
   t(m.mayUseMatching(私, { [名]: ` ${私} ` }) === true, "★前後の 空白を 落とす");
+
+  console.log("=== 二の二 ★お仕事が 音楽で ない 方には 出さない（★裁定202） ===");
+  // ★★見本『お仕事を選ぶ』の 約束 ──「声の お仕事・舞台を えらぶと、「さがす」は 出ません。」
+  t(m.mayUseMatching(私, { [名]: 私 }, "music") === true, "★音楽 なら 開く");
+  t(m.mayUseMatching(私, { [名]: 私 }, "voice") === false, "★声の お仕事 なら 閉じる");
+  t(m.mayUseMatching(私, { [名]: 私 }, "stage") === false, "★舞台 なら 閉じる");
+  // ★★列が まだ 無い とき（null／undefined）は 音楽に 倒します ── ★いまの 見え方の まま。
+  t(m.mayUseMatching(私, { [名]: 私 }, null) === true, "★まだ 選んで いない 方は そのまま");
+  t(m.mayUseMatching(私, { [名]: 私 }, undefined) === true, "★列が 無い ときも そのまま");
+  // ★★名簿に 居なければ、★音楽 でも 開きません（★2つ とも 要る こと）。
+  t(m.mayUseMatching(よそ, { [名]: 私 }, "music") === false, "★名簿が 先に 効く");
+  // ★★決めを 2か所に 書いて いない こと。
+  t(/isMusic\(field\)/.test(src), "★`workField` の `isMusic` を 呼んで いる");
+  t(!/field\s*===\s*["']music["']/.test(stripComments(src)),
+    "★ここに `field === \"music\"` と 書いて いない");
+  // ★★台帳の 側にも 同じ 2つが 書いて ある こと（★sql/90）。
+  const sql90 = fs.readFileSync(
+    path.join(ROOT, "supabase", "opus", "20260925_90_profile_field.sql"), "utf-8");
+  t(/can_see_sagasu/.test(sql90) && /'music'/.test(sql90), "★台帳の 側も 音楽だけ");
+  t(/enrollments/.test(sql90), "★台帳の 側は 名簿（教室）も 見て いる");
 
   console.log("=== 三 ★門を 通さずに 出して いない ===");
   const vt = stripComments(readRaw("components", "VocalTracker.jsx"));
