@@ -1,0 +1,108 @@
+{
+ "title": "日本の四季（唱歌・叙情歌）",
+ "composer": "日本の唱歌",
+ "composer_sort": "Japanese songs",
+ "kind": "song_cycle",
+ "year_written": 1900,
+ "source_id": "japan-shoka",
+ "note": "★作曲者は 曲ごとに 違います。★★まとめて 歌う 習わし",
+ "scenes": [
+  {
+   "label": "1. 早春賦",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. 花",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. 朧月夜",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 夏は来ぬ",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. 浜辺の歌",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. 荒城の月",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. 紅葉",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. ふるさと",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "9. 故郷の廃家",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "10. 冬景色",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand",
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "language": "ja"
+}

@@ -1,0 +1,107 @@
+{
+  "title": "吹奏楽のための第2組曲 ヘ長調",
+  "composer": "ホルスト",
+  "composer_sort": "Holst, Gustav",
+  "kind": "band",
+  "year_written": 1911,
+  "source": "hand",
+  "source_id": "holst-band-suite2",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "第1楽章 行進曲",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第2楽章 無言歌",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第3楽章 鍛冶屋の歌",
+      "group_label": "全曲",
+      "roles": []
+    },
+    {
+      "label": "第4楽章 ダーガソン",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピッコロ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 6,
+      "section": "woodwind",
+      "doubling": "エスクラリネット・バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 4,
+      "section": "woodwind",
+      "note": "アルト2・テナー・バリトン"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ユーフォニアム",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings",
+      "is_optional": true
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "title": "グラン・デュオ・コンチェルタント",
+  "title_original": "Grand Duo concertant",
+  "aliases": [],
+  "composer": "ウェーバー",
+  "composer_sort": "Weber, Carl Maria von",
+  "kind": "chamber",
+  "year_written": 1816,
+  "source": "hand",
+  "source_id": "weber-grand-duo",
+  "duration_min": 20,
+  "roles": [
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・コン・フオーコ",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アンダンテ・コン・モート",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 ロンド",
+      "group_label": "全曲",
+      "roles": [
+        "クラリネット",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

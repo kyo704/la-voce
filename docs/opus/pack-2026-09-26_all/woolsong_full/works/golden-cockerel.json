@@ -1,0 +1,184 @@
+{
+  "title": "金鶏",
+  "title_original": "Золотой петушок",
+  "aliases": [
+    "きんけい"
+  ],
+  "composer": "リムスキー＝コルサコフ",
+  "composer_sort": "Rimsky-Korsakov, Nikolai",
+  "kind": "opera",
+  "year_written": 1909,
+  "duration_min": 120,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "rimsky-golden-cockerel",
+  "roles": [
+    {
+      "label": "シェマハの女王"
+    },
+    {
+      "label": "ドドン王"
+    },
+    {
+      "label": "占星術師"
+    },
+    {
+      "label": "金鶏の声"
+    },
+    {
+      "label": "アフロン王子"
+    },
+    {
+      "label": "グヴィドン王子"
+    },
+    {
+      "label": "ポルカン将軍"
+    },
+    {
+      "label": "アメルファ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ 占星術師の口上",
+      "group_label": "プロローグ",
+      "roles": [
+        "占星術師"
+      ]
+    },
+    {
+      "label": "第1幕 ドドン王の宮廷",
+      "group_label": "第1幕",
+      "roles": [
+        "ドドン王",
+        "占星術師",
+        "金鶏の声",
+        "アフロン王子",
+        "グヴィドン王子",
+        "ポルカン将軍",
+        "アメルファ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 シェマハの女王の登場（太陽への讃歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "シェマハの女王",
+        "ドドン王",
+        "ポルカン将軍"
+      ]
+    },
+    {
+      "label": "第3幕 凱旋と王の死",
+      "group_label": "第3幕",
+      "roles": [
+        "ドドン王",
+        "シェマハの女王",
+        "占星術師",
+        "金鶏の声",
+        "合唱"
+      ]
+    },
+    {
+      "label": "エピローグ",
+      "group_label": "エピローグ",
+      "roles": [
+        "占星術師"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

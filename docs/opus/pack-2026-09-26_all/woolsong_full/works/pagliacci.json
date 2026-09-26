@@ -1,0 +1,226 @@
+{
+  "title": "道化師",
+  "composer": "レオンカヴァッロ",
+  "composer_sort": "Leoncavallo, Ruggero",
+  "kind": "opera",
+  "year_written": 1892,
+  "source": "hand",
+  "source_id": "leoncavallo-pagliacci",
+  "roles": [
+    {
+      "label": "カニオ"
+    },
+    {
+      "label": "ネッダ"
+    },
+    {
+      "label": "トニオ"
+    },
+    {
+      "label": "シルヴィオ"
+    },
+    {
+      "label": "ベッペ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ（ごめんください）",
+      "group_label": "プロローグ",
+      "roles": [
+        "トニオ"
+      ]
+    },
+    {
+      "label": "村人の合唱（太鼓を打ち鳴らせ）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "カニオの口上と「そんな戯れはやめろ」",
+      "group_label": "第1幕",
+      "roles": [
+        "カニオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "鐘の合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ネッダのバッラテッラ（鳥の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ネッダ"
+      ]
+    },
+    {
+      "label": "ネッダとトニオ",
+      "group_label": "第1幕",
+      "roles": [
+        "ネッダ",
+        "トニオ"
+      ]
+    },
+    {
+      "label": "ネッダとシルヴィオの二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "ネッダ",
+        "シルヴィオ"
+      ]
+    },
+    {
+      "label": "衣裳をつけろ（カニオのアリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "カニオ"
+      ]
+    },
+    {
+      "label": "間奏曲",
+      "group_label": "第2幕",
+      "roles": []
+    },
+    {
+      "label": "観客の集まり",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱",
+        "ベッペ",
+        "トニオ"
+      ]
+    },
+    {
+      "label": "劇中劇（コロンビーナとアルレッキーノ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ネッダ",
+        "ベッペ",
+        "トニオ"
+      ]
+    },
+    {
+      "label": "フィナーレ（もう道化師ではない）",
+      "group_label": "第2幕",
+      "roles": [
+        "カニオ",
+        "ネッダ",
+        "シルヴィオ",
+        "トニオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "大太鼓・小太鼓・シンバル・鐘・グロッケン"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "舞台上の楽隊",
+      "count": 0,
+      "section": "banda",
+      "note": "劇中劇のラッパ・太鼓"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

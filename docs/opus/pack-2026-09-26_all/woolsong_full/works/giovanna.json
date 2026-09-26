@@ -1,0 +1,167 @@
+{
+  "title": "ジョヴァンナ・ダルコ",
+  "title_original": "Giovanna d'Arco",
+  "aliases": [],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1845,
+  "source": "hand",
+  "source_id": "verdi-giovanna",
+  "duration_min": 120,
+  "language": "it",
+  "roles": [
+    {
+      "label": "ジョヴァンナ"
+    },
+    {
+      "label": "カルロ7世"
+    },
+    {
+      "label": "ジャコモ"
+    },
+    {
+      "label": "タルボット"
+    },
+    {
+      "label": "デリル"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ ドンレミの森",
+      "group_label": "プロローグ",
+      "roles": [
+        "ジョヴァンナ",
+        "カルロ7世",
+        "ジャコモ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 戦勝と父の疑い",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョヴァンナ",
+        "カルロ7世",
+        "ジャコモ",
+        "タルボット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ランスの大聖堂",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャコモ",
+        "ジョヴァンナ",
+        "カルロ7世",
+        "デリル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 戦場とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ジョヴァンナ",
+        "ジャコモ",
+        "カルロ7世",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チンバッソ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "title": "神鳴",
+  "title_original": "神鳴",
+  "aliases": [],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "drama",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "kyogen-kaminari-okura",
+  "duration_min": 25,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "雷"
+    },
+    {
+      "label": "藪医者"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "雷が落ちて腰を打つ",
+      "group_label": "全",
+      "roles": [
+        "雷",
+        "藪医者"
+      ]
+    },
+    {
+      "label": "鍼の治療",
+      "group_label": "全",
+      "roles": [
+        "藪医者",
+        "雷"
+      ]
+    },
+    {
+      "label": "礼と約束",
+      "group_label": "全",
+      "roles": [
+        "雷",
+        "藪医者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による（笛・小鼓・大鼓・太鼓）"
+    }
+  ],
+  "school": "大蔵流",
+  "note": "★大蔵流で書いた。和泉流では 曲名や科白の運びが違うことがある"
+}

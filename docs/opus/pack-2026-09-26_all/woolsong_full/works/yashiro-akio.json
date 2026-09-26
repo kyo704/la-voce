@@ -1,0 +1,84 @@
+{
+ "title": "別宮貞雄・團伊玖磨ほか 日本歌曲選",
+ "composer": "日本の作曲家",
+ "composer_sort": "Japanese composers",
+ "kind": "song_cycle",
+ "year_written": 1960,
+ "source_id": "japan-modern-songs",
+ "note": "★★作曲者が 違います。★その公演で 選んだ ものを 並べて ください",
+ "scenes": [
+  {
+   "label": "1. さくら横ちょう",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. 花の街",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. initial（初恋）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 中国地方の子守唄",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. 城ヶ島の雨",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. 平城山",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. 出船",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand",
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "language": "ja"
+}

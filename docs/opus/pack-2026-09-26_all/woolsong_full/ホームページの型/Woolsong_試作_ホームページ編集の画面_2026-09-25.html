@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woolsong ― ホームページを見ながら編集（試作・1画面）</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=BIZ+UDPGothic:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@500;700&family=Noto+Serif+JP:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;700&family=Kaisei+Decol:wght@500;700&family=Zen+Antique&family=Yuji+Syuku&family=Klee+One:wght@400;600&family=Dela+Gothic+One&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--wine:#7A1F2E;--paper:#F7F2EA;--ink:#1B1614;--ink2:#5E554D;--rule:#DDD4C6;--ud:"BIZ UDPGothic",system-ui,sans-serif;--min:"Shippori Mincho",serif;--lat:"Cormorant Garamond",serif}
+  *{box-sizing:border-box} body{margin:0;background:#E9E4DB;font-family:var(--ud);color:var(--ink);-webkit-font-smoothing:antialiased}
+  /* ===== 上の帯 ===== */
+  .bar{position:sticky;top:0;z-index:30;background:#1B1614;color:#fff;display:flex;align-items:center;gap:14px;padding:10px 16px;font-size:13px}
+  .bar b{font-family:var(--min);font-weight:600;letter-spacing:.06em;color:#F2C97D}
+  .bar .mode{display:flex;border:1px solid #555;border-radius:999px;overflow:hidden}
+  .bar .mode button{border:0;background:transparent;color:#ccc;padding:7px 14px;font-family:inherit;font-size:12.5px;cursor:pointer}
+  .bar .mode button[aria-pressed="true"]{background:#fff;color:#111}
+  .bar .dev{display:flex;gap:6px;margin-left:8px}
+  .bar .dev button{border:1px solid #555;background:transparent;color:#ccc;border-radius:6px;padding:6px 10px;font-family:inherit;font-size:12px;cursor:pointer}
+  .bar .dev button[aria-pressed="true"]{background:#333;color:#fff;border-color:#888}
+  .bar .sp{flex:1}
+  .bar .st{font-size:12px;color:#9a9087}
+  .bar .undo{border:1px solid #555;background:transparent;color:#ccc;border-radius:6px;padding:6px 10px;font-family:inherit;font-size:12px;cursor:pointer}
+  .bar .pub{border:0;background:var(--wine);color:#fff;border-radius:6px;padding:8px 16px;font-family:var(--min);font-size:13px;letter-spacing:.1em;cursor:pointer}
+  .bar .prev{border:1px solid #F2C97D;background:transparent;color:#F2C97D;border-radius:6px;padding:7px 12px;font-family:inherit;font-size:12px;cursor:pointer}
+  /* ===== 本体：左に側板、右にページ ===== */
+  .stage{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 46px)}
+  .side{background:#fff;border-right:1px solid var(--rule);padding:16px 18px 40px;overflow:auto;max-height:calc(100vh - 46px);font-size:13px}
+  body.view .side{display:none}body.view .stage{grid-template-columns:1fr}
+  .side h3{font-size:11px;letter-spacing:.24em;color:var(--ink2);margin:18px 0 8px;font-weight:700}
+  .side h3:first-child{margin-top:0}
+  .side .tpl{display:flex;gap:8px;align-items:center;border:1px solid var(--rule);border-radius:10px;padding:10px}
+  .side .tpl .sw{width:44px;height:30px;border-radius:4px;background:linear-gradient(135deg,#FBFAF6,#8a8479)}
+  .side .tpl b{font-family:var(--min);font-weight:600}
+  .side .tpl small{display:block;color:var(--ink2);font-size:11px}
+  .side .tpl button{margin-left:auto;border:1px solid var(--ink);background:#fff;border-radius:999px;padding:6px 10px;font-family:inherit;font-size:11.5px;cursor:pointer}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips button{border:1px solid var(--rule);background:#fff;border-radius:999px;padding:6px 11px;font-family:inherit;font-size:12px;cursor:pointer}
+  .chips button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .sw8{display:flex;gap:6px;flex-wrap:wrap}.sw8 button{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer}.sw8 button[aria-pressed="true"]{border-color:#111}
+  .secs div{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--rule)}
+  .secs label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer}.secs label i{font-style:normal;color:var(--ink2);font-size:11px}
+  .secs button{border:1px solid var(--rule);background:#fff;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px}
+  .secs .lock{color:var(--ink2);font-size:11px}
+  .side .add{width:100%;border:1px dashed var(--ink2);background:transparent;border-radius:10px;padding:10px;font-family:inherit;font-size:12.5px;cursor:pointer;margin-top:8px}
+  .side .hint{color:var(--ink2);font-size:11.5px;line-height:1.7;margin-top:10px}
+  /* ===== ページ（余白の型） ===== */
+  .canvas{padding:24px;display:flex;justify-content:center;align-items:flex-start;overflow:auto;max-height:calc(100vh - 46px)}
+  .frame{background:#FBFAF6;width:100%;max-width:1080px;box-shadow:0 20px 50px rgba(27,22,20,.14);transition:max-width .3s}
+  body.mobile .frame{max-width:390px}
+  .page{--acc:#7A1F2E;--sp:1;--fs:1;--hd:"Cormorant Garamond",serif;--bd:"BIZ UDPGothic",sans-serif;--tone:none;color:#141210;padding:calc(50px*var(--sp)) 6% 60px;font-family:var(--bd);background:#FBFAF6;position:relative}
+  .page.wide{background:color-mix(in srgb,var(--acc) 7%,#FBFAF6)}
+  .page.wide::before{content:"";position:absolute;left:0;right:0;top:0;height:14px;background:var(--acc)}
+  .page.wide .hero{border-bottom:2px solid var(--acc)}
+  .page.wide footer{border-top:2px solid var(--acc)}
+  .page h1,.page h2,.page blockquote,.page .ev time,.page .hero .next b{font-family:var(--hd)}
+  .page h2{color:var(--acc)}
+  .page .contact a{color:var(--acc);border-bottom-color:var(--acc)}
+  .page blockquote{border-left:4px solid var(--acc);padding-left:18px}
+  .page .ev{border-top-color:color-mix(in srgb,var(--acc) 35%,#e3dfd5)}
+  .page .hero .next{background:color-mix(in srgb,var(--acc) 8%,transparent);padding:12px 14px;border-left:3px solid var(--acc)}
+  .page .hero .next small{color:var(--acc)}
+  .page .p,.page .one,.page .ev,.page .contact{font-family:var(--bd)}
+  section{--del:1}
+  body.edit section:hover{outline:1px dashed #c9bfae;outline-offset:14px}
+  .del{position:absolute;right:0;top:calc(90px*var(--sp) - 4px);display:none;border:1px solid #c9bfae;background:#fff;color:#7a746c;border-radius:999px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--ud);z-index:3}
+  body.edit section:hover .del{display:inline-block}
+  .del:hover{color:#fff;background:var(--wine);border-color:var(--wine)}
+  section[data-sec="custom"] .del{top:12px}
+  .page.tone-mono .photo{filter:grayscale(1)}.page.tone-sepia .photo{filter:sepia(.5)}
+  .hero{display:grid;grid-template-columns:1fr 1fr;gap:6%;align-items:end;position:relative;padding-bottom:calc(60px*var(--sp))}
+  body.mobile .hero{grid-template-columns:1fr}
+  .photo{background:linear-gradient(160deg,#8b7a72,#3b3230);position:relative;overflow:hidden;border-radius:0;filter:saturate(.6)}
+  .photo::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 35%,rgba(255,255,255,.35),transparent 42%)}
+  .hero .photo{aspect-ratio:3/4}
+  body.mobile .hero .photo{max-width:70%}
+  .hero h1{font-family:var(--lat);font-weight:400;font-size:clamp(30px,4vw,54px);letter-spacing:.06em;margin:0;line-height:1.2}
+  .hero h1 small{display:block;font-family:var(--min);font-weight:500;font-size:clamp(13px,1.3vw,17px);letter-spacing:.3em;color:#7a746c;margin-top:12px}
+  .hero .one{font-family:var(--min);font-size:calc(19px*var(--fs));line-height:1.9;margin:34px 0 0;max-width:22em}
+  .hero .next{margin-top:26px;border-left:2px solid var(--acc);padding-left:14px;font-size:14px;line-height:1.7}
+  .hero .next b{font-family:var(--lat);font-size:22px;display:block;letter-spacing:.06em}
+  .hero .next small{color:#7a746c;display:block;font-size:12px}
+  section{padding-top:calc(90px*var(--sp));position:relative}
+  section h2{font-family:var(--lat);font-weight:400;font-size:13px;letter-spacing:.44em;text-transform:uppercase;color:#7a746c;margin:0 0 30px}
+  .ev{display:grid;grid-template-columns:150px 1fr;gap:30px;padding:16px 0;font-size:calc(16px*var(--fs));line-height:1.7;border-top:1px solid #e3dfd5}
+  body.mobile .ev{grid-template-columns:1fr;gap:4px}
+  .ev:last-of-type{border-bottom:1px solid #e3dfd5}
+  .ev time{font-family:var(--lat);font-size:19px}
+  .ev b{font-family:var(--min);font-weight:500}.ev small{color:#7a746c;font-size:13.5px;display:block}
+  .p{font-size:calc(16.5px*var(--fs));line-height:2;max-width:32em;margin:0 0 16px}
+  blockquote{margin:0;font-family:var(--lat);font-style:italic;font-size:clamp(24px,3vw,38px);line-height:1.5;max-width:22em}
+  blockquote cite{display:block;font-family:var(--ud);font-style:normal;font-size:12px;letter-spacing:.2em;color:#7a746c;margin-top:14px}
+  .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.gal .photo{aspect-ratio:4/5}
+  .video{aspect-ratio:16/9;background:#141210;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--lat);letter-spacing:.3em;font-size:14px}
+  hr.rule{border:0;border-top:1px solid #141210;margin:10px 0}
+  .space{height:60px}
+  .contact{padding-top:calc(100px*var(--sp));display:grid;grid-template-columns:1fr 1fr;gap:6%;font-size:15px;line-height:1.9}
+  body.mobile .contact{grid-template-columns:1fr}
+  .contact a{font-family:var(--lat);font-size:22px;letter-spacing:.1em;color:#141210;text-decoration:none;border-bottom:1px solid #141210}
+  footer{padding:70px 0 0;font-size:12px;color:#9a9489;display:flex;justify-content:space-between}
+  /* ===== 編集の表示 ===== */
+  body.edit [data-e]{outline:1px dashed transparent;outline-offset:6px;border-radius:2px;transition:outline-color .15s;cursor:text}
+  body.edit [data-e]:hover{outline-color:#8fb0c0}
+  body.edit [data-e]:focus{outline:2px solid var(--wine);background:rgba(122,31,46,.04)}
+  body.edit .photo{cursor:pointer}
+  body.edit .photo:hover::before{content:"写真";position:absolute;left:8px;top:8px;background:#141210;color:#fff;font-size:11px;padding:2px 8px;border-radius:999px;z-index:2;font-family:var(--ud)}
+  .lock{position:absolute;right:0;top:0;font-size:11px;color:#7a746c;border:1px solid #e3dfd5;border-radius:999px;padding:2px 10px;display:none;font-family:var(--ud)}
+  body.edit .lock{display:inline-block}
+  .plus{display:none;justify-content:center;margin:26px 0 -26px;position:relative;z-index:2}
+  body.edit .plus{display:flex}
+  .plus button{border:1px dashed #9a9087;background:#FBFAF6;color:#5E554D;border-radius:999px;padding:6px 14px;font-family:var(--ud);font-size:12px;cursor:pointer}
+  .plus button:hover{border-style:solid;color:#141210}
+  .menu{position:absolute;z-index:40;background:#141210;color:#fff;border-radius:10px;padding:6px;display:none;box-shadow:0 12px 30px rgba(0,0,0,.3);font-family:var(--ud)}
+  .menu button{display:block;width:100%;text-align:left;border:0;background:transparent;color:#fff;padding:8px 12px;font-family:inherit;font-size:12.5px;cursor:pointer;border-radius:6px;white-space:nowrap}
+  .menu button:hover{background:#333}
+  .menu.on{display:block}
+  .tag{display:inline-block;font-size:10px;letter-spacing:.14em;border:1px solid var(--rule);border-radius:999px;padding:1px 7px;color:var(--ink2);margin-left:6px;vertical-align:middle}
+  .tag.apr{border-color:#c9a961;color:#8a6d1f}
+  .repbtn{display:none;border:1px solid #141210;background:#fff;border-radius:999px;padding:6px 12px;font-family:var(--ud);font-size:12px;cursor:pointer;margin-left:12px;vertical-align:middle}
+  body.edit .repbtn{display:inline-block}
+  .rep{font-size:calc(16px*var(--fs));line-height:2.2;max-width:32em}
+  .rep b{font-family:var(--min);font-weight:500}.rep i{font-style:normal;color:#7a746c;font-size:13px;margin-left:8px}
+  .picker{position:fixed;inset:0;background:rgba(27,22,20,.5);display:none;align-items:center;justify-content:center;z-index:70}
+  .picker.on{display:flex}
+  .picker .box{background:#fff;border-radius:14px;width:min(94vw,720px);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+  .picker .hd{padding:18px 22px 12px;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .picker .hd h4{font-family:var(--min);font-weight:600;font-size:18px;margin:0}
+  .picker .hd .cnt{font-size:12.5px;color:var(--ink2)}
+  .picker .hd input{margin-left:auto;border:1px solid var(--rule);border-radius:999px;padding:7px 12px;font-family:inherit;font-size:13px;width:220px}
+  .picker .body{overflow:auto;padding:8px 22px;display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+  .picker .grp{font-size:11px;letter-spacing:.2em;color:var(--ink2);margin:14px 0 4px;grid-column:1/-1}
+  .picker label{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee;font-size:14px;cursor:pointer}
+  .picker label.off{opacity:.45;cursor:not-allowed}
+  .picker label b{font-family:var(--min);font-weight:500}
+  .picker label i{font-style:normal;color:var(--ink2);font-size:12px;margin-left:auto}
+  .picker .ft{padding:12px 22px 16px;border-top:1px solid var(--rule);display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--ink2)}
+  .picker .ft button{border:0;background:#141210;color:#fff;border-radius:8px;padding:9px 16px;font-family:inherit;cursor:pointer}
+  .picker .ft button.sec{background:#fff;color:#141210;border:1px solid #141210}
+  .picker .ft .sort{margin-left:auto;display:flex;gap:6px}
+  .picker .ft .sort button{background:#fff;color:#141210;border:1px solid var(--rule);padding:6px 10px;font-size:12px}
+  .picker .ft .sort button[aria-pressed="true"]{background:#141210;color:#fff}
+  .dlg{position:fixed;inset:0;background:rgba(27,22,20,.5);display:none;align-items:center;justify-content:center;z-index:80}
+  .dlg.on{display:flex}
+  .dlg .box{background:#fff;border-radius:14px;width:min(94vw,640px);max-height:88vh;overflow:auto;padding:22px 24px;font-size:14px;line-height:1.8}
+  .dlg h4{font-family:var(--min);font-weight:600;font-size:18px;margin:0 0 10px}
+  .dlg .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+  .dlg input[type=text],.dlg textarea{width:100%;border:1px solid var(--rule);border-radius:8px;padding:10px 12px;font-family:inherit;font-size:14px}
+  .dlg textarea{min-height:120px}
+  .dlg .btn{border:0;background:#141210;color:#fff;border-radius:8px;padding:9px 16px;font-family:inherit;cursor:pointer}
+  .dlg .btn.sec{background:#fff;color:#141210;border:1px solid #141210}
+  .dlg .opt{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+  .dlg .opt small{display:block;color:var(--ink2);font-size:12.5px}
+  .dlg .tpls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .dlg .tpls div{border:1px solid var(--rule);border-radius:10px;padding:8px;font-size:12px;cursor:pointer;text-align:center}
+  .dlg .tpls div i{display:block;height:54px;border-radius:6px;margin-bottom:6px;font-style:normal}
+  .dlg .tpls div.lim{border-color:#c9a961;background:#fffaf0}
+  .dlg .tpls div.lim small{display:block;color:#8a6d1f;font-size:10.5px}
+  .inbox .it{display:grid;grid-template-columns:70px 1fr auto;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule);cursor:pointer;align-items:baseline}
+  .inbox .it time{font-family:var(--lat);font-size:15px}
+  .inbox .it b{font-family:var(--min);font-weight:500;display:block}
+  .inbox .it small{color:var(--ink2);font-size:12.5px}
+  .inbox .it .st{font-size:11px;color:var(--ink2);border:1px solid var(--rule);border-radius:999px;padding:1px 8px}
+  .inbox .it.done{opacity:.55}
+  .warn{position:absolute;left:0;bottom:-22px;font-size:11px;color:#8a6d1f;background:#fffaf0;border:1px solid #e6d8a8;border-radius:999px;padding:2px 10px;display:none;font-family:var(--ud);z-index:3}
+  body.edit .warn.on{display:inline-block}
+  .quiet{max-width:1080px;margin:0 auto;font-size:12.5px;color:#7a746c;padding:10px 6% 0;display:none}
+  body.edit .quiet{display:block}
+  .hist{padding-top:calc(60px*var(--sp))}
+  .pf{margin:0 0 14px;max-width:32em}
+  .pf small{display:block;font-family:var(--ud);font-size:11px;letter-spacing:.24em;color:var(--acc);margin-bottom:2px}
+  .pf p{font-size:calc(16.5px*var(--fs));line-height:2;margin:0}
+  .crop{display:grid;grid-template-columns:1fr 200px;gap:20px;align-items:start}
+  .crop .frame2{width:100%;aspect-ratio:3/4;overflow:hidden;border:1px solid var(--rule);position:relative;background:#eee;cursor:grab;touch-action:none;user-select:none}
+  .crop .frame2.drag{cursor:grabbing}
+  .crop .img{position:absolute;left:0;top:0;width:100%;height:100%;background:linear-gradient(160deg,#8b7a72,#3b3230);will-change:transform}
+  .crop .img::after{content:"";position:absolute;left:50%;top:22%;width:38%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 50% 45%,#d9c2b0,#a88a76 70%);transform:translateX(-50%)}
+  .crop .guide{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 33%,rgba(255,255,255,.35) 33% 34%,transparent 34% 66%,rgba(255,255,255,.35) 66% 67%,transparent 67%),linear-gradient(0deg,transparent 33%,rgba(255,255,255,.35) 33% 34%,transparent 34% 66%,rgba(255,255,255,.35) 66% 67%,transparent 67%)}
+  .crop label{display:block;font-size:12.5px;color:var(--ink2);margin:8px 0 2px}
+  .crop input[type=range]{width:100%}
+  .shelf{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .shelf div{aspect-ratio:3/4;border-radius:6px;background:linear-gradient(160deg,#8b7a72,#3b3230);cursor:pointer;position:relative;border:2px solid transparent}
+  .shelf div:nth-child(2){background:linear-gradient(200deg,#3b3230,#8b7a72)}.shelf div:nth-child(3){background:linear-gradient(120deg,#5c6b4a,#1e2419)}.shelf div:nth-child(4){background:linear-gradient(160deg,#4a5560,#1b1614)}.shelf div:nth-child(5){background:linear-gradient(160deg,#7A1F2E,#2E0A11)}
+  .shelf div.on{border-color:var(--ink)}
+  .shelf div.up{background:#fff;border:1px dashed var(--ink2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink2)}
+  .shelf div small{position:absolute;left:6px;bottom:6px;font-size:10px;color:#fff;background:rgba(0,0,0,.45);padding:1px 6px;border-radius:999px}
+  /* 公開ページの印（見る側にだけ。会員登録なしで見られる） */
+  .badge{position:fixed;right:18px;bottom:18px;z-index:25;display:none;align-items:center;gap:8px;background:rgba(27,22,20,.92);color:#F7F2EA;border-radius:999px;padding:8px 14px 8px 10px;font-size:12.5px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25);font-family:var(--ud)}
+  body.view .badge{display:flex}
+  .badge svg{width:22px;height:18px;flex:none}
+  .badge b{font-family:var(--min);font-weight:600;letter-spacing:.06em;color:#F2C97D}
+  .badge:hover{background:#7A1F2E}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#141210;color:#fff;padding:10px 16px;border-radius:8px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+  .toast.on{opacity:1}
+  .modal{position:fixed;inset:0;background:rgba(27,22,20,.5);display:none;align-items:center;justify-content:center;z-index:60}
+  .modal.on{display:flex}
+  .modal .box{background:#fff;border-radius:14px;padding:24px 26px;width:min(92vw,460px);font-size:14px;line-height:1.8}
+  .modal h4{font-family:var(--min);font-weight:600;font-size:18px;margin:0 0 10px}
+  .modal ul{margin:0 0 14px;padding-left:1.2em}
+  .modal .ok{color:#2f7a4a}.modal .ng{color:var(--wine)}
+  .modal button{border:0;background:#141210;color:#fff;border-radius:8px;padding:10px 16px;font-family:inherit;cursor:pointer;margin-right:8px}
+  .modal button.sec{background:#fff;color:#141210;border:1px solid #141210}
+  @media (max-width:900px){.stage{grid-template-columns:1fr}.side{max-height:none;border-right:0;border-bottom:1px solid var(--rule)}}
+</style>
+</head>
+<body class="edit">
+<div class="bar">
+  <b>Woolsong</b><span>あなたのページ ― 白石 澪</span>
+  <div class="mode"><button id="mView" aria-pressed="false" onclick="setMode('view')">見る</button><button id="mEdit" aria-pressed="true" onclick="setMode('edit')">編集する</button></div>
+  <div class="dev"><button id="dPC" aria-pressed="true" onclick="setDev('pc')">PC</button><button id="dSP" aria-pressed="false" onclick="setDev('sp')">スマホ</button></div>
+  <button class="undo" onclick="openDlg('wiz')">60秒で完成</button>
+  <button class="undo" onclick="openDlg('inbox')">届いたもの</button>
+  <button class="undo" onclick="openDlg('contact')">届け先の設定</button>
+  <span class="sp"></span>
+  <span class="st" id="status">下書き ・ 非公開</span>
+  <button class="undo" onclick="undo()">1つ前に戻す</button>
+  <button class="prev" onclick="openDlg('preview')">下見リンク <span class="tag apr" style="border-color:#F2C97D;color:#F2C97D">4月</span></button>
+  <button class="pub" onclick="preflight()">公開する</button>
+</div>
+
+<div class="stage">
+  <aside class="side">
+    <h3>型 <span class="tag">1月</span></h3>
+    <div class="tpl"><div class="sw"></div><div><b>余白</b><small>t53 ・ 14日は選び直し無料（あと9日）</small></div><button onclick="openDlg('tpl')">替える</button></div>
+    <h3>アプリの情報で埋まっているもの <span class="tag">1月</span></h3>
+    <div class="secs" style="font-size:12px">
+      <div><label>名前・肩書・所属 <i>アプリの設定から</i></label><button title="アプリで直す" onclick="toast('アプリの設定を開きます（ページ側では直しません）')">↗</button></div>
+      <div><label>次の本番・出演予定 <i>本人が登録した本番</i></label><button onclick="toast('本番の登録を開きます')">↗</button></div>
+      <div><label>レパートリー <i>作品 24件 → 12件を表示</i></label><button onclick="openPicker()">選</button></div>
+    </div>
+    <button class="add" onclick="finishEvent()">（試し）10.11 の本番が終わったことにする</button>
+    <div class="hint" style="margin-top:4px">終わった本番は、出演予定から出演歴へ自動で動きます。手で消しません。</div>
+    <button class="add" onclick="openDlg('paste')">文章を貼るだけで分ける <span class="tag apr">4月</span></button>
+    <h3>色（8色）</h3><div class="sw8" id="colors"></div>
+    <div class="chips" id="cmode" style="margin-top:8px"><button data-v="" aria-pressed="true">差し色だけ</button><button data-v="wide">広く使う</button></div>
+    <div class="hint" style="margin-top:6px">差し色＝見出し・線・次の本番・連絡。広く＝上の帯・地の色・区切りにも</div>
+    <h3>見出しの書体</h3><div class="chips" id="hfonts">
+      <button data-v='"Cormorant Garamond",serif' aria-pressed="true">Cormorant</button><button data-v='"Shippori Mincho",serif'>しっぽり明朝</button><button data-v='"Zen Old Mincho",serif'>Zen Old明朝</button><button data-v='"Kaisei Decol",serif'>解星デコール</button><button data-v='"Zen Antique",serif'>Zen Antique</button><button data-v='"Yuji Syuku",serif'>游字 祝</button><button data-v='"Klee One",cursive'>Klee（手書き）</button><button data-v='"Dela Gothic One",sans-serif'>Dela Gothic</button><button data-v='"Playfair Display",serif'>Playfair</button></div>
+    <h3>本文の書体（読みやすいものだけ）</h3><div class="chips" id="bfonts">
+      <button data-v='"BIZ UDPGothic",sans-serif' aria-pressed="true">BIZ UDゴシック</button><button data-v='"Zen Kaku Gothic New",sans-serif'>Zen角ゴシック</button><button data-v='"Shippori Mincho",serif'>しっぽり明朝</button><button data-v='"Noto Serif JP",serif'>Noto明朝</button></div>
+    <h3>余白</h3><div class="chips" id="sp"><button data-v=".85">つめる</button><button data-v="1" aria-pressed="true">ふつう</button><button data-v="1.3">ゆったり</button></div>
+    <h3>文字の大きさ</h3><div class="chips" id="fs"><button data-v="1" aria-pressed="true">標準</button><button data-v="1.12">大きめ</button></div>
+    <h3>写真の色味</h3><div class="chips" id="tone"><button data-v="" aria-pressed="true">そのまま</button><button data-v="tone-mono">白黒</button><button data-v="tone-sepia">セピア</button></div>
+    <h3>節（表示と順番）<span class="tag">1月</span></h3>
+    <div class="secs" id="secs">
+      <div><label><input type="checkbox" checked disabled> 名前・肩書・次の本番 <i>最初の画面</i></label><span class="lock">固定</span></div>
+      <div><label><input type="checkbox" checked data-sec="events"> 出演予定 <i>自動</i></label><button onclick="mv('events',-1)">↑</button><button onclick="mv('events',1)">↓</button></div>
+      <div><label><input type="checkbox" checked data-sec="profile"> プロフィール</label><button onclick="mv('profile',-1)">↑</button><button onclick="mv('profile',1)">↓</button></div>
+      <div><label><input type="checkbox" checked data-sec="rep"> レパートリー <i>自動・12件まで</i></label><button onclick="mv('rep',-1)">↑</button><button onclick="mv('rep',1)">↓</button></div>
+      <div><label><input type="checkbox" checked data-sec="press"> 批評</label><button onclick="mv('press',-1)">↑</button><button onclick="mv('press',1)">↓</button></div>
+      <div><label><input type="checkbox" checked data-sec="video"> 動画</label><button onclick="mv('video',-1)">↑</button><button onclick="mv('video',1)">↓</button></div>
+      <div><label><input type="checkbox" checked data-sec="contact"> お問い合わせ</label><span class="lock">最後</span></div>
+    </div>
+    <button class="add" onclick="addSection()">＋ 節を足す（あと 4）<span class="tag apr">4月</span></button>
+    <div class="hint">札の「1月」は最初に出す機能、「4月」は使われ方を見て足す機能。<br>自動保存です。保存の表示は出しません。公開は「公開する」を押したときだけ。1つ前の状態に戻せます。<br>写真は合計12枚まで。上げたときに縮小し、位置情報は捨てます。</div>
+  </aside>
+
+  <div class="canvas"><div class="frame"><div class="page" id="page">
+    <div class="hero" id="hero">
+      <span class="lock">最初の画面 ― 誰か・何をする人か・次にどこで会えるか（消せません）</span>
+      <div class="photo" onclick="photoMenu(event,this)" style="position:relative"><span class="warn on" id="wPhoto">顔が上で切れます ― 少し下げますか</span></div>
+      <div>
+        <h1><span data-e>Mio Shiraishi</span><small data-e>白石 澪 ・ ソプラノ</small></h1>
+        <p class="one" data-e oninput="lenWarn(this,120)">東京とバーリを行き来しながら、オペラと歌曲を歌っています。</p><span class="warn" id="wOne" style="position:static;display:none;margin-top:6px"></span>
+        <div class="next"><small>次の本番（自動）</small><b>11 Oct 2026</b><span data-e>秋のコンサート ― 千葉県文化会館 小ホール 14:00</span></div>
+      </div>
+    </div>
+    <div class="plus"><button onclick="addMenu(event,this)">＋ ここに足す</button></div>
+
+    <section data-sec="events"><button class="del" onclick="delSec(this)">この節を消す</button><h2 data-e>Season</h2>
+      <div class="ev"><time>11 Oct 2026</time><div><b data-e>秋のコンサート</b><small data-e>千葉県文化会館 小ホール ・ 14:00</small></div></div>
+      <div class="ev"><time>20 Dec 2026</time><div><b data-e>クリスマス・チャリティ</b><small data-e>サントリーホール ブルーローズ ・ 18:00</small></div></div>
+      <div class="ev"><time>19 Sep 2027</time><div><b data-e>Le nozze di Figaro — Susanna</b><small data-e>サントリーホール ・ 17:00</small></div></div>
+    </section>
+    <div class="plus"><button onclick="addMenu(event,this)">＋ ここに足す</button></div>
+
+    <section data-sec="history" class="hist" id="hist" style="display:none"><h2>Past ・ 出演歴<span class="tag">自動</span></h2><div id="histlist"></div></section>
+    <section data-sec="profile"><button class="del" onclick="delSec(this)">この節を消す</button><h2 data-e>About</h2><p class="p" data-e>東京音楽大学声楽科卒業、同大学院修了。2026年よりイタリア・バーリ音楽院に留学。第○回日本声楽コンクール入選。二期会準会員。</p></section>
+    <div class="plus"><button onclick="addMenu(event,this)">＋ ここに足す</button></div>
+
+    <section data-sec="rep"><button class="del" onclick="delSec(this)">この節を消す</button><h2><span data-e>Repertoire</span><button class="repbtn" onclick="openPicker()" id="repbtn">選ぶ（全24件のうち 12件）</button></h2><div class="rep" id="replist"></div></section>
+    <div class="plus"><button onclick="addMenu(event,this)">＋ ここに足す</button></div>
+
+    <section data-sec="press"><button class="del" onclick="delSec(this)">この節を消す</button><h2 data-e>Press</h2><blockquote data-e>「軽やかで、言葉が立つソプラノ」<cite data-e>○○新聞 ・ 2026年7月</cite></blockquote></section>
+    <div class="plus"><button onclick="addMenu(event,this)">＋ ここに足す</button></div>
+
+    <section data-sec="video"><button class="del" onclick="delSec(this)">この節を消す</button><h2 data-e>Media</h2><div class="video">Lascia ch'io pianga ・ 2026（YouTube）</div></section>
+    <div class="plus"><button onclick="addMenu(event,this)">＋ ここに足す</button></div>
+
+    <section class="contact" data-sec="contact"><div data-e>出演依頼・レッスン・取材はフォームから。本人のメールへ転送されます。</div><div><a href="#">Contact</a></div></section>
+    <div class="quiet">このページは 2025年9月から更新されていません。更新しませんか（この一行は、あなたにだけ見えています）<span class="tag apr">4月</span></div>
+    <footer><span>© 2026 Mio Shiraishi</span><span><a href="#" style="color:inherit" onclick="event.preventDefault();toast('woolsong.app の案内ページへ')">このページは Woolsong で作られています ― 声を使う人のための記録と、ホームページ</a></span></footer>
+  </div></div></div>
+</div>
+
+<div class="menu" id="pmenu"><button onclick="openDlg('shelf')">替える／上げる</button><button onclick="openDlg('crop')">位置を直す</button><button onclick="photoRemove()">外す</button><button onclick="cycleShape()">形を変える</button></div>
+<div class="menu" id="amenu"><button onclick="addBlock('text')">文章</button><button onclick="addBlock('quote')">引用</button><button onclick="addBlock('photo')">写真 1枚</button><button onclick="addBlock('gallery')">写真の並び（3枚）</button><button onclick="addBlock('video')">動画（YouTube）</button><button onclick="addBlock('rule')">区切り線</button><button onclick="addBlock('space')">余白</button></div>
+<div class="picker" id="picker"><div class="box">
+  <div class="hd"><h4>レパートリー ― 見せるものを選ぶ</h4><span class="cnt" id="pcnt"></span><input id="pq" placeholder="題名・作曲家・役で探す" oninput="renderPicker()"></div>
+  <div class="body" id="pbody"></div>
+  <div class="ft"><button onclick="applyPicker()">この選択で表示</button><button class="sec" onclick="resetPicker()">自動に戻す</button><span>12件まで。台帳には何件あってもかまいません</span><div class="sort"><span>並び：</span><button data-s="manual" aria-pressed="true" onclick="setSort('manual',this)">選んだ順</button><button data-s="composer" onclick="setSort('composer',this)">作曲家順</button><button data-s="year" onclick="setSort('year',this)">年順</button></div></div>
+</div></div>
+
+<div class="dlg" id="shelf"><div class="box"><h4>写真を替える <span class="tag">1月</span></h4><p style="font-size:12.5px;color:var(--ink2)">これまでに上げた写真（12枚まで）から選ぶか、新しく上げます。上げるときに縮小し、位置情報は捨てます。</p>
+  <div class="shelf" id="shelfGrid"><div class="on" onclick="pickShelf(this)"><small>いま</small></div><div onclick="pickShelf(this)"><small>2026.6</small></div><div onclick="pickShelf(this)"><small>2026.3</small></div><div onclick="pickShelf(this)"><small>2025.11</small></div><div onclick="pickShelf(this)"><small>2025.5</small></div><div class="up" onclick="toast('端末から選びます（縮小・位置情報は捨てます）')">＋ 新しく上げる</div></div>
+  <div class="row" style="margin-top:14px"><button class="btn" onclick="applyShelf()">この写真にする</button><button class="btn sec" onclick="closeDlg('shelf')">閉じる</button><span style="font-size:12.5px;color:var(--ink2)">5／12 枚</span></div></div></div>
+
+<div class="dlg" id="crop"><div class="box"><h4>写真の位置を直す <span class="tag">1月</span></h4><p style="font-size:12.5px;color:var(--ink2)">顔が上の線の近くに来ると、きれいに見えます。</p>
+  <div class="crop"><div class="frame2"><div class="img" id="cropImg"></div><div class="guide"></div></div>
+    <div><p style="font-size:13px;line-height:1.7"><b>写真を直接つかんで動かします。</b><br>PCはクリックしたまま、スマホは指で。写真の端で止まり、枠の外に白が出ることはありません。</p><label>大きさ（スマホは二本指で）</label><input type="range" id="cz" min="100" max="200" value="120" oninput="cropZoom(this.value)"><div class="row" style="margin-top:8px"><button class="btn sec" onclick="cropReset()">中央に戻す</button></div></div></div>
+  <div class="row" style="margin-top:14px"><button class="btn" onclick="applyCrop()">この位置にする</button><button class="btn sec" onclick="closeDlg('crop')">閉じる</button></div></div></div>
+
+<div class="dlg" id="wiz"><div class="box"><h4>60秒で完成 <span class="tag">1月</span></h4>
+  <div id="wz1"><p>1／3　肩書を一行で</p><input type="text" id="wzTitle" value="ソプラノ ・ 東京 ／ バーリ"></div>
+  <div id="wz2" style="margin-top:12px"><p>2／3　あなたを一行で（120字まで）</p><input type="text" id="wzOne" value="東京とバーリを行き来しながら、オペラと歌曲を歌っています。"></div>
+  <div id="wz3" style="margin-top:12px"><p>3／3　写真を1枚（あとでも構いません）</p><div class="row"><button class="btn sec" onclick="toast('写真を上げました（縮小・位置情報は捨てました）')">写真を選ぶ</button><span style="color:var(--ink2);font-size:12.5px">次の本番・出演予定・レパートリーは、アプリの情報から自動で入ります</span></div></div>
+  <div class="row" style="margin-top:16px"><button class="btn" onclick="wizDone()">これで公開できる状態にする</button><button class="btn sec" onclick="closeDlg('wiz')">あとで</button></div></div></div>
+
+<div class="dlg" id="tpl"><div class="box"><h4>型を替える <span class="tag">1月</span></h4><p style="color:var(--ink2);font-size:12.5px">書いたもの・写真・レパートリーの選択は、そのまま引き継がれます。14日は選び直し無料（あと9日）。</p>
+  <div class="tpls">
+    <div onclick="pickTpl('余白')"><i style="background:linear-gradient(135deg,#FBFAF6,#8a8479)"></i>余白</div>
+    <div onclick="pickTpl('幕')"><i style="background:linear-gradient(135deg,#5A1420,#2E0A11)"></i>幕</div>
+    <div onclick="pickTpl('ポスター')"><i style="background:linear-gradient(135deg,#F2F0EA,#7A1F2E)"></i>ポスター</div>
+    <div onclick="pickTpl('大見出し')"><i style="background:linear-gradient(135deg,#F4F2EC,#111)"></i>大見出し</div>
+    <div onclick="pickTpl('巻物')"><i style="background:linear-gradient(135deg,#F3ECDA,#7A1F2E)"></i>巻物</div>
+    <div onclick="pickTpl('名刺')"><i style="background:linear-gradient(135deg,#FBF9F4,#E9E5DC)"></i>名刺</div>
+    <div onclick="pickTpl('神社')"><i style="background:linear-gradient(135deg,#FBFAF7,#B7282E)"></i>神社</div>
+    <div class="lim" onclick="toast('限定の型：100部・通し番号つき・980円買い切り。売り切れたら二度と出しません')"><i style="background:linear-gradient(135deg,#fff,#c9a961)"></i>10月の限定<small>No. 023／100 ・ 980円</small><span class="tag apr">4月</span></div>
+  </div>
+  <div class="row" style="margin-top:14px"><button class="btn sec" onclick="closeDlg('tpl')">閉じる</button><span style="font-size:12.5px;color:var(--ink2)">型の追加は480円の買い切り。持っている型はいつでも戻せます</span></div></div></div>
+
+<div class="dlg" id="paste"><div class="box"><h4>文章を貼るだけで分ける <span class="tag apr">4月</span></h4><p style="font-size:12.5px;color:var(--ink2)">既存のプロフィール文をそのまま貼ると、経歴・受賞・師事・所属に分けて、字数の上限に収めます。AIは文章を書きません。分けるだけです。</p>
+  <textarea id="pasteSrc">東京音楽大学声楽科卒業、同大学院修了。2026年よりイタリア・バーリ音楽院に留学。第○回日本声楽コンクール入選。これまでに高橋○○、Maestra ○○の各氏に師事。二期会準会員。</textarea>
+  <div class="row"><button class="btn" onclick="doPaste()">分ける</button><button class="btn sec" onclick="closeDlg('paste')">やめる</button></div>
+  <div id="pasteOut" style="display:none;margin-top:10px;border-top:1px solid var(--rule);padding-top:10px"></div></div></div>
+
+<div class="dlg" id="preview"><div class="box"><h4>下見リンク <span class="tag apr">4月</span></h4><p>公開する前に、先生や事務所に見せるための期限つきのリンクです。7日で消えます。1本だけ。</p>
+  <input type="text" readonly value="https://woolsong.app/p/mio?preview=7f3a…（2026-10-02 まで）"><div class="row"><button class="btn" onclick="toast('写しました');closeDlg('preview')">写す</button><button class="btn sec" onclick="closeDlg('preview')">閉じる</button></div></div></div>
+
+<div class="dlg" id="inbox"><div class="box inbox"><h4>届いたもの <span class="tag">1月</span></h4><p style="font-size:12.5px;color:var(--ink2)">お問い合わせは、ここに残ります（90日で消えます）。返事はあなたのメールから。ここに返信の箱はありません。</p>
+  <div id="inboxList"></div>
+  <div id="inboxDetail" style="display:none;margin-top:14px;border-top:1px solid var(--rule);padding-top:12px"></div>
+  <div class="row" style="margin-top:12px"><button class="btn sec" onclick="closeDlg('inbox')">閉じる</button></div></div></div>
+
+<div class="dlg" id="contact"><div class="box"><h4>お問い合わせの届け先 <span class="tag">1月</span></h4>
+  <label class="opt"><input type="radio" name="cm" checked><div>アカウントのメール<small>m●●●●@●●●.jp（伏せ字で表示。ページには出ません）</small></div></label>
+  <label class="opt"><input type="radio" name="cm"><div>別のメール<small><input type="text" placeholder="受け取りたいメール" style="margin-top:6px"> 確認メールのクリックで有効になるまで使いません</small></div></label>
+  <label class="opt"><input type="radio" name="cm"><div>事務所のメール<small>同じく確認つき。本人には届かなくなります</small></div></label>
+  <label class="opt"><input type="radio" name="cm"><div>受け付けない<small>ページの「Contact」が消えます</small></div></label>
+  <h4 style="margin-top:16px;font-size:15px">知らせ</h4>
+  <label class="opt"><input type="checkbox" checked><div>「届いています」のメールを受け取る<small>本文も差出人も載せません。1日1通まで</small></div></label>
+  <p style="font-size:12.5px;color:var(--ink2);margin-top:12px">同じ送り主から1時間に3通まで。週に30通を超えたら、あなたに知らせて止められます。18歳未満の印があるページは受け付けません。</p>
+  <div class="row"><button class="btn" onclick="toast('届け先を保存しました');closeDlg('contact')">保存</button><button class="btn sec" onclick="closeDlg('contact')">閉じる</button></div></div></div>
+<a class="badge" href="#" onclick="event.preventDefault();toast('woolsong.app の案内ページへ（会員登録はそこから）。見るだけなら登録は要りません')" aria-label="Woolsongについて"><svg viewBox="0 0 72 58" aria-hidden="true"><g fill="#F7F1E6" stroke="#1B1614" stroke-width="2" stroke-linejoin="round"><circle cx="24" cy="30" r="12"/><circle cx="38" cy="24" r="14"/><circle cx="52" cy="31" r="12"/><circle cx="38" cy="38" r="13"/></g><g fill="#1B1614"><ellipse cx="60" cy="30" rx="8" ry="7"/></g></svg><span>このページは <b>Woolsong</b> で作られています ― 自分のページを持つ</span></a>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="box"><h4>公開します</h4><ul id="pre"></ul>
+  <div id="pubq" style="display:none"><p style="margin:0 0 14px">誰でも見られるようになり、Googleなどの検索にも出ます。あとから非公開に戻すことも、検索から外すこともできます。</p><button onclick="publish()">はい</button><button class="sec" onclick="document.getElementById('modal').classList.remove('on')">いいえ</button></div>
+  <button class="sec" id="backbtn" style="display:none" onclick="document.getElementById('modal').classList.remove('on')">直しに戻る</button></div></div>
+
+<script>
+const page=document.getElementById('page'); let hist=[]; let target=null; let photos=1;
+function snap(){hist.push(page.innerHTML);if(hist.length>20)hist.shift();}
+function undo(){if(!hist.length)return toast('これより前はありません');page.innerHTML=hist.pop();wire();document.querySelectorAll('#secs input[data-sec]').forEach(cb=>{const ex=page.querySelector(`section[data-sec="${cb.dataset.sec}"]`);cb.disabled=!ex;if(ex){cb.checked=ex.style.display!=='none';cb.parentElement.querySelectorAll('i').forEach(i=>{if(i.textContent.includes('消しました'))i.remove();});}});}
+function setMode(m){document.body.classList.toggle('edit',m==='edit');document.body.classList.toggle('view',m==='view');document.getElementById('mView').setAttribute('aria-pressed',m==='view');document.getElementById('mEdit').setAttribute('aria-pressed',m==='edit');wire();}
+function setDev(d){document.body.classList.toggle('mobile',d==='sp');document.getElementById('dPC').setAttribute('aria-pressed',d==='pc');document.getElementById('dSP').setAttribute('aria-pressed',d==='sp');}
+function wire(){const e=document.body.classList.contains('edit');page.querySelectorAll('[data-e]').forEach(el=>{el.contentEditable=e;if(e&&!el._w){el._w=true;el.addEventListener('focus',()=>snap());}});}
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('on');setTimeout(()=>x.classList.remove('on'),2200);}
+function photoMenu(ev,el){if(!document.body.classList.contains('edit'))return;ev.stopPropagation();target=el;const m=document.getElementById('pmenu');m.style.left=ev.clientX+'px';m.style.top=ev.clientY+'px';m.classList.add('on');document.getElementById('amenu').classList.remove('on');}
+function photoRemove(){if(!target)return;if(target.closest('#hero')){toast('最初の画面の写真は「置かない」にできます（枠は詰まります）');}snap();target.remove();hide();}
+let addAt=null;
+function addMenu(ev,btn){ev.stopPropagation();addAt=btn.parentElement;const m=document.getElementById('amenu');m.style.left=ev.clientX+'px';m.style.top=ev.clientY+'px';m.classList.add('on');document.getElementById('pmenu').classList.remove('on');}
+function addBlock(t){snap();const s=document.createElement('section');s.dataset.sec='custom';let h='';
+ if(t==='text')h='<p class="p" data-e>ここに文章。600字まで。</p>';
+ if(t==='quote')h='<blockquote data-e>「引用の言葉」<cite data-e>― 出どころ</cite></blockquote>';
+ if(t==='photo'){if(photos>=12)return toast('写真は12枚までです');photos++;h='<div class="photo" style="aspect-ratio:16/9" onclick="photoMenu(event,this)"></div>';}
+ if(t==='gallery'){if(photos+3>12)return toast('写真は12枚までです');photos+=3;h='<div class="gal"><div class="photo" onclick="photoMenu(event,this)"></div><div class="photo" onclick="photoMenu(event,this)"></div><div class="photo" onclick="photoMenu(event,this)"></div></div>';}
+ if(t==='video')h='<div class="video">YouTube の URL を貼ると、ここに出ます</div>';
+ if(t==='rule')h='<hr class="rule">';
+ if(t==='space')h='<div class="space"></div>';
+ s.innerHTML='<button class="del" onclick="delSec(this)">これを消す</button>'+h;s.style.paddingTop='40px';
+ const plus=document.createElement('div');plus.className='plus';plus.innerHTML='<button onclick="addMenu(event,this)">＋ ここに足す</button>';
+ addAt.after(s);s.after(plus);hide();wire();toast('足しました。文字は押して書き換えられます');}
+function addSection(){snap();const s=document.createElement('section');s.dataset.sec='custom';s.innerHTML='<button class="del" onclick="delSec(this)">この節を消す</button><h2 data-e>新しい節</h2><p class="p" data-e>見出しと文章。写真や引用は「＋ ここに足す」から。</p>';const c=page.querySelector('.contact');const plus=document.createElement('div');plus.className='plus';plus.innerHTML='<button onclick="addMenu(event,this)">＋ ここに足す</button>';c.before(s);s.after(plus);wire();toast('節を足しました（あと 3）');}
+function mv(k,d){snap();const s=page.querySelector(`section[data-sec="${k}"]`);const plus=s.nextElementSibling;const sib=d<0?s.previousElementSibling?.previousElementSibling:plus?.nextElementSibling;if(!sib||sib.id==='hero'||sib.classList.contains('contact'))return;if(d<0){sib.before(s);s.after(plus);}else{const p2=sib.nextElementSibling;p2.after(s);s.after(plus);}}
+document.querySelectorAll('#secs input[data-sec]').forEach(c=>c.onchange=()=>{snap();const s=page.querySelector(`section[data-sec="${c.dataset.sec}"]`);s.style.display=c.checked?'':'none';s.nextElementSibling.style.display=c.checked?'':'none';});
+function delSec(btn){snap();const s=btn.closest('section');const plus=s.nextElementSibling;const k=s.dataset.sec;const n=s.querySelectorAll('.photo').length;photos=Math.max(0,photos-n);if(plus&&plus.classList.contains('plus'))plus.remove();s.remove();const cb=document.querySelector(`#secs input[data-sec="${k}"]`);if(cb){cb.checked=false;cb.disabled=true;cb.parentElement.querySelector('i')?.remove();cb.parentElement.insertAdjacentHTML('beforeend',' <i>消しました（1つ前に戻すで復元）</i>');}toast('消しました。「1つ前に戻す」で戻せます');}
+document.querySelectorAll('#cmode button').forEach(b=>b.onclick=()=>{page.classList.toggle('wide',b.dataset.v==='wide');document.querySelectorAll('#cmode button').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+document.querySelectorAll('#hfonts button').forEach(b=>b.onclick=()=>{page.style.setProperty('--hd',b.dataset.v);document.querySelectorAll('#hfonts button').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+document.querySelectorAll('#bfonts button').forEach(b=>b.onclick=()=>{page.style.setProperty('--bd',b.dataset.v);document.querySelectorAll('#bfonts button').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+function hide(){document.getElementById('pmenu').classList.remove('on');document.getElementById('amenu').classList.remove('on');}
+document.addEventListener('click',hide);
+const colors=[['臙脂','#7A1F2E'],['藍','#3E5C8C'],['墨','#2B2320'],['苔','#5C6B4A'],['葡萄','#5B3A5E'],['琥珀','#8C5A2B'],['鉄','#4A5560'],['朱','#B0342B']];const cw=document.getElementById('colors');
+colors.forEach(([n,c],i)=>{const b=document.createElement('button');b.style.background=c;b.title=n;b.setAttribute('aria-pressed',i===0);b.onclick=()=>{page.style.setProperty('--acc',c);cw.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));};cw.appendChild(b);});
+[['sp','--sp'],['fs','--fs']].forEach(([id,v])=>{const g=document.getElementById(id);g.querySelectorAll('button').forEach(b=>b.onclick=()=>{page.style.setProperty(v,b.dataset.v);g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));});});
+document.querySelectorAll('#tone button').forEach(b=>b.onclick=()=>{page.classList.remove('tone-mono','tone-sepia');if(b.dataset.v)page.classList.add(b.dataset.v);document.querySelectorAll('#tone button').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+
+function preflight(){
+  /* 公開の前の検査：合格していれば何も見せずに公開。足りないものだけ知らせる */
+  const problems=[];
+  const slug='mio'; if(!slug)problems.push(['ページの住所がありません','住所を決める']);
+  const owned=true; if(!owned)problems.push(['型を持っていません','型を選ぶ']);
+  const name=document.querySelector('.hero h1 span')?.textContent.trim(); const title=document.querySelector('.hero h1 small')?.textContent.trim(); const next=page.querySelector('section[data-sec="events"] .ev');
+  if(!name)problems.push(['名前が空です','最初の画面で書く']);
+  if(!title)problems.push(['肩書が空です','最初の画面で書く']);
+  if(!next)problems.push(['本番の登録が1件もありません','本番を登録する']);
+  const secs=[...page.querySelectorAll('section')].filter(x=>x.style.display!=='none'&&!x.classList.contains('contact')).length;
+  if(secs===0&&photos===0)problems.push(['まだ中身がありません','節か写真を足す']);
+  if(problems.length===0){const ul=document.getElementById('pre');ul.innerHTML='';document.getElementById('pubq').style.display='block';document.getElementById('modal').querySelector('h4').textContent='公開します';document.getElementById('modal').classList.add('on');return;}
+  const ul=document.getElementById('pre');ul.innerHTML=problems.map(([t,a])=>`<li class="ng">${t} ― <u>${a}</u></li>`).join('');document.getElementById('pubq').style.display='none';document.getElementById('modal').querySelector('h4').textContent='公開するには、あと少し';document.getElementById('backbtn').style.display='inline-block';
+  document.getElementById('modal').classList.add('on');
+}
+function publish(){document.getElementById('modal').classList.remove('on');document.getElementById('backbtn').style.display='none';document.getElementById('status').textContent='公開中 ・ 誰でも ・ 検索に出る';toast('公開しました。静的に書き出したページが開きます');}
+/* ===== レパートリー：アプリの作品から、見せるものを選ぶ ===== */
+const WORKS=[
+ ['魔笛','パミーナ','Mozart',2023],['フィガロの結婚','スザンナ','Mozart',2027],['ドン・ジョヴァンニ','ツェルリーナ','Mozart',2024],['コジ・ファン・トゥッテ','デスピーナ','Mozart',2022],
+ ['ラ・ボエーム','ムゼッタ','Puccini',2026],['ジャンニ・スキッキ','ラウレッタ','Puccini',2023],['トゥーランドット','リュー','Puccini',2025],
+ ['リナルド','アルミレーナ','Händel',2024],['メサイア','ソプラノ独唱','Händel',2026],['ジュリオ・チェーザレ','クレオパトラ','Händel',2025],
+ ['献呈','歌曲','R. Strauss',2024],['明日','歌曲','R. Strauss',2024],['四つの最後の歌','歌曲','R. Strauss',2026],
+ ['さくら横ちょう','歌曲','中田喜直',2023],['初恋','歌曲','越谷達之助',2023],['からたちの花','歌曲','山田耕筰',2022],['落葉松','歌曲','小林秀雄',2025],
+ ['Après un rêve','歌曲','Fauré',2025],['Beau soir','歌曲','Debussy',2025],['Clair de lune','歌曲','Fauré',2026],
+ ['椿姫','ヴィオレッタ（抜粋）','Verdi',2026],['ラ・ボエーム','ミミ（抜粋）','Puccini',2025],['夕鶴','つう','團伊玖磨',2024],['蝶々夫人','ケイト','Puccini',2022]
+].map((w,i)=>({id:i,t:w[0],r:w[1],c:w[2],y:w[3]}));
+const CAP=12; let sel=null; let sortKey='manual';
+function autoSel(){return WORKS.slice().sort((a,b)=>b.y-a.y).slice(0,CAP).map(w=>w.id);}
+function cur(){return sel||autoSel();}
+function renderRep(){const ids=cur();let list=ids.map(i=>WORKS[i]);if(sortKey==='composer')list.sort((a,b)=>a.c.localeCompare(b.c)||a.t.localeCompare(b.t,'ja'));if(sortKey==='year')list.sort((a,b)=>b.y-a.y);
+ document.getElementById('replist').innerHTML=list.map(w=>`<b>${w.t}</b> ${w.r}<i>${w.c}</i>`).join('<br>');document.getElementById('repbtn').textContent=`選ぶ（全${WORKS.length}件のうち ${ids.length}件${sel?'':' ・ 自動'}）`;}
+let tmp=[];
+function openPicker(){tmp=cur().slice();document.getElementById('pq').value='';renderPicker();document.getElementById('picker').classList.add('on');}
+function renderPicker(){const q=document.getElementById('pq').value.trim();const groups={};WORKS.filter(w=>!q||(w.t+w.r+w.c).includes(q)).forEach(w=>{(groups[w.c]=groups[w.c]||[]).push(w);});
+ const full=tmp.length>=CAP;let h='';Object.keys(groups).sort().forEach(c=>{h+=`<div class="grp">${c}</div>`;groups[c].forEach(w=>{const on=tmp.includes(w.id);h+=`<label class="${(!on&&full)?'off':''}"><input type="checkbox" ${on?'checked':''} ${(!on&&full)?'disabled':''} onchange="tog(${w.id},this.checked)"><b>${w.t}</b> ${w.r}<i>${w.y}</i></label>`;});});
+ document.getElementById('pbody').innerHTML=h;document.getElementById('pcnt').textContent=`${tmp.length} ／ ${CAP} 件を表示`+(full?'（上限）':'');}
+function tog(id,on){if(on){if(tmp.length>=CAP){renderPicker();return;}tmp.push(id);}else tmp=tmp.filter(x=>x!==id);renderPicker();}
+function applyPicker(){snap();sel=tmp.slice();renderRep();document.getElementById('picker').classList.remove('on');toast('レパートリーの表示を選びました（型を替えても引き継ぎます）');}
+function resetPicker(){snap();sel=null;renderRep();document.getElementById('picker').classList.remove('on');toast('自動（新しい順に12件）に戻しました');}
+function setSort(k,b){sortKey=k;document.querySelectorAll('.picker .sort button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderRep();}
+renderRep();
+wire();
+/* ===== 写真 ===== */
+function pickShelf(el){document.querySelectorAll('#shelfGrid div').forEach(x=>x.classList.remove('on'));el.classList.add('on');}
+function applyShelf(){snap();if(target){const on=document.querySelector('#shelfGrid .on');target.style.background=getComputedStyle(on).backgroundImage;}closeDlg('shelf');toast('写真を替えました');}
+/* 写真の位置：直接つかんで動かす。端で止まる */
+const CR={x:0,y:0,z:1.2,fw:0,fh:0,drag:false,sx:0,sy:0,ox:0,oy:0,pinch:null};
+function cropInit(){const f=document.querySelector('#crop .frame2');if(!f||f._init)return;f._init=true;
+  const img=document.getElementById('cropImg');
+  const clamp=()=>{const iw=CR.fw*CR.z,ih=CR.fh*CR.z;const minx=CR.fw-iw,miny=CR.fh-ih;CR.x=Math.min(0,Math.max(minx,CR.x));CR.y=Math.min(0,Math.max(miny,CR.y));};
+  const draw=()=>{img.style.transformOrigin='0 0';img.style.transform=`translate(${CR.x}px,${CR.y}px) scale(${CR.z})`;};
+  CR.draw=draw;CR.clamp=clamp;
+  const measure=()=>{const r=f.getBoundingClientRect();CR.fw=r.width;CR.fh=r.height;};
+  const pts=new Map();
+  f.addEventListener('pointerdown',e=>{f.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===1){measure();CR.drag=true;CR.sx=e.clientX;CR.sy=e.clientY;CR.ox=CR.x;CR.oy=CR.y;f.classList.add('drag');}
+    if(pts.size===2){const a=[...pts.values()];CR.pinch={d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y),z:CR.z};}});
+  f.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size===2&&CR.pinch){const a=[...pts.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);setZoom(CR.pinch.z*d/CR.pinch.d);return;}
+    if(!CR.drag)return;CR.x=CR.ox+(e.clientX-CR.sx);CR.y=CR.oy+(e.clientY-CR.sy);clamp();draw();});
+  const up=e=>{pts.delete(e.pointerId);if(pts.size<2)CR.pinch=null;if(pts.size===0){CR.drag=false;f.classList.remove('drag');}};
+  f.addEventListener('pointerup',up);f.addEventListener('pointercancel',up);
+  f.addEventListener('wheel',e=>{e.preventDefault();setZoom(CR.z*(e.deltaY<0?1.05:0.95));},{passive:false});
+  function setZoom(z){measure();z=Math.min(2,Math.max(1,z));const cx=CR.fw/2,cy=CR.fh/2;CR.x=cx-(cx-CR.x)*(z/CR.z);CR.y=cy-(cy-CR.y)*(z/CR.z);CR.z=z;document.getElementById('cz').value=Math.round(z*100);clamp();draw();}
+  CR.setZoom=setZoom;measure();CR.x=(CR.fw-CR.fw*CR.z)/2;CR.y=-CR.fh*0.18;clamp();draw();}
+function cropZoom(v){cropInit();CR.setZoom(+v/100);}
+function cropReset(){cropInit();const f=document.querySelector('#crop .frame2');const r=f.getBoundingClientRect();CR.fw=r.width;CR.fh=r.height;CR.z=1.2;document.getElementById('cz').value=120;CR.x=(CR.fw-CR.fw*CR.z)/2;CR.y=(CR.fh-CR.fh*CR.z)/2;CR.clamp();CR.draw();}
+function applyCrop(){snap();const w=document.getElementById('wPhoto');if(w)w.classList.remove('on');if(target){const px=CR.fw-CR.fw*CR.z,py=CR.fh-CR.fh*CR.z;const bx=px?CR.x/px*100:50,by=py?CR.y/py*100:50;target.style.backgroundPosition=`${bx}% ${by}%`;target.style.backgroundSize=`${Math.round(CR.z*100)}%`;}closeDlg('crop');toast('位置を直しました。顔が切れる警告は消えました');}
+const SHAPES=['0','16px','50%'];let shapeI=0;
+function cycleShape(){snap();shapeI=(shapeI+1)%3;if(target)target.style.borderRadius=SHAPES[shapeI];hide();toast('形：'+['四角','角丸','丸'][shapeI]);}
+
+/* ===== ダイアログ ===== */
+function openDlg(id){document.getElementById(id).classList.add('on');if(id==='inbox')renderInbox();if(id==='crop')setTimeout(cropInit,30);}
+function closeDlg(id){document.getElementById(id).classList.remove('on');}
+/* 60秒で完成 */
+function wizDone(){snap();document.querySelector('.hero h1 small').textContent=document.getElementById('wzTitle').value;document.querySelector('.hero .one').textContent=document.getElementById('wzOne').value;closeDlg('wiz');document.getElementById('status').textContent='下書き ・ 公開できます';toast('3問で、公開できる状態になりました。あとは「公開する」だけ');}
+/* 型を替える */
+function pickTpl(n){document.querySelector('.tpl b').textContent=n;closeDlg('tpl');toast('型を「'+n+'」に替えました。書いたもの・写真・レパートリーの選択は引き継ぎました（この見本では見た目は変わりません）');}
+/* 本番が終わったら出演歴へ */
+function finishEvent(){snap();const ev=page.querySelector('section[data-sec="events"] .ev');if(!ev)return;const t=ev.querySelector('time').textContent,b=ev.querySelector('b').textContent,sm=ev.querySelector('small').textContent;ev.remove();const h=document.getElementById('hist');h.style.display='';document.getElementById('histlist').insertAdjacentHTML('afterbegin',`<div class="ev"><time>${t}</time><div><b>${b}</b><small>${sm}</small></div></div>`);const nx=page.querySelector('section[data-sec="events"] .ev');const nb=page.querySelector('.hero .next');if(nx){nb.querySelector('b').textContent=nx.querySelector('time').textContent;nb.querySelector('span').textContent=nx.querySelector('b').textContent+' ― '+nx.querySelector('small').textContent.replace(' ・ ',' ');}toast('終わった本番を出演歴へ動かしました。次の本番も更新');}
+/* 字数の警告 */
+function lenWarn(el,max){const n=el.textContent.trim().length;const w=document.getElementById('wOne');if(n>max){w.textContent=`${n}字 ― 一行の目安は${max}字。長いと最初の画面で折り返します`;w.style.display='inline-block';}else w.style.display='none';}
+/* 貼るだけで分ける */
+function doPaste(){const t=document.getElementById('pasteSrc').value;const out={経歴:[],受賞:[],師事:[],所属:[]};t.split(/[。\n]/).map(x=>x.trim()).filter(Boolean).forEach(x=>{if(/師事/.test(x))out['師事'].push(x);else if(/コンクール|賞|入選|入賞/.test(x))out['受賞'].push(x);else if(/会員|所属|団員/.test(x))out['所属'].push(x);else out['経歴'].push(x);});const o=document.getElementById('pasteOut');o.style.display='block';o.innerHTML=Object.entries(out).filter(([k,v])=>v.length).map(([k,v])=>`<div><b style="font-family:var(--min)">${k}</b>：${v.join('。')}。</div>`).join('')+`<div class="row" style="margin-top:10px"><button class="btn" onclick="applyPaste()">この分け方でページに入れる</button></div>`;window._paste=out;}
+function applyPaste(){snap();const o=window._paste;const sec=page.querySelector('section[data-sec="profile"]');const p=sec.querySelector('.p');const h=Object.entries(o).filter(([k,v])=>v.length).map(([k,v])=>`<div class="pf"><small>${k}</small><p data-e>${v.join('。')}。</p></div>`).join('');p.insertAdjacentHTML('afterend',h);p.remove();wire();closeDlg('paste');sec.scrollIntoView({behavior:'smooth',block:'center'});toast('分けて入れました。見出し（経歴・受賞・師事・所属）は小さな札で。札の名前も書き換えられます');}
+/* 受信箱 */
+const INBOX=[{d:'9.24',n:'○○音楽事務所 田中',e:'tanaka@example.jp',t:'12月のチャリティ公演のご相談です。ソプラノ独唱を…',st:''},{d:'9.20',n:'佐々木（受講希望）',e:'sasaki@example.com',t:'体験レッスンを受けたいのですが、オンラインは…',st:'done'},{d:'9.12',n:'Marco R.',e:'marco@example.it',t:'Complimenti per il recital a Bari. Vorrei…',st:''}];
+function renderInbox(){const l=document.getElementById('inboxList');l.innerHTML=INBOX.map((m,i)=>`<div class="it ${m.st}" onclick="openMsg(${i})"><time>${m.d}</time><div><b>${m.n}</b><small>${m.t}</small></div><span class="st">${m.st==='done'?'済':m.st==='spam'?'迷惑':'新着'}</span></div>`).join('');document.getElementById('inboxDetail').style.display='none';}
+function openMsg(i){const m=INBOX[i];const d=document.getElementById('inboxDetail');d.style.display='block';d.innerHTML=`<div><b style="font-family:var(--min)">${m.n}</b> <span style="color:var(--ink2);font-size:12.5px">${m.e} ・ ${m.d}</span></div><p style="margin:8px 0 12px">${m.t}（本文はここに全文）</p><div class="row"><a class="btn" style="text-decoration:none" href="mailto:${m.e}?subject=Re: お問い合わせ">メールで返す</a><button class="btn sec" onclick="INBOX[${i}].st='done';renderInbox();toast('済みにしました')">済んだ</button><button class="btn sec" onclick="INBOX[${i}].st='spam';renderInbox();toast('迷惑にしました。この差出人からは今後受け付けません')">迷惑</button></div><p style="font-size:12px;color:var(--ink2);margin-top:10px">返事はあなたのメールから送られます。あなたのメールは、返信して初めて相手に見えます。</p>`;}
+
+</script>
+</body>
+</html>
