@@ -280,6 +280,10 @@
     "components/VocalTracker.jsx",
     "lib/attendingPlaces.js"
   ],
+  "合言葉を見せる": [
+    "components/AikotobaMiseru.jsx",
+    "lib/aikotobaMiseru.js"
+  ],
   "同意": [
     "components/VocalTracker.jsx"
   ],

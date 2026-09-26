@@ -952,5 +952,16 @@
    "decided": "2026-09-26",
    "decided_by": "Code"
   }
+ ],
+ "合言葉を見せる": [
+  {
+   "text": "高橋 のぞみ の 門下",
+   "why": "★門下の 名 です。★先生の お名前から 作ります（★`profiles.display_name`）。★見本の「高橋 のぞみ」は 見せかけ です。",
+   "mockup_number_is_fixture": "★見本の お名前 です。",
+   "why_not_placeholder": "★書き写すと、★どの 先生の 画面にも 同じ お名前が 出ます。",
+   "trigger": "―（★作りは 出来て います。★`monkaName` を 呼ぶ 側が 渡します）",
+   "decided": "2026-09-26",
+   "decided_by": "Code"
+  }
  ]
 }
