@@ -20,6 +20,7 @@
 ## 使い方
 
 ```
+python3 tools/pixel_gate.py --check-all                  # 基準画の ある 画面 すべて。まとめ 4組 と reports/ の 紙
 python3 tools/pixel_gate.py --baseline 届いたもの        # くらべる
 python3 tools/pixel_gate.py --baseline --all
 python3 tools/pixel_gate.py --update-baseline 区切り     # 作る／替える
@@ -44,6 +45,26 @@ python3 tools/pixel_gate.py --baseline --all
 - `NODE_PATH` …… `playwright` を 見つける ため（`tools/baseline_shot.js` が 使う）。
 - `LAVOCE_E2E_ENV` …… 入る 人と 口（`E2E_LOCAL_URL`）を 読む ため（`tools/personal_nav.js` が 読む）。
 - 台（`E2E_LOCAL_URL`、2026-09-26 は `http://localhost:3100`）が 立って いる ことが 前提です。
+
+## まとめの 4組（`--check-all`）
+
+- `OK` …… 差 0
+- `DIFF` …… 差 1 以上、または 大きさが 違う（差の 絵は `_diff/<名>-差.png`）
+- `NO_BASELINE` …… 行き方は あるが 基準画が 無い
+- `SKIPPED` …… 撮れない（3回 撮り直して だめ）・環境が 違う（無効）・較正が 落ちた
+
+記録は `reports/<年-月-日-時分>.md`。その 時の 記録 なので、後から 直しません。
+
+## 画面の 行き方
+
+- 見本と くらべる 画面 …… `tools/dom_personal_map.json`（こちらが 先）
+- 基準画 だけ の 画面 …… `tools/baseline_map.json`
+  - `bundle` ＋ `row` …… もっと の 束を 開いて 行を 押す
+  - `row` だけ …… もっと の いちばん 上の 一覧で 押す
+  - `tab` …… 下の 帯を 押す
+  - `steps` …… 着いた 画面で さらに 押す 札の 字
+- 外した 画面と その わけは `tools/baseline_map.json` の `★決め` に あります
+  （揺れる 画面・押した 先が 違った 画面・`main` の 外に 中身が ある 画面）。
 
 ## 覆い（くらべない ところ）
 
