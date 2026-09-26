@@ -48,6 +48,13 @@ async function 入る(page, env, base) {
 
 async function 開く(page, 道) {
   await page.waitForTimeout(2500);
+  // ★★★`tab` …… 下の 帯（きょう・記録・ふりかえる・ノート・ひつじ）を 押します（★2026-09-26）。
+  //   ★★帯は `nav` の 中の 札 です。★もっと は 通りません。
+  if (道.tab) {
+    await page.locator("nav button:visible", { hasText: 道.tab }).first().click({ timeout: 20000 });
+    await page.waitForTimeout(2500);
+    return;
+  }
   // ★★★もっと は **帯に ありません**（★帯は 5つ です）。
   //   ★★入口は「きょう」の 右上の 歯車 です（★`HeadRound` の `aria-label`）。
   //   ★★2026-09-26 に ここで 30秒 待って 落ちました ── ★字で 探して いた から です。
