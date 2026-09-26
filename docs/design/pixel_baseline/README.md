@@ -30,6 +30,21 @@ python3 tools/pixel_gate.py --update-baseline 区切り     # 作る／替える
 - 替える ときは 2回 撮り、2枚が 差 0 で なければ 替えません（揺れる 絵は 基準に しません）。
 - 前の 基準画が あれば、前後の 差（画素数・率・差の 絵）を 出し、`yes` と 打たれた ときだけ 上書きします。
 
+## 作業用の 木（`la-voce-sub3` など）から 動かす とき
+
+作業用の 木には `node_modules` と `.env.e2e` が ありません（`.env.e2e` は git に 入りません）。
+写しは 作らず、本体の 木を 指します。
+
+```
+NODE_PATH=/Users/sakamotokyou/Desktop/la-voce/node_modules \
+LAVOCE_E2E_ENV=/Users/sakamotokyou/Desktop/la-voce/.env.e2e \
+python3 tools/pixel_gate.py --baseline --all
+```
+
+- `NODE_PATH` …… `playwright` を 見つける ため（`tools/baseline_shot.js` が 使う）。
+- `LAVOCE_E2E_ENV` …… 入る 人と 口（`E2E_LOCAL_URL`）を 読む ため（`tools/personal_nav.js` が 読む）。
+- 台（`E2E_LOCAL_URL`、2026-09-26 は `http://localhost:3100`）が 立って いる ことが 前提です。
+
 ## 覆い（くらべない ところ）
 
 - 「バージョン … 最終更新 …」の 字 …… `NEXT_PUBLIC_BUILD_AT` は 立ち上げ ごとに 変わります。
