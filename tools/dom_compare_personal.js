@@ -114,6 +114,26 @@ function わざと除く(列, 名, 足したか) {
   return { 残, 落 };
 }
 
+// ★★★5つめの 組 ── ★「種が 違う だけ」（★2026-09-26）。
+//   ★★①②③④ の どれでも ない もの が あります ──
+//     ★見本は 6人 並べ、★試しの 台帳には 2人 しか 居ない。★字は 同じ 形 です。
+//   ★★★③（わざと 出さない）に 入れて しまうと **嘘** に なります ──
+//     ★出さない と 決めた のでは なく、★中身が 無い だけ です。
+//   ★★だから 別の 棚に します。★`__fixture__` に 書きます。
+//     ★★1件ごとに「★どの 種を 入れれば 消えるか」を 書きます。
+//     ★★★それが 書けない ものは ここに 置けません ── ★①の まま 残します。
+function 種除く(列, 名) {
+  const 棚 = (ワザト.__fixture__ || {})[名];
+  if (!Array.isArray(棚)) return { 残: 列, 落: [] };
+  const 残 = [], 落 = [];
+  列.forEach((x) => {
+    const 当 = 棚.find((k) => k && k.text && x.includes(k.text) && k.seed_needed);
+    if (当) 落.push({ x, なぜ: String(当.why || ""), 種: String(当.seed_needed) });
+    else 残.push(x);
+  });
+  return { 残, 落 };
+}
+
 function 除く(列) {
   const 残 = [], 落 = [];
   列.forEach((x) => {
@@ -255,7 +275,9 @@ function 差(a, b) {
   const 無 = 除く(d0.無), 余 = 除く(d0.余);
   const 三 = わざと除く(無.残, 名, false);
   const 四 = わざと除く(余.残, 名, true);
-  const d = { 無: 三.残, 余: 四.残 };
+  const 五 = 種除く(三.残, 名);
+  const 五余 = 種除く(四.残, 名);
+  const d = { 無: 五.残, 余: 五余.残 };
   const 落ちた = 無.落.concat(余.落);
   console.log(`DOM_PERSONAL  ${名}`);
   console.log(`  見本 …… ${見本.length} 塊 ／ 実機 …… ${実機.length} 塊`);
@@ -267,6 +289,9 @@ function 差(a, b) {
   三.落.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}\n      ★戻す 引き金 …… ${k.引き金}`));
   console.log(`\n■ ④ 実装に 在って 見本に 無い ── ★わけ あり（${四.落.length}）`);
   四.落.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}`));
+  const 種ちがい = 五.落.concat(五余.落);
+  console.log(`\n■ ⑤ 種が 違う だけ（${種ちがい.length}）`);
+  種ちがい.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}\n      ★入れる 種 …… ${k.種}`));
   console.log(`\n■ ★共通に 付く もの として 落としました（${落ちた.length}）`);
   落ちた.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}`));
   console.log(`\n★絵 …… ${path.relative(ROOT, OUT)}/${名}-{見本,実機}.png`);

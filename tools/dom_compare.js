@@ -59,6 +59,20 @@ const HONE = `(root) => {
     //     ★★同じ ものが、★別の 種に なって いました。★1つも 合いません。
     //   ★★くらべるのは「題か、そうでないか」だけ に します。
     let kind = null;
+    // ★★★戻る 札は **字で** 見分けます（★2026-09-26）。
+    //   ★★見本ごとに 作りが 違います ──
+    //     ★iPhone …… 'div.back'　★運営 …… 'div.usu'（★色と 指の 形 だけ）
+    //     ★★実装 …… '<button>'
+    //   ★★class で 追うと、★運営の 'usu' を ぜんぶ 札に して しまいます。
+    //   ★★★どの 見本でも「‹ 」で 始まり、★押せます。★それ 1つ で 見ます。
+    //     ★★台帳「約束は 字 であって、class では ありません」と 同じ 向き です。
+    const 字だけ = (el.textContent || "").replace(/\\s+/g, " ").trim();
+    if (/^‹/.test(字だけ)
+        && (el.tagName.toLowerCase() === "button" || el.hasAttribute("onclick")
+            || el.getAttribute("role") === "button")) {
+      out.push("札｜" + 素(字だけ.slice(0, 40)));
+      return;
+    }
     // ★★★注記は 別に 取ります（★段階2・2026-09-20）。
     //   ★★注記は 約束 そのもの です。★いちばん 重い ところ です。
     //   ★★見本も 実機も、★同じ 名（note ／ warn ／ usu）を 使って います。
@@ -77,7 +91,9 @@ const HONE = `(root) => {
     //     ★UiV2 の H3 は 'p.h3' を 出します。★'p' を 註 に した ので、
     //       ★★小見出しが ぜんぶ 註に なり、★見本の 題と 合わなく なりました。
     //     ★★だから 題の 印（h3／sh3／fl）を 持つ ものは ここで 外します。
-    if ((/\\bnote\\b|\\bwarn\\b|\\busu\\b|\\bwl\\b/.test(cls) || tag === "p")
+    //   ★★★'sub' を 足しました（★2026-09-26）── ★運営の 見本の 題の 下の 1行 です。
+    //     ★★'usu' と 同じ 役 です。★無いと 実装の 側だけ が ②に 出ます。
+    if ((/\\bnote\\b|\\bwarn\\b|\\busu\\b|\\bwl\\b|\\bsub\\b/.test(cls) || tag === "p")
         && !/\\bh3\\b|\\bsh3\\b|\\bfl\\b/.test(cls)) kind = "注";
     else if (tag === "h1" || tag === "h2" || tag === "h3"
         || /\\bh3\\b|\\bsh3\\b|\\bfl\\b/.test(cls)) kind = "題";

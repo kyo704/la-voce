@@ -14759,10 +14759,29 @@ export default function VocalTracker({
       setWariRound(r);
       if (!r) { setWariRoster([]); return; }
       const { data: 名簿 } = await featureClient.from("enrollments")
-        .select("student_id, status").eq("org_id", 教室.org_id).eq("status", "active");
+        .select("student_id, status, grade_label").eq("org_id", 教室.org_id)
+        .eq("status", "active");
       if (!生) return;
-      // ★★`stillWaiting` は `user_id` で 見ます（★`lib/wariMada.js`）。
-      setWariRoster((名簿 || []).map((x) => ({ user_id: x.student_id })));
+      // ★★★お名前は `get_org_student_names` から（★2026-09-26）。
+      //   ★★はじめ `profiles` を 直に 引きました ── ★1人も 返りません でした。
+      //     ★★`profiles` は ご自分の 行 だけ です。★先生は 生徒の 名を 引けません。
+      //   ★★★この 蔵に すでに 同じ 決めが あります（★`components/VocalTracker.jsx`
+      //     の 日程の 表）── ★生徒は `enrollments` に 居る ので、
+      //     ★`get_org_member_names` では 1人も 返りません。★生徒用の 口 です。
+      //   ★★体調の 列を 1つも 読みません。★名と 学年 だけ です。
+      const { data: 人, error: e2 } = await featureClient
+        .rpc("get_org_student_names", { p_org_id: 教室.org_id });
+      if (e2) console.warn("★生徒の お名前を 読めませんでした:", e2);
+      const 名 = {};
+      (人 || []).forEach((x) => { 名[x.user_id || x.id] = x.display_name || x.name || ""; });
+      if (!生) return;
+      // ★★`stillWaiting` は `{ user_id, name, sub }` を 見ます（★`lib/wariMada.js`）。
+      //   ★★並べ替えません ── ★「待たせて いる 順」は 責める 並び です（★あちらの 註）。
+      setWariRoster((名簿 || []).map((x) => ({
+        user_id: x.student_id,
+        name: 名[x.student_id] || "",
+        sub: x.grade_label || ""
+      })));
     })();
     return () => { 生 = false; };
   }, [layoutV2, moreSection, userId, featureClient, myOrgs, myOrgPosts]);
