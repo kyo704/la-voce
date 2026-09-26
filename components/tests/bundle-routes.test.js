@@ -29,7 +29,11 @@ async function main() {
   const vt = stripComments(readRaw("components", "VocalTracker.jsx"));
 
   // ★★表を 源から 切り出します。★数を 覚えません。
-  const i = vt.indexOf("const 束の行き先 = {");
+  // ★★★2026-09-26 ── ★表を **呼べる もの** に しました（★その 行で 走らせない ため）。
+  //   ★★`const 束の行き先 = () => ({` の 形 です。★どちらでも 見つかる ように します。
+  const i = vt.indexOf("const 束の行き先 = () => ({") >= 0
+    ? vt.indexOf("const 束の行き先 = () => ({")
+    : vt.indexOf("const 束の行き先 = {");
   t(i > 0, "★行き先の 表が ある");
   const j = vt.indexOf("const 束へ行ける", i);
   const 表 = vt.slice(i, j);
@@ -69,9 +73,9 @@ async function main() {
   });
 
   console.log("=== 二 ★`canGo` と `onGo` は 同じ 表から ===");
-  t(/const 束へ行ける = \(to\) => typeof 束の行き先\[to\] === "function"/.test(vt),
+  t(/const 束へ行ける = \(to\) => typeof 束の行き先\(\)\[to\] === "function"/.test(vt),
     "★行ける かは 表を 引いて いる");
-  t(/const f = 束の行き先\[to\]/.test(vt), "★開く のも 同じ 表を 引いて いる");
+  t(/const f = 束の行き先\(\)\[to\]/.test(vt), "★開く のも 同じ 表を 引いて いる");
   t(/canGo=\{束へ行ける\}/.test(vt), "★画面に 同じ ものを 渡して いる");
   t(/onGo=\{束を開く\}/.test(vt), "★押した ときも 同じ 表");
 

@@ -62,8 +62,11 @@ async function main() {
     "★行けない 行は 出ない");
 
   console.log("=== 四 ★行き先が 名ざし ===");
-  t(/const 教室の運営の行き先 = \{/.test(vt), "★行き先の 表が ある");
-  const i = vt.indexOf("const 教室の運営の行き先 = {");
+  t(/const 教室の運営の行き先 = (\(\) => \(\{|\{)/.test(vt), "★行き先の 表が ある");
+  // ★★★2026-09-26 ── ★こちらも 呼べる もの に しました。
+  const i = vt.indexOf("const 教室の運営の行き先 = () => ({") >= 0
+    ? vt.indexOf("const 教室の運営の行き先 = () => ({")
+    : vt.indexOf("const 教室の運営の行き先 = {");
   const 表 = vt.slice(i, vt.indexOf("const 教室の運営へ行ける", i));
   m.ROWS.forEach((r) => t(表.includes(`"${r.to}"`), `★${r.to} …… 表に ある`));
   t(/"名簿": \{ tab: "roster" \}/.test(表), "★名簿は 名簿の 帯へ");
