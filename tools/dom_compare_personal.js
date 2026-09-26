@@ -52,11 +52,10 @@ const HONE = new Function("return `" + 生 + "`")();
 //   ★★2026-09-26 に ここで つまずきました ── ★あちらの 註を 読んで いれば 1度で 済みました。
 const HONE_FN = new Function("return " + HONE)();
 
-const env = {};
-fs.readFileSync(path.join(ROOT, ".env.e2e"), "utf8").split("\n").forEach((l) => {
-  const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(l);
-  if (m) env[m[1]] = m[2].trim().replace(/^["']|["']$/g, "");
-});
+// ★★入り方・行き方は `tools/personal_nav.js` 1つ に 置きました（★2026-09-26）。
+//   ★★基準画を 撮る `tools/baseline_shot.js` と ★同じ 道 を 通る ため です。
+const NAV = require("./personal_nav");
+const env = NAV.紙を読む(ROOT);
 
 // ★★★`HONE` が 返すのは **字の 並び** です（★「題｜…」「約｜…」の 形）。
 //   ★★はじめ `{kind, text}` の 物だと 思い込み、★`undefined` を 並べて いました
@@ -127,7 +126,7 @@ function 差(a, b) {
   }
   const 道 = MAP[名];
   // ★★口は `.env.e2e` の `E2E_LOCAL_URL` が 正 です（★`next dev` は 空いて いる 口を 選びます）。
-  const base = process.env.E2E_LOCAL_URL || env.E2E_LOCAL_URL || "http://localhost:3000";
+  const base = NAV.口(env);
   fs.mkdirSync(OUT, { recursive: true });
   const { chromium } = require("playwright");
   const b = await chromium.launch({ channel: "chrome" });
@@ -158,19 +157,7 @@ function 差(a, b) {
 
   // ── ★実機の 側 ───────────────────────────────────────────
   const p2 = await b.newPage({ viewport: { width: 390, height: 900 } });
-  await p2.goto(base + "/login");
-  // ★★入り方は `tools/compare.js` と 同じ 形に します（★あちらは 通って います）。
-  await p2.locator('input[type="email"]').first().fill(env.E2E_LOCAL_EMAIL || env.E2E_EMAIL);
-  await p2.locator('input[type="password"]').first().fill(env.E2E_LOCAL_PASSWORD || env.E2E_PASSWORD);
-  await p2.locator('button[type="submit"], button:has-text("ログイン")').first().click();
-  // ★★★`waitForURL` は「読み終わる」まで 待ちます。★門の 中の 画面は 台帳を
-  //   ★何度も 引く ので、★`load` が 立たない ことが あります（★2026-09-26 に 見ました）。
-  //   ★★だから **場所だけ** を 見ます。★着いて いれば 進みます。
-  let 着いた = false;
-  for (let n = 0; n < 60; n += 1) {
-    if (/\/dashboard/.test(p2.url())) { 着いた = true; break; }
-    await p2.waitForTimeout(1000);
-  }
+  const 着いた = await NAV.入る(p2, env, base);
   if (!着いた) {
     // ★★★入れなかった ときは **止まります**。★白い 絵を 残しません。
     const 字 = (await p2.textContent("body").catch(() => "") || "").replace(/\s+/g, " ").slice(0, 200);
@@ -180,22 +167,7 @@ function 差(a, b) {
     await b.close();
     process.exit(3);
   }
-  await p2.waitForTimeout(2500);
-  // ★★★もっと は **帯に ありません**（★帯は 5つ です）。
-  //   ★★入口は「きょう」の 右上の 歯車 です（★`HeadRound` の `aria-label`）。
-  //   ★★2026-09-26 に ここで 30秒 待って 落ちました ── ★字で 探して いた から です。
-  await p2.getByLabel("もっとを開く").first().click({ timeout: 20000 });
-  await p2.waitForTimeout(900);
-  // ★★★行は「名 ＋ 添える 字」が **1つの 札の 中** に あります。
-  //   ★★だから `exact: true` では 当たりません（★2026-09-26 に 30秒 待って 落ちました）。
-  //   ★★札（`button`）の 中の 字で 探します。★人が 押す のと 同じ 道 です。
-  const 押す = async (字) => {
-    const 札 = p2.locator("main button", { hasText: 字 }).first();
-    await 札.click({ timeout: 20000 });
-  };
-  if (道.bundle) { await 押す(道.bundle); await p2.waitForTimeout(900); }
-  await 押す(道.row);
-  await p2.waitForTimeout(1500);
+  await NAV.開く(p2, 道);
   // ★★★先に 絵を 撮ります ── ★絵は **見た まま** で なければ 意味が ありません。
   //   ★★★撮る ところを 狭めました（★2026-09-26・坂本さんの ご指示）。
   //     ★★前は `fullPage` で 紙 ぜんたい を 撮って いました。
