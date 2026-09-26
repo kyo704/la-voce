@@ -25,7 +25,10 @@ import {
   teacherFilterOptions, matchesTeacher, TEACHER_FILTER_ALL,
   gradeFilterOptions, matchesGrade, GRADE_FILTER_ALL,
   // ★★名簿の 画面の 字（★2026-09-18・裁定 その84 NEW_ORDER 2）。★lib が 持ちます。
-  rosterSubLine, NOT_COUNTED_HEAD, notCountedRows, rosterNotes, ROSTER_NOTE_BOLD
+  rosterSubLine, NOT_COUNTED_HEAD, notCountedRows, rosterNotes, ROSTER_NOTE_BOLD,
+  // ★★★狭い ときの 字（★2026-09-26・D群）。★書き写しません。
+  narrowCountLine, NARROW_BTN_INVITE, NARROW_BTN_EXPORT,
+  NARROW_NOTES, NARROW_NOTES_STRONG
 } from "@/lib/orgRoster";
 import {
   mayGrantPost, mayChangePerson, CANNOT_CHANGE_REASON
@@ -77,6 +80,8 @@ function joinedWord(iso) {
 
 export default function OpsRoster({
   members, nameOf, teacherNameOf, canSeeMoney, onInvite,
+  // ★★★狭い ときの「書き出す」（★2026-09-26）。★渡されなければ 札を 出しません。
+  onExport,
   // ★★学年を 入れる 道（★2026-09-11）。
   //   ★★これが 無いと、★学年の 札が 永久に 出ません。
   //     ★読む 道だけ 作って、★書く 道を 作らない ── これが
@@ -658,6 +663,50 @@ export default function OpsRoster({
           );
         })
       )}
+
+      {/* ★★★狭い ときだけ（★2026-09-26・D群・見本 `SC['名簿']`）。
+          ★★★裁定200 §0z ── ★スマホ用の 別の 画面を **作りません**。
+            ★★この 画面が 幅で 姿を 変えます。★ここに 足します。
+          ★★★下の 2行は 約束 です。★広い ときの 但し書きとは **別の 字** です。
+            ★★同じ ことを 言って いますが、★見本が 別の 字で 書いて います。
+            ★★★だから 寄せません ── ★見本の 字を 1文字も 変えません。
+          ★★札の「書き出す」は、★渡されて いない ときは 出しません（★押せない 札を 置かない）。 */}
+      {!showRosterTable(winW) && list.length > 0 ? (
+        <>
+          <p style={{ ...small, marginTop: 8 }}>
+            {narrowCountLine(list.length, members ? members.length : list.length)}
+          </p>
+          {onInvite || onExport ? (
+            <div style={{ display: "flex", gap: 9, marginTop: 11 }}>
+              {onInvite ? (
+                <button type="button" onClick={onInvite}
+                  style={{
+                    flex: 1, minHeight: 44, borderRadius: 10,
+                    border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+                    fontSize: "0.875rem", cursor: "pointer"
+                  }}>{NARROW_BTN_INVITE}</button>
+              ) : null}
+              {onExport ? (
+                <button type="button" onClick={onExport}
+                  style={{
+                    flex: 1, minHeight: 44, borderRadius: 10,
+                    border: `1px solid ${C.line}`, background: C.card, color: C.ink,
+                    fontSize: "0.875rem", cursor: "pointer"
+                  }}>{NARROW_BTN_EXPORT}</button>
+              ) : null}
+            </div>
+          ) : null}
+          <div style={{ marginTop: 12 }}>
+            {NARROW_NOTES.map((l, i) => (
+              <p key={i} style={{
+                fontSize: "0.75rem", lineHeight: 1.9,
+                color: NARROW_NOTES_STRONG.includes(i) ? C.ink : C.inkSoft,
+                fontWeight: NARROW_NOTES_STRONG.includes(i) ? 600 : 400
+              }}>{l}</p>
+            ))}
+          </div>
+        </>
+      ) : null}
 
       {/* ★★渡せない ときの わけ。★字だけの 案内に しません。
           ★★出しっぱなしに しません。★次に えらぶと 消えます。 */}

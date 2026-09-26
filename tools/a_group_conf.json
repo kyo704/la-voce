@@ -279,6 +279,10 @@
     "components/GuardianAsk.jsx",
     "lib/guardianConsent.js"
   ],
+  "名簿": [
+    "components/OpsRoster.jsx",
+    "lib/orgRoster.js"
+  ],
   "回を始める": [
     "components/RoundStart.jsx",
     "lib/roundStart.js"
