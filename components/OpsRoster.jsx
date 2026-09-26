@@ -683,7 +683,7 @@ export default function OpsRoster({
                   style={{
                     flex: 1, minHeight: 44, borderRadius: 10,
                     border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-                    fontSize: "0.875rem", cursor: "pointer"
+                    fontSize: "0.90625rem", cursor: "pointer"
                   }}>{NARROW_BTN_INVITE}</button>
               ) : null}
               {onExport ? (
@@ -691,7 +691,7 @@ export default function OpsRoster({
                   style={{
                     flex: 1, minHeight: 44, borderRadius: 10,
                     border: `1px solid ${C.line}`, background: C.card, color: C.ink,
-                    fontSize: "0.875rem", cursor: "pointer"
+                    fontSize: "0.90625rem", cursor: "pointer"
                   }}>{NARROW_BTN_EXPORT}</button>
               ) : null}
             </div>
