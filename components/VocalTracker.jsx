@@ -189,6 +189,9 @@ import { patchOf as lookPatch } from "@/lib/portfolioLook";
 import { RPC as PAGE_FIELDS_RPC, normalize as normalizePageFields, NOT_YET as PAGE_FIELDS_NOT_YET }
   from "@/lib/pageFields";
 import KyoshitsuOps from "@/components/KyoshitsuOps";
+import KodomoNoWaku from "@/components/KodomoNoWaku";
+import WariMada from "@/components/WariMada";
+import { COLS_KID as KID_COLS, COLS_READ as KID_READ_COLS } from "@/lib/kodomoNoWaku";
 import { rightWords } from "@/lib/kyoshitsuOps";
 import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
   TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
@@ -13377,6 +13380,11 @@ export default function VocalTracker({
     //   ★★2つ 以上の 方は、★もっとの「○○ の 運営」から 入ります。
     //     ★★どれか を こちらで 勝手に 選びません。
     "教室の運営": 運営できる教室().length === 1 ? () => setMoreSection("教室の運営") : null,
+    // ★★★2026-09-26 に つなぎました（★引き金は 2026-09-25 に 済んで いました）。
+    //   ★★`tools/trigger_met.py` が「済んだ のに 呼ばれて いない」と 教えました。
+    //   ★★見本では「公演の機能」「学校の機能」の 束 から 開きます（★たどって 確かめました）。
+    "子どもの枠": () => setMoreSection("子どもの枠"),
+    "希望がまだの方": 運営できる教室().length === 1 ? () => setMoreSection("希望がまだの方") : null,
     "担当の先生を選ぶ": studentCanChoose(monkaSetting)
       ? () => setMoreSection("担当の先生") : null,
     "授業の時間を出す": isEnrolledInOrg ? () => setMoreSection("授業の時間") : null,
@@ -14625,6 +14633,76 @@ export default function VocalTracker({
   //       ★★1日で 3度目の 同じ 形 です。★見張りを 広げました
   //         （★`components/tests/tdz-order.test.js` ── ★頼りの 一覧も 見ます）。
   // ==========================================================================
+  // ==========================================================================
+  // ★★★子どもの枠（★2026-09-26 に つなぎました）
+  //
+  //   ★引き金は 2026-09-25 に 済んで いました（★束の 入口 7つ）。
+  //     ★★`tools/trigger_met.py` が「済んだ のに 呼ばれて いない」と 教えました。
+  //   ★★見本は `bk('公演')`。★いまの 公演の 中の 1枚 です。
+  //     ★★だから `koenId` が 無い ときは 何も 読みません。
+  //   ★★★呼び名 だけ を 読みます。★年齢・学校・写真・体調の 列は 1つも ありません
+  //     （★台帳にも ありません）。
+  //   ★★見た 記録は「いつ・どの 役割」だけ です。★見た方の お名前を 読みません。
+  // ==========================================================================
+  const [kidRows, setKidRows] = useState(null);
+  const [kidReads, setKidReads] = useState({});
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "子どもの枠" || !userId || !koenId) return;
+    let 生 = true;
+    (async () => {
+      const { data, error } = await featureClient.from("koen_kids")
+        .select(KID_COLS).eq("koen_id", koenId).eq("guardian_user_id", userId);
+      if (!生) return;
+      if (error) { setKidRows(null); return; }
+      const 子 = data || [];
+      setKidRows(子);
+      if (子.length === 0) { setKidReads({}); return; }
+      // ★★見た 記録。★お名前は 読みません（★`viewer_role_at` だけ）。
+      const r = await featureClient.from("koen_kid_contact_reads")
+        .select("kid_id, " + KID_READ_COLS).in("kid_id", 子.map((k) => k.id));
+      if (!生) return;
+      const 束 = {};
+      (r.data || []).forEach((x) => {
+        if (!束[x.kid_id]) 束[x.kid_id] = [];
+        束[x.kid_id].push(x);
+      });
+      setKidReads(束);
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, koenId, featureClient]);
+
+  // ==========================================================================
+  // ★★★希望がまだの方（★2026-09-26 に つなぎました）
+  //
+  //   ★見本は「学校の機能」の 束 から 開きます（★戻る 札は `bk('レッスン割')`）。
+  //   ★★どの 回か は **いちばん 新しい 開いて いる 回** です。
+  //     ★★★選ばせません ── ★見本に 回を 選ぶ 口が ありません。
+  //   ★★名簿は 在籍から。★催促の 道を 1つも 作りません（★約束の 1行目）。
+  // ==========================================================================
+  const [wariRound, setWariRound] = useState(null);
+  const [wariRoster, setWariRoster] = useState([]);
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "希望がまだの方" || !userId) return;
+    const 教室 = 運営できる教室()[0];
+    if (!教室 || !教室.org_id) return;
+    let 生 = true;
+    (async () => {
+      const { data: 回, error: e1 } = await featureClient.from("lesson_rounds")
+        .select("id, name, status, due_on, created_at").eq("org_id", 教室.org_id)
+        .order("created_at", { ascending: false }).limit(1);
+      if (!生 || e1) return;
+      const r = (回 || [])[0] || null;
+      setWariRound(r);
+      if (!r) { setWariRoster([]); return; }
+      const { data: 名簿 } = await featureClient.from("enrollments")
+        .select("student_id, status").eq("org_id", 教室.org_id).eq("status", "active");
+      if (!生) return;
+      // ★★`stillWaiting` は `user_id` で 見ます（★`lib/wariMada.js`）。
+      setWariRoster((名簿 || []).map((x) => ({ user_id: x.student_id })));
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, featureClient, myOrgs, myOrgPosts]);
+
   // ★★★しらべている ことの「いつの くらしと くらべますか」（★2026-09-26）。
   //   ★★台帳に 残しません ── ★しまう 列が ありません（★`lib/shirabeteiru.js` の 註）。
   //     ★★だから この 画面を 出て いる あいだ だけ の ものです。
@@ -28310,6 +28388,44 @@ export default function VocalTracker({
                       onBack={() => setMoreSection(null)} />
                   );
                 })() : null}
+                {/* ★★★子どもの枠（★2026-09-26 に つなぎました）。
+                    ★★見本は `bk('公演')`。★いまの 公演が 無い ときは 何も 読みません。
+                    ★★呼び名 だけ です。★年齢・学校・写真・体調は うかがいません。 */}
+                {layoutV2 && moreSection === "子どもの枠" ? (
+                  <KodomoNoWaku
+                    koenTitle={(koenListRows || []).find((r) => r && r.id === koenId)
+                      ? (koenListRows.find((r) => r.id === koenId).title || "") : ""}
+                    kids={kidRows}
+                    readsByKid={kidReads}
+                    onAdd={async (v) => {
+                      if (!koenId) return;
+                      const { error } = await featureClient.from("koen_kids")
+                        .insert({ koen_id: koenId, guardian_user_id: userId,
+                                  nickname: v.nickname });
+                      if (error) { setToastMessage("足せませんでした。"); }
+                      else { setToastMessage("足しました。"); setMoreSection("子どもの枠"); }
+                      setTimeout(() => setToastMessage(null), 3200);
+                    }}
+                    onRemove={async (id) => {
+                      // ★★外しても 運営の 出欠の 記録は 残ります（★約束の 8行目）。
+                      const { error } = await featureClient.from("koen_kids")
+                        .delete().eq("id", id).eq("guardian_user_id", userId);
+                      if (error) setToastMessage("外せませんでした。");
+                      else setKidRows((rs) => (rs || []).filter((x) => x.id !== id));
+                      setTimeout(() => setToastMessage(null), 3200);
+                    }}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★希望がまだの方（★2026-09-26 に つなぎました）。
+                    ★★催促の 道を 1つも 作りません（★約束の 1行目）。
+                    ★★どの 回かは いちばん 新しい 回 です。★選ばせません。 */}
+                {layoutV2 && moreSection === "希望がまだの方" ? (
+                  <WariMada
+                    roundId={wariRound ? wariRound.id : null}
+                    roundName={wariRound ? wariRound.name : ""}
+                    roster={wariRoster}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
                 {/* ★★★お仕事を選ぶ（★2026-09-25・裁定202・sql/90）。
                     ★★記録は 1行も 触りません。★送るのは `field` 1列 だけ です。
                     ★★選び直すと「さがす」の 出し分けが 変わります（★約束の 3行目）。 */}

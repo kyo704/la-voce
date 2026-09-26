@@ -22,7 +22,18 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
-const MIHON = path.join(ROOT, "docs/design/pack-final/00-動く見本-iPhoneで開く用.html");
+// ★★★見本は 画面ごとに 選びます（★2026-09-26）。
+//   ★★同じ 画面が **2つの 見本に 別の 形で** 在ることが あります。
+//     ★★★「希望がまだの方」で 見ました ── ★iPhone の 見本は 短く、
+//       ★運営の 見本は 「時間割から 置く ›」まで 持って います。
+//     ★★実装は 運営の 見本から 書いて ありました（★`lib/wariMada.js` の 註）。
+//   ★★★だから 紙（`dom_personal_map.json`）に `mihon` を 書けます。
+//     ★★書かなければ iPhone の 見本 です。
+const MIHON_BY_KEY = {
+  iphone: path.join(ROOT, "docs/design/pack-final/00-動く見本-iPhoneで開く用.html"),
+  unei: path.join(ROOT, "docs/design/pack-final/00-動く見本-PC・iPad（運営）.html"),
+  zen: path.join(ROOT, "docs/design/pack-final/00-動く見本（さわれる・全画面）.html")
+};
 const MAP = JSON.parse(fs.readFileSync(path.join(__dirname, "dom_personal_map.json"), "utf8"));
 const OUT = path.join(ROOT, "docs/design/compare/personal");
 
@@ -134,7 +145,10 @@ function 差(a, b) {
 
   // ── ★見本の 側 ───────────────────────────────────────────
   const p1 = await b.newPage({ viewport: { width: 390, height: 900 } });
-  await p1.goto("file://" + MIHON, { waitUntil: "domcontentloaded" });
+  const 見本の紙 = MIHON_BY_KEY[道.mihon || "iphone"];
+  if (!見本の紙) { console.log("★知らない 見本 ……", 道.mihon); await b.close(); process.exit(2); }
+  console.log("★見本 …… " + path.basename(見本の紙));
+  await p1.goto("file://" + 見本の紙, { waitUntil: "domcontentloaded" });
   // ★★★開き方は `tools/mihon_shot.js` と 同じ 形に します（★あちらは 通って います）。
   //   ★`SC[名]`（1枚の 画面）と `SH[名]`（下から 上がる 板）の 2つ が あります。
   const 種 = await p1.evaluate((n) => {
@@ -150,7 +164,10 @@ function 差(a, b) {
   await p1.waitForTimeout(400);
   // ★★★`fullPage` に しません ── ★見本の HTML は 枠の **下にも** 長い 説明を 持って います
   //   （★`tools/mihon_shot.js` の 註・2026-09-15）。★`#bd`／`#sh` だけ を 切り取ります。
-  const 枠 = 種 === "SH" ? "#sh" : "#bd";
+  // ★★★枠は 見本ごとに 違います（★2026-09-26）。
+  //   ★iPhone の 見本 …… `#bd`（1枚）／ `#sh`（下から 上がる 板）
+  //   ★運営の 見本 …… `#bodyEl`（★`tools/dom_compare.js` が そう 読んで います）
+  const 枠 = (道.mihon === "unei") ? "#bodyEl" : (種 === "SH" ? "#sh" : "#bd");
   const 見本 = await p1.$eval(枠, HONE_FN).catch(() => null);
   if (!見本) { console.log("★見本の 骨組みを 取れません ──", 枠); await b.close(); process.exit(4); }
   const 箱 = await p1.$(枠);

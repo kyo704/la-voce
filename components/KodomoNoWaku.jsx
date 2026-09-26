@@ -12,7 +12,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
-import { ScreenHead, Back, Box } from "@/components/UiV2";
+import { ScreenHead, Back, Box, H3 } from "@/components/UiV2";
 import {
   TITLE, subLine, ROLE_NOT_YET, contactWord, READS_HEAD, READS_EMPTY,
   BTN_REMOVE, ADD_HEAD, F_NAME, F_NAME_PH, F_TEL, F_TEL_PH, BTN_ADD,
@@ -96,9 +96,8 @@ export default function KodomoNoWaku({
         );
       })}
 
-      <p style={{ fontSize: "0.8125rem", color: C.ink, margin: "14px 0 6px", fontWeight: 600 }}>
-        {ADD_HEAD}
-      </p>
+      {/* ★★小見出し です（★見本 `.sh3`）。★`p` に すると 註 に 数えられます。 */}
+      <div style={{ marginTop: 14 }}><H3>{ADD_HEAD}</H3></div>
       <p style={{ fontSize: "0.75rem", color: C.inkSoft, margin: "0 0 5px" }}>{F_NAME}</p>
       <input value={name} onChange={(e) => setName(e.target.value)} placeholder={F_NAME_PH}
         style={{
