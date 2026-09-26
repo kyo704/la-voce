@@ -74,6 +74,35 @@ const 共通に付くもの = [
   }
 ];
 
+// ★★★3つめ・4つめの 組（★坂本さんの お決め・2026-09-16）──
+//   ★③見本に 在るが、★意図して 実装して いない もの …… `tools/excluded_by_design.json`
+//   ★④実装に 在って、★見本に 無い もの（★わけ つき）…… その 紙の `__added__`
+//   ★★2つの 組（①②）だけ で 出すと、★同じ 差が 毎回 蒸し返されます
+//     （★あの 紙の `_readme` に そう 書いて あります）。
+//   ★★★引き金（`trigger`）の 無い ものを ここで 落としません。
+//     ★★引き金の 無い もの ＝ 二度と 見直されない もの、です。
+const ワザト = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "excluded_by_design.json"), "utf8")
+);
+
+function わざとの字(名, 足したか) {
+  const 棚 = 足したか ? (ワザト.__added__ || {})[名] : ワザト[名];
+  if (!Array.isArray(棚)) return [];
+  return 棚.filter((x) => x && x.text && (足したか || x.trigger))
+    .map((x) => ({ 字: String(x.text), なぜ: String(x.why || "").slice(0, 120),
+                   引き金: x.trigger ? String(x.trigger) : null }));
+}
+
+function わざと除く(列, 名, 足したか) {
+  const 表 = わざとの字(名, 足したか);
+  const 残 = [], 落 = [];
+  列.forEach((x) => {
+    const 当 = 表.find((k) => x.includes(k.字));
+    if (当) 落.push({ x, なぜ: 当.なぜ, 引き金: 当.引き金 }); else 残.push(x);
+  });
+  return { 残, 落 };
+}
+
 function 除く(列) {
   const 残 = [], 落 = [];
   列.forEach((x) => {
@@ -207,7 +236,9 @@ function 差(a, b) {
   }
   const d0 = 差(見本, 実機);
   const 無 = 除く(d0.無), 余 = 除く(d0.余);
-  const d = { 無: 無.残, 余: 余.残 };
+  const 三 = わざと除く(無.残, 名, false);
+  const 四 = わざと除く(余.残, 名, true);
+  const d = { 無: 三.残, 余: 四.残 };
   const 落ちた = 無.落.concat(余.落);
   console.log(`DOM_PERSONAL  ${名}`);
   console.log(`  見本 …… ${見本.length} 塊 ／ 実機 …… ${実機.length} 塊`);
@@ -215,6 +246,10 @@ function 差(a, b) {
   d.無.forEach((x) => console.log(`    ${x}`));
   console.log(`\n■ ② 実機に あって 見本に 無い（${d.余.length}）`);
   d.余.forEach((x) => console.log(`    ${x}`));
+  console.log(`\n■ ③ 見本に 在るが、★わざと 出して いない（${三.落.length}）`);
+  三.落.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}\n      ★戻す 引き金 …… ${k.引き金}`));
+  console.log(`\n■ ④ 実装に 在って 見本に 無い ── ★わけ あり（${四.落.length}）`);
+  四.落.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}`));
   console.log(`\n■ ★共通に 付く もの として 落としました（${落ちた.length}）`);
   落ちた.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}`));
   console.log(`\n★絵 …… ${path.relative(ROOT, OUT)}/${名}-{見本,実機}.png`);
