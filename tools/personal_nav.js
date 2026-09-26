@@ -53,6 +53,7 @@ async function 開く(page, 道) {
   if (道.tab) {
     await page.locator("nav button:visible", { hasText: 道.tab }).first().click({ timeout: 20000 });
     await page.waitForTimeout(2500);
+    await 先へ(page, 道);
     return;
   }
   // ★★★もっと は **帯に ありません**（★帯は 5つ です）。
@@ -74,6 +75,16 @@ async function 開く(page, 道) {
   if (道.bundle) { await 押す(道.bundle); await page.waitForTimeout(900); }
   await 押す(道.row);
   await page.waitForTimeout(1500);
+  await 先へ(page, 道);
+}
+
+// ★★★`steps` …… 着いた 画面で ★さらに 押す 札の 字（★順に・2026-09-26）。
+//   ★★`main` の ★見えて いる 札 だけ から 選びます（★隠れた 行に 当てない）。
+async function 先へ(page, 道) {
+  for (const 字 of 道.steps || []) {
+    await page.locator("main button:visible", { hasText: 字 }).first().click({ timeout: 20000 });
+    await page.waitForTimeout(1500);
+  }
 }
 
 module.exports = { 紙を読む, 口, 入る, 開く };
