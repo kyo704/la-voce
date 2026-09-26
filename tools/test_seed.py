@@ -171,7 +171,8 @@ def main():
 
   # ★学校
   q("""insert into public.organizations (id, name, kind, created_by) values
-       ('%s','★たしかめ学園（大）','studio','%s'),
+       -- ★2026-09-26 …… ★見本と 同じ 名に しました（★見比べの 道具が 名で くらべます）。
+       ('%s','○○音楽大学','studio','%s'),
        ('%s','★たしかめ教室（小）','solo','%s')
        on conflict (id) do nothing""" % (ORG1, ids["gakucho"], ORG2, ids["sensei1"]))
 

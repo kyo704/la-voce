@@ -15,7 +15,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw, libUrl } = require("./_source");
+const { stripComments, readRaw, libUrl, inMihon } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -33,7 +33,11 @@ async function main() {
 
   console.log("=== 一 ★下の 2行（★約束） ===");
   t(m.NOTES.length === 2, `★2行（いま ${m.NOTES.length}）`);
-  t(m.NOTES.includes("この 教室の ことだけ です。ほかの 教室とは 混ざりません。"), "★1行目");
+  // ★★★覚えません ── ★見本から 数えます（★`_source.js` の `inMihon`・2026-09-26）。
+  //   ★★写して 持って いた 字に **空きが 1つ 多く** 入って いました
+  //     （★「ことだけ です」／★見本は「ことだけです」）。
+  //   ★★★これで 3つめ です。★見張りが 間違った 字を 守る 形 を 止めます。
+  m.NOTES.forEach((l) => t(inMihon(l), `★見本に 同じ 字が ある …… 「${l.slice(0, 16)}…」`));
   t(m.NOTES.includes("生徒の 健康の 記録には たどりつけません（画面そのものが ありません）。"),
     "★2行目");
 

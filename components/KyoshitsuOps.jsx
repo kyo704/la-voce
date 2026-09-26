@@ -37,8 +37,10 @@ export default function KyoshitsuOps({
               display: "block", width: "100%", textAlign: "left",
               background: "transparent", border: "none", padding: 0, minHeight: 44
             }}>
-            {/* ★★右の 字は 呼ぶ 側から。★無ければ 矢印 だけ です（★0を 出しません）。 */}
-            <Li right={右[r.to] ? 右[r.to] + " ›" : "›"} last={i === all.length - 1}>
+            {/* ★★右の 字は 呼ぶ 側から。★無ければ 矢印 だけ です（★0を 出しません）。
+                ★★★矢印の 前に 空きを 1つ 置きます ── ★見本は `(right||'') + ' ›'` です
+                  （★2026-09-26 に 数えました）。★右の 字が 無い 行も 同じ です。 */}
+            <Li right={`${右[r.to] || ""} ›`} last={i === all.length - 1}>
               {r.name}
               {r.sub ? (
                 <span style={{

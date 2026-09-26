@@ -27,7 +27,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { readRaw } = require("./_source");
+const { readRaw, stripComments } = require("./_source");
 
 let 落ちた = 0;
 function たしかめる(名, 条件, 言い分) {
@@ -39,9 +39,13 @@ function たしかめる(名, 条件, 言い分) {
 const 蔵 = path.join(__dirname, "..", "..");
 const vt = readRaw("components", "VocalTracker.jsx");
 const 紙 = readRaw("lib", "moreCrumb.js");
+// ★★★一覧を 読み出す ときは 註を 外します（★2026-09-26）。
+//   ★★註の 中で 節の 名を 引用して いると、★それを 一覧の 中身と 読み違えます。
+//   ★★★実際に 起きました ── ★註の `moreSection === "X"` の `X` を 拾いました。
+const 紙本 = stripComments(紙);
 
 // ★★一覧を 読み出します（★`SELF_BACK` の 中身）。
-const m = 紙.match(/export const SELF_BACK = Object\.freeze\(\[([\s\S]*?)\]\);/);
+const m = 紙本.match(/export const SELF_BACK = Object\.freeze\(\[([\s\S]*?)\]\);/);
 if (!m) { console.log("  × SELF_BACK が 読めません"); process.exit(1); }
 const 一覧 = (m[1].match(/"([^"]+)"/g) || []).map((s) => s.slice(1, -1));
 
@@ -50,9 +54,20 @@ const 実際 = [];
 const 節 = new Set((vt.match(/moreSection === "([^"]+)"/g) || [])
   .map((s) => s.replace(/^moreSection === "/, "").replace(/"$/, "")));
 for (const 名 of 節) {
-  const 当 = new RegExp('moreSection === "' + 名.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-    + '"[^\\n]*\\?\\s*\\(?\\s*\\n?\\s*<([A-Z][A-Za-z0-9]*)');
-  const g = vt.match(当);
+  // ★★★数え方を 広げました（★2026-09-26・2度目）。
+  //   ★★はじめは「`moreSection === "X"` の すぐ 後ろ に `<部品`」だけ を 見て いました。
+  //     ★★`教室の運営` は 途中に `(() => { … })()` を 挟みます。
+  //       ★★だから 見つからず、★`SELF_BACK` に 入らず、
+  //         ★★★パンくずと 自分の 札が 2つ 並んだ まま でした
+  //           （★2026-09-26・坂本さんの 実機で 見つかりました）。
+  //   ★★だから **次の `moreSection === "` まで** を 見ます。
+  //     ★★そこまでが その 節の 枝 です。★他の 節の 部品を 拾いません。
+  const 印 = 'moreSection === "' + 名 + '"';
+  const い = vt.indexOf(印);
+  if (い < 0) continue;
+  const 次 = vt.indexOf('moreSection === "', い + 印.length);
+  const 枝 = vt.slice(い + 印.length, 次 < 0 ? vt.length : 次);
+  const g = /<([A-Z][A-Za-z0-9]*)/.exec(枝);
   if (!g) continue;
   const 部品 = path.join(蔵, "components", g[1] + ".jsx");
   if (!fs.existsSync(部品)) continue;

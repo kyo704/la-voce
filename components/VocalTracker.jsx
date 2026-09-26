@@ -188,6 +188,7 @@ import { patchOf as lookPatch } from "@/lib/portfolioLook";
 import { RPC as PAGE_FIELDS_RPC, normalize as normalizePageFields, NOT_YET as PAGE_FIELDS_NOT_YET }
   from "@/lib/pageFields";
 import KyoshitsuOps from "@/components/KyoshitsuOps";
+import { rightWords } from "@/lib/kyoshitsuOps";
 import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
   TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
 import { pickSchool, SCHOOL_KEY } from "@/lib/matchingSearch";
@@ -14444,7 +14445,13 @@ export default function VocalTracker({
     let postsById = {};
     if (postIds.length > 0) {
       const { data: ps, error: pe } = await supabase
-        .from("org_posts").select("id, perms").in("id", postIds);
+        // ★★★`name` を 足しました（★2026-09-26・坂本さんの 実機で 見つかりました）。
+        //   ★★`KyoshitsuOps` の 1行目は「学長　坂本 響　／　できること 10」です。
+        //     ★★`name` を 読んで いなかった ので `役.name` が `undefined` に なり、
+        //       ★★役職の 名が **1文字も 出て いません** でした。
+        //   ★★★できことの 数だけ が 出て いた ので、★動いて 見えて いました。
+        //     ★★列を 名指しする 決まりは 守れて いましたが、★足りない ほうの 間違い です。
+        .from("org_posts").select("id, name, perms").in("id", postIds);
       if (pe) console.error("★役職を読めませんでした（教室の一覧）:", pe);
       (ps || []).forEach((x) => { postsById[x.id] = x; });
     }
@@ -14598,6 +14605,59 @@ export default function VocalTracker({
     return mayEnterOps(post ? permSet(post.perms) : null);
   }
   const [myAssignedTeachers, setMyAssignedTeachers] = useState({}); // orgId -> 担当講師のuserId配列
+
+  // ==========================================================================
+  // ★★★教室の運営 ── ★右に 添える 数（★2026-09-26・坂本さんの 実機の ご報告）
+  //
+  //   ★★見本の 行は 右に 数を 持ちます ── ★「216人」「10役職」。
+  //     ★★実装は 1つも 出して いません でした。
+  //   ★★★数える だけ です。★平均も 順も 出しません。★人の 名も 読みません。
+  //     ★★`head: true` で **数だけ** を もらいます（★行を 1つも 受け取りません）。
+  //   ★★言い方は `lib/kyoshitsuOps.js` の `rightWords` が 持ちます。★ここで 組みません。
+  //   ★★★節を 開いた ときだけ 数えます。★もっとを 開く たびに 数えません。
+  //
+  //   ★★★置き所 …… ★`myOrgs` と `myOrgPosts` の `useState` より **後ろ** です。
+  //     ★★頼りの 一覧（`[…]`）は **描く たびに その場で** 組まれます。
+  //       ★★だから 上に 置くと、★まだ 作られて いない `const` に 触ります（★TDZ）。
+  //     ★★★2026-09-26 に ここで 落としました ──
+  //       ★`ReferenceError: Cannot access 'k3' before initialization`。
+  //       ★★1日で 3度目の 同じ 形 です。★見張りを 広げました
+  //         （★`components/tests/tdz-order.test.js` ── ★頼りの 一覧も 見ます）。
+  // ==========================================================================
+  const [opsCounts, setOpsCounts] = useState({});
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "教室の運営") return;
+    const 教室 = 運営できる教室()[0];
+    if (!教室 || !教室.org_id) return;
+    let 生 = true;
+    (async () => {
+      // ★★★人数は `lib/orgRoster.js` の `rosterCount` が 決めます。
+      //   ★★★台帳に 数を 聞きません（`count: "exact"` に しません）──
+      //     ★数える 決まりが 2か所に なります。★あちらは 先生・事務を 除き、
+      //       ★休会中も 除きます。★台帳の 数は ぜんぶ 数えます。
+      //     ★★ご請求の 人数と 画面の 人数が 食い違います。
+      //   ★★だから `status` と `role` だけ を 引いて、★あちらに 渡します。
+      //     ★★お名前も 学年も 読みません。
+      const [人, 役] = await Promise.all([
+        featureClient.from("enrollments")
+          // ★★`role` の 列は `enrollments` に **ありません**（★試し・本番 とも 数えました）。
+          //   ★★`isCounted` は 列が 無くても 通ります（★役の 検めを 飛ばします）。
+          //   ★★★無い 列を 名指しすると 要求ごと 落ち、★数が 出ません。
+          .select("status").eq("org_id", 教室.org_id),
+        featureClient.from("org_posts")
+          .select("id", { count: "exact", head: true }).eq("org_id", 教室.org_id)
+      ]);
+      if (!生) return;
+      // ★★読めなかった ときは 何も 出しません（★0 と 書きません）。
+      setOpsCounts({
+        memberCount: 人.error ? null : rosterCount(人.data),
+        postCount: 役.error ? null : 役.count
+      });
+    })();
+    return () => { 生 = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layoutV2, moreSection, userId, featureClient, myOrgs, myOrgPosts]);
+
   // 作業指示-教室プラン D-1: つながり画面用。自分が生徒として在籍している教室と、
   // それぞれの教室での担当講師を取得する。
   async function fetchMyEnrollments() {
@@ -28236,6 +28296,7 @@ export default function VocalTracker({
                       postName={役 ? 役.name : null}
                       myName={profile.display_name || null}
                       perms={役 ? permSet(役.perms) : null}
+                      rights={rightWords(opsCounts)}
                       canGo={教室の運営へ行ける}
                       onGo={(to) => 教室の運営を開く(to, 教室.org_id)}
                       onBack={() => setMoreSection(null)} />

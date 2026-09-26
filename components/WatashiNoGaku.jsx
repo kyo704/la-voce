@@ -12,20 +12,19 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { ScreenHead, Back } from "@/components/UiV2";
+import { ScreenHead, Back, Box, Li } from "@/components/UiV2";
 import {
   BACK_TO, TITLE, HEAD_AMOUNT, HEAD_BREAKDOWN, HEAD_HANDED,
   handedWord, amountWord, breakdownOf, subLineOf,
   EMPTY_LINE, EMPTY_HOW, NOTES, NOTES_STRONG
 } from "@/lib/watashiNoGaku";
 
-const box = {
-  borderRadius: 10, border: `1px solid ${C.line}`, background: C.card, overflow: "hidden"
-};
-const 行 = (i) => ({
-  display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-  gap: 12, padding: "11px 13px", borderTop: i === 0 ? "none" : `1px solid ${C.line}`
-});
+// ★★★行は `components/UiV2.jsx` の `Li` を 使います（★2026-09-26）。
+//   ★★前は ここで 自分の `行(i)` を 組んで いました。
+//     ★★同じ「1行」の 見せ方が 2つ に なって いました（★この 蔵の 繰り返しの 形）。
+//   ★★★見比べでも それが 出ました ── ★見本の 行は `div.li.plain` です。
+//     ★★こちらの 行は class を 持たず、★骨組みの 道具が 1行も 拾えません でした
+//       （★2026-09-26 ── ★3行 とも ①に 出て いました）。
 
 export default function WatashiNoGaku({ row, koenTitle, orgName, onBack }) {
   const 下 = subLineOf(koenTitle, orgName);
@@ -44,29 +43,16 @@ export default function WatashiNoGaku({ row, koenTitle, orgName, onBack }) {
           <p style={{ fontSize: "0.8125rem", color: C.inkSoft, marginTop: 5 }}>{EMPTY_HOW}</p>
         </div>
       ) : (
-        <div style={box}>
+        <Box>
           {/* ★★額は そのまま。★引きません。★割りません。 */}
-          <div style={行(0)}>
-            <span style={{ fontSize: "0.875rem", color: C.inkSoft }}>{HEAD_AMOUNT}</span>
-            <span style={{ fontSize: "0.9375rem", color: C.ink, fontWeight: 700 }}>
-              {amountWord(row)}
-            </span>
-          </div>
+          <Li right={amountWord(row)}>{HEAD_AMOUNT}</Li>
           {/* ★★内わけは `memo` を そのまま。★組み立てません。★無ければ 出しません。 */}
           {breakdownOf(row) ? (
-            <div style={行(1)}>
-              <span style={{ fontSize: "0.875rem", color: C.inkSoft }}>{HEAD_BREAKDOWN}</span>
-              <span style={{ fontSize: "0.875rem", color: C.ink, textAlign: "right" }}>
-                {breakdownOf(row)}
-              </span>
-            </div>
+            <Li right={breakdownOf(row)}>{HEAD_BREAKDOWN}</Li>
           ) : null}
           {/* ★★「まだ」を 赤く しません。★催促でも 遅れの 印でも ありません。 */}
-          <div style={行(1)}>
-            <span style={{ fontSize: "0.875rem", color: C.inkSoft }}>{HEAD_HANDED}</span>
-            <span style={{ fontSize: "0.875rem", color: C.ink }}>{handedWord(row)}</span>
-          </div>
-        </div>
+          <Li right={handedWord(row)} last>{HEAD_HANDED}</Li>
+        </Box>
       )}
 
       <div style={{ marginTop: 14 }}>
