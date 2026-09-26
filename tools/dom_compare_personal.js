@@ -135,13 +135,29 @@ function 差(a, b) {
   if (道.bundle) { await 押す(道.bundle); await p2.waitForTimeout(900); }
   await 押す(道.row);
   await p2.waitForTimeout(1500);
-  const 実機 = await p2.$eval("main", HONE_FN).catch(() => null);
-  if (!実機) {
-    await p2.screenshot({ path: path.join(OUT, `${名}-取れません.png`), fullPage: true });
-    console.log("★実機の 骨組みを 取れません（★`main` が ありません）");
-    await b.close(); process.exit(4);
-  }
+  // ★★★先に 絵を 撮ります ── ★絵は **見た まま** で なければ 意味が ありません。
   await p2.screenshot({ path: path.join(OUT, `${名}-実機.png`), fullPage: true });
+  // ★★★`main` の 中には もっとの 行が **残って います**（★`display:none` で 隠すだけ）。
+  //   ★★`inMore(節)` が そう して います ── ★書きかけを 残す ため の 作り です
+  //     （★`components/VocalTracker.jsx`「消しません。隠すだけです」）。
+  //   ★★★字を 取ると、★隠れた 行まで 数えます（★2026-09-26 に 24件 出ました）。
+  //     ★★だから 取る 前に、★見えて いない ところを **落とします**。
+  //     ★★`KEEP_HIDDEN=1` を 付けると 落としません（★診立ての ため の 口）。
+  //   ★★★`new Function` を 画面の 中で 組み立てるのは やめました ──
+  //     ★2026-09-26 に そこで 2度 つまずきました。★関数は そのまま 渡します。
+  if (!process.env.KEEP_HIDDEN) {
+    await p2.$eval("main", (root) => {
+      const 見えぬ = [];
+      root.querySelectorAll("*").forEach((el) => {
+        const st = window.getComputedStyle(el);
+        if (st.display === "none" || st.visibility === "hidden") 見えぬ.push(el);
+      });
+      見えぬ.forEach((el) => el.remove());
+    });
+  }
+  const 実機 = await p2.$eval("main", HONE_FN)
+    .catch((e) => { console.log("★取れません ──", String(e).slice(0, 140)); return null; });
+
   await b.close();
 
   if (process.env.DUMP) {
