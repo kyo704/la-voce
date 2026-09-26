@@ -1,0 +1,228 @@
+{
+  "title": "エリヤ",
+  "composer": "メンデルスゾーン",
+  "composer_sort": "Mendelssohn, Felix",
+  "kind": "chorus",
+  "year_written": 1846,
+  "source": "hand",
+  "source_id": "mendelssohn-elijah",
+  "roles": [
+    {
+      "label": "エリヤ（バリトン）"
+    },
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱（オバデヤ）"
+    },
+    {
+      "label": "少年（ソプラノ）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "エリヤの預言と序曲",
+      "group_label": "第1部",
+      "roles": [
+        "エリヤ（バリトン）"
+      ]
+    },
+    {
+      "label": "合唱（助けたまえ、主よ）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "汝の心を尽くして（オバデヤのアリア）",
+      "group_label": "第1部",
+      "roles": [
+        "テノール独唱（オバデヤ）"
+      ]
+    },
+    {
+      "label": "やもめの子の蘇生",
+      "group_label": "第1部",
+      "roles": [
+        "エリヤ（バリトン）",
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "カルメル山の対決（バアルの預言者たち）",
+      "group_label": "第1部",
+      "roles": [
+        "エリヤ（バリトン）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "主よ、御顔を（エリヤのアリア）",
+      "group_label": "第1部",
+      "roles": [
+        "エリヤ（バリトン）"
+      ]
+    },
+    {
+      "label": "雨乞いと少年の報告",
+      "group_label": "第1部",
+      "roles": [
+        "エリヤ（バリトン）",
+        "少年（ソプラノ）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1部終結の合唱（感謝せよ）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "聞け、イスラエルよ（ソプラノのアリア）",
+      "group_label": "第2部",
+      "roles": [
+        "ソプラノ独唱"
+      ]
+    },
+    {
+      "label": "イゼベルの扇動と合唱",
+      "group_label": "第2部",
+      "roles": [
+        "アルト独唱",
+        "合唱",
+        "エリヤ（バリトン）"
+      ]
+    },
+    {
+      "label": "それは充分（エリヤのアリア）",
+      "group_label": "第2部",
+      "roles": [
+        "エリヤ（バリトン）"
+      ]
+    },
+    {
+      "label": "天使たちの三重唱（主に御身を委ねよ）",
+      "group_label": "第2部",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ホレブの山（主が通り過ぎる）",
+      "group_label": "第2部",
+      "roles": [
+        "エリヤ（バリトン）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "昇天と終結の合唱",
+      "group_label": "第2部",
+      "roles": [
+        "合唱",
+        "テノール独唱（オバデヤ）",
+        "ソプラノ独唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コントラファゴット"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "オフィクレイド／チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Elias",
+  "aliases": [],
+  "duration_min": 130,
+  "language": "de"
+}
