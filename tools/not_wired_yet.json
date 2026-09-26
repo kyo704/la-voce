@@ -35,5 +35,6 @@
  "HonbanFurikaeri": "★本番の ふりかえり。★`performances` と `entries.sleep_hours` を 読みます。★いつ つなぐ …… 「ふりかえる」から 本番 1件を 押す 道を 作った とき。★★`org_event_id` の 入って いる 行は 使いません（★学校の 行事から 引かない 約束）。",
  "KyokuNaosu": "★曲を 直す。★台帳 `repertoire_tessitura`。★いつ つなぐ …… ノートの 曲の 中身（`components/NotesV2.jsx`）から 押す 道を 作った とき。★★ようすの 4つは `lib/practiceNote.js` の `REPERTOIRE_STATUS` から 取ります ── ★台帳の CHECK と 1文字ずつ 同じ です。",
  "KomaNoNakami": "★コマの 中身。★台帳は sql/93 で 揃いました（★本番 131本目・2026-09-26）。★いつ つなぐ …… レッスンの 日程を 組む（`components/LessonRoundArea.jsx`）の 升目を 押す 道を 作った とき。★★長さ・場所・繰り返し・いつまで は どれも おまけ です。★決めなくても 置かれて います。",
- "YoteiNoNakami": "★予定の 中身。★`my_timetable.kind` は sql/93 で 入りました。★いつ つなぐ …… 自分の コマ（`components/MyTimetable.jsx`）の 升目を 押す 道を 作った とき。★★事務の 画面に `kind` を 渡さない こと（★「動かして」と 言う きっかけに なります）。"
+ "YoteiNoNakami": "★予定の 中身。★`my_timetable.kind` は sql/93 で 入りました。★いつ つなぐ …… 自分の コマ（`components/MyTimetable.jsx`）の 升目を 押す 道を 作った とき。★★事務の 画面に `kind` を 渡さない こと（★「動かして」と 言う きっかけに なります）。",
+ "KoenFees": "★参加費。★台帳 `koen_fees` は 本番に あります（★9列）。★いつ つなぐ …… 公演の 運営（`components/KoenArea.jsx`）に 行を 足す とき。★★催促の 道を 作らない こと ── ★「まだ」の 方に 出す 札も 色も 印も 置きません。★★「ひとり」は ぜんぶ 同じ 額の ときだけ 出します（★平均を 作りません）。"
 }

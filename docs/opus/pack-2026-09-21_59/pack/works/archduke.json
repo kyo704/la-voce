@@ -1,0 +1,75 @@
+{
+  "title": "ピアノ三重奏曲第7番 変ロ長調「大公」",
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "chamber",
+  "year_written": 1811,
+  "source": "hand",
+  "source_id": "beethoven-archduke",
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 スケルツォ アレグロ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 アンダンテ・カンタービレ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 アレグロ・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

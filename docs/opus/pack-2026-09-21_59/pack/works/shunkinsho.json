@@ -1,0 +1,145 @@
+{
+  "title": "春琴抄",
+  "composer": "石井歓",
+  "composer_sort": "Ishii, Kan",
+  "kind": "opera",
+  "year_written": 1975,
+  "source": "hand",
+  "source_id": "ishii-shunkinsho",
+  "roles": [
+    {
+      "label": "春琴"
+    },
+    {
+      "label": "佐助"
+    },
+    {
+      "label": "語り"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序（語り）",
+      "group_label": "全曲",
+      "roles": [
+        "語り"
+      ]
+    },
+    {
+      "label": "春琴と佐助の出会い",
+      "group_label": "全曲",
+      "roles": [
+        "春琴",
+        "佐助"
+      ]
+    },
+    {
+      "label": "稽古の場",
+      "group_label": "全曲",
+      "roles": [
+        "春琴",
+        "佐助"
+      ]
+    },
+    {
+      "label": "災いの場",
+      "group_label": "全曲",
+      "roles": [
+        "春琴",
+        "佐助",
+        "合唱"
+      ]
+    },
+    {
+      "label": "佐助の決意とフィナーレ",
+      "group_label": "全曲",
+      "roles": [
+        "佐助",
+        "春琴",
+        "語り"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "note": "★場面の立て方は目安。上演する際は楽譜で確かめること"
+}

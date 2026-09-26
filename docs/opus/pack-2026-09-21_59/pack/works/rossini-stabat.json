@@ -1,0 +1,190 @@
+{
+  "title": "スターバト・マーテル",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "chorus",
+  "year_written": 1841,
+  "source": "hand",
+  "source_id": "rossini-stabat",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "メゾソプラノ独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "I 悲しみの聖母は立ちぬ（序奏と合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "メゾソプラノ独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "II 嘆き、悲しみ（テノールのアリア）",
+      "group_label": "全曲",
+      "roles": [
+        "テノール独唱"
+      ]
+    },
+    {
+      "label": "III 全能の御父の（二重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "メゾソプラノ独唱"
+      ]
+    },
+    {
+      "label": "IV 我は見たり（バスのアリア）",
+      "group_label": "全曲",
+      "roles": [
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "V 御母よ、愛の泉よ（合唱とレチタティーヴォ）",
+      "group_label": "全曲",
+      "roles": [
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "VI 聖母よ（四重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "メゾソプラノ独唱",
+        "テノール独唱",
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "VII 我をして（メゾソプラノのカヴァティーナ）",
+      "group_label": "全曲",
+      "roles": [
+        "メゾソプラノ独唱"
+      ]
+    },
+    {
+      "label": "VIII 肉体は朽ち果てるとも（ソプラノのアリアと合唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "IX 御身の死の日に（無伴奏の四重唱）",
+      "group_label": "全曲",
+      "roles": [
+        "ソプラノ独唱",
+        "メゾソプラノ独唱",
+        "テノール独唱",
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "X アーメン（終結の合唱とフーガ）",
+      "group_label": "全曲",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大太鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

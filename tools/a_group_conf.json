@@ -260,6 +260,10 @@
     "components/OrgSummary.jsx",
     "lib/orgSummary.js"
   ],
+  "参加費": [
+    "components/KoenFees.jsx",
+    "lib/koenFees.js"
+  ],
   "受診プレビュー": [
     "components/VocalTracker.jsx",
     "lib/clinicSheet.js"
@@ -527,6 +531,10 @@
   "自動の条件": [
     "components/OpsKumu.jsx",
     "lib/opsKumu.js"
+  ],
+  "行事": [
+    "components/OpsEvents.jsx",
+    "lib/opsEventTable.js"
   ],
   "行事を出す": [
     "components/OpsEventTable.jsx",

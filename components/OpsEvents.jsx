@@ -6,7 +6,7 @@ import { C } from "@/lib/tokens";
 import { TYPE } from "@/lib/uiKit";
 // ★★広い ときは 表（★2026-09-18・坂本さんの お決め Q4）。★名簿・役職と 同じ 形。
 import OpsEventTable from "@/components/OpsEventTable";
-import { showEventTable, timeSpan } from "@/lib/opsEventTable";
+import { EVENT_LEAD, EVENT_NO_ATTENDANCE, EVENT_NOTE, showEventTable, timeSpan } from "@/lib/opsEventTable";
 // ★★行事を 出す 入れ口の 決め（★2026-09-18）。★字も 決めも lib が 持ちます。
 import {
   EVENT_KINDS, NOT_YET, EVENT_NOTES, canSubmit, emptyForm,
@@ -154,6 +154,13 @@ export default function OpsEvents({
         <h2 style={{ fontSize: "1.25rem", color: C.ink }}>行事</h2>
         {/* ★★題の 下の 1行（★見本の `.sub`・★お決め G5）。★字は lib が 持ちます。 */}
         <p style={small}>{SUB_LINE}</p>
+        {/* ★★★見本 `SC['行事']` の 1行（★2026-09-26・D群）。
+            ★★「出欠は 集めません」は **約束** です ── ★行事に 出欠の 口を 作らない、という こと。
+              ★★`org_events` に 出欠の 列は ありません（★2026-09-26 に 数えました：15列）。
+            ★★下の 但し書きにも 同じ 字が 出ます。★見本の まま です。★片方を 省きません。 */}
+        <p style={small}>
+          {EVENT_LEAD}　／　<b>{EVENT_NO_ATTENDANCE}</b>
+        </p>
       </div>
 
       {/* ★★★公演を 作る（★見本 `P_gyoji` の 札・2026-09-24）。
@@ -448,6 +455,8 @@ export default function OpsEvents({
           </div>
         </div>
       ) : null}
+      {/* ★★★下の 但し書き（★見本 `SC['行事']` の `.note`・約束）。 */}
+      <p style={{ ...small, marginTop: 12, lineHeight: 1.9 }}>{EVENT_NOTE}</p>
     </div>
   );
 }
