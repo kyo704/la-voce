@@ -13323,6 +13323,15 @@ export default function VocalTracker({
   //   ★★「行ける か」に 門が ある ものは、★`null` を 返します（★出しません）。
   //     ★★押せない 札を 置かない ため です。
   // ==========================================================================
+  // ★★★運営に 入れる 教室（★2026-09-26 に ここへ 移しました）。
+  //   ★★★もとは 下（★`教室の運営の行き先` の すぐ 上）に 書いて いました。
+  //     ★★`束の行き先` が これを 見ます。★`const` は 巻き上がりません。
+  //     ★★★門の 中の 画面が **ぜんぶ 出なく なって いました** ──
+  //       ★`ReferenceError: Cannot access '運営できる教室' before initialization`。
+  //     ★★★`next build` も 見張り 503本も 通りました。★動かして 初めて 出ました。
+  //       ★★2026-09-13 の「日程」の 一件と 同じ 形 です（★時間的な 死角・TDZ）。
+  const 運営できる教室 = myOrgs.filter((mm) => mayEnterOpsHere(mm));
+
   const 束の行き先 = {
     // ★── しらべる
     "書き出す": () => setMoreSection("じぶんの記録"),
@@ -13480,7 +13489,6 @@ export default function VocalTracker({
   //   ★★中の 門は そのまま です ── ★`OpsShell` も `OpsSettingsHub` も
   //     ★できことで 判じ直します。★ここで 渡すのは 望み だけ です。
   // ==========================================================================
-  const 運営できる教室 = myOrgs.filter((mm) => mayEnterOpsHere(mm));
   const 教室の運営の行き先 = {
     "名簿": { tab: "roster" },
     "役職の一覧": { tab: "settings", section: "post" },

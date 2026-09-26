@@ -60,18 +60,35 @@ function 差(a, b) {
     process.exit(2);
   }
   const 道 = MAP[名];
-  const base = process.env.E2E_LOCAL_URL || "http://localhost:3002";
+  // ★★口は `.env.e2e` の `E2E_LOCAL_URL` が 正 です（★`next dev` は 空いて いる 口を 選びます）。
+  const base = process.env.E2E_LOCAL_URL || env.E2E_LOCAL_URL || "http://localhost:3000";
   fs.mkdirSync(OUT, { recursive: true });
   const { chromium } = require("playwright");
   const b = await chromium.launch({ channel: "chrome" });
 
   // ── ★見本の 側 ───────────────────────────────────────────
   const p1 = await b.newPage({ viewport: { width: 390, height: 900 } });
-  await p1.goto("file://" + MIHON);
-  await p1.evaluate((n) => { window.push(n); window.draw(); }, 名);
-  await p1.waitForTimeout(300);
-  const 見本 = await p1.$eval(".bd", HONE);
-  await p1.screenshot({ path: path.join(OUT, `${名}-見本.png`), fullPage: true });
+  await p1.goto("file://" + MIHON, { waitUntil: "domcontentloaded" });
+  // ★★★開き方は `tools/mihon_shot.js` と 同じ 形に します（★あちらは 通って います）。
+  //   ★`SC[名]`（1枚の 画面）と `SH[名]`（下から 上がる 板）の 2つ が あります。
+  const 種 = await p1.evaluate((n) => {
+    if (typeof SC[n] === "function") return "SC";
+    if (typeof SH[n] === "function") return "SH";
+    return null;
+  }, 名);
+  if (!種) { console.log("★見本に ありません（SC[] にも SH[] にも）──", 名); await b.close(); process.exit(4); }
+  await p1.evaluate(({ n, k }) => {
+    S.stack = []; S.sheet = null;
+    if (k === "SH") openSheet(n); else push(n);
+  }, { n: 名, k: 種 });
+  await p1.waitForTimeout(400);
+  // ★★★`fullPage` に しません ── ★見本の HTML は 枠の **下にも** 長い 説明を 持って います
+  //   （★`tools/mihon_shot.js` の 註・2026-09-15）。★`#bd`／`#sh` だけ を 切り取ります。
+  const 枠 = 種 === "SH" ? "#sh" : "#bd";
+  const 見本 = await p1.$eval(枠, HONE).catch(() => null);
+  if (!見本) { console.log("★見本の 骨組みを 取れません ──", 枠); await b.close(); process.exit(4); }
+  const 箱 = await p1.$(枠);
+  await 箱.screenshot({ path: path.join(OUT, `${名}-見本.png`) });
 
   // ── ★実機の 側 ───────────────────────────────────────────
   const p2 = await b.newPage({ viewport: { width: 390, height: 900 } });
@@ -80,9 +97,15 @@ function 差(a, b) {
   await p2.locator('input[type="email"]').first().fill(env.E2E_LOCAL_EMAIL || env.E2E_EMAIL);
   await p2.locator('input[type="password"]').first().fill(env.E2E_LOCAL_PASSWORD || env.E2E_PASSWORD);
   await p2.locator('button[type="submit"], button:has-text("ログイン")').first().click();
-  try {
-    await p2.waitForURL(/\/dashboard/, { timeout: 45000 });
-  } catch (e) {
+  // ★★★`waitForURL` は「読み終わる」まで 待ちます。★門の 中の 画面は 台帳を
+  //   ★何度も 引く ので、★`load` が 立たない ことが あります（★2026-09-26 に 見ました）。
+  //   ★★だから **場所だけ** を 見ます。★着いて いれば 進みます。
+  let 着いた = false;
+  for (let n = 0; n < 60; n += 1) {
+    if (/\/dashboard/.test(p2.url())) { 着いた = true; break; }
+    await p2.waitForTimeout(1000);
+  }
+  if (!着いた) {
     // ★★★入れなかった ときは **止まります**。★白い 絵を 残しません。
     const 字 = (await p2.textContent("body").catch(() => "") || "").replace(/\s+/g, " ").slice(0, 200);
     await p2.screenshot({ path: path.join(OUT, `${名}-入れません.png`), fullPage: true });
@@ -92,17 +115,27 @@ function 差(a, b) {
     process.exit(3);
   }
   await p2.waitForTimeout(2500);
-  // ★もっと の 帯
-  await p2.getByText("もっと", { exact: true }).last().click();
-  await p2.waitForTimeout(700);
-  // ★束 → 行
-  if (道.bundle) {
-    await p2.getByText(道.bundle, { exact: true }).first().click();
-    await p2.waitForTimeout(700);
+  // ★★★もっと は **帯に ありません**（★帯は 5つ です）。
+  //   ★★入口は「きょう」の 右上の 歯車 です（★`HeadRound` の `aria-label`）。
+  //   ★★2026-09-26 に ここで 30秒 待って 落ちました ── ★字で 探して いた から です。
+  await p2.getByLabel("もっとを開く").first().click({ timeout: 20000 });
+  await p2.waitForTimeout(900);
+  // ★★★行は「名 ＋ 添える 字」が **1つの 札の 中** に あります。
+  //   ★★だから `exact: true` では 当たりません（★2026-09-26 に 30秒 待って 落ちました）。
+  //   ★★札（`button`）の 中の 字で 探します。★人が 押す のと 同じ 道 です。
+  const 押す = async (字) => {
+    const 札 = p2.locator("main button", { hasText: 字 }).first();
+    await 札.click({ timeout: 20000 });
+  };
+  if (道.bundle) { await 押す(道.bundle); await p2.waitForTimeout(900); }
+  await 押す(道.row);
+  await p2.waitForTimeout(1500);
+  const 実機 = await p2.$eval("main", HONE).catch(() => null);
+  if (!実機) {
+    await p2.screenshot({ path: path.join(OUT, `${名}-取れません.png`), fullPage: true });
+    console.log("★実機の 骨組みを 取れません（★`main` が ありません）");
+    await b.close(); process.exit(4);
   }
-  await p2.getByText(道.row, { exact: true }).first().click();
-  await p2.waitForTimeout(1200);
-  const 実機 = await p2.$eval("main", HONE);
   await p2.screenshot({ path: path.join(OUT, `${名}-実機.png`), fullPage: true });
   await b.close();
 
