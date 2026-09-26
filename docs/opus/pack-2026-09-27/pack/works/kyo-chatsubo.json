@@ -1,0 +1,70 @@
+{
+  "title": "茶壺",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-chatsubo",
+  "note": "★集狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（すっぱ（詐欺師））"
+    },
+    {
+      "label": "アド（田舎者）"
+    },
+    {
+      "label": "小アド（目代）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "酔って寝ている田舎者の茶壺を狙う",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（田舎者）"
+      ]
+    },
+    {
+      "label": "2人が壺を引き合う",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（田舎者）"
+      ]
+    },
+    {
+      "label": "目代（役人）が裁く",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（田舎者）",
+        "小アド（目代）"
+      ]
+    },
+    {
+      "label": "★同じ答えを述べさせるが、目代が壺を持ち去る",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（田舎者）",
+        "小アド（目代）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

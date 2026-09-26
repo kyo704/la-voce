@@ -1,0 +1,95 @@
+{
+  "title": "外郎売",
+  "title_original": "外郎売",
+  "aliases": [],
+  "composer": "歌舞伎（市川宗家 歌舞伎十八番）",
+  "composer_sort": "Kabuki Juhachiban",
+  "kind": "kabuki",
+  "year_written": 1718,
+  "source": "hand",
+  "source_id": "kabuki-uirouri",
+  "duration_min": 60,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "曽我五郎（外郎売実は）"
+    },
+    {
+      "label": "工藤祐経"
+    },
+    {
+      "label": "曽我十郎"
+    },
+    {
+      "label": "大磯の虎"
+    },
+    {
+      "label": "化粧坂少将"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "工藤の館の場",
+      "group_label": "序",
+      "roles": [
+        "工藤祐経",
+        "曽我十郎",
+        "大磯の虎",
+        "化粧坂少将",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "外郎売の登場",
+      "group_label": "中",
+      "roles": [
+        "曽我五郎（外郎売実は）",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★早口の言立（ういろう売りの科白）",
+      "group_label": "中",
+      "roles": [
+        "曽我五郎（外郎売実は）",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "正体を現す",
+      "group_label": "終",
+      "roles": [
+        "曽我五郎（外郎売実は）",
+        "工藤祐経",
+        "曽我十郎",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線（舞台上の雛壇）"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽（舞台袖）"
+    }
+  ],
+  "school": "成田屋（市川宗家）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}

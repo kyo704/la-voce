@@ -1,0 +1,196 @@
+{
+  "title": "源氏物語",
+  "title_original": "源氏物語",
+  "composer": "三木稔",
+  "composer_sort": "Miki, Minoru",
+  "kind": "opera",
+  "year_written": 2000,
+  "duration_min": 150,
+  "edition": "英語版（2000 セントルイス）／日本語版",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "genji-monogatari-miki",
+  "note": "★★セントルイス歌劇場の委嘱で英語台本により初演（Genji Monogatari）。日本語版もある",
+  "roles": [
+    {
+      "label": "光源氏"
+    },
+    {
+      "label": "藤壺"
+    },
+    {
+      "label": "葵の上"
+    },
+    {
+      "label": "六条御息所"
+    },
+    {
+      "label": "紫の上"
+    },
+    {
+      "label": "朝顔"
+    },
+    {
+      "label": "頭中将"
+    },
+    {
+      "label": "語り部"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★第1幕 ★語り部の口上（千年前の物語）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り部",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 光源氏と藤壺（禁じられた恋）",
+      "group_label": "第1幕",
+      "roles": [
+        "光源氏",
+        "藤壺"
+      ]
+    },
+    {
+      "label": "★第1幕 葵の上との婚姻",
+      "group_label": "第1幕",
+      "roles": [
+        "光源氏",
+        "葵の上",
+        "頭中将"
+      ]
+    },
+    {
+      "label": "★★第2幕 六条御息所の生き霊",
+      "group_label": "第2幕",
+      "roles": [
+        "六条御息所",
+        "光源氏",
+        "葵の上"
+      ]
+    },
+    {
+      "label": "★★第2幕 葵の上の死",
+      "group_label": "第2幕",
+      "roles": [
+        "葵の上",
+        "光源氏",
+        "六条御息所"
+      ]
+    },
+    {
+      "label": "★第3幕 紫の上を育てる",
+      "group_label": "第3幕",
+      "roles": [
+        "光源氏",
+        "紫の上",
+        "朝顔"
+      ]
+    },
+    {
+      "label": "★★終曲（★源氏の孤独と語り部の結び）",
+      "group_label": "第3幕",
+      "roles": [
+        "光源氏",
+        "紫の上",
+        "語り部",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "邦楽器（尺八・箏・三味線など）",
+      "count": 3,
+      "section": "other",
+      "note": "編成は作品ごと"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

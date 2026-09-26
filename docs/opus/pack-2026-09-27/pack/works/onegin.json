@@ -1,0 +1,263 @@
+{
+ "title": "エフゲニー・オネーギン",
+ "composer": "チャイコフスキー",
+ "composer_sort": "Tchaikovsky, Pyotr",
+ "kind": "opera",
+ "year_written": 1879,
+ "source": "hand",
+ "source_id": "tchaikovsky-onegin",
+ "roles": [
+  {
+   "label": "タチヤーナ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "オネーギン",
+   "voice": "バリトン"
+  },
+  {
+   "label": "レンスキー",
+   "voice": "テノール"
+  },
+  {
+   "label": "オリガ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "グレーミン公爵",
+   "voice": "バス"
+  },
+  {
+   "label": "ラーリナ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "フィリピエヴナ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "トリケ",
+   "voice": "テノール"
+  },
+  {
+   "label": "ザレツキー"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "導入（四重唱と農民の合唱）",
+   "group_label": "第1幕",
+   "roles": [
+    "タチヤーナ",
+    "オリガ",
+    "ラーリナ",
+    "フィリピエヴナ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "オリガのアリア（私は悲しみを知らない）",
+   "group_label": "第1幕",
+   "roles": [
+    "オリガ"
+   ]
+  },
+  {
+   "label": "レンスキーとオネーギンの登場・四重唱",
+   "group_label": "第1幕",
+   "roles": [
+    "タチヤーナ",
+    "オリガ",
+    "レンスキー",
+    "オネーギン"
+   ]
+  },
+  {
+   "label": "レンスキーのアリオーソ（私は愛する）",
+   "group_label": "第1幕",
+   "roles": [
+    "レンスキー",
+    "オリガ"
+   ]
+  },
+  {
+   "label": "手紙の場（タチヤーナ）",
+   "group_label": "第1幕",
+   "roles": [
+    "タチヤーナ",
+    "フィリピエヴナ"
+   ]
+  },
+  {
+   "label": "娘たちの合唱とオネーギンの説教",
+   "group_label": "第1幕",
+   "roles": [
+    "タチヤーナ",
+    "オネーギン",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ワルツと舞踏会（タチヤーナの名の日）",
+   "group_label": "第2幕",
+   "roles": [
+    "オネーギン",
+    "タチヤーナ",
+    "ラーリナ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "トリケの歌",
+   "group_label": "第2幕",
+   "roles": [
+    "トリケ",
+    "タチヤーナ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "マズルカと口論（第2幕）",
+   "group_label": "第2幕",
+   "roles": [
+    "オネーギン",
+    "レンスキー",
+    "オリガ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "決闘の場（青春よ、遠く過ぎ去りし日々よ）",
+   "group_label": "第2幕",
+   "roles": [
+    "レンスキー",
+    "オネーギン",
+    "ザレツキー"
+   ]
+  },
+  {
+   "label": "ポロネーズ（舞踏会）",
+   "group_label": "第3幕",
+   "roles": [
+    "合唱"
+   ]
+  },
+  {
+   "label": "グレーミンのアリア（恋はすべての年齢に）",
+   "group_label": "第3幕",
+   "roles": [
+    "グレーミン公爵",
+    "オネーギン",
+    "タチヤーナ"
+   ]
+  },
+  {
+   "label": "最後の二重唱（フィナーレ）",
+   "group_label": "第3幕",
+   "roles": [
+    "タチヤーナ",
+    "オネーギン"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion",
+   "note": "大太鼓・シンバル・トライアングル"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ],
+ "title_original": "Евгений Онегин / Eugene Onegin",
+ "aliases": [
+  "オネーギン",
+  "Onegin"
+ ],
+ "duration_min": 165,
+ "language": "ru"
+}

@@ -1,0 +1,244 @@
+{
+  "title": "ユタと不思議な仲間たち",
+  "composer": "いずみたく",
+  "composer_sort": "Izumi, Taku",
+  "kind": "musical",
+  "year_written": 1977,
+  "duration_min": 130,
+  "edition": "1977 劇団四季初演版（★1994 改訂版・2018 再演版）",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "yuta",
+  "note": "★作詞 岩谷時子 ／ 脚本・演出 浅利慶太（劇団四季） ／ ★三浦哲郎の児童文学『ユタと不思議な仲間たち』による。★★劇団四季の『ファミリーミュージカル』の代表作。★★曲名は確かなものだけを書き、場面の名前で持っています",
+  "roles": [
+    {
+      "label": "ユタ（勇太）"
+    },
+    {
+      "label": "ペドロ"
+    },
+    {
+      "label": "ダンジャ"
+    },
+    {
+      "label": "モンゴロ"
+    },
+    {
+      "label": "ヒノデロ"
+    },
+    {
+      "label": "シッタカ"
+    },
+    {
+      "label": "祖母"
+    },
+    {
+      "label": "小夜子"
+    },
+    {
+      "label": "村の子ら"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 東京から来た転校生ユタ",
+      "group_label": "第1幕",
+      "roles": [
+        "ユタ（勇太）",
+        "村の子ら",
+        "祖母",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 いじめと孤立",
+      "group_label": "第1幕",
+      "roles": [
+        "ユタ（勇太）",
+        "村の子ら",
+        "小夜子"
+      ]
+    },
+    {
+      "label": "第1幕 ★座敷童子たちとの出会い（蔵の中）",
+      "group_label": "第1幕",
+      "roles": [
+        "ユタ（勇太）",
+        "ペドロ",
+        "ダンジャ",
+        "モンゴロ",
+        "ヒノデロ",
+        "シッタカ"
+      ]
+    },
+    {
+      "label": "第1幕 ★座敷童子たちの歌と踊り（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ペドロ",
+        "ダンジャ",
+        "モンゴロ",
+        "ヒノデロ",
+        "シッタカ",
+        "ユタ（勇太）"
+      ]
+    },
+    {
+      "label": "第2幕 ★相撲の稽古（座敷童子に鍛えられる）",
+      "group_label": "第2幕",
+      "roles": [
+        "ユタ（勇太）",
+        "ペドロ",
+        "ダンジャ",
+        "モンゴロ"
+      ]
+    },
+    {
+      "label": "第2幕 ★座敷童子たちの生まれ（飢饉で死んだ子ら）",
+      "group_label": "第2幕",
+      "roles": [
+        "ペドロ",
+        "ユタ（勇太）"
+      ]
+    },
+    {
+      "label": "第2幕 村の相撲大会",
+      "group_label": "第2幕",
+      "roles": [
+        "ユタ（勇太）",
+        "村の子ら",
+        "祖母",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（座敷童子たちとの別れ・ユタの旅立ち）",
+      "group_label": "第2幕",
+      "roles": [
+        "ユタ（勇太）",
+        "ペドロ",
+        "ダンジャ",
+        "モンゴロ",
+        "ヒノデロ",
+        "シッタカ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

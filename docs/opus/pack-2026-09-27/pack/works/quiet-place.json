@@ -1,0 +1,195 @@
+{
+  "title": "静かな場所",
+  "title_original": "A Quiet Place",
+  "composer": "バーンスタイン",
+  "composer_sort": "Bernstein, Leonard",
+  "kind": "opera",
+  "year_written": 1983,
+  "duration_min": 140,
+  "edition": "1983 原典（1幕）／1984 ウィーン版（『タヒチ島の騒動』を回想として組み込む）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "quiet-place",
+  "roles": [
+    {
+      "label": "ディナー"
+    },
+    {
+      "label": "サム"
+    },
+    {
+      "label": "ディーディー"
+    },
+    {
+      "label": "ジュニア"
+    },
+    {
+      "label": "フランソワ"
+    },
+    {
+      "label": "ビル"
+    },
+    {
+      "label": "スージー"
+    },
+    {
+      "label": "牧師"
+    },
+    {
+      "label": "3人組（トリオ）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 葬儀場（ディナーの死・30年後）",
+      "group_label": "第1幕",
+      "roles": [
+        "サム",
+        "ディーディー",
+        "ジュニア",
+        "フランソワ",
+        "ビル",
+        "スージー",
+        "牧師",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ジュニアの乱れと家族の気まずさ",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュニア",
+        "サム",
+        "ディーディー",
+        "フランソワ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★回想＝『タヒチ島の騒動』の場が入る",
+      "group_label": "第2幕",
+      "roles": [
+        "ディナー",
+        "サム",
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★第2幕 家（母の日記を読む）",
+      "group_label": "第2幕",
+      "roles": [
+        "ディーディー",
+        "ジュニア",
+        "フランソワ"
+      ]
+    },
+    {
+      "label": "★第3幕 庭（★サムとジュニアの和解に向かう対話）",
+      "group_label": "第3幕",
+      "roles": [
+        "サム",
+        "ジュニア"
+      ]
+    },
+    {
+      "label": "★終曲（★静かな場所 ─ 4人の重唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "サム",
+        "ディーディー",
+        "ジュニア",
+        "フランソワ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

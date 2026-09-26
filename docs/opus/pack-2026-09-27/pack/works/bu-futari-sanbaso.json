@@ -1,0 +1,73 @@
+{
+  "title": "二人三番叟",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-futari-sanbaso",
+  "note": "★文楽（人形浄瑠璃） ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "三番叟"
+    },
+    {
+      "label": "三番叟（二）"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★二人の三番叟が競って舞う",
+      "group_label": "一段",
+      "roles": [
+        "三番叟",
+        "三番叟（二）",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

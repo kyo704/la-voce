@@ -1,0 +1,153 @@
+{
+  "title": "人間になりたがった猫",
+  "composer": "クラーク・ゲスナー",
+  "composer_sort": "Shiki",
+  "kind": "musical",
+  "year_written": 1989,
+  "duration_min": 110,
+  "edition": "★劇団四季 日本語版（1989 初演）── ★『こころの劇場』で 最も よく 上演される 作品",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "mu-shiki-kokoro-kaze",
+  "note": "★作詞 ― ／ 脚本 浅利慶太（演出）",
+  "roles": [
+    {
+      "label": "ライオネル（猫）"
+    },
+    {
+      "label": "スワガート"
+    },
+    {
+      "label": "ジリアン"
+    },
+    {
+      "label": "ヴォルフガング"
+    },
+    {
+      "label": "ハルモニア"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "猫が人間になる",
+      "group_label": "第1幕",
+      "roles": [
+        "ライオネル（猫）",
+        "スワガート"
+      ]
+    },
+    {
+      "label": "★町での出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "ライオネル（猫）",
+        "ジリアン",
+        "ヴォルフガング"
+      ]
+    },
+    {
+      "label": "★正体と危機",
+      "group_label": "第2幕",
+      "roles": [
+        "ライオネル（猫）",
+        "スワガート",
+        "ハルモニア"
+      ]
+    },
+    {
+      "label": "★結末",
+      "group_label": "第2幕",
+      "roles": [
+        "ライオネル（猫）",
+        "ジリアン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

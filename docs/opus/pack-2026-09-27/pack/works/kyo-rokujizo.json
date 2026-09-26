@@ -1,0 +1,68 @@
+{
+  "title": "六地蔵",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-rokujizo",
+  "note": "★すっぱ狂言（詐欺物） ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（すっぱ）"
+    },
+    {
+      "label": "アド（田舎者）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "田舎者が六地蔵を求めて都へ上る",
+      "group_label": "段",
+      "roles": [
+        "アド（田舎者）"
+      ]
+    },
+    {
+      "label": "すっぱが仏師と名乗る",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（田舎者）"
+      ]
+    },
+    {
+      "label": "仲間が地蔵になって立つ",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（田舎者）"
+      ]
+    },
+    {
+      "label": "同じ顔ばかりで露見する",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（田舎者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

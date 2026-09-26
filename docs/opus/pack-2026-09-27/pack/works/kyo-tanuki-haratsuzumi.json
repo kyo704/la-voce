@@ -1,0 +1,65 @@
+{
+  "title": "狸腹鼓",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-tanuki-haratsuzumi",
+  "note": "★精類狂言 ／ ★★★腹鼓の 囃子が 見せ場。★大曲の 扱い ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（狸）"
+    },
+    {
+      "label": "アド（猟師）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "猟師が狸を狙う",
+      "group_label": "段",
+      "roles": [
+        "シテ（狸）",
+        "アド（猟師）"
+      ]
+    },
+    {
+      "label": "★狸が命乞いをする",
+      "group_label": "段",
+      "roles": [
+        "シテ（狸）",
+        "アド（猟師）"
+      ]
+    },
+    {
+      "label": "★★腹鼓を打って見せる",
+      "group_label": "段",
+      "roles": [
+        "シテ（狸）",
+        "アド（猟師）"
+      ]
+    },
+    {
+      "label": "★逃げ延びる",
+      "group_label": "段",
+      "roles": [
+        "シテ（狸）",
+        "アド（猟師）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

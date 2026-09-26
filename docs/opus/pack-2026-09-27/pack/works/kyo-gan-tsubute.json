@@ -1,0 +1,60 @@
+{
+  "title": "鴈礫",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-gan-tsubute",
+  "note": "★大名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（大名）"
+    },
+    {
+      "label": "小アド（太郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "鴈を礫（つぶて）で落とす",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）"
+      ]
+    },
+    {
+      "label": "大名が自分の獲物と言い張る",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（大名）"
+      ]
+    },
+    {
+      "label": "腕くらべで決める",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（大名）",
+        "小アド（太郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

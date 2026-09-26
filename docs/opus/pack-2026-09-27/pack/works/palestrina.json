@@ -1,0 +1,217 @@
+{
+  "title": "パレストリーナ",
+  "title_original": "Palestrina",
+  "composer": "プフィッツナー",
+  "composer_sort": "Pfitzner, Hans",
+  "kind": "opera",
+  "year_written": 1917,
+  "duration_min": 230,
+  "language": "de",
+  "source": "hand",
+  "source_id": "palestrina",
+  "roles": [
+    {
+      "label": "パレストリーナ"
+    },
+    {
+      "label": "イギーノ"
+    },
+    {
+      "label": "シッラ"
+    },
+    {
+      "label": "ボッロメーオ枢機卿"
+    },
+    {
+      "label": "ノヴァジェーリオ枢機卿"
+    },
+    {
+      "label": "マドルスト枢機卿"
+    },
+    {
+      "label": "トレント司教"
+    },
+    {
+      "label": "ルーナ伯爵"
+    },
+    {
+      "label": "モローネ"
+    },
+    {
+      "label": "ルクレツィアの幻"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕への前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ローマの家（シッラの新しい音楽）",
+      "group_label": "第1幕",
+      "roles": [
+        "シッラ",
+        "イギーノ"
+      ]
+    },
+    {
+      "label": "第1幕 ボッロメーオの依頼（ミサ曲を書け）",
+      "group_label": "第1幕",
+      "roles": [
+        "ボッロメーオ枢機卿",
+        "パレストリーナ"
+      ]
+    },
+    {
+      "label": "★第1幕 昔の巨匠たちの幻とルクレツィアの声",
+      "group_label": "第1幕",
+      "roles": [
+        "パレストリーナ",
+        "ルクレツィアの幻",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ミサ曲の一夜（天使たちの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "パレストリーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 トレント公会議（言い争いと乱闘）",
+      "group_label": "第2幕",
+      "roles": [
+        "モローネ",
+        "マドルスト枢機卿",
+        "ノヴァジェーリオ枢機卿",
+        "トレント司教",
+        "ルーナ伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 パレストリーナの家（ミサ曲の初演の報せ）",
+      "group_label": "第3幕",
+      "roles": [
+        "パレストリーナ",
+        "イギーノ",
+        "シッラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（教皇の称賛とパレストリーナのオルガンの前）",
+      "group_label": "第3幕",
+      "roles": [
+        "パレストリーナ",
+        "ボッロメーオ枢機卿",
+        "イギーノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

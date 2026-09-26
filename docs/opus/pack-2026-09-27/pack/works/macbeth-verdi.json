@@ -1,0 +1,210 @@
+{
+ "title": "マクベス（ヴェルディ）",
+ "title_original": "Macbeth",
+ "aliases": [
+  "ヴェルディのマクベス"
+ ],
+ "composer": "ヴェルディ",
+ "composer_sort": "Verdi, Giuseppe",
+ "kind": "opera",
+ "year_written": 1847,
+ "source": "hand",
+ "source_id": "verdi-macbeth",
+ "duration_min": 150,
+ "language": "it",
+ "roles": [
+  {
+   "label": "マクベス",
+   "voice": "バリトン"
+  },
+  {
+   "label": "マクベス夫人",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "バンクォー",
+   "voice": "バス"
+  },
+  {
+   "label": "マクダフ",
+   "voice": "テノール"
+  },
+  {
+   "label": "マルコム",
+   "voice": "テノール"
+  },
+  {
+   "label": "侍女",
+   "voice": "メゾ"
+  },
+  {
+   "label": "医師"
+  },
+  {
+   "label": "魔女",
+   "is_group": true
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 魔女の予言",
+   "group_label": "第1幕",
+   "roles": [
+    "魔女",
+    "マクベス",
+    "バンクォー"
+   ]
+  },
+  {
+   "label": "第1幕 マクベス夫人の手紙と王殺し",
+   "group_label": "第1幕",
+   "roles": [
+    "マクベス夫人",
+    "マクベス",
+    "マクダフ",
+    "バンクォー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 バンクォーの暗殺と宴の亡霊",
+   "group_label": "第2幕",
+   "roles": [
+    "マクベス",
+    "マクベス夫人",
+    "バンクォー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 魔女の洞窟",
+   "group_label": "第3幕",
+   "roles": [
+    "マクベス",
+    "魔女",
+    "マクベス夫人"
+   ]
+  },
+  {
+   "label": "第4幕 亡命者の合唱とマクダフのアリア",
+   "group_label": "第4幕",
+   "roles": [
+    "合唱",
+    "マクダフ",
+    "マルコム"
+   ]
+  },
+  {
+   "label": "第4幕 夢遊の場",
+   "group_label": "第4幕",
+   "roles": [
+    "マクベス夫人",
+    "侍女",
+    "医師"
+   ]
+  },
+  {
+   "label": "第4幕 戦いとフィナーレ",
+   "group_label": "第4幕",
+   "roles": [
+    "マクベス",
+    "マクダフ",
+    "マルコム",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チンバッソ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp",
+   "is_optional": true
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

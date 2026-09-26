@@ -1,0 +1,197 @@
+{
+ "title": "売られた花嫁",
+ "title_original": "Prodaná nevěsta",
+ "aliases": [
+  "スメタナ"
+ ],
+ "composer": "スメタナ",
+ "composer_sort": "Smetana, Bedrich",
+ "kind": "opera",
+ "year_written": 1866,
+ "duration_min": 150,
+ "language": "cs",
+ "source": "hand",
+ "source_id": "smetana-bartered-bride",
+ "roles": [
+  {
+   "label": "マジェンカ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "イェニーク",
+   "voice": "テノール"
+  },
+  {
+   "label": "ケツァル",
+   "voice": "バス"
+  },
+  {
+   "label": "ヴァシェク",
+   "voice": "テノール"
+  },
+  {
+   "label": "ミーハ"
+  },
+  {
+   "label": "ハタ"
+  },
+  {
+   "label": "クルシナ"
+  },
+  {
+   "label": "ルドミラ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "序曲",
+   "group_label": "序曲",
+   "roles": []
+  },
+  {
+   "label": "第1幕 村の祭り（合唱とポルカ）",
+   "group_label": "第1幕",
+   "roles": [
+    "合唱",
+    "マジェンカ",
+    "イェニーク"
+   ]
+  },
+  {
+   "label": "第1幕 ケツァルの仲立ち",
+   "group_label": "第1幕",
+   "roles": [
+    "ケツァル",
+    "クルシナ",
+    "ルドミラ",
+    "マジェンカ"
+   ]
+  },
+  {
+   "label": "第2幕 furiantの踊りとヴァシェク",
+   "group_label": "第2幕",
+   "roles": [
+    "合唱",
+    "ヴァシェク",
+    "マジェンカ"
+   ]
+  },
+  {
+   "label": "第2幕 契約の場",
+   "group_label": "第2幕",
+   "roles": [
+    "イェニーク",
+    "ケツァル",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 道化師の踊り（スコチナー）",
+   "group_label": "第3幕",
+   "roles": [
+    "合唱",
+    "ヴァシェク"
+   ]
+  },
+  {
+   "label": "第3幕 種明かしとフィナーレ",
+   "group_label": "第3幕",
+   "roles": [
+    "マジェンカ",
+    "イェニーク",
+    "ケツァル",
+    "ミーハ",
+    "ハタ",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

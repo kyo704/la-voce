@@ -1,0 +1,210 @@
+{
+  "title": "死者の家から",
+  "title_original": "Z mrtvého domu",
+  "composer": "ヤナーチェク",
+  "composer_sort": "Janáček, Leoš",
+  "kind": "opera",
+  "year_written": 1930,
+  "duration_min": 95,
+  "edition": "1930 フリチュ＝バカラ補筆版／1964 マッケラス＝ティレル原典版",
+  "language": "cs",
+  "source": "hand",
+  "source_id": "house-of-dead",
+  "note": "★遺作。★女声はほぼ用いない（少年役アリェーヤのみ）",
+  "roles": [
+    {
+      "label": "アレクサンドル・ペトロヴィチ・ゴリャンチコフ"
+    },
+    {
+      "label": "アリェーヤ"
+    },
+    {
+      "label": "ルカ・クズミチ（フィルカ・モロゾフ）"
+    },
+    {
+      "label": "背の高い囚人"
+    },
+    {
+      "label": "小柄な囚人"
+    },
+    {
+      "label": "司令官"
+    },
+    {
+      "label": "年寄りの囚人"
+    },
+    {
+      "label": "シャプキン"
+    },
+    {
+      "label": "シシコフ"
+    },
+    {
+      "label": "チェレヴィン"
+    },
+    {
+      "label": "スクラートフ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 シベリアの収容所の朝（鷲）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレクサンドル・ペトロヴィチ・ゴリャンチコフ",
+        "背の高い囚人",
+        "小柄な囚人",
+        "司令官",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ルカの語り（将校を刺した話）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルカ・クズミチ（フィルカ・モロゾフ）",
+        "チェレヴィン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ヴォルガの岸の労役（アリェーヤとゴリャンチコフ）",
+      "group_label": "第2幕",
+      "roles": [
+        "アレクサンドル・ペトロヴィチ・ゴリャンチコフ",
+        "アリェーヤ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 囚人たちの芝居（ドン・ジュアンと粉屋の妻）",
+      "group_label": "第2幕",
+      "roles": [
+        "シャプキン",
+        "チェレヴィン",
+        "スクラートフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アリェーヤが刺される",
+      "group_label": "第2幕",
+      "roles": [
+        "アリェーヤ",
+        "アレクサンドル・ペトロヴィチ・ゴリャンチコフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 病室（シシコフの長い語り・アクーリカの話）",
+      "group_label": "第3幕",
+      "roles": [
+        "シシコフ",
+        "チェレヴィン",
+        "ルカ・クズミチ（フィルカ・モロゾフ）",
+        "年寄りの囚人"
+      ]
+    },
+    {
+      "label": "★終曲（ゴリャンチコフの釈放・鷲を放つ・自由だ！）",
+      "group_label": "第3幕",
+      "roles": [
+        "アレクサンドル・ペトロヴィチ・ゴリャンチコフ",
+        "アリェーヤ",
+        "司令官",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

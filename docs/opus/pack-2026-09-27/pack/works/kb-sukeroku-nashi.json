@@ -1,0 +1,101 @@
+{
+  "title": "国性爺合戦",
+  "aliases": [
+    "国性爺合戦"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1715,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-sukeroku-nashi",
+  "note": "★歌舞伎 ／ 作者 近松門左衛門 ／ ★近松の時代物。★中国の衣裳と様式的な演出 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "和藤内"
+    },
+    {
+      "label": "錦祥女"
+    },
+    {
+      "label": "甘輝"
+    },
+    {
+      "label": "呉三桂"
+    },
+    {
+      "label": "老一官"
+    },
+    {
+      "label": "渚"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★二段目 平戸浜伝いの場",
+      "group_label": "二段目",
+      "roles": [
+        "和藤内",
+        "老一官",
+        "渚",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★三段目 甘輝館（★紅流しの合図）",
+      "group_label": "三段目",
+      "roles": [
+        "錦祥女",
+        "甘輝",
+        "渚",
+        "和藤内",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★甘輝館 幕切れ（★錦祥女と渚の自害）",
+      "group_label": "三段目",
+      "roles": [
+        "錦祥女",
+        "渚",
+        "甘輝",
+        "和藤内",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

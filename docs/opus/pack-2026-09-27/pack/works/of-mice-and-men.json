@@ -1,0 +1,221 @@
+{
+  "title": "二十日鼠と人間",
+  "title_original": "Of Mice and Men",
+  "composer": "フロイド",
+  "composer_sort": "Floyd, Carlisle",
+  "kind": "opera",
+  "year_written": 1970,
+  "duration_min": 140,
+  "language": "en",
+  "source": "hand",
+  "source_id": "of-mice-and-men",
+  "roles": [
+    {
+      "label": "ジョージ"
+    },
+    {
+      "label": "レニー"
+    },
+    {
+      "label": "カーリーの妻"
+    },
+    {
+      "label": "カーリー"
+    },
+    {
+      "label": "キャンディ"
+    },
+    {
+      "label": "スリム"
+    },
+    {
+      "label": "牧場主"
+    },
+    {
+      "label": "バリー"
+    },
+    {
+      "label": "馬車引き"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 川辺の夜（ジョージとレニーの夢＝小さな農場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョージ",
+        "レニー"
+      ]
+    },
+    {
+      "label": "★第1幕 牧場の宿舎（キャンディの老犬）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョージ",
+        "レニー",
+        "キャンディ",
+        "スリム",
+        "牧場主",
+        "馬車引き",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 カーリーの妻の登場",
+      "group_label": "第1幕",
+      "roles": [
+        "カーリーの妻",
+        "カーリー",
+        "ジョージ",
+        "レニー"
+      ]
+    },
+    {
+      "label": "★第2幕 ★老犬を撃つ（キャンディの沈黙）",
+      "group_label": "第2幕",
+      "roles": [
+        "キャンディ",
+        "スリム",
+        "馬車引き",
+        "ジョージ"
+      ]
+    },
+    {
+      "label": "★第2幕 3人の夢の相談（キャンディが加わる）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョージ",
+        "レニー",
+        "キャンディ"
+      ]
+    },
+    {
+      "label": "★第2幕 レニーがカーリーの手を握り潰す",
+      "group_label": "第2幕",
+      "roles": [
+        "レニー",
+        "カーリー",
+        "スリム",
+        "ジョージ"
+      ]
+    },
+    {
+      "label": "★第3幕 納屋（★カーリーの妻のアリアとレニーの手）",
+      "group_label": "第3幕",
+      "roles": [
+        "カーリーの妻",
+        "レニー"
+      ]
+    },
+    {
+      "label": "★第3幕 死体の発見と追跡",
+      "group_label": "第3幕",
+      "roles": [
+        "ジョージ",
+        "キャンディ",
+        "カーリー",
+        "スリム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（川辺・ジョージが夢を語りながらレニーを撃つ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジョージ",
+        "レニー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

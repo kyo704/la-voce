@@ -1,0 +1,256 @@
+{
+  "title": "パシフィック・オーヴァチュアズ",
+  "title_original": "Pacific Overtures",
+  "composer": "ソンドハイム",
+  "composer_sort": "Sondheim, Stephen",
+  "kind": "musical",
+  "year_written": 1976,
+  "duration_min": 145,
+  "edition": "1976 ブロードウェイ初演版（★2004 リバイバル版・2017 版で場面が整理される）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "pacific-overtures",
+  "note": "★作詞 ソンドハイム ／ 脚本 ジョン・ワイドマン ／ ★★黒船来航を★日本人の側から描く。★歌舞伎の型（花道・黒衣・女方）を借り、★男性が女役を演じる",
+  "roles": [
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "香山弥左衛門"
+    },
+    {
+      "label": "ジョン万次郎"
+    },
+    {
+      "label": "阿部老中"
+    },
+    {
+      "label": "将軍の母"
+    },
+    {
+      "label": "芸者"
+    },
+    {
+      "label": "ペリー提督"
+    },
+    {
+      "label": "たまて（弥左衛門の妻）"
+    },
+    {
+      "label": "漁師"
+    },
+    {
+      "label": "商人"
+    },
+    {
+      "label": "武士"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★ザ・アドヴァンテージズ・オブ・フローティング・イン・ザ・ミドル・オブ・ザ・シー（海に浮かぶ利）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ゼア・イズ・ノー・アザー・ウェイ（★たまての歌・人形と2人の黒衣）",
+      "group_label": "第1幕",
+      "roles": [
+        "たまて（弥左衛門の妻）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★フォー・ブラック・ドラゴンズ（4隻の黒い龍）",
+      "group_label": "第1幕",
+      "roles": [
+        "漁師",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★チャイサンセマム・ティー（菊の茶 ─ 将軍の毒殺）",
+      "group_label": "第1幕",
+      "roles": [
+        "将軍の母",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ポエムズ（詩の交換 ─ 弥左衛門と万次郎）",
+      "group_label": "第1幕",
+      "roles": [
+        "香山弥左衛門",
+        "ジョン万次郎"
+      ]
+    },
+    {
+      "label": "M6 ★★ウェルカム・トゥ・カナガワ（芸者の稽古）",
+      "group_label": "第1幕",
+      "roles": [
+        "芸者",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★サムワン・イン・ア・トゥリー（★木の上の少年・老人・床下の武士の四重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り手",
+        "武士",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★リオンズ・ダンス（ペリーの獅子舞・第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ペリー提督"
+      ]
+    },
+    {
+      "label": "M9 ★★プリーズ・ハロー（★5か国の使節が次々に来る ─ 各国の音楽のパロディ）",
+      "group_label": "第2幕",
+      "roles": [
+        "阿部老中",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★ア・ボウラー・ハット（★弥左衛門が20年かけて西洋化する）",
+      "group_label": "第2幕",
+      "roles": [
+        "香山弥左衛門"
+      ]
+    },
+    {
+      "label": "M11 ★★プリティ・レディーズ（★英国水兵と娘・弥左衛門が万次郎に斬られる）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョン万次郎",
+        "香山弥左衛門",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★ネクスト（終曲・明治から現代へ）",
+      "group_label": "第2幕",
+      "roles": [
+        "語り手",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+ "title": "アルジェのイタリア女",
+ "title_original": "L'italiana in Algeri",
+ "aliases": [
+  "イタリアーナ"
+ ],
+ "composer": "ロッシーニ",
+ "composer_sort": "Rossini, Gioachino",
+ "kind": "opera",
+ "year_written": 1813,
+ "duration_min": 150,
+ "language": "it",
+ "source": "hand",
+ "source_id": "rossini-italiana",
+ "roles": [
+  {
+   "label": "イザベッラ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "ムスタファ",
+   "voice": "バス"
+  },
+  {
+   "label": "リンドーロ",
+   "voice": "テノール"
+  },
+  {
+   "label": "タッデオ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "エルヴィーラ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ズルマ"
+  },
+  {
+   "label": "ハリー"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "序曲",
+   "group_label": "序曲",
+   "roles": []
+  },
+  {
+   "label": "第1幕 宮廷（ムスタファの企て）",
+   "group_label": "第1幕",
+   "roles": [
+    "ムスタファ",
+    "エルヴィーラ",
+    "ズルマ",
+    "ハリー",
+    "リンドーロ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 イザベッラの漂着",
+   "group_label": "第1幕",
+   "roles": [
+    "イザベッラ",
+    "タッデオ",
+    "ハリー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 フィナーレ（大混乱）",
+   "group_label": "第1幕",
+   "roles": [
+    "イザベッラ",
+    "ムスタファ",
+    "リンドーロ",
+    "タッデオ",
+    "エルヴィーラ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 パッパターチの儀式",
+   "group_label": "第2幕",
+   "roles": [
+    "イザベッラ",
+    "ムスタファ",
+    "タッデオ",
+    "リンドーロ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 フィナーレ（脱出）",
+   "group_label": "第2幕",
+   "roles": [
+    "イザベッラ",
+    "リンドーロ",
+    "ムスタファ",
+    "エルヴィーラ",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

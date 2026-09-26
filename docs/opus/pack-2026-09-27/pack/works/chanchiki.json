@@ -1,0 +1,170 @@
+{
+  "title": "ちゃんちき",
+  "title_original": "ちゃんちき",
+  "composer": "團伊玖磨",
+  "composer_sort": "Dan, Ikuma",
+  "kind": "opera",
+  "year_written": 1975,
+  "duration_min": 95,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "chanchiki",
+  "note": "★子どもも見られる喜劇的な作",
+  "roles": [
+    {
+      "label": "和尚"
+    },
+    {
+      "label": "小僧"
+    },
+    {
+      "label": "狐の長"
+    },
+    {
+      "label": "狐たち"
+    },
+    {
+      "label": "村人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 山寺（鐘をつく小僧）",
+      "group_label": "第1幕",
+      "roles": [
+        "和尚",
+        "小僧"
+      ]
+    },
+    {
+      "label": "★★第1幕 狐たちの化けくらべ",
+      "group_label": "第1幕",
+      "roles": [
+        "狐の長",
+        "狐たち",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★ちゃんちきの囃子（狐の祭り）",
+      "group_label": "第2幕",
+      "roles": [
+        "狐の長",
+        "狐たち",
+        "小僧",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 和尚の知恵",
+      "group_label": "第2幕",
+      "roles": [
+        "和尚",
+        "狐の長",
+        "小僧"
+      ]
+    },
+    {
+      "label": "★★終曲（人と狐の和解・山の歌）",
+      "group_label": "第3幕",
+      "roles": [
+        "和尚",
+        "小僧",
+        "狐の長",
+        "村人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

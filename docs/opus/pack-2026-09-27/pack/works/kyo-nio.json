@@ -1,0 +1,73 @@
+{
+  "title": "仁王",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-nio",
+  "note": "★すっぱ狂言（詐欺物） ／ ★★動かずに 立ち続けるのが 難しい 役 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（博打打ち）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "小アド（参詣人）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "博打に負けて困る",
+      "group_label": "段",
+      "roles": [
+        "シテ（博打打ち）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "★仁王に化けて立つ",
+      "group_label": "段",
+      "roles": [
+        "シテ（博打打ち）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "★★参詣人が供物を置いていく",
+      "group_label": "段",
+      "roles": [
+        "シテ（博打打ち）",
+        "小アド（参詣人）"
+      ]
+    },
+    {
+      "label": "★★体を撫でられて動いてしまい露見する",
+      "group_label": "段",
+      "roles": [
+        "シテ（博打打ち）",
+        "小アド（参詣人）",
+        "アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "title": "ベンヴェヌート・チェッリーニ",
+  "title_original": "Benvenuto Cellini",
+  "composer": "ベルリオーズ",
+  "composer_sort": "Berlioz, Hector",
+  "kind": "opera",
+  "year_written": 1838,
+  "duration_min": 170,
+  "edition": "1838 パリ版／1852 ワイマール版（リストによる短縮）がある",
+  "language": "fr",
+  "source": "hand",
+  "source_id": "benvenuto-cellini",
+  "roles": [
+    {
+      "label": "テレーザ"
+    },
+    {
+      "label": "ベンヴェヌート・チェッリーニ"
+    },
+    {
+      "label": "アスカーニオ"
+    },
+    {
+      "label": "フィエラモスカ"
+    },
+    {
+      "label": "バルドゥッチ"
+    },
+    {
+      "label": "教皇クレメンス7世"
+    },
+    {
+      "label": "フランチェスコ"
+    },
+    {
+      "label": "ベルナルディーノ"
+    },
+    {
+      "label": "ポンペオ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 バルドゥッチの家（謝肉祭の前夜）",
+      "group_label": "第1幕",
+      "roles": [
+        "バルドゥッチ",
+        "テレーザ",
+        "フィエラモスカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 チェッリーニとテレーザの二重唱と駆け落ちの計",
+      "group_label": "第1幕",
+      "roles": [
+        "ベンヴェヌート・チェッリーニ",
+        "テレーザ",
+        "アスカーニオ"
+      ]
+    },
+    {
+      "label": "第1幕 フィエラモスカの盗み聞き",
+      "group_label": "第1幕",
+      "roles": [
+        "フィエラモスカ",
+        "ポンペオ"
+      ]
+    },
+    {
+      "label": "第2幕 居酒屋（金細工師たちの歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベンヴェヌート・チェッリーニ",
+        "フランチェスコ",
+        "ベルナルディーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★謝肉祭（コロンビーヌの芝居とポンペオの刺殺）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベンヴェヌート・チェッリーニ",
+        "テレーザ",
+        "フィエラモスカ",
+        "ポンペオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 灰の水曜日（教皇の来訪と猶予）",
+      "group_label": "第3幕",
+      "roles": [
+        "教皇クレメンス7世",
+        "ベンヴェヌート・チェッリーニ",
+        "バルドゥッチ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 アスカーニオのアリアと工房の混乱",
+      "group_label": "第3幕",
+      "roles": [
+        "アスカーニオ",
+        "ベンヴェヌート・チェッリーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★ペルセウス像の鋳造（終曲）",
+      "group_label": "第3幕",
+      "roles": [
+        "ベンヴェヌート・チェッリーニ",
+        "テレーザ",
+        "アスカーニオ",
+        "教皇クレメンス7世",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

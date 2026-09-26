@@ -1,0 +1,44 @@
+{
+  "title": "ノクターン 作品60",
+  "title_original": "Nocturne op.60",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "song_cycle",
+  "year_written": 1958,
+  "duration_min": 26,
+  "language": "en",
+  "source": "hand",
+  "source_id": "britten-op60",
+  "note": "★★テノールと 7つの 独奏楽器と 弦楽。★曲ごとに 受け持つ 楽器が 変わります ／ ★★曲名を 全部 確かめられなかったので ★曲数（8曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全8曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "独奏楽器7（フルート・イングリッシュホルン・クラリネット・ファゴット・ホルン・ティンパニ・ハープ）",
+      "count": 7,
+      "section": "other"
+    },
+    {
+      "part": "弦楽合奏",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

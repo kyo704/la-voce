@@ -1,0 +1,182 @@
+{
+ "title": "ジークフリート",
+ "title_original": "Siegfried",
+ "aliases": [
+  "指環"
+ ],
+ "composer": "ワーグナー",
+ "composer_sort": "Wagner, Richard",
+ "kind": "opera",
+ "year_written": 1876,
+ "source": "hand",
+ "source_id": "wagner-siegfried",
+ "duration_min": 235,
+ "language": "de",
+ "roles": [
+  {
+   "label": "ジークフリート",
+   "voice": "テノール"
+  },
+  {
+   "label": "ミーメ",
+   "voice": "テノール"
+  },
+  {
+   "label": "さすらい人（ヴォータン）",
+   "voice": "バスバリトン"
+  },
+  {
+   "label": "アルベリヒ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ファフナー",
+   "voice": "バス"
+  },
+  {
+   "label": "ブリュンヒルデ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "エルダ",
+   "voice": "アルト"
+  },
+  {
+   "label": "森の小鳥",
+   "voice": "ソプラノ"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 ミーメの洞窟（剣を鍛える）",
+   "group_label": "第1幕",
+   "roles": [
+    "ミーメ",
+    "ジークフリート",
+    "さすらい人（ヴォータン）"
+   ]
+  },
+  {
+   "label": "第2幕 森のささやきと大蛇退治",
+   "group_label": "第2幕",
+   "roles": [
+    "ジークフリート",
+    "ファフナー",
+    "ミーメ",
+    "アルベリヒ",
+    "森の小鳥"
+   ]
+  },
+  {
+   "label": "第3幕 エルダとの対決",
+   "group_label": "第3幕",
+   "roles": [
+    "さすらい人（ヴォータン）",
+    "エルダ"
+   ]
+  },
+  {
+   "label": "第3幕 岩山の目覚め（ブリュンヒルデ）",
+   "group_label": "第3幕",
+   "roles": [
+    "ジークフリート",
+    "ブリュンヒルデ"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "バスクラリネット"
+  },
+  {
+   "part": "ファゴット",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 8,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 2,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "ワーグナーチューバ",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

@@ -1,0 +1,57 @@
+{
+  "title": "文山賊",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-fumi-yamadachi",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（山賊）"
+    },
+    {
+      "label": "アド（山賊（二））"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "二人の山賊が分け前を争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（山賊）",
+        "アド（山賊（二））"
+      ]
+    },
+    {
+      "label": "★死ぬ前に妻へ文を書くことにする",
+      "group_label": "段",
+      "roles": [
+        "シテ（山賊）",
+        "アド（山賊（二））"
+      ]
+    },
+    {
+      "label": "★★書きながら情が湧いて仲直りする",
+      "group_label": "段",
+      "roles": [
+        "シテ（山賊）",
+        "アド（山賊（二））"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

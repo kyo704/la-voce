@@ -1,0 +1,306 @@
+{
+  "title": "エリザベート",
+  "title_original": "Elisabeth",
+  "composer": "シルヴェスター・リヴァイ",
+  "composer_sort": "Levay, Sylvester",
+  "kind": "musical",
+  "year_written": 1992,
+  "duration_min": 165,
+  "edition": "★★1992 ウィーン初演版／★★1996 宝塚版（★トート中心に書き替え・宝塚の男役が演じる）／★2000 東宝版（★日本語訳詞・トートとエリザベートの比重が違う）／★2003 エッセン版／★2012 ウィーン再演版",
+  "language": "de",
+  "source": "hand",
+  "source_id": "elisabeth",
+  "note": "★作詞・脚本 ミヒャエル・クンツェ ／ ★★★日本で最も上演回数の多い海外ミュージカル。★★★宝塚版と東宝版は別の版として扱う必要がある（役の重みと曲が違う）",
+  "roles": [
+    {
+      "label": "エリザベート"
+    },
+    {
+      "label": "トート（死）"
+    },
+    {
+      "label": "フランツ・ヨーゼフ"
+    },
+    {
+      "label": "ルキーニ"
+    },
+    {
+      "label": "ゾフィー大公妃"
+    },
+    {
+      "label": "ルドルフ"
+    },
+    {
+      "label": "少年ルドルフ"
+    },
+    {
+      "label": "マックス公爵"
+    },
+    {
+      "label": "ルドヴィカ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★プロローグ（★ルキーニの裁判・亡霊たちの目覚め）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルキーニ",
+        "トート（死）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ヴィー・ドゥ（幼いエリザベートの落下とトートとの出会い）",
+      "group_label": "第1幕",
+      "roles": [
+        "エリザベート",
+        "トート（死）",
+        "マックス公爵",
+        "ルドヴィカ"
+      ]
+    },
+    {
+      "label": "M3 ★★★シャッテン・ヴェルデン・レンガー（影は長くなる）",
+      "group_label": "第1幕",
+      "roles": [
+        "トート（死）",
+        "エリザベート"
+      ]
+    },
+    {
+      "label": "M4 ★★★バート・イシュルの婚約（Schön, euch alle zu sehen）",
+      "group_label": "第1幕",
+      "roles": [
+        "フランツ・ヨーゼフ",
+        "エリザベート",
+        "ゾフィー大公妃",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★ヴィーン宮廷の掟（Eine Kaiserin muss glänzen）",
+      "group_label": "第1幕",
+      "roles": [
+        "ゾフィー大公妃",
+        "エリザベート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★イッヒ・ゲヘール・ヌア・ミア（私だけに）",
+      "group_label": "第1幕",
+      "roles": [
+        "エリザベート"
+      ]
+    },
+    {
+      "label": "M7 ★★★キッチュ（ルキーニの土産売り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルキーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★ミルク（民衆の怒り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルキーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★★エリザベートの勝利（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "エリザベート",
+        "フランツ・ヨーゼフ",
+        "ゾフィー大公妃",
+        "トート（死）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★キッチュ II／ハンガリー戴冠",
+      "group_label": "第2幕",
+      "roles": [
+        "ルキーニ",
+        "エリザベート",
+        "フランツ・ヨーゼフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★マイエルリンクのワルツ（Wenn ich tanzen will）",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベート",
+        "トート（死）"
+      ]
+    },
+    {
+      "label": "M12 ★★★少年ルドルフとトート（Die Schatten werden länger の再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "少年ルドルフ",
+        "トート（死）",
+        "ルドルフ"
+      ]
+    },
+    {
+      "label": "M13 ★★★ルドルフの嘆願（Wie du）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルドルフ",
+        "エリザベート"
+      ]
+    },
+    {
+      "label": "M14 ★★★マイエルリンク事件（ルドルフの自死）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルドルフ",
+        "トート（死）",
+        "エリザベート",
+        "フランツ・ヨーゼフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M15 ★★★夜のボート（Boote in der Nacht）",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベート",
+        "フランツ・ヨーゼフ"
+      ]
+    },
+    {
+      "label": "M16 ★★★終曲（ジュネーヴの暗殺・トートとの接吻）",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベート",
+        "トート（死）",
+        "ルキーニ",
+        "フランツ・ヨーゼフ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

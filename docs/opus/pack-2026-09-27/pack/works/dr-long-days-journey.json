@@ -1,0 +1,75 @@
+{
+  "title": "夜への長い旅路",
+  "composer": "ユージン・オニール",
+  "composer_sort": "O’Neill, Eugene",
+  "kind": "drama",
+  "year_written": 1956,
+  "duration_min": 230,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dr-long-days-journey",
+  "note": "★★一家の 一日を 追う 長い 作品 ／ ★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ジェームズ・タイロン"
+    },
+    {
+      "label": "メアリー"
+    },
+    {
+      "label": "ジェイミー"
+    },
+    {
+      "label": "エドマンド"
+    },
+    {
+      "label": "キャスリーン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "朝の食卓",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェームズ・タイロン",
+        "メアリー",
+        "ジェイミー",
+        "エドマンド"
+      ]
+    },
+    {
+      "label": "★昼の緊張",
+      "group_label": "第2幕",
+      "roles": [
+        "メアリー",
+        "エドマンド",
+        "キャスリーン"
+      ]
+    },
+    {
+      "label": "★夕方",
+      "group_label": "第3幕",
+      "roles": [
+        "メアリー",
+        "ジェームズ・タイロン"
+      ]
+    },
+    {
+      "label": "★★深夜の告白",
+      "group_label": "第4幕",
+      "roles": [
+        "ジェームズ・タイロン",
+        "ジェイミー",
+        "エドマンド"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

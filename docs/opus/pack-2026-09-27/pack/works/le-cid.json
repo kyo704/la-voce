@@ -1,0 +1,216 @@
+{
+  "title": "ル・シッド",
+  "title_original": "Le Cid",
+  "composer": "マスネ",
+  "composer_sort": "Massenet, Jules",
+  "kind": "opera",
+  "year_written": 1885,
+  "duration_min": 150,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "le-cid",
+  "roles": [
+    {
+      "label": "シメーヌ"
+    },
+    {
+      "label": "ロドリーグ"
+    },
+    {
+      "label": "ドン・ディエーグ"
+    },
+    {
+      "label": "ゴルマス伯爵"
+    },
+    {
+      "label": "王"
+    },
+    {
+      "label": "王女"
+    },
+    {
+      "label": "聖ヤコブの声"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ゴルマス伯爵の館（シメーヌの喜び）",
+      "group_label": "第1幕",
+      "roles": [
+        "シメーヌ",
+        "王女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ロドリーグの騎士叙任",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドリーグ",
+        "ドン・ディエーグ",
+        "王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 侮辱と平手打ち",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・ディエーグ",
+        "ゴルマス伯爵"
+      ]
+    },
+    {
+      "label": "第2幕 ロドリーグの決闘と伯爵の死",
+      "group_label": "第2幕",
+      "roles": [
+        "ロドリーグ",
+        "ゴルマス伯爵"
+      ]
+    },
+    {
+      "label": "第2幕 ★バレエ（セビリアの広場）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 シメーヌの訴え（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "シメーヌ",
+        "ロドリーグ",
+        "王",
+        "ドン・ディエーグ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 シメーヌの嘆き（泣け、わが目よ）",
+      "group_label": "第3幕",
+      "roles": [
+        "シメーヌ"
+      ]
+    },
+    {
+      "label": "第3幕 2人の二重唱と出陣",
+      "group_label": "第3幕",
+      "roles": [
+        "シメーヌ",
+        "ロドリーグ"
+      ]
+    },
+    {
+      "label": "第3幕 陣営の夜（ロドリーグの祈りと聖ヤコブ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロドリーグ",
+        "聖ヤコブの声",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（勝利と赦し）",
+      "group_label": "第4幕",
+      "roles": [
+        "シメーヌ",
+        "ロドリーグ",
+        "王",
+        "ドン・ディエーグ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

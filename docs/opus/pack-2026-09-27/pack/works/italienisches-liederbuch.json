@@ -1,0 +1,193 @@
+{
+ "title": "イタリア歌曲集",
+ "title_original": "Italienisches Liederbuch",
+ "composer": "ヴォルフ",
+ "composer_sort": "Wolf, Hugo",
+ "kind": "song_cycle",
+ "year_written": 1896,
+ "duration_min": 90,
+ "language": "de",
+ "source_id": "wolf-italienisches",
+ "note": "★作詩 ハイゼ（イタリア詩の独訳） ／ ★46曲。★1曲ずつ 選んで 歌う ことが 多い ／ ★★男声と 女声で 分け合って 出す 形が 多い ／ ★★歌詞・対訳は 入れて いません",
+ "roles": [
+  {
+   "label": "独唱（女声）"
+  },
+  {
+   "label": "独唱（男声）"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. 小さなものでも（Auch kleine Dinge）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. 私にあなたの歌を（Mir ward gesagt）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. あなたは世界で一番美しい人（Ihr seid die Allerschönste）",
+   "group_label": "",
+   "roles": [
+    "独唱（男声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 祝福あれ（Gesegnet sei）",
+   "group_label": "",
+   "roles": [
+    "独唱（男声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. 聖ヨハネのように（Selig ihr Blinden）",
+   "group_label": "",
+   "roles": [
+    "独唱（男声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. 誰があなたを呼んだの（Wer rief dich denn?）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. 月が嘆きを（Der Mond hat eine schwere Klag）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. いまはもう（Nun lass uns Frieden schließen）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "9. あなたは糸より細い（Dass doch gemalt）",
+   "group_label": "",
+   "roles": [
+    "独唱（男声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "10. ある朝目が覚めて（Du denkst mit einem Fädchen）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "11. あなたの言うとおり（Wie lange schon）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "12. 祝福あれ、この世を作った方（Nein, junger Herr）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "13. ちびの口を持つ私（Hoffärtig seid Ihr）",
+   "group_label": "",
+   "roles": [
+    "独唱（男声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "14. あなたが天に昇るなら（Geselle, woll′n wir）",
+   "group_label": "",
+   "roles": [
+    "独唱（男声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "15. 私の恋人はとても小さい（Mein Liebster ist so klein）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "16. 私に告げられた（Ihr jungen Leute）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "17. そしてお前が朝早く（Und willst du deinen Liebsten）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "18. 私の恋人は怒って歌う（Heb auf dein blondes Haupt）",
+   "group_label": "",
+   "roles": [
+    "独唱（男声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "19. 私たちは長いあいだ（Wir haben beide）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "20. 月がひどい嘆きを（Mein Liebster singt）",
+   "group_label": "",
+   "roles": [
+    "独唱（女声）",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand",
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ]
+}

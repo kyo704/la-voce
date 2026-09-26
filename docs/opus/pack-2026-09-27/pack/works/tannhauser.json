@@ -1,0 +1,244 @@
+{
+ "title": "タンホイザー",
+ "title_original": "Tannhäuser",
+ "aliases": [
+  "Tannhauser"
+ ],
+ "composer": "ワーグナー",
+ "composer_sort": "Wagner, Richard",
+ "kind": "opera",
+ "year_written": 1845,
+ "duration_min": 190,
+ "language": "de",
+ "source": "hand",
+ "source_id": "wagner-tannhauser",
+ "roles": [
+  {
+   "label": "タンホイザー",
+   "voice": "テノール"
+  },
+  {
+   "label": "エリーザベト",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ヴォルフラム",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ヴェーヌス",
+   "voice": "メゾ"
+  },
+  {
+   "label": "領主ヘルマン"
+  },
+  {
+   "label": "ヴァルター",
+   "voice": "テノール"
+  },
+  {
+   "label": "ビーテロルフ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "牧童",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "序曲",
+   "group_label": "序曲",
+   "roles": []
+  },
+  {
+   "label": "第1幕 ヴェーヌスベルク（バッカナール）",
+   "group_label": "第1幕",
+   "roles": [
+    "ヴェーヌス",
+    "タンホイザー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 ヴェーヌスとの別れ",
+   "group_label": "第1幕",
+   "roles": [
+    "タンホイザー",
+    "ヴェーヌス"
+   ]
+  },
+  {
+   "label": "第1幕 牧童の歌と巡礼の合唱",
+   "group_label": "第1幕",
+   "roles": [
+    "牧童",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 七重唱（狩の一行との再会）",
+   "group_label": "第1幕",
+   "roles": [
+    "タンホイザー",
+    "ヴォルフラム",
+    "領主ヘルマン",
+    "ヴァルター",
+    "ビーテロルフ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 エリーザベトのアリア（おごそかなこの広間よ）",
+   "group_label": "第2幕",
+   "roles": [
+    "エリーザベト"
+   ]
+  },
+  {
+   "label": "第2幕 二重唱",
+   "group_label": "第2幕",
+   "roles": [
+    "エリーザベト",
+    "タンホイザー"
+   ]
+  },
+  {
+   "label": "第2幕 大行進曲と歌合戦",
+   "group_label": "第2幕",
+   "roles": [
+    "領主ヘルマン",
+    "ヴォルフラム",
+    "ヴァルター",
+    "ビーテロルフ",
+    "タンホイザー",
+    "エリーザベト",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 巡礼の合唱とエリーザベトの祈り",
+   "group_label": "第3幕",
+   "roles": [
+    "エリーザベト",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 夕星の歌",
+   "group_label": "第3幕",
+   "roles": [
+    "ヴォルフラム"
+   ]
+  },
+  {
+   "label": "第3幕 ローマ語りとフィナーレ",
+   "group_label": "第3幕",
+   "roles": [
+    "タンホイザー",
+    "ヴォルフラム",
+    "ヴェーヌス",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "舞台上の楽隊",
+   "count": 0,
+   "section": "banda",
+   "note": "大行進曲"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

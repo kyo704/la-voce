@@ -1,0 +1,83 @@
+{
+  "title": "裹頭楽",
+  "composer": "雅楽",
+  "composer_sort": "Gagaku",
+  "kind": "gagaku",
+  "duration_min": 12,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "gagaku-katoraku",
+  "note": "★管絃 ／ 調子 平調 ／ 左方（唐楽） ／ ★★曲の 組み立て（序・破・急 など）は 入れて いません ── ★曲名と 調子だけ 確かめました",
+  "roles": [
+    {
+      "label": "管方（篳篥・龍笛・笙）",
+      "is_group": true
+    },
+    {
+      "label": "絃方（楽琵琶・楽箏）",
+      "is_group": true
+    },
+    {
+      "label": "打物（鞨鼓・太鼓・鉦鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★当曲",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "絃方（楽琵琶・楽箏）",
+        "打物（鞨鼓・太鼓・鉦鼓）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "篳篥",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "龍笛",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "笙",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "楽琵琶",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "楽箏",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "鞨鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "鉦鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

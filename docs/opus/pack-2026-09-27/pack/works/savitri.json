@@ -1,0 +1,131 @@
+{
+  "title": "サーヴィトリ",
+  "title_original": "Sāvitri",
+  "composer": "ホルスト",
+  "composer_sort": "Holst, Gustav",
+  "kind": "opera",
+  "year_written": 1916,
+  "duration_min": 30,
+  "language": "en",
+  "source": "hand",
+  "source_id": "savitri",
+  "note": "★マハーバーラタによる。★序曲なし。舞台装置を用いない室内オペラ",
+  "roles": [
+    {
+      "label": "サーヴィトリ"
+    },
+    {
+      "label": "サティヤヴァン"
+    },
+    {
+      "label": "死（ヤマ）"
+    },
+    {
+      "label": "見えない女声合唱"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★死の声が森から呼ぶ",
+      "group_label": "本編",
+      "roles": [
+        "死（ヤマ）",
+        "サーヴィトリ"
+      ]
+    },
+    {
+      "label": "★サティヤヴァンの帰り（斧を持って）",
+      "group_label": "本編",
+      "roles": [
+        "サティヤヴァン",
+        "サーヴィトリ"
+      ]
+    },
+    {
+      "label": "★サティヤヴァンの死",
+      "group_label": "本編",
+      "roles": [
+        "サティヤヴァン",
+        "サーヴィトリ",
+        "見えない女声合唱"
+      ]
+    },
+    {
+      "label": "★★死との対話（わたしを迎えに来たのですね）",
+      "group_label": "本編",
+      "roles": [
+        "サーヴィトリ",
+        "死（ヤマ）"
+      ]
+    },
+    {
+      "label": "★★死が「望むものを」と言う（★命を、と願う）",
+      "group_label": "本編",
+      "roles": [
+        "サーヴィトリ",
+        "死（ヤマ）"
+      ]
+    },
+    {
+      "label": "★★終曲（死は去り、サティヤヴァンは目覚める）",
+      "group_label": "本編",
+      "roles": [
+        "サーヴィトリ",
+        "サティヤヴァン",
+        "見えない女声合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "イングリッシュホルン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "弦楽二重四重奏",
+      "count": 8,
+      "section": "strings"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "title": "ロジェ王",
+  "title_original": "Król Roger",
+  "composer": "シマノフスキ",
+  "composer_sort": "Szymanowski, Karol",
+  "kind": "opera",
+  "year_written": 1926,
+  "duration_min": 90,
+  "language": "pl",
+  "source": "hand",
+  "source_id": "king-roger",
+  "roles": [
+    {
+      "label": "ロジェ2世"
+    },
+    {
+      "label": "ロクサーナ"
+    },
+    {
+      "label": "羊飼い"
+    },
+    {
+      "label": "エドリジ"
+    },
+    {
+      "label": "大司教"
+    },
+    {
+      "label": "女修道院長"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ビザンチンの教会（正教の聖歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "大司教",
+        "女修道院長",
+        "ロジェ2世",
+        "ロクサーナ",
+        "エドリジ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 羊飼いの登場（わが神は美しい）",
+      "group_label": "第1幕",
+      "roles": [
+        "羊飼い",
+        "ロジェ2世",
+        "大司教",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ロクサーナの取りなし（夜に来させて）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロクサーナ",
+        "ロジェ2世",
+        "羊飼い"
+      ]
+    },
+    {
+      "label": "★第2幕 宮廷の中庭（ロクサーナの歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロクサーナ",
+        "ロジェ2世",
+        "エドリジ"
+      ]
+    },
+    {
+      "label": "★第2幕 羊飼いの舞と一同の追随",
+      "group_label": "第2幕",
+      "roles": [
+        "羊飼い",
+        "ロクサーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ロジェも王衣を捨てて従う",
+      "group_label": "第2幕",
+      "roles": [
+        "ロジェ2世",
+        "エドリジ",
+        "羊飼い"
+      ]
+    },
+    {
+      "label": "★第3幕 ディオニュソスの神殿の廃墟",
+      "group_label": "第3幕",
+      "roles": [
+        "ロジェ2世",
+        "エドリジ",
+        "ロクサーナ"
+      ]
+    },
+    {
+      "label": "★終曲（ロジェひとり残り、太陽への讃歌）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロジェ2世",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

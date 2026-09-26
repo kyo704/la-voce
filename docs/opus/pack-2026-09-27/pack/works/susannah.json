@@ -1,0 +1,212 @@
+{
+  "title": "スザンナ",
+  "title_original": "Susannah",
+  "composer": "フロイド",
+  "composer_sort": "Floyd, Carlisle",
+  "kind": "opera",
+  "year_written": 1955,
+  "duration_min": 115,
+  "language": "en",
+  "source": "hand",
+  "source_id": "susannah",
+  "note": "★旧約外典『スザンナと長老たち』をアパラチアに移した作",
+  "roles": [
+    {
+      "label": "スザンナ・ポーク"
+    },
+    {
+      "label": "サム・ポーク"
+    },
+    {
+      "label": "オリン・ブリッチ牧師"
+    },
+    {
+      "label": "リトル・バット・マクリーン"
+    },
+    {
+      "label": "エルバート・ゲイヴン夫人"
+    },
+    {
+      "label": "マクリーン夫人"
+    },
+    {
+      "label": "ハイズ夫人"
+    },
+    {
+      "label": "オット夫人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ★スクエア・ダンス（テネシーの村の踊り）",
+      "group_label": "第1幕",
+      "roles": [
+        "スザンナ・ポーク",
+        "リトル・バット・マクリーン",
+        "エルバート・ゲイヴン夫人",
+        "マクリーン夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★スザンナのアリア（あの星たちは美しい）",
+      "group_label": "第1幕",
+      "roles": [
+        "スザンナ・ポーク",
+        "リトル・バット・マクリーン"
+      ]
+    },
+    {
+      "label": "★第1幕 長老たちが川で水浴びのスザンナを見る",
+      "group_label": "第1幕",
+      "roles": [
+        "ハイズ夫人",
+        "オット夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 村の噂と兄サムの帰り",
+      "group_label": "第1幕",
+      "roles": [
+        "スザンナ・ポーク",
+        "サム・ポーク",
+        "リトル・バット・マクリーン"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ブリッチ牧師の復興集会（悔い改めよ）",
+      "group_label": "第2幕",
+      "roles": [
+        "オリン・ブリッチ牧師",
+        "スザンナ・ポーク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★スザンナの告白を拒む（罪はない）",
+      "group_label": "第2幕",
+      "roles": [
+        "スザンナ・ポーク",
+        "オリン・ブリッチ牧師"
+      ]
+    },
+    {
+      "label": "★第2幕 ★牧師がスザンナを犯す",
+      "group_label": "第2幕",
+      "roles": [
+        "オリン・ブリッチ牧師",
+        "スザンナ・ポーク"
+      ]
+    },
+    {
+      "label": "★第2幕 サムが牧師を撃つ",
+      "group_label": "第2幕",
+      "roles": [
+        "サム・ポーク",
+        "スザンナ・ポーク",
+        "オリン・ブリッチ牧師"
+      ]
+    },
+    {
+      "label": "★終曲（村人を追い返す・スザンナはひとり残る）",
+      "group_label": "第2幕",
+      "roles": [
+        "スザンナ・ポーク",
+        "リトル・バット・マクリーン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

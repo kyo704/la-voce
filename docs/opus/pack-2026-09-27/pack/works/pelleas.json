@@ -1,0 +1,212 @@
+{
+ "title": "ペレアスとメリザンド",
+ "title_original": "Pelléas et Mélisande",
+ "aliases": [
+  "ペレアス"
+ ],
+ "composer": "ドビュッシー",
+ "composer_sort": "Debussy, Claude",
+ "kind": "opera",
+ "year_written": 1902,
+ "duration_min": 165,
+ "language": "fr",
+ "source": "hand",
+ "source_id": "debussy-pelleas",
+ "roles": [
+  {
+   "label": "メリザンド",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ペレアス",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ゴロー",
+   "voice": "バリトン"
+  },
+  {
+   "label": "アルケル",
+   "voice": "バス"
+  },
+  {
+   "label": "ジュヌヴィエーヴ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "イニョルド",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "医師"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 森でのゴローとメリザンド",
+   "group_label": "第1幕",
+   "roles": [
+    "ゴロー",
+    "メリザンド"
+   ]
+  },
+  {
+   "label": "第1幕 城（手紙の朗読）",
+   "group_label": "第1幕",
+   "roles": [
+    "ジュヌヴィエーヴ",
+    "アルケル",
+    "ペレアス"
+   ]
+  },
+  {
+   "label": "第2幕 泉の場（指輪の紛失）",
+   "group_label": "第2幕",
+   "roles": [
+    "ペレアス",
+    "メリザンド",
+    "ゴロー"
+   ]
+  },
+  {
+   "label": "第2幕 洞窟",
+   "group_label": "第2幕",
+   "roles": [
+    "ペレアス",
+    "メリザンド"
+   ]
+  },
+  {
+   "label": "第3幕 塔の窓（髪の場）",
+   "group_label": "第3幕",
+   "roles": [
+    "メリザンド",
+    "ペレアス",
+    "ゴロー"
+   ]
+  },
+  {
+   "label": "第3幕 地下と イニョルドの場",
+   "group_label": "第3幕",
+   "roles": [
+    "ゴロー",
+    "ペレアス",
+    "イニョルド"
+   ]
+  },
+  {
+   "label": "第4幕 愛の告白と殺害",
+   "group_label": "第4幕",
+   "roles": [
+    "ペレアス",
+    "メリザンド",
+    "ゴロー",
+    "アルケル"
+   ]
+  },
+  {
+   "label": "第5幕 メリザンドの死",
+   "group_label": "第5幕",
+   "roles": [
+    "メリザンド",
+    "ゴロー",
+    "アルケル",
+    "医師",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 2,
+   "section": "harp"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

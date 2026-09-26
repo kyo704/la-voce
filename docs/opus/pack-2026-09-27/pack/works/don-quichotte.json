@@ -1,0 +1,195 @@
+{
+  "title": "ドン・キショット",
+  "title_original": "Don Quichotte",
+  "composer": "マスネ",
+  "composer_sort": "Massenet, Jules",
+  "kind": "opera",
+  "year_written": 1910,
+  "duration_min": 125,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "don-quichotte",
+  "roles": [
+    {
+      "label": "ドン・キショット"
+    },
+    {
+      "label": "サンチョ・パンサ"
+    },
+    {
+      "label": "ドゥルシネ"
+    },
+    {
+      "label": "ロドリゲス"
+    },
+    {
+      "label": "ジュアン"
+    },
+    {
+      "label": "ペドロ"
+    },
+    {
+      "label": "ガルシアス"
+    },
+    {
+      "label": "盗賊の頭"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ドゥルシネの窓の下（セレナード）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・キショット",
+        "サンチョ・パンサ",
+        "ドゥルシネ",
+        "ジュアン",
+        "ペドロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 朝霧の中（風車の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドン・キショット",
+        "サンチョ・パンサ"
+      ]
+    },
+    {
+      "label": "第3幕 盗賊の山（祈りと赦し）",
+      "group_label": "第3幕",
+      "roles": [
+        "ドン・キショット",
+        "サンチョ・パンサ",
+        "盗賊の頭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 ドゥルシネの庭（宴）",
+      "group_label": "第4幕",
+      "roles": [
+        "ドゥルシネ",
+        "ロドリゲス",
+        "ガルシアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 求婚と拒み（二重唱）",
+      "group_label": "第4幕",
+      "roles": [
+        "ドン・キショット",
+        "ドゥルシネ"
+      ]
+    },
+    {
+      "label": "第4幕 サンチョの怒りの言葉",
+      "group_label": "第4幕",
+      "roles": [
+        "サンチョ・パンサ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5幕 終曲（ドン・キショットの死）",
+      "group_label": "第5幕",
+      "roles": [
+        "ドン・キショット",
+        "サンチョ・パンサ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

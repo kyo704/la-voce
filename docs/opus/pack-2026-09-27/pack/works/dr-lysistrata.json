@@ -1,0 +1,76 @@
+{
+  "title": "女の平和",
+  "composer": "アリストパネス",
+  "composer_sort": "Aristophanes",
+  "kind": "drama",
+  "year_written": -411,
+  "duration_min": 110,
+  "language": "el",
+  "source": "hand",
+  "source_id": "dr-lysistrata",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "リュシストラテ"
+    },
+    {
+      "label": "クレオニケ"
+    },
+    {
+      "label": "ミュリネ"
+    },
+    {
+      "label": "ランピト"
+    },
+    {
+      "label": "議長"
+    },
+    {
+      "label": "女たちの合唱団",
+      "is_group": true
+    },
+    {
+      "label": "男たちの合唱団",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "女たちの誓い",
+      "group_label": "一幕物",
+      "roles": [
+        "リュシストラテ",
+        "クレオニケ",
+        "ミュリネ",
+        "ランピト"
+      ]
+    },
+    {
+      "label": "★アクロポリスの占拠",
+      "group_label": "一幕物",
+      "roles": [
+        "リュシストラテ",
+        "女たちの合唱団",
+        "男たちの合唱団"
+      ]
+    },
+    {
+      "label": "★★和平",
+      "group_label": "一幕物",
+      "roles": [
+        "リュシストラテ",
+        "議長",
+        "女たちの合唱団",
+        "男たちの合唱団"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

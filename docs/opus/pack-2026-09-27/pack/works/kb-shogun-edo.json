@@ -1,0 +1,68 @@
+{
+  "title": "将軍江戸を去る",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1934,
+  "duration_min": 80,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-shogun-edo",
+  "note": "★新歌舞伎 ／ 作者 真山青果 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "徳川慶喜"
+    },
+    {
+      "label": "山岡鉄太郎"
+    },
+    {
+      "label": "高橋伊勢守"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★上野寛永寺（★慶喜の決断）",
+      "group_label": "一幕",
+      "roles": [
+        "徳川慶喜",
+        "山岡鉄太郎",
+        "高橋伊勢守",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★江戸を去る",
+      "group_label": "一幕",
+      "roles": [
+        "徳川慶喜",
+        "山岡鉄太郎",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

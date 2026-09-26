@@ -1,0 +1,61 @@
+{
+  "title": "今参り",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-imamairi",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（今参り（新参の女））"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "小アド（古参）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "新参の女が奉公に来る",
+      "group_label": "段",
+      "roles": [
+        "シテ（今参り（新参の女））",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "古参と言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（今参り（新参の女））",
+        "小アド（古参）"
+      ]
+    },
+    {
+      "label": "主が仲裁する",
+      "group_label": "段",
+      "roles": [
+        "シテ（今参り（新参の女））",
+        "アド（主）",
+        "小アド（古参）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

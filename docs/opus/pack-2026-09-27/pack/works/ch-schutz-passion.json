@@ -1,0 +1,83 @@
+{
+  "title": "マタイ受難曲（シュッツ）",
+  "composer": "シュッツ",
+  "composer_sort": "Schütz, Heinrich",
+  "kind": "chorus",
+  "year_written": 1666,
+  "duration_min": 70,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-schutz-passion",
+  "note": "★★★伴奏なし（無伴奏）の 受難曲 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "福音史家（テノール）"
+    },
+    {
+      "label": "イエス（バス）"
+    },
+    {
+      "label": "ペテロ"
+    },
+    {
+      "label": "ピラト"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★福音史家の語り",
+      "group_label": "第1部",
+      "roles": [
+        "福音史家（テノール）"
+      ]
+    },
+    {
+      "label": "最後の晩餐",
+      "group_label": "第1部",
+      "roles": [
+        "イエス（バス）",
+        "福音史家（テノール）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ペテロの否認",
+      "group_label": "第2部",
+      "roles": [
+        "ペテロ",
+        "福音史家（テノール）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ピラトの前",
+      "group_label": "第2部",
+      "roles": [
+        "ピラト",
+        "イエス（バス）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★十字架と結びの合唱",
+      "group_label": "第2部",
+      "roles": [
+        "イエス（バス）",
+        "福音史家（テノール）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

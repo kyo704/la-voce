@@ -1,0 +1,88 @@
+{
+  "title": "日本振袖始",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1718,
+  "duration_min": 80,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-nihon-furisode",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松門左衛門 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "素盞嗚尊"
+    },
+    {
+      "label": "稲田姫"
+    },
+    {
+      "label": "八岐大蛇（岩長姫）"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★八岐大蛇と稲田姫",
+      "group_label": "上",
+      "roles": [
+        "素盞嗚尊",
+        "稲田姫",
+        "八岐大蛇（岩長姫）",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★大蛇退治",
+      "group_label": "上",
+      "roles": [
+        "素盞嗚尊",
+        "八岐大蛇（岩長姫）",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

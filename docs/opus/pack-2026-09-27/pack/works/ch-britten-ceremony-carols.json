@@ -1,0 +1,105 @@
+{
+  "title": "キャロルの祭典 作品28",
+  "title_original": "A Ceremony of Carols op.28",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "chorus",
+  "year_written": 1942,
+  "duration_min": 23,
+  "language": "en",
+  "source": "hand",
+  "source_id": "ch-britten-ceremony-carols",
+  "note": "★★ハープ 1台の 伴奏。★行列で 入り、行列で 去ります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "児童合唱（または女声合唱）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. プロセッション",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "2. ウォルカム・ユール",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "3. 過ぎし日に",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "★4. 小さな薔薇が生まれた",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "5. バラード",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "★★6. この小さな赤子",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "7. 間奏曲（ハープ独奏）",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "8. 凍てつく冬に",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "9. 春のキャロル",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "10. デオ・グラティアス",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    },
+    {
+      "label": "11. レセッション",
+      "group_label": "―",
+      "roles": [
+        "児童合唱（または女声合唱）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

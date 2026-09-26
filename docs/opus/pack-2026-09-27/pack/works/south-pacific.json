@@ -1,0 +1,276 @@
+{
+  "title": "南太平洋",
+  "title_original": "South Pacific",
+  "composer": "リチャード・ロジャーズ",
+  "kind": "musical",
+  "year_written": 1949,
+  "duration_min": 170,
+  "edition": "1949 ブロードウェイ初演版（★2008 リンカーン・センター版が近年の基準）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "south-pacific",
+  "note": "★作詞 オスカー・ハマースタイン2世 ／ 脚本 オスカー・ハマースタイン2世／ジョシュア・ローガン ／ ★人種の偏見を正面から扱った作。★『You've Got to Be Carefully Taught』は当時削除を求められたが作者が拒んだ",
+  "roles": [
+    {
+      "label": "ネリー・フォーブッシュ"
+    },
+    {
+      "label": "エミール・ド・ベック"
+    },
+    {
+      "label": "ジョゼフ・ケイブル中尉"
+    },
+    {
+      "label": "リアット"
+    },
+    {
+      "label": "ブラディ・メアリー"
+    },
+    {
+      "label": "ルーサー・ビリス"
+    },
+    {
+      "label": "ハービソン中佐"
+    },
+    {
+      "label": "ブラケット艦長"
+    },
+    {
+      "label": "ンガナ"
+    },
+    {
+      "label": "ジェローム"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★ディテス・モア（子どもたちの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ンガナ",
+        "ジェローム"
+      ]
+    },
+    {
+      "label": "M2 ★★クッカイド・オプティミスト",
+      "group_label": "第1幕",
+      "roles": [
+        "ネリー・フォーブッシュ"
+      ]
+    },
+    {
+      "label": "M3 ★ツイン・ソリロクィーズ",
+      "group_label": "第1幕",
+      "roles": [
+        "ネリー・フォーブッシュ",
+        "エミール・ド・ベック"
+      ]
+    },
+    {
+      "label": "M4 ★★サム・エンチャンテッド・イヴニング",
+      "group_label": "第1幕",
+      "roles": [
+        "エミール・ド・ベック"
+      ]
+    },
+    {
+      "label": "M5 ★ブラディ・メアリー",
+      "group_label": "第1幕",
+      "roles": [
+        "ルーサー・ビリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ゼアズ・ナッシン・ライク・ア・デイム",
+      "group_label": "第1幕",
+      "roles": [
+        "ルーサー・ビリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★バリ・ハイ",
+      "group_label": "第1幕",
+      "roles": [
+        "ブラディ・メアリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★アイム・ゴナ・ウォッシュ・ザット・マン",
+      "group_label": "第1幕",
+      "roles": [
+        "ネリー・フォーブッシュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★ア・ワンダフル・ガイ",
+      "group_label": "第1幕",
+      "roles": [
+        "ネリー・フォーブッシュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★ヤンガー・ザン・スプリングタイム",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョゼフ・ケイブル中尉",
+        "リアット"
+      ]
+    },
+    {
+      "label": "M11 ★第1幕終曲（ネリーがエミールの子を知る）",
+      "group_label": "第1幕",
+      "roles": [
+        "ネリー・フォーブッシュ",
+        "エミール・ド・ベック",
+        "ンガナ",
+        "ジェローム"
+      ]
+    },
+    {
+      "label": "M12 ★感謝祭の演芸会（Honey Bun）",
+      "group_label": "第2幕",
+      "roles": [
+        "ネリー・フォーブッシュ",
+        "ルーサー・ビリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★ユーヴ・ガット・トゥ・ビー・カレフリー・トート（偏見は教えられる）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョゼフ・ケイブル中尉"
+      ]
+    },
+    {
+      "label": "M14 ★ディス・ニアリー・ワズ・マイン",
+      "group_label": "第2幕",
+      "roles": [
+        "エミール・ド・ベック"
+      ]
+    },
+    {
+      "label": "M15 ★終曲（ケイブルの戦死とエミールの帰還）",
+      "group_label": "第2幕",
+      "roles": [
+        "ネリー・フォーブッシュ",
+        "エミール・ド・ベック",
+        "ンガナ",
+        "ジェローム",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

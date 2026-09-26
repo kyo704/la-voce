@@ -1,0 +1,186 @@
+{
+ "title": "ルイザ・ミラー",
+ "title_original": "Luisa Miller",
+ "aliases": [],
+ "composer": "ヴェルディ",
+ "composer_sort": "Verdi, Giuseppe",
+ "kind": "opera",
+ "year_written": 1849,
+ "source": "hand",
+ "source_id": "verdi-luisa-miller",
+ "duration_min": 140,
+ "language": "it",
+ "roles": [
+  {
+   "label": "ルイザ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ロドルフォ",
+   "voice": "テノール"
+  },
+  {
+   "label": "ミラー",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ヴァルター伯爵"
+  },
+  {
+   "label": "ヴルム",
+   "voice": "バス"
+  },
+  {
+   "label": "フェデリーカ"
+  },
+  {
+   "label": "ラウラ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 村の祝い",
+   "group_label": "第1幕",
+   "roles": [
+    "ルイザ",
+    "ロドルフォ",
+    "ミラー",
+    "ラウラ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 伯爵の反対",
+   "group_label": "第1幕",
+   "roles": [
+    "ヴァルター伯爵",
+    "ロドルフォ",
+    "ミラー",
+    "ヴルム",
+    "フェデリーカ"
+   ]
+  },
+  {
+   "label": "第2幕 偽りの手紙",
+   "group_label": "第2幕",
+   "roles": [
+    "ルイザ",
+    "ヴルム",
+    "フェデリーカ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 ロドルフォのアリア（穏やかな夜に）",
+   "group_label": "第2幕",
+   "roles": [
+    "ロドルフォ",
+    "ヴァルター伯爵"
+   ]
+  },
+  {
+   "label": "第3幕 毒杯とフィナーレ",
+   "group_label": "第3幕",
+   "roles": [
+    "ルイザ",
+    "ロドルフォ",
+    "ミラー",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チンバッソ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp",
+   "is_optional": true
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

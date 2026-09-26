@@ -1,0 +1,107 @@
+{
+  "title": "曽根崎心中",
+  "title_original": "曽根崎心中",
+  "aliases": [],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1703,
+  "source": "hand",
+  "source_id": "bunraku-sonezaki",
+  "duration_min": 100,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "お初"
+    },
+    {
+      "label": "徳兵衛"
+    },
+    {
+      "label": "九平次"
+    },
+    {
+      "label": "天満屋の亭主"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "観音廻り",
+      "group_label": "序",
+      "roles": [
+        "お初",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "生玉社前の段",
+      "group_label": "中",
+      "roles": [
+        "徳兵衛",
+        "九平次",
+        "お初",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "天満屋の段",
+      "group_label": "中",
+      "roles": [
+        "お初",
+        "徳兵衛",
+        "九平次",
+        "天満屋の亭主",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "天神森の段（道行）",
+      "group_label": "終",
+      "roles": [
+        "お初",
+        "徳兵衛",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 0,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い",
+      "count": 0,
+      "section": "other",
+      "note": "三人遣い（主遣い・左遣い・足遣い）"
+    }
+  ],
+  "school": "義太夫節"
+}

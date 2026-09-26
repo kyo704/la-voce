@@ -1,0 +1,201 @@
+{
+ "title": "トゥーランドット（ブゾーニ）",
+ "title_original": "Turandot",
+ "composer": "ブゾーニ",
+ "composer_sort": "Busoni, Ferruccio",
+ "kind": "opera",
+ "year_written": 1917,
+ "duration_min": 75,
+ "language": "de",
+ "source": "hand",
+ "source_id": "turandot-busoni",
+ "note": "★プッチーニ作とは別の作品。★組曲が先にあり、そこから作られた",
+ "roles": [
+  {
+   "label": "トゥーランドット"
+  },
+  {
+   "label": "カラフ"
+  },
+  {
+   "label": "アルトゥム"
+  },
+  {
+   "label": "アデルマ"
+  },
+  {
+   "label": "バラク"
+  },
+  {
+   "label": "太后"
+  },
+  {
+   "label": "トルッファルディーノ"
+  },
+  {
+   "label": "パンタローネ"
+  },
+  {
+   "label": "タルタリア"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "★第1幕 城門（首と謎の掲示）",
+   "group_label": "第1幕",
+   "roles": [
+    "カラフ",
+    "バラク",
+    "合唱"
+   ]
+  },
+  {
+   "label": "★第1幕 トゥーランドットの肖像",
+   "group_label": "第1幕",
+   "roles": [
+    "カラフ",
+    "バラク"
+   ]
+  },
+  {
+   "label": "第1幕 3つの謎（アルトゥムの嘆き）",
+   "group_label": "第1幕",
+   "roles": [
+    "トゥーランドット",
+    "カラフ",
+    "アルトゥム",
+    "パンタローネ",
+    "タルタリア",
+    "合唱"
+   ]
+  },
+  {
+   "label": "★第2幕 トゥーランドットの部屋（アデルマの企み）",
+   "group_label": "第2幕",
+   "roles": [
+    "トゥーランドット",
+    "アデルマ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "★第2幕 グリーンスリーヴズの旋律（東洋の音楽の引用）",
+   "group_label": "第2幕",
+   "roles": [
+    "トゥーランドット",
+    "アデルマ"
+   ]
+  },
+  {
+   "label": "第2幕 宦官たちとトルッファルディーノの支度",
+   "group_label": "第2幕",
+   "roles": [
+    "トルッファルディーノ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "★終曲（カラフの名を明かし、トゥーランドットが折れる）",
+   "group_label": "第2幕",
+   "roles": [
+    "トゥーランドット",
+    "カラフ",
+    "アルトゥム",
+    "太后",
+    "アデルマ",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "オーボエ",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 4,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 2,
+   "section": "harp"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

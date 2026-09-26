@@ -1,0 +1,57 @@
+{
+  "title": "昆布売",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kobu-uri",
+  "note": "★大名狂言 ／ ★★売り声の 節が 見せ場 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（昆布売）"
+    },
+    {
+      "label": "アド（大名）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "大名が昆布売に太刀を持たせる",
+      "group_label": "段",
+      "roles": [
+        "シテ（昆布売）",
+        "アド（大名）"
+      ]
+    },
+    {
+      "label": "★逆に脅して売り声をさせる",
+      "group_label": "段",
+      "roles": [
+        "シテ（昆布売）",
+        "アド（大名）"
+      ]
+    },
+    {
+      "label": "★★大名が節をつけて昆布を売り歩く",
+      "group_label": "段",
+      "roles": [
+        "シテ（昆布売）",
+        "アド（大名）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

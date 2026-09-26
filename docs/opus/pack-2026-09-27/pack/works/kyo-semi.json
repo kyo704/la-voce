@@ -1,0 +1,56 @@
+{
+  "title": "蝉",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-semi",
+  "note": "★精類狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（蝉の精）"
+    },
+    {
+      "label": "アド（旅僧）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "僧が回向する",
+      "group_label": "段",
+      "roles": [
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "★蝉の精が現れて弔いを願う",
+      "group_label": "段",
+      "roles": [
+        "シテ（蝉の精）",
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "★★蝉の声を写して舞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（蝉の精）",
+        "アド（旅僧）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

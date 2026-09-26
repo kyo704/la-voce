@@ -1,0 +1,65 @@
+{
+  "title": "文荷",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-fuminai",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（次郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主の恋文を届けに出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "重いと言って棒で担ぐ",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "中を読んでしまう",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "引き合って破ってしまう",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

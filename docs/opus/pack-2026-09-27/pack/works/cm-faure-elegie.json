@@ -1,0 +1,42 @@
+{
+  "title": "エレジー 作品24",
+  "composer": "フォーレ",
+  "composer_sort": "Fauré, Gabriel",
+  "kind": "chamber",
+  "year_written": 1880,
+  "duration_min": 7,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-faure-elegie",
+  "note": "★管弦楽つきの 版も あります",
+  "roles": [
+    {
+      "label": "チェロ"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★一曲",
+      "group_label": "楽章",
+      "roles": [
+        "チェロ",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

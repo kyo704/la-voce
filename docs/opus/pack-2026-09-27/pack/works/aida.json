@@ -1,0 +1,287 @@
+{
+ "title": "アイーダ",
+ "composer": "ヴェルディ",
+ "composer_sort": "Verdi, Giuseppe",
+ "kind": "opera",
+ "year_written": 1871,
+ "source": "hand",
+ "source_id": "verdi-aida",
+ "roles": [
+  {
+   "label": "アイーダ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ラダメス",
+   "voice": "テノール"
+  },
+  {
+   "label": "アムネリス",
+   "voice": "メゾ"
+  },
+  {
+   "label": "アモナズロ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ランフィス",
+   "voice": "バス"
+  },
+  {
+   "label": "エジプト王"
+  },
+  {
+   "label": "伝令",
+   "voice": "テノール"
+  },
+  {
+   "label": "巫女",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "前奏曲",
+   "group_label": "第1幕",
+   "roles": []
+  },
+  {
+   "label": "清きアイーダ（ラダメスのロマンツァ）",
+   "group_label": "第1幕",
+   "roles": [
+    "ラダメス",
+    "ランフィス"
+   ]
+  },
+  {
+   "label": "三重唱（アムネリスの疑い）",
+   "group_label": "第1幕",
+   "roles": [
+    "アイーダ",
+    "アムネリス",
+    "ラダメス"
+   ]
+  },
+  {
+   "label": "王の宣言と「勝ちて帰れ」",
+   "group_label": "第1幕",
+   "roles": [
+    "エジプト王",
+    "伝令",
+    "アイーダ",
+    "アムネリス",
+    "ラダメス",
+    "ランフィス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "神殿の場（奉献の儀式）",
+   "group_label": "第1幕",
+   "roles": [
+    "ランフィス",
+    "巫女",
+    "ラダメス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "アムネリスの部屋（踊りと合唱）",
+   "group_label": "第2幕",
+   "roles": [
+    "アムネリス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "アイーダとアムネリスの二重唱",
+   "group_label": "第2幕",
+   "roles": [
+    "アイーダ",
+    "アムネリス"
+   ]
+  },
+  {
+   "label": "凱旋の場（凱旋行進曲とバレエ）",
+   "group_label": "第2幕",
+   "roles": [
+    "エジプト王",
+    "アムネリス",
+    "ラダメス",
+    "ランフィス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "アモナズロの登場と第2幕フィナーレ",
+   "group_label": "第2幕",
+   "roles": [
+    "アイーダ",
+    "アモナズロ",
+    "ラダメス",
+    "アムネリス",
+    "エジプト王",
+    "ランフィス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ナイルの場（おお、わが故郷）",
+   "group_label": "第3幕",
+   "roles": [
+    "アイーダ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "アイーダとアモナズロの二重唱",
+   "group_label": "第3幕",
+   "roles": [
+    "アイーダ",
+    "アモナズロ"
+   ]
+  },
+  {
+   "label": "アイーダとラダメスの二重唱・裏切り",
+   "group_label": "第3幕",
+   "roles": [
+    "アイーダ",
+    "ラダメス",
+    "アモナズロ",
+    "アムネリス",
+    "ランフィス"
+   ]
+  },
+  {
+   "label": "裁きの場（アムネリスの嘆き）",
+   "group_label": "第4幕",
+   "roles": [
+    "アムネリス",
+    "ラダメス",
+    "ランフィス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "フィナーレ（大地よさらば）",
+   "group_label": "第4幕",
+   "roles": [
+    "アイーダ",
+    "ラダメス",
+    "アムネリス",
+    "巫女",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チンバッソ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion",
+   "note": "大太鼓・小太鼓・シンバル・タムタム・トライアングル"
+  },
+  {
+   "part": "ハープ",
+   "count": 2,
+   "section": "harp"
+  },
+  {
+   "part": "舞台上の楽隊",
+   "count": 0,
+   "section": "banda",
+   "note": "凱旋のアイーダ・トランペット"
+  },
+  {
+   "part": "舞台裏の楽器",
+   "count": 0,
+   "section": "banda",
+   "note": "神殿のフルート・ハープ・合唱"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ],
+ "title_original": "Aida",
+ "aliases": [],
+ "duration_min": 150,
+ "language": "it"
+}

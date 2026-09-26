@@ -1,0 +1,96 @@
+{
+  "title": "盲長屋梅加賀鳶",
+  "aliases": [
+    "加賀鳶"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1886,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kagatobi",
+  "note": "★歌舞伎 ／ 作者 河竹黙阿弥 ／ ★★一人で 鳶と 按摩の 二役を 演じます ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "梅吉"
+    },
+    {
+      "label": "松蔵"
+    },
+    {
+      "label": "伊勢屋与兵衛"
+    },
+    {
+      "label": "鳶の者"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "竹垣道玄"
+    },
+    {
+      "label": "お兼"
+    },
+    {
+      "label": "捕手",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★加賀鳶勢揃い（★花道に鳶が並ぶ）",
+      "group_label": "序幕",
+      "roles": [
+        "梅吉",
+        "松蔵",
+        "伊勢屋与兵衛",
+        "鳶の者",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★竹垣道玄 質店（★按摩の悪事）",
+      "group_label": "二幕",
+      "roles": [
+        "竹垣道玄",
+        "お兼",
+        "伊勢屋与兵衛",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★道玄 御茶の水（★捕まる）",
+      "group_label": "三幕",
+      "roles": [
+        "竹垣道玄",
+        "松蔵",
+        "捕手",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

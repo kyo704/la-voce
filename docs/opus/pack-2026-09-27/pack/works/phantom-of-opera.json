@@ -1,0 +1,325 @@
+{
+  "title": "オペラ座の怪人",
+  "title_original": "The Phantom of the Opera",
+  "composer": "ロイド・ウェッバー",
+  "composer_sort": "Lloyd Webber, Andrew",
+  "kind": "musical",
+  "year_written": 1986,
+  "duration_min": 150,
+  "edition": "1986 ロンドン初演版（★2004 映画版・2013 ロンドン新演出版・2023 ブロードウェイ閉幕。★日本版〈劇団四季〉は日本語訳詞）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "phantom-of-opera",
+  "note": "★作詞 チャールズ・ハート／リチャード・スティルゴー ／ 脚本 リチャード・スティルゴー／ロイド・ウェッバー ／ ★★ガストン・ルルーの小説による。★★続編『Love Never Dies』（2010）は別の作品",
+  "roles": [
+    {
+      "label": "ファントム（怪人）"
+    },
+    {
+      "label": "クリスティーヌ・ダーエ"
+    },
+    {
+      "label": "ラウル（シャニュイ子爵）"
+    },
+    {
+      "label": "カルロッタ・ジュディチェッリ"
+    },
+    {
+      "label": "ユベール・ピアンジ"
+    },
+    {
+      "label": "マダム・ジリー"
+    },
+    {
+      "label": "メグ・ジリー"
+    },
+    {
+      "label": "アンドレ"
+    },
+    {
+      "label": "フィルマン"
+    },
+    {
+      "label": "ジョゼフ・ブュケ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★プロローグ（1905年の競売・シャンデリアの復活）",
+      "group_label": "序",
+      "roles": [
+        "ラウル（シャニュイ子爵）",
+        "マダム・ジリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M1 ★★序曲（オルガン）",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "M2 ★★ハンニバルの稽古",
+      "group_label": "第1幕",
+      "roles": [
+        "カルロッタ・ジュディチェッリ",
+        "ユベール・ピアンジ",
+        "アンドレ",
+        "フィルマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★シンク・オブ・ミー",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ラウル（シャニュイ子爵）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★エンジェル・オブ・ミュージック",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "メグ・ジリー",
+        "ファントム（怪人）"
+      ]
+    },
+    {
+      "label": "M5 ★★★ザ・ミラー／ジ・オペラ座の怪人（The Phantom of the Opera）",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ファントム（怪人）"
+      ]
+    },
+    {
+      "label": "M6 ★★★ミュージック・オブ・ザ・ナイト",
+      "group_label": "第1幕",
+      "roles": [
+        "ファントム（怪人）"
+      ]
+    },
+    {
+      "label": "M7 ★★仮面をはがす（I Remember／Stranger Than You Dreamt It）",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ファントム（怪人）"
+      ]
+    },
+    {
+      "label": "M8 ★★マグニフィカル（Notes／Prima Donna）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンドレ",
+        "フィルマン",
+        "カルロッタ・ジュディチェッリ",
+        "ラウル（シャニュイ子爵）",
+        "マダム・ジリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★イル・ムート（カルロッタの声が潰れる・ブュケの死）",
+      "group_label": "第1幕",
+      "roles": [
+        "カルロッタ・ジュディチェッリ",
+        "クリスティーヌ・ダーエ",
+        "ジョゼフ・ブュケ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★オール・アイ・アスク・オブ・ユー（屋上の場・第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ラウル（シャニュイ子爵）",
+        "ファントム（怪人）"
+      ]
+    },
+    {
+      "label": "M11 ★★★マスカレード",
+      "group_label": "第2幕",
+      "roles": [
+        "アンドレ",
+        "フィルマン",
+        "カルロッタ・ジュディチェッリ",
+        "クリスティーヌ・ダーエ",
+        "ラウル（シャニュイ子爵）",
+        "ファントム（怪人）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★ノーツ II／ツイステッド・エヴリ・ウェイ",
+      "group_label": "第2幕",
+      "roles": [
+        "アンドレ",
+        "フィルマン",
+        "ラウル（シャニュイ子爵）",
+        "クリスティーヌ・ダーエ",
+        "カルロッタ・ジュディチェッリ",
+        "マダム・ジリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★ウィッシング・ユー・ワー・サムハウ・ヒア・アゲイン（墓地の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "クリスティーヌ・ダーエ"
+      ]
+    },
+    {
+      "label": "M14 ★★★ワンダリング・チャイルド（三重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ファントム（怪人）",
+        "ラウル（シャニュイ子爵）"
+      ]
+    },
+    {
+      "label": "M15 ★★★ドン・ファンの勝利（The Point of No Return）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファントム（怪人）",
+        "クリスティーヌ・ダーエ",
+        "ユベール・ピアンジ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M16 ★★★終曲（地下の場・ラウルの縄・クリスティーヌの接吻と怪人の消失）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファントム（怪人）",
+        "クリスティーヌ・ダーエ",
+        "ラウル（シャニュイ子爵）",
+        "マダム・ジリー",
+        "メグ・ジリー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

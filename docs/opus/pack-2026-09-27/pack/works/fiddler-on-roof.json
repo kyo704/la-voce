@@ -1,0 +1,287 @@
+{
+  "title": "屋根の上のヴァイオリン弾き",
+  "title_original": "Fiddler on the Roof",
+  "composer": "ジェリー・ボック",
+  "kind": "musical",
+  "year_written": 1964,
+  "duration_min": 180,
+  "edition": "1964 ブロードウェイ初演版（★2004／2015 リバイバル版。★2018 イディッシュ語版は言語が違う）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "fiddler-on-roof",
+  "note": "★作詞 シェルドン・ハーニック ／ 脚本 ジョセフ・スタイン ／ ★★ショレム・アレイヘムの物語による。★イディッシュ語版（Fidler Afn Dakh）は別の版として扱う",
+  "roles": [
+    {
+      "label": "テヴィエ"
+    },
+    {
+      "label": "ゴールデ"
+    },
+    {
+      "label": "ツァイテル"
+    },
+    {
+      "label": "ホーデル"
+    },
+    {
+      "label": "チャヴァ"
+    },
+    {
+      "label": "モーテル"
+    },
+    {
+      "label": "パーチック"
+    },
+    {
+      "label": "フョートカ"
+    },
+    {
+      "label": "ラザール・ウォルフ"
+    },
+    {
+      "label": "イェンテ"
+    },
+    {
+      "label": "ラビ"
+    },
+    {
+      "label": "巡査部長"
+    },
+    {
+      "label": "ヴァイオリン弾き"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★トラディション（しきたり）",
+      "group_label": "第1幕",
+      "roles": [
+        "テヴィエ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★マッチメイカー（仲人さん）",
+      "group_label": "第1幕",
+      "roles": [
+        "ツァイテル",
+        "ホーデル",
+        "チャヴァ"
+      ]
+    },
+    {
+      "label": "M3 ★★イフ・アイ・ワー・ア・リッチ・マン（金持ちなら）",
+      "group_label": "第1幕",
+      "roles": [
+        "テヴィエ"
+      ]
+    },
+    {
+      "label": "M4 ★サバス・プレイヤー（安息日の祈り）",
+      "group_label": "第1幕",
+      "roles": [
+        "テヴィエ",
+        "ゴールデ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★トゥ・ライフ（レハイム）",
+      "group_label": "第1幕",
+      "roles": [
+        "テヴィエ",
+        "ラザール・ウォルフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★テヴィエの夢（フルーマ・サラの幽霊）",
+      "group_label": "第1幕",
+      "roles": [
+        "テヴィエ",
+        "ゴールデ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★サンライズ、サンセット（婚礼）",
+      "group_label": "第1幕",
+      "roles": [
+        "テヴィエ",
+        "ゴールデ",
+        "ツァイテル",
+        "モーテル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★婚礼の踊りと第1幕終曲（ポグロムの兆し）",
+      "group_label": "第1幕",
+      "roles": [
+        "巡査部長",
+        "テヴィエ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★ナウ・アイ・ハヴ・エヴリシング",
+      "group_label": "第2幕",
+      "roles": [
+        "パーチック",
+        "ホーデル"
+      ]
+    },
+    {
+      "label": "M10 ★ドゥ・ユー・ラヴ・ミー？",
+      "group_label": "第2幕",
+      "roles": [
+        "テヴィエ",
+        "ゴールデ"
+      ]
+    },
+    {
+      "label": "M11 ★ファー・フロム・ザ・ホーム・アイ・ラヴ",
+      "group_label": "第2幕",
+      "roles": [
+        "ホーデル",
+        "テヴィエ"
+      ]
+    },
+    {
+      "label": "M12 ★チャヴァのバレエ（Chavaleh）",
+      "group_label": "第2幕",
+      "roles": [
+        "テヴィエ",
+        "チャヴァ"
+      ]
+    },
+    {
+      "label": "M13 ★★アナテフカ（村を去る）",
+      "group_label": "第2幕",
+      "roles": [
+        "テヴィエ",
+        "ゴールデ",
+        "イェンテ",
+        "ラビ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★終曲（ヴァイオリン弾きがついて行く）",
+      "group_label": "第2幕",
+      "roles": [
+        "テヴィエ",
+        "ゴールデ",
+        "ヴァイオリン弾き",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

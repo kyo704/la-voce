@@ -1,0 +1,172 @@
+{
+  "title": "虞美人",
+  "composer": "寺田瀧雄",
+  "composer_sort": "Takarazuka",
+  "kind": "musical",
+  "year_written": 1979,
+  "duration_min": 150,
+  "edition": "★宝塚版（1979 初演）",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "mu-takarazuka-gubijin",
+  "note": "★作詞 ― ／ 脚本 植田紳爾（脚本・演出）",
+  "roles": [
+    {
+      "label": "項羽"
+    },
+    {
+      "label": "虞美人"
+    },
+    {
+      "label": "劉邦"
+    },
+    {
+      "label": "范増"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "秦の末",
+      "group_label": "第1幕",
+      "roles": [
+        "項羽",
+        "劉邦",
+        "范増",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★虞美人との出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "項羽",
+        "虞美人"
+      ]
+    },
+    {
+      "label": "★★垓下の囲み（四面楚歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "項羽",
+        "虞美人",
+        "劉邦",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★結末",
+      "group_label": "第2幕",
+      "roles": [
+        "項羽",
+        "虞美人"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

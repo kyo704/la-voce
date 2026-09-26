@@ -1,0 +1,173 @@
+{
+  "title": "デイダミア",
+  "title_original": "Deidamia",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1741,
+  "duration_min": 165,
+  "language": "it",
+  "source": "hand",
+  "source_id": "deidamia",
+  "note": "★★ヘンデル最後のオペラ。以後はオラトリオに向かう",
+  "roles": [
+    {
+      "label": "デイダミア"
+    },
+    {
+      "label": "アキッレ"
+    },
+    {
+      "label": "ネレーア"
+    },
+    {
+      "label": "ウリッセ"
+    },
+    {
+      "label": "フェニーチェ"
+    },
+    {
+      "label": "リコメーデ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 スキュロス島（女装のアキッレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "デイダミア",
+        "アキッレ",
+        "リコメーデ"
+      ]
+    },
+    {
+      "label": "第1幕 ウリッセとフェニーチェの探索",
+      "group_label": "第1幕",
+      "roles": [
+        "ウリッセ",
+        "フェニーチェ",
+        "ネレーア"
+      ]
+    },
+    {
+      "label": "★第2幕 ★狩りの場（アキッレの本性が現れる）",
+      "group_label": "第2幕",
+      "roles": [
+        "アキッレ",
+        "デイダミア",
+        "ウリッセ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 デイダミアの嘆き",
+      "group_label": "第2幕",
+      "roles": [
+        "デイダミア",
+        "ネレーア"
+      ]
+    },
+    {
+      "label": "★第3幕 武具の試し（アキッレの正体が露見）",
+      "group_label": "第3幕",
+      "roles": [
+        "ウリッセ",
+        "アキッレ",
+        "リコメーデ"
+      ]
+    },
+    {
+      "label": "★終曲（アキッレのトロイアへの出発とデイダミアの別れ）",
+      "group_label": "第3幕",
+      "roles": [
+        "デイダミア",
+        "アキッレ",
+        "ネレーア",
+        "ウリッセ",
+        "フェニーチェ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

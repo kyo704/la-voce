@@ -1,0 +1,56 @@
+{
+  "title": "胸突",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-munetsuki",
+  "note": "★小名狂言 ／ ★★筋の 細かいところは 入れて いません ── ★曲名と 分類だけ 確かめました。★段は 狂言の 型（出だし → やりとり → 落ち）です ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（何某二）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "一段（名乗り・出だし）",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）"
+      ]
+    },
+    {
+      "label": "二段（やりとり）",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（何某二）"
+      ]
+    },
+    {
+      "label": "三段（落ち・留め）",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（何某二）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "title": "人間の顔",
+  "title_original": "Figure humaine",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "chorus",
+  "year_written": 1943,
+  "duration_min": 20,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "ch-poulenc-figure-humaine",
+  "note": "★★★二重合唱・無伴奏。★★占領下に ひそかに 書かれ、終曲は『自由』。★曲数（8曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全8曲（★曲名は 入れて いません）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

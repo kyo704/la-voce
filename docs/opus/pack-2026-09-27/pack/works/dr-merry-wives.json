@@ -1,0 +1,74 @@
+{
+  "title": "ウィンザーの陽気な女房たち",
+  "title_original": "The Merry Wives of Windsor",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1597,
+  "duration_min": 150,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dr-merry-wives",
+  "note": "★ヴェルディ『ファルスタッフ』・ニコライの 歌劇の 元 ／ ★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "フォルスタッフ"
+    },
+    {
+      "label": "フォード夫人"
+    },
+    {
+      "label": "ペイジ夫人"
+    },
+    {
+      "label": "フォード"
+    },
+    {
+      "label": "ペイジ"
+    },
+    {
+      "label": "アン・ペイジ"
+    },
+    {
+      "label": "町の者",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "フォルスタッフの企み",
+      "group_label": "第1幕",
+      "roles": [
+        "フォルスタッフ"
+      ]
+    },
+    {
+      "label": "★洗濯籠に隠される",
+      "group_label": "第3幕",
+      "roles": [
+        "フォルスタッフ",
+        "フォード夫人",
+        "ペイジ夫人",
+        "フォード"
+      ]
+    },
+    {
+      "label": "★★ウィンザーの森の結末",
+      "group_label": "第5幕",
+      "roles": [
+        "フォルスタッフ",
+        "フォード夫人",
+        "ペイジ夫人",
+        "町の者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

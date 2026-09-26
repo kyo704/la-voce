@@ -1,0 +1,233 @@
+{
+ "title": "ポーギーとベス",
+ "title_original": "Porgy and Bess",
+ "aliases": [
+  "サマータイム"
+ ],
+ "composer": "ガーシュウィン",
+ "composer_sort": "Gershwin, George",
+ "kind": "opera",
+ "year_written": 1935,
+ "duration_min": 180,
+ "language": "en",
+ "source": "hand",
+ "source_id": "gershwin-porgy",
+ "roles": [
+  {
+   "label": "ポーギー",
+   "voice": "バスバリトン"
+  },
+  {
+   "label": "ベス",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "クラウン",
+   "voice": "バリトン"
+  },
+  {
+   "label": "スポーティン・ライフ",
+   "voice": "テノール"
+  },
+  {
+   "label": "クララ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "セリーナ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ジェイク"
+  },
+  {
+   "label": "マリア",
+   "voice": "アルト"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 キャットフィッシュ・ロウ（サマータイム）",
+   "group_label": "第1幕",
+   "roles": [
+    "クララ",
+    "ジェイク",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 賭博とクラウンの殺人",
+   "group_label": "第1幕",
+   "roles": [
+    "クラウン",
+    "ポーギー",
+    "ベス",
+    "ジェイク",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 ピクニックの支度（女は気まぐれ）",
+   "group_label": "第2幕",
+   "roles": [
+    "ポーギー",
+    "ベス",
+    "スポーティン・ライフ",
+    "セリーナ",
+    "マリア",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 キティワー島（クラウンとの再会）",
+   "group_label": "第2幕",
+   "roles": [
+    "ベス",
+    "クラウン",
+    "スポーティン・ライフ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 嵐の場",
+   "group_label": "第2幕",
+   "roles": [
+    "クララ",
+    "ジェイク",
+    "クラウン",
+    "ポーギー",
+    "ベス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 クラウンの死と逮捕",
+   "group_label": "第3幕",
+   "roles": [
+    "ポーギー",
+    "クラウン",
+    "ベス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 ニューヨークへ（フィナーレ）",
+   "group_label": "第3幕",
+   "roles": [
+    "ポーギー",
+    "スポーティン・ライフ",
+    "セリーナ",
+    "マリア",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 4,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "サクソフォン",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "バンジョー",
+   "count": 1,
+   "section": "other"
+  },
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

@@ -1,0 +1,188 @@
+{
+  "title": "カルディヤック",
+  "title_original": "Cardillac",
+  "composer": "ヒンデミット",
+  "composer_sort": "Hindemith, Paul",
+  "kind": "opera",
+  "year_written": 1926,
+  "duration_min": 95,
+  "edition": "1926 原典版（3幕）／1952 改訂版（4幕）",
+  "language": "de",
+  "source": "hand",
+  "source_id": "cardillac",
+  "roles": [
+    {
+      "label": "カルディヤック"
+    },
+    {
+      "label": "娘"
+    },
+    {
+      "label": "士官"
+    },
+    {
+      "label": "金の商人"
+    },
+    {
+      "label": "騎士"
+    },
+    {
+      "label": "貴婦人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 パリの街（連続殺人の噂）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 貴婦人と騎士（金の帯の代わりに）",
+      "group_label": "第1幕",
+      "roles": [
+        "貴婦人",
+        "騎士"
+      ]
+    },
+    {
+      "label": "★第1幕 殺し（パントマイム）",
+      "group_label": "第1幕",
+      "roles": [
+        "カルディヤック",
+        "騎士",
+        "貴婦人"
+      ]
+    },
+    {
+      "label": "★第2幕 カルディヤックの工房（王の注文を断る）",
+      "group_label": "第2幕",
+      "roles": [
+        "カルディヤック",
+        "金の商人"
+      ]
+    },
+    {
+      "label": "第2幕 娘と士官（父の作品への執着）",
+      "group_label": "第2幕",
+      "roles": [
+        "カルディヤック",
+        "娘",
+        "士官"
+      ]
+    },
+    {
+      "label": "★第3幕 酒場の前（士官が刺される）",
+      "group_label": "第3幕",
+      "roles": [
+        "カルディヤック",
+        "士官",
+        "娘",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（群衆がカルディヤックを殺し、士官が真相を語る）",
+      "group_label": "第3幕",
+      "roles": [
+        "カルディヤック",
+        "士官",
+        "娘",
+        "金の商人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

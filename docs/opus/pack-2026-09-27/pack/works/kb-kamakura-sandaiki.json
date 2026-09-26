@@ -1,0 +1,76 @@
+{
+  "title": "鎌倉三代記",
+  "aliases": [
+    "絹川村"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1781,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kamakura-sandaiki",
+  "note": "★歌舞伎 ／ 作者 近松半二 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "三浦之助義村"
+    },
+    {
+      "label": "時姫"
+    },
+    {
+      "label": "母長門"
+    },
+    {
+      "label": "佐々木高綱（藤三郎）"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★七段目 絹川村（★時姫と三浦之助）",
+      "group_label": "七段目",
+      "roles": [
+        "三浦之助義村",
+        "時姫",
+        "母長門",
+        "佐々木高綱（藤三郎）",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★絹川村 高綱の正体",
+      "group_label": "七段目",
+      "roles": [
+        "佐々木高綱（藤三郎）",
+        "時姫",
+        "三浦之助義村",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

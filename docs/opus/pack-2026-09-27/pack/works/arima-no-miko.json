@@ -1,0 +1,164 @@
+{
+  "title": "有馬皇子",
+  "title_original": "有馬皇子",
+  "composer": "別宮貞雄",
+  "composer_sort": "Bekku, Sadao",
+  "kind": "opera",
+  "year_written": 1967,
+  "duration_min": 95,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "arima-no-miko",
+  "roles": [
+    {
+      "label": "有馬皇子"
+    },
+    {
+      "label": "中大兄皇子"
+    },
+    {
+      "label": "斉明天皇"
+    },
+    {
+      "label": "蘇我赤兄"
+    },
+    {
+      "label": "守大石"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 飛鳥（謀反の誘い）",
+      "group_label": "第1幕",
+      "roles": [
+        "有馬皇子",
+        "蘇我赤兄",
+        "守大石"
+      ]
+    },
+    {
+      "label": "★★第1幕 赤兄の裏切り",
+      "group_label": "第1幕",
+      "roles": [
+        "蘇我赤兄",
+        "中大兄皇子"
+      ]
+    },
+    {
+      "label": "★★第2幕 取り調べ（★天と赤兄が知る）",
+      "group_label": "第2幕",
+      "roles": [
+        "有馬皇子",
+        "中大兄皇子",
+        "斉明天皇"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★磐代の浜松が枝（辞世の歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "有馬皇子"
+      ]
+    },
+    {
+      "label": "★★終曲（藤白坂の処刑）",
+      "group_label": "終幕",
+      "roles": [
+        "有馬皇子",
+        "中大兄皇子",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

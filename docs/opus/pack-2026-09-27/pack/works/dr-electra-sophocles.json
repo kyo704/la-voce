@@ -1,0 +1,69 @@
+{
+ "title": "エレクトラ（ソポクレス）",
+ "composer": "ソポクレス",
+ "composer_sort": "Sophocles",
+ "kind": "drama",
+ "year_written": -410,
+ "duration_min": 120,
+ "language": "el",
+ "source": "hand",
+ "source_id": "dr-electra-sophocles",
+ "note": "★★台詞の 文は 入れて いません",
+ "roles": [
+  {
+   "label": "エレクトラ"
+  },
+  {
+   "label": "オレステス"
+  },
+  {
+   "label": "クリュタイムネストラ"
+  },
+  {
+   "label": "クリュソテミス"
+  },
+  {
+   "label": "アイギストス"
+  },
+  {
+   "label": "合唱団（コロス）",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "エレクトラの嘆き",
+   "group_label": "一幕物",
+   "roles": [
+    "エレクトラ",
+    "合唱団（コロス）"
+   ]
+  },
+  {
+   "label": "★オレステスの帰還",
+   "group_label": "一幕物",
+   "roles": [
+    "エレクトラ",
+    "オレステス"
+   ]
+  },
+  {
+   "label": "★★復讐",
+   "group_label": "一幕物",
+   "roles": [
+    "エレクトラ",
+    "オレステス",
+    "クリュタイムネストラ",
+    "アイギストス"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "なし（劇音楽がつく上演もあります）",
+   "count": 0,
+   "section": "other",
+   "note": "上演ごと"
+  }
+ ]
+}

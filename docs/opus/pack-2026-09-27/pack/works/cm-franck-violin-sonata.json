@@ -1,0 +1,65 @@
+{
+  "title": "ヴァイオリンソナタ イ長調（フランク）",
+  "composer": "フランク",
+  "composer_sort": "Franck, César",
+  "kind": "chamber",
+  "year_written": 1886,
+  "duration_min": 28,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-franck-violin-sonata",
+  "roles": [
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグレット・ベン・モデラート",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第2楽章 アレグロ",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第3楽章 レチタティーヴォ〜ファンタジア",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "★第4楽章 アレグレット・ポコ・モッソ（カノン）",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "title": "五節舞",
+  "composer": "雅楽",
+  "composer_sort": "Gagaku",
+  "kind": "gagaku",
+  "duration_min": 15,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "gagaku-gosechi-no-mai",
+  "note": "★舞楽 ／ 調子 ― ／ 国風歌舞 ／ ★★女性が 舞います",
+  "roles": [
+    {
+      "label": "管方（篳篥・龍笛・笙）",
+      "is_group": true
+    },
+    {
+      "label": "絃方（楽琵琶・楽箏）",
+      "is_group": true
+    },
+    {
+      "label": "打物（鞨鼓・太鼓・鉦鼓）",
+      "is_group": true
+    },
+    {
+      "label": "立方（舞人）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★当曲（女舞）",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "打物（鞨鼓・太鼓・鉦鼓）",
+        "立方（舞人）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "篳篥",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "龍笛",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "笙",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "楽琵琶",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "楽箏",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "鞨鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "鉦鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "立方（舞人）",
+      "count": 4,
+      "section": "other",
+      "note": "曲により1〜6人"
+    }
+  ]
+}

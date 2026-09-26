@@ -1,0 +1,61 @@
+{
+  "title": "末広がり",
+  "title_original": "末広がり",
+  "aliases": [],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "kyogen-suehirogari-okura",
+  "duration_min": 30,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "太郎冠者"
+    },
+    {
+      "label": "主人"
+    },
+    {
+      "label": "すっぱ（詐欺師）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "末広がりを買いに行く",
+      "group_label": "全",
+      "roles": [
+        "主人",
+        "太郎冠者"
+      ]
+    },
+    {
+      "label": "すっぱに騙される",
+      "group_label": "全",
+      "roles": [
+        "すっぱ（詐欺師）",
+        "太郎冠者"
+      ]
+    },
+    {
+      "label": "主人の怒りと囃子物で機嫌直し",
+      "group_label": "全",
+      "roles": [
+        "主人",
+        "太郎冠者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による（笛・小鼓・大鼓・太鼓）"
+    }
+  ],
+  "school": "大蔵流",
+  "note": "★大蔵流で書いた。和泉流では 曲名や科白の運びが違うことがある"
+}

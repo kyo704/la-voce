@@ -1,0 +1,192 @@
+{
+ "title": "エレクトラ",
+ "title_original": "Elektra",
+ "aliases": [
+  "エレクトラの舞踏",
+  "ギリシャ悲劇"
+ ],
+ "composer": "R.シュトラウス",
+ "composer_sort": "Strauss, Richard",
+ "kind": "opera",
+ "year_written": 1909,
+ "duration_min": 105,
+ "language": "de",
+ "source": "hand",
+ "source_id": "strauss-elektra",
+ "roles": [
+  {
+   "label": "エレクトラ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "クリソテミス",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "クリテムネストラ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "オレスト",
+   "voice": "バリトン"
+  },
+  {
+   "label": "エギスト",
+   "voice": "テノール"
+  },
+  {
+   "label": "侍女たち",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "侍女たちの場",
+   "group_label": "全1幕",
+   "roles": [
+    "侍女たち"
+   ]
+  },
+  {
+   "label": "エレクトラのモノローグ（ひとり、ああ、ひとり）",
+   "group_label": "全1幕",
+   "roles": [
+    "エレクトラ"
+   ]
+  },
+  {
+   "label": "クリソテミスとの場",
+   "group_label": "全1幕",
+   "roles": [
+    "エレクトラ",
+    "クリソテミス"
+   ]
+  },
+  {
+   "label": "クリテムネストラとの対決",
+   "group_label": "全1幕",
+   "roles": [
+    "エレクトラ",
+    "クリテムネストラ"
+   ]
+  },
+  {
+   "label": "オレストの帰還（認知の場）",
+   "group_label": "全1幕",
+   "roles": [
+    "エレクトラ",
+    "オレスト"
+   ]
+  },
+  {
+   "label": "復讐とエレクトラの舞踏",
+   "group_label": "全1幕",
+   "roles": [
+    "エレクトラ",
+    "クリソテミス",
+    "エギスト",
+    "オレスト",
+    "侍女たち"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 4,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 4,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 6,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 4,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 8,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 6,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 6,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 2,
+   "section": "harp"
+  },
+  {
+   "part": "ワーグナーチューバ",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "チェレスタ",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

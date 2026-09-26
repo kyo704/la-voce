@@ -1,0 +1,39 @@
+{
+  "title": "ノックスヴィル 1915年夏 作品24",
+  "title_original": "Knoxville: Summer of 1915 op.24",
+  "composer": "バーバー",
+  "composer_sort": "Barber, Samuel",
+  "kind": "song_cycle",
+  "year_written": 1947,
+  "duration_min": 16,
+  "language": "en",
+  "source": "hand",
+  "source_id": "barber-op24",
+  "note": "★作詩 ジェイムズ・エイジー ／ ★★1曲だけの 作品。★ソプラノと 管弦楽（★室内管弦楽版も あります） ／ ★★曲名を 全部 確かめられなかったので ★曲数（1曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全1曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽（または室内管弦楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

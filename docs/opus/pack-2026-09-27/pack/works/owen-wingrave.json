@@ -1,0 +1,217 @@
+{
+  "title": "オーウェン・ウィングレイヴ",
+  "title_original": "Owen Wingrave",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1971,
+  "duration_min": 105,
+  "language": "en",
+  "source": "hand",
+  "source_id": "owen-wingrave",
+  "note": "★テレビのために書かれたオペラ（BBC）",
+  "roles": [
+    {
+      "label": "オーウェン・ウィングレイヴ"
+    },
+    {
+      "label": "ケイト・ジュリアン"
+    },
+    {
+      "label": "ジュリアン夫人"
+    },
+    {
+      "label": "ミス・ウィングレイヴ"
+    },
+    {
+      "label": "サー・フィリップ・ウィングレイヴ"
+    },
+    {
+      "label": "コイル氏"
+    },
+    {
+      "label": "コイル夫人"
+    },
+    {
+      "label": "レチミア"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（家族の肖像画）",
+      "group_label": "序",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 コイルの兵学校（オーウェンの辞退）",
+      "group_label": "第1幕",
+      "roles": [
+        "オーウェン・ウィングレイヴ",
+        "コイル氏",
+        "レチミア"
+      ]
+    },
+    {
+      "label": "第1幕 コイル夫妻の当惑",
+      "group_label": "第1幕",
+      "roles": [
+        "コイル氏",
+        "コイル夫人"
+      ]
+    },
+    {
+      "label": "★第1幕 パラマー・クロス邸（一族の圧力）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミス・ウィングレイヴ",
+        "ジュリアン夫人",
+        "ケイト・ジュリアン",
+        "オーウェン・ウィングレイヴ"
+      ]
+    },
+    {
+      "label": "★第1幕 祖父サー・フィリップとの対面",
+      "group_label": "第1幕",
+      "roles": [
+        "サー・フィリップ・ウィングレイヴ",
+        "オーウェン・ウィングレイヴ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★バラード（先祖の話・子を打ち殺した父の亡霊の部屋）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 夕食（一族の非難とオーウェンの★平和のアリア）",
+      "group_label": "第2幕",
+      "roles": [
+        "オーウェン・ウィングレイヴ",
+        "ミス・ウィングレイヴ",
+        "ジュリアン夫人",
+        "ケイト・ジュリアン",
+        "サー・フィリップ・ウィングレイヴ",
+        "コイル氏",
+        "コイル夫人"
+      ]
+    },
+    {
+      "label": "★第2幕 ケイトの挑み（あの部屋で寝てみて）",
+      "group_label": "第2幕",
+      "roles": [
+        "ケイト・ジュリアン",
+        "オーウェン・ウィングレイヴ"
+      ]
+    },
+    {
+      "label": "★終曲（部屋でのオーウェンの死・ケイトの叫び）",
+      "group_label": "第2幕",
+      "roles": [
+        "ケイト・ジュリアン",
+        "ミス・ウィングレイヴ",
+        "ジュリアン夫人",
+        "コイル氏",
+        "コイル夫人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

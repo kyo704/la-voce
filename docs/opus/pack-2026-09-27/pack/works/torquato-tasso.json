@@ -1,0 +1,178 @@
+{
+  "title": "トルクァート・タッソ",
+  "title_original": "Torquato Tasso",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1833,
+  "duration_min": 145,
+  "language": "it",
+  "source": "hand",
+  "source_id": "torquato-tasso",
+  "roles": [
+    {
+      "label": "タッソ"
+    },
+    {
+      "label": "エレオノーラ・デステ"
+    },
+    {
+      "label": "エレオノーラ・ディ・スカンディアーノ"
+    },
+    {
+      "label": "ロベルト・ジェラルディーニ"
+    },
+    {
+      "label": "ドン・ジェルマーノ"
+    },
+    {
+      "label": "アルフォンソ公爵"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 フェッラーラの宮廷（廷臣の嘲り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・ジェルマーノ",
+        "ロベルト・ジェラルディーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 タッソの登場（詩と恋）",
+      "group_label": "第1幕",
+      "roles": [
+        "タッソ",
+        "エレオノーラ・デステ"
+      ]
+    },
+    {
+      "label": "第1幕 取り違えた詩（もう1人のエレオノーラ）",
+      "group_label": "第1幕",
+      "roles": [
+        "エレオノーラ・ディ・スカンディアーノ",
+        "ロベルト・ジェラルディーニ",
+        "タッソ"
+      ]
+    },
+    {
+      "label": "第2幕 公爵の怒りとタッソの幽閉",
+      "group_label": "第2幕",
+      "roles": [
+        "アルフォンソ公爵",
+        "タッソ",
+        "エレオノーラ・デステ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 7年後の牢（タッソの独白）",
+      "group_label": "第3幕",
+      "roles": [
+        "タッソ"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（月桂冠と、エレオノーラの死の報せ）",
+      "group_label": "第3幕",
+      "roles": [
+        "タッソ",
+        "ドン・ジェルマーノ",
+        "アルフォンソ公爵",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

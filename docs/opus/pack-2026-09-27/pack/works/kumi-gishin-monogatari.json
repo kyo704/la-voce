@@ -1,0 +1,85 @@
+{
+  "title": "義臣物語",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1750,
+  "duration_min": 70,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-gishin-monogatari",
+  "note": "★組踊（琉球の歌舞劇） ／ 作者 田里朝直 ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "護佐丸の遺児"
+    },
+    {
+      "label": "阿麻和利"
+    },
+    {
+      "label": "忠臣"
+    },
+    {
+      "label": "母"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★家を滅ぼされる",
+      "group_label": "段",
+      "roles": [
+        "護佐丸の遺児",
+        "母"
+      ]
+    },
+    {
+      "label": "★忠臣に守られて逃れる",
+      "group_label": "段",
+      "roles": [
+        "護佐丸の遺児",
+        "忠臣"
+      ]
+    },
+    {
+      "label": "★★阿麻和利を討つ",
+      "group_label": "段",
+      "roles": [
+        "護佐丸の遺児",
+        "忠臣",
+        "阿麻和利"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

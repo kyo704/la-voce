@@ -1,0 +1,65 @@
+{
+  "title": "釣狐",
+  "title_original": "釣狐",
+  "aliases": [],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "kyogen-tsurigitsune-okura",
+  "duration_min": 70,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "白蔵主（狐）"
+    },
+    {
+      "label": "猟師"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "老狐が伯父の僧に化ける",
+      "group_label": "前",
+      "roles": [
+        "白蔵主（狐）",
+        "猟師"
+      ]
+    },
+    {
+      "label": "猟師を説得する",
+      "group_label": "中",
+      "roles": [
+        "白蔵主（狐）",
+        "猟師"
+      ]
+    },
+    {
+      "label": "中入（狐の姿に戻る）",
+      "group_label": "中入",
+      "roles": [
+        "白蔵主（狐）"
+      ]
+    },
+    {
+      "label": "罠にかかりかけ逃げる",
+      "group_label": "後",
+      "roles": [
+        "白蔵主（狐）",
+        "猟師"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による（笛・小鼓・大鼓・太鼓）"
+    }
+  ],
+  "school": "大蔵流",
+  "note": "★大蔵流で書いた。和泉流では 曲名や科白の運びが違うことがある"
+}

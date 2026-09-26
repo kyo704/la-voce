@@ -1,0 +1,207 @@
+{
+  "title": "ノアの洪水",
+  "title_original": "Noye's Fludde",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1958,
+  "duration_min": 50,
+  "language": "en",
+  "source": "hand",
+  "source_id": "noyes-fludde",
+  "note": "★★子どもと素人が加わる作。会衆が讃美歌を歌う。動物役は子どもたち。リコーダー・スラング（吊り下げたマグカップ）を使う",
+  "roles": [
+    {
+      "label": "ノア"
+    },
+    {
+      "label": "ノアの妻"
+    },
+    {
+      "label": "神の声"
+    },
+    {
+      "label": "セム"
+    },
+    {
+      "label": "ハム"
+    },
+    {
+      "label": "ヤペテ"
+    },
+    {
+      "label": "ゴシップたち"
+    },
+    {
+      "label": "動物たち"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（会衆の讃美歌「主よ、われらを救い」）",
+      "group_label": "序",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★神の声（箱舟を作れ）",
+      "group_label": "本編",
+      "roles": [
+        "神の声",
+        "ノア"
+      ]
+    },
+    {
+      "label": "★箱舟を作る（子らと妻たち）",
+      "group_label": "本編",
+      "roles": [
+        "ノア",
+        "セム",
+        "ハム",
+        "ヤペテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★ノアの妻の抵抗とゴシップたち（酒を飲む）",
+      "group_label": "本編",
+      "roles": [
+        "ノアの妻",
+        "ゴシップたち",
+        "ノア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★動物たちの行列（キリエ・エレイソン）",
+      "group_label": "本編",
+      "roles": [
+        "動物たち",
+        "ノア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★嵐（パッサカリア・会衆の讃美歌「われを導きたまえ」）",
+      "group_label": "本編",
+      "roles": [
+        "ノア",
+        "ノアの妻",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★鴉と鳩",
+      "group_label": "本編",
+      "roles": [
+        "ノア",
+        "セム",
+        "ハム",
+        "ヤペテ"
+      ]
+    },
+    {
+      "label": "★終曲（虹と讃美歌「創造主をたたえよ」）",
+      "group_label": "終",
+      "roles": [
+        "神の声",
+        "ノア",
+        "ノアの妻",
+        "動物たち",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

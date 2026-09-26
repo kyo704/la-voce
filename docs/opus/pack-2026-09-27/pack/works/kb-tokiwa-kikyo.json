@@ -1,0 +1,87 @@
+{
+  "title": "時今也桔梗旗揚",
+  "aliases": [
+    "馬盥の光秀"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1808,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-tokiwa-kikyo",
+  "note": "★歌舞伎 ／ 作者 四世鶴屋南北 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "武智光秀"
+    },
+    {
+      "label": "小田春長"
+    },
+    {
+      "label": "森蘭丸"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "皐月"
+    },
+    {
+      "label": "四王天但馬守"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★饗応（★春長の辱め）",
+      "group_label": "序幕",
+      "roles": [
+        "武智光秀",
+        "小田春長",
+        "森蘭丸",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★馬盥（★光秀が水を浴びる）",
+      "group_label": "二幕",
+      "roles": [
+        "武智光秀",
+        "小田春長",
+        "皐月",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★愛宕山連歌（★謀反を決める）",
+      "group_label": "三幕",
+      "roles": [
+        "武智光秀",
+        "四王天但馬守",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

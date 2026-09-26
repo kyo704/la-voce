@@ -1,0 +1,100 @@
+{
+  "title": "班女",
+  "title_original": "班女",
+  "aliases": [],
+  "composer": "能（四番目物（雑））",
+  "composer_sort": "Noh 四番目（雑）",
+  "kind": "noh",
+  "year_written": 1430,
+  "source": "hand",
+  "source_id": "noh-hanjo-kanze",
+  "duration_min": 70,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（花子）"
+    },
+    {
+      "label": "ワキ（吉田少将）"
+    },
+    {
+      "label": "ワキツレ（従者）",
+      "is_group": true
+    },
+    {
+      "label": "アイ（宿の女主人）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "宿を追われる",
+      "group_label": "前段",
+      "roles": [
+        "アイ（宿の女主人）",
+        "シテ（花子）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "少将の参詣",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（吉田少将）",
+        "ワキツレ（従者）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "狂女の舞",
+      "group_label": "後段",
+      "roles": [
+        "シテ（花子）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "扇の再会",
+      "group_label": "後段",
+      "roles": [
+        "シテ（花子）",
+        "ワキ（吉田少将）",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う"
+}

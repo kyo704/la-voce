@@ -1,0 +1,68 @@
+{
+  "title": "ケーゲルシュタット・トリオ K.498",
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "chamber",
+  "year_written": 1786,
+  "duration_min": 22,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-mozart-kegelstatt",
+  "roles": [
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アンダンテ",
+      "group_label": "楽章",
+      "roles": [
+        "クラリネット",
+        "ヴィオラ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第2楽章 メヌエット",
+      "group_label": "楽章",
+      "roles": [
+        "クラリネット",
+        "ヴィオラ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第3楽章 ロンドー",
+      "group_label": "楽章",
+      "roles": [
+        "クラリネット",
+        "ヴィオラ",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "title": "ミケランジェロの7つのソネット 作品22",
+  "title_original": "Seven Sonnets of Michelangelo op.22",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "song_cycle",
+  "year_written": 1940,
+  "duration_min": 20,
+  "language": "it",
+  "source": "hand",
+  "source_id": "britten-op22",
+  "note": "★★テノールのための 曲。★歌詞は イタリア語 ／ ★★曲名を 全部 確かめられなかったので ★曲数（7曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全7曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

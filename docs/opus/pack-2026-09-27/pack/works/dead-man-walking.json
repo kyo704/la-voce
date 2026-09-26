@@ -1,0 +1,225 @@
+{
+  "title": "デッドマン・ウォーキング",
+  "title_original": "Dead Man Walking",
+  "composer": "ヘギー",
+  "composer_sort": "Heggie, Jake",
+  "kind": "opera",
+  "year_written": 2000,
+  "duration_min": 145,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dead-man-walking",
+  "note": "★シスター・ヘレン・プレジャンの手記による。★台本はテレンス・マクナリー",
+  "roles": [
+    {
+      "label": "シスター・ヘレン・プレジャン"
+    },
+    {
+      "label": "ジョゼフ・デ・ロシェ"
+    },
+    {
+      "label": "デ・ロシェ夫人"
+    },
+    {
+      "label": "プレジャン夫人"
+    },
+    {
+      "label": "オーウェン・ハート"
+    },
+    {
+      "label": "ハート夫人"
+    },
+    {
+      "label": "刑務所長"
+    },
+    {
+      "label": "刑務所の牧師"
+    },
+    {
+      "label": "ハワード・ボウチェ"
+    },
+    {
+      "label": "ボウチェ夫人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（★子どもたちの讃美歌と★殺人の場・無言劇）",
+      "group_label": "序",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 シスター・ヘレンの学校（手紙を受け取る）",
+      "group_label": "第1幕",
+      "roles": [
+        "シスター・ヘレン・プレジャン",
+        "プレジャン夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★アンゴラ刑務所への道（車の中の讃美歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "シスター・ヘレン・プレジャン"
+      ]
+    },
+    {
+      "label": "★第1幕 面会（金網をはさんで）",
+      "group_label": "第1幕",
+      "roles": [
+        "シスター・ヘレン・プレジャン",
+        "ジョゼフ・デ・ロシェ",
+        "刑務所の牧師"
+      ]
+    },
+    {
+      "label": "★第1幕 ★恩赦委員会（被害者の親たちの証言）",
+      "group_label": "第1幕",
+      "roles": [
+        "シスター・ヘレン・プレジャン",
+        "デ・ロシェ夫人",
+        "オーウェン・ハート",
+        "ハート夫人",
+        "ハワード・ボウチェ",
+        "ボウチェ夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ヘレンの疑い（自分が来なければ）",
+      "group_label": "第2幕",
+      "roles": [
+        "シスター・ヘレン・プレジャン",
+        "刑務所の牧師"
+      ]
+    },
+    {
+      "label": "★第2幕 ★母との最後の面会",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョゼフ・デ・ロシェ",
+        "デ・ロシェ夫人"
+      ]
+    },
+    {
+      "label": "★第2幕 ★オーウェン・ハートとの対話（許せない）",
+      "group_label": "第2幕",
+      "roles": [
+        "シスター・ヘレン・プレジャン",
+        "オーウェン・ハート"
+      ]
+    },
+    {
+      "label": "★第2幕 ★告白（デ・ロシェが罪を認める）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョゼフ・デ・ロシェ",
+        "シスター・ヘレン・プレジャン"
+      ]
+    },
+    {
+      "label": "★終曲（★処刑・ヘレンの讃美歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョゼフ・デ・ロシェ",
+        "シスター・ヘレン・プレジャン",
+        "刑務所長",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

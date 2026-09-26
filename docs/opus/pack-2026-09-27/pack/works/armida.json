@@ -1,0 +1,209 @@
+{
+  "title": "アルミーダ",
+  "title_original": "Armida",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1817,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "armida",
+  "note": "★テノールが6役（初演時）。技巧の難しさで名高い",
+  "roles": [
+    {
+      "label": "アルミーダ"
+    },
+    {
+      "label": "リナルド"
+    },
+    {
+      "label": "ゴッフレード"
+    },
+    {
+      "label": "ジェルナンド"
+    },
+    {
+      "label": "イドラオーテ"
+    },
+    {
+      "label": "エウスタツィオ"
+    },
+    {
+      "label": "アスタロッテ"
+    },
+    {
+      "label": "ウバルド"
+    },
+    {
+      "label": "カルロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 十字軍の陣営（アルミーダの訴え）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミーダ",
+        "ゴッフレード",
+        "イドラオーテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 リナルドとアルミーダの二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミーダ",
+        "リナルド"
+      ]
+    },
+    {
+      "label": "第1幕 ジェルナンドとの決闘（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "リナルド",
+        "ジェルナンド",
+        "ゴッフレード",
+        "エウスタツィオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 魔法の館（アスタロッテと悪霊）",
+      "group_label": "第2幕",
+      "roles": [
+        "アスタロッテ",
+        "アルミーダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 魔法の庭とバレエ",
+      "group_label": "第2幕",
+      "roles": [
+        "アルミーダ",
+        "リナルド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ウバルドとカルロの来訪（盾の鏡）",
+      "group_label": "第3幕",
+      "roles": [
+        "ウバルド",
+        "カルロ",
+        "リナルド"
+      ]
+    },
+    {
+      "label": "第3幕 三重唱と別れ",
+      "group_label": "第3幕",
+      "roles": [
+        "アルミーダ",
+        "リナルド",
+        "ウバルド",
+        "カルロ"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（アルミーダの狂乱・魔法の館の崩壊）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルミーダ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

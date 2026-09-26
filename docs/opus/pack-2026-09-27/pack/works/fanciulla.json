@@ -1,0 +1,259 @@
+{
+ "title": "西部の娘",
+ "composer": "プッチーニ",
+ "composer_sort": "Puccini, Giacomo",
+ "kind": "opera",
+ "year_written": 1910,
+ "source": "hand",
+ "source_id": "puccini-fanciulla",
+ "roles": [
+  {
+   "label": "ミニー",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ディック・ジョンソン（ラメレス）",
+   "voice": "テノール"
+  },
+  {
+   "label": "ジャック・ランス",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ニック"
+  },
+  {
+   "label": "アシュビー"
+  },
+  {
+   "label": "ソノーラ"
+  },
+  {
+   "label": "ジェイク・ウォーレス"
+  },
+  {
+   "label": "ビリー・ジャックラビット"
+  },
+  {
+   "label": "ワウクル"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "酒場ポルカの夜（坑夫たちの合唱）",
+   "group_label": "第1幕",
+   "roles": [
+    "ニック",
+    "ソノーラ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ジェイク・ウォーレスの歌（故郷を思う）",
+   "group_label": "第1幕",
+   "roles": [
+    "ジェイク・ウォーレス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ミニーの登場と聖書の講義",
+   "group_label": "第1幕",
+   "roles": [
+    "ミニー",
+    "合唱",
+    "ジャック・ランス"
+   ]
+  },
+  {
+   "label": "ランスの求愛（ミニー、家を出てから）",
+   "group_label": "第1幕",
+   "roles": [
+    "ジャック・ランス",
+    "ミニー"
+   ]
+  },
+  {
+   "label": "ジョンソンの登場と二重唱",
+   "group_label": "第1幕",
+   "roles": [
+    "ディック・ジョンソン（ラメレス）",
+    "ミニー",
+    "ジャック・ランス",
+    "アシュビー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ミニーの小屋（ワウクルと子ども）",
+   "group_label": "第2幕",
+   "roles": [
+    "ワウクル",
+    "ビリー・ジャックラビット",
+    "ミニー"
+   ]
+  },
+  {
+   "label": "愛の二重唱と吹雪",
+   "group_label": "第2幕",
+   "roles": [
+    "ミニー",
+    "ディック・ジョンソン（ラメレス）"
+   ]
+  },
+  {
+   "label": "ランスの来訪と正体の発覚",
+   "group_label": "第2幕",
+   "roles": [
+    "ジャック・ランス",
+    "ミニー",
+    "ディック・ジョンソン（ラメレス）"
+   ]
+  },
+  {
+   "label": "ポーカーの賭け（第2幕フィナーレ）",
+   "group_label": "第2幕",
+   "roles": [
+    "ミニー",
+    "ジャック・ランス"
+   ]
+  },
+  {
+   "label": "追跡の場（坑夫たちとランス）",
+   "group_label": "第3幕",
+   "roles": [
+    "ジャック・ランス",
+    "ニック",
+    "アシュビー",
+    "ソノーラ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "やがて来る自由の日（ジョンソンのアリア）",
+   "group_label": "第3幕",
+   "roles": [
+    "ディック・ジョンソン（ラメレス）",
+    "合唱"
+   ]
+  },
+  {
+   "label": "フィナーレ（ミニーの嘆願・さらばカリフォルニア）",
+   "group_label": "第3幕",
+   "roles": [
+    "ミニー",
+    "ディック・ジョンソン（ラメレス）",
+    "ジャック・ランス",
+    "ソノーラ",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "バスクラリネット"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コントラファゴット"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 4,
+   "section": "percussion",
+   "note": "大太鼓・シンバル・タムタム・鐘・風の音"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "チェレスタ",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "舞台裏の楽器",
+   "count": 0,
+   "section": "banda",
+   "note": "フォンニカ（風音器）・舞台裏の合唱"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

@@ -1,0 +1,262 @@
+{
+  "title": "努力しないで出世する方法",
+  "title_original": "How to Succeed in Business Without Really Trying",
+  "composer": "フランク・レッサー",
+  "kind": "musical",
+  "year_written": 1961,
+  "duration_min": 145,
+  "edition": "1961 ブロードウェイ初演版（★1995／2011 リバイバル版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "how-to-succeed",
+  "note": "★作詞 フランク・レッサー ／ 脚本 エイブ・バロウズほか ／ ★★ピュリッツァー賞を受けたミュージカル（数少ない例）",
+  "roles": [
+    {
+      "label": "J・ピアポント・フィンチ"
+    },
+    {
+      "label": "ロズマリー・ピルキントン"
+    },
+    {
+      "label": "J・B・ビグリー"
+    },
+    {
+      "label": "バド・フランプ"
+    },
+    {
+      "label": "ヘディ・ラルー"
+    },
+    {
+      "label": "スミティ"
+    },
+    {
+      "label": "ブラットウェイト"
+    },
+    {
+      "label": "ミス・ジョーンズ"
+    },
+    {
+      "label": "語り手（本の声）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★窓拭きのフィンチと本（How To）",
+      "group_label": "第1幕",
+      "roles": [
+        "J・ピアポント・フィンチ",
+        "語り手（本の声）"
+      ]
+    },
+    {
+      "label": "M2 ★★ハッピー・トゥ・キープ・ヒズ・ディナー・ウォーム",
+      "group_label": "第1幕",
+      "roles": [
+        "ロズマリー・ピルキントン"
+      ]
+    },
+    {
+      "label": "M3 ★★カンパニー・ウェイ",
+      "group_label": "第1幕",
+      "roles": [
+        "J・ピアポント・フィンチ",
+        "ブラットウェイト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ア・シークレタリー・イズ・ノット・ア・トイ",
+      "group_label": "第1幕",
+      "roles": [
+        "ブラットウェイト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ビーン・ア・ロング・デイ",
+      "group_label": "第1幕",
+      "roles": [
+        "ロズマリー・ピルキントン",
+        "スミティ",
+        "J・ピアポント・フィンチ"
+      ]
+    },
+    {
+      "label": "M6 ★★グランド・オールド・アイヴィー",
+      "group_label": "第1幕",
+      "roles": [
+        "J・ピアポント・フィンチ",
+        "J・B・ビグリー"
+      ]
+    },
+    {
+      "label": "M7 ★★パリ・オリジナル（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロズマリー・ピルキントン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★コーヒー・ブレイク",
+      "group_label": "第2幕",
+      "roles": [
+        "バド・フランプ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ラヴ・フロム・ア・ハート・オブ・ゴールド",
+      "group_label": "第2幕",
+      "roles": [
+        "J・B・ビグリー",
+        "ヘディ・ラルー"
+      ]
+    },
+    {
+      "label": "M10 ★★★アイ・ビリーヴ・イン・ユー（★鏡に向かって自分に歌う）",
+      "group_label": "第2幕",
+      "roles": [
+        "J・ピアポント・フィンチ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★宝探しの惨事（テレビ番組）",
+      "group_label": "第2幕",
+      "roles": [
+        "J・ピアポント・フィンチ",
+        "ヘディ・ラルー",
+        "J・B・ビグリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★ブラザーフッド・オブ・マン",
+      "group_label": "第2幕",
+      "roles": [
+        "J・ピアポント・フィンチ",
+        "J・B・ビグリー",
+        "ブラットウェイト",
+        "ミス・ジョーンズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★終曲（会長就任）",
+      "group_label": "第2幕",
+      "roles": [
+        "J・ピアポント・フィンチ",
+        "ロズマリー・ピルキントン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

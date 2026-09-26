@@ -1,0 +1,131 @@
+{
+  "title": "世の終わりのための四重奏曲",
+  "title_original": "Quatuor pour la fin du Temps",
+  "composer": "メシアン",
+  "composer_sort": "Messiaen, Olivier",
+  "kind": "chamber",
+  "year_written": 1941,
+  "duration_min": 50,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-messiaen-quatuor",
+  "note": "★★★捕虜収容所で 書かれ、そこで 初演されました",
+  "roles": [
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "チェロ"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 水晶の典礼",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 世の終わりを告げる天使のためのヴォカリーズ",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "★3. 鳥たちの深淵（クラリネット独奏）",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 間奏曲",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "★5. イエスの永遠性への賛歌（チェロとピアノ）",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. 7つのトランペットのための狂乱の踊り",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "7. 世の終わりを告げる天使のための虹の混乱",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "★★8. イエスの不滅性への賛歌（ヴァイオリンとピアノ）",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン",
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

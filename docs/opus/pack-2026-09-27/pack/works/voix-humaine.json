@@ -1,0 +1,142 @@
+{
+  "title": "人間の声",
+  "title_original": "La voix humaine",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "opera",
+  "year_written": 1959,
+  "duration_min": 40,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "voix-humaine",
+  "note": "★独唱1人のみ（モノドラマ）。★台本はコクトー",
+  "roles": [
+    {
+      "label": "彼女"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★電話の場（ひとりだけの劇・全1場）",
+      "group_label": "全曲",
+      "roles": [
+        "彼女"
+      ]
+    },
+    {
+      "label": "混線と切れる電話",
+      "group_label": "全曲",
+      "roles": [
+        "彼女"
+      ]
+    },
+    {
+      "label": "犬の話（うそ）",
+      "group_label": "全曲",
+      "roles": [
+        "彼女"
+      ]
+    },
+    {
+      "label": "★睡眠薬の告白",
+      "group_label": "全曲",
+      "roles": [
+        "彼女"
+      ]
+    },
+    {
+      "label": "★終曲（愛している、愛している）",
+      "group_label": "全曲",
+      "roles": [
+        "彼女"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

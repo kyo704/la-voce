@@ -1,0 +1,78 @@
+{
+  "title": "碁太平記白石噺（文楽）",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1780,
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-go-taiheiki-bu",
+  "note": "★文楽（人形浄瑠璃） ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "宮城野"
+    },
+    {
+      "label": "信夫"
+    },
+    {
+      "label": "惣兵衛"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★新吉原揚屋（★姉妹の再会）",
+      "group_label": "大詰",
+      "roles": [
+        "宮城野",
+        "信夫",
+        "惣兵衛",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

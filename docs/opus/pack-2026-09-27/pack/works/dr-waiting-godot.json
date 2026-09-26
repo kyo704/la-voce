@@ -1,0 +1,75 @@
+{
+  "title": "ゴドーを待ちながら",
+  "composer": "ベケット",
+  "composer_sort": "Beckett, Samuel",
+  "kind": "drama",
+  "year_written": 1953,
+  "duration_min": 140,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "dr-waiting-godot",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ヴラジーミル"
+    },
+    {
+      "label": "エストラゴン"
+    },
+    {
+      "label": "ポッツォ"
+    },
+    {
+      "label": "ラッキー"
+    },
+    {
+      "label": "少年"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "道と一本の木・待つ",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴラジーミル",
+        "エストラゴン"
+      ]
+    },
+    {
+      "label": "★ポッツォとラッキー",
+      "group_label": "第1幕",
+      "roles": [
+        "ポッツォ",
+        "ラッキー",
+        "ヴラジーミル",
+        "エストラゴン"
+      ]
+    },
+    {
+      "label": "少年の伝言",
+      "group_label": "第1幕",
+      "roles": [
+        "少年",
+        "ヴラジーミル"
+      ]
+    },
+    {
+      "label": "★★同じ場所・翌日",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴラジーミル",
+        "エストラゴン",
+        "ポッツォ",
+        "ラッキー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

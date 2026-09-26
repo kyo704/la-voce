@@ -1,0 +1,284 @@
+{
+  "title": "ミス・サイゴン",
+  "title_original": "Miss Saigon",
+  "composer": "クロード＝ミシェル・シェーンベルク",
+  "kind": "musical",
+  "year_written": 1989,
+  "duration_min": 165,
+  "edition": "1989 ロンドン初演版（★2014 ロンドン新版で『Maybe』を加え『Now That I've Seen Her』を替える。★日本版〈東宝〉は日本語訳詞）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "miss-saigon",
+  "note": "★作詞 アラン・ブーブリル／リチャード・モルトビー・ジュニア ／ 脚本 アラン・ブーブリル／クロード＝ミシェル・シェーンベルク ／ ★★『蝶々夫人』を下敷きにする。★★全曲通し歌。★★エンジニア役の人種の扱いが初演時に論争になった",
+  "roles": [
+    {
+      "label": "キム"
+    },
+    {
+      "label": "クリス"
+    },
+    {
+      "label": "エンジニア"
+    },
+    {
+      "label": "エレン"
+    },
+    {
+      "label": "ジョン"
+    },
+    {
+      "label": "トゥイ"
+    },
+    {
+      "label": "タム（子ども）"
+    },
+    {
+      "label": "ジジ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★ドリームランド（サイゴンの店・ミス・サイゴン・コンテスト）",
+      "group_label": "第1幕",
+      "roles": [
+        "エンジニア",
+        "ジジ",
+        "キム",
+        "クリス",
+        "ジョン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ザ・ムーヴィー・イン・マイ・マインド",
+      "group_label": "第1幕",
+      "roles": [
+        "ジジ",
+        "キム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★★サン・アンド・ムーン（キムとクリスの一夜）",
+      "group_label": "第1幕",
+      "roles": [
+        "キム",
+        "クリス"
+      ]
+    },
+    {
+      "label": "M4 ★★偽りの婚礼（Dju Vui Vai）とトゥイの乱入",
+      "group_label": "第1幕",
+      "roles": [
+        "キム",
+        "クリス",
+        "トゥイ",
+        "エンジニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★ラスト・ナイト・オブ・ザ・ワールド",
+      "group_label": "第1幕",
+      "roles": [
+        "キム",
+        "クリス"
+      ]
+    },
+    {
+      "label": "M6 ★★★アメリカン大使館の陥落（The Fall of Saigon ─ ★ヘリコプターの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "クリス",
+        "ジョン",
+        "キム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★★アイ・スティル・ビリーヴ（キムとエレンの二重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "キム",
+        "エレン"
+      ]
+    },
+    {
+      "label": "M8 ★★★トゥイの死（第1幕終曲・キムが子を守るために撃つ）",
+      "group_label": "第1幕",
+      "roles": [
+        "キム",
+        "トゥイ",
+        "タム（子ども）",
+        "エンジニア"
+      ]
+    },
+    {
+      "label": "M9 ★★★ブイ・ドイ（ジョンの歌・混血児たち）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★バンコクの場（What a Waste）",
+      "group_label": "第2幕",
+      "roles": [
+        "エンジニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★アイド・ギヴ・マイ・ライフ・フォー・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "キム"
+      ]
+    },
+    {
+      "label": "M12 ★★★アメリカン・ドリーム（エンジニアの幻想）",
+      "group_label": "第2幕",
+      "roles": [
+        "エンジニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★エレンとキムの対面",
+      "group_label": "第2幕",
+      "roles": [
+        "キム",
+        "エレン"
+      ]
+    },
+    {
+      "label": "M14 ★★★終曲（キムの自害と子の引き渡し）",
+      "group_label": "第2幕",
+      "roles": [
+        "キム",
+        "クリス",
+        "エレン",
+        "タム（子ども）",
+        "エンジニア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

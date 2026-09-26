@@ -1,0 +1,38 @@
+{
+  "title": "閉ざされた庭 作品106",
+  "title_original": "Le jardin clos op.106",
+  "composer": "フォーレ",
+  "composer_sort": "Fauré, Gabriel",
+  "kind": "song_cycle",
+  "year_written": 1914,
+  "duration_min": 18,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "faure-op106",
+  "note": "★作詩 ヴァン・レルベルグ ／ ★★曲名を 全部 確かめられなかったので ★曲数（8曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全8曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

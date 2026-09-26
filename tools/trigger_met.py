@@ -81,7 +81,12 @@ vt = 読("components/VocalTracker.jsx")
   #   ★★`tools/mihon_trace.js` で 親の 中を 1つずつ 数えた 結果 です
   #     （★字で さがしただけ では ありません）。
   "mihon_no_entry": lambda: False,
-  "mihon_name_unknown": lambda: False
+  "mihon_name_unknown": lambda: False,
+  # ★★★`bgun_locked` …… ★2026-09-27・坂本さんの お決め。
+  #   ★親が B群（★ポートフォリオ・ホームページ）です。
+  #   ★★世に 出る まで つなぎません。★別の 入口も さがしません。
+  #   ★★★これは 待ちでは なく **決め** です。★見張りは ずっと「まだ」で 通します。
+  "bgun_locked": lambda: False
 }
 
 def main():

@@ -1,0 +1,144 @@
+{
+  "title": "電話",
+  "title_original": "The Telephone",
+  "composer": "メノッティ",
+  "composer_sort": "Menotti, Gian Carlo",
+  "kind": "opera",
+  "year_written": 1947,
+  "duration_min": 25,
+  "language": "en",
+  "source": "hand",
+  "source_id": "telephone",
+  "roles": [
+    {
+      "label": "ルーシー"
+    },
+    {
+      "label": "ベン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "ベンの訪問（言いたいことがある）",
+      "group_label": "第1場",
+      "roles": [
+        "ベン",
+        "ルーシー"
+      ]
+    },
+    {
+      "label": "★ルーシーの長電話（マーガレットと）",
+      "group_label": "第2場",
+      "roles": [
+        "ルーシー",
+        "ベン"
+      ]
+    },
+    {
+      "label": "★間違い電話とまた別の電話",
+      "group_label": "第3場",
+      "roles": [
+        "ルーシー",
+        "ベン"
+      ]
+    },
+    {
+      "label": "★ベンが外へ出て電話でプロポーズ",
+      "group_label": "第4場",
+      "roles": [
+        "ベン",
+        "ルーシー"
+      ]
+    },
+    {
+      "label": "★終曲（電話番号を忘れないで）",
+      "group_label": "終場",
+      "roles": [
+        "ルーシー",
+        "ベン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+ "title": "皇帝ティートの慈悲",
+ "title_original": "La clemenza di Tito",
+ "aliases": [
+  "ティート"
+ ],
+ "composer": "モーツァルト",
+ "composer_sort": "Mozart, Wolfgang Amadeus",
+ "kind": "opera",
+ "year_written": 1791,
+ "duration_min": 140,
+ "language": "it",
+ "source": "hand",
+ "source_id": "mozart-clemenza",
+ "roles": [
+  {
+   "label": "ティート",
+   "voice": "テノール"
+  },
+  {
+   "label": "ヴィテッリア",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "セスト",
+   "voice": "メゾ"
+  },
+  {
+   "label": "セルヴィリア",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "アンニオ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "プブリオ",
+   "voice": "バス"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "序曲",
+   "group_label": "序曲",
+   "roles": []
+  },
+  {
+   "label": "第1幕 ヴィテッリアの企て",
+   "group_label": "第1幕",
+   "roles": [
+    "ヴィテッリア",
+    "セスト",
+    "アンニオ"
+   ]
+  },
+  {
+   "label": "第1幕 ティートの宮廷",
+   "group_label": "第1幕",
+   "roles": [
+    "ティート",
+    "プブリオ",
+    "アンニオ",
+    "セルヴィリア",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 セストのアリア（行く、けれど）",
+   "group_label": "第1幕",
+   "roles": [
+    "セスト",
+    "ヴィテッリア"
+   ]
+  },
+  {
+   "label": "第1幕 フィナーレ（カピトリウムの炎上）",
+   "group_label": "第1幕",
+   "roles": [
+    "セスト",
+    "ヴィテッリア",
+    "アンニオ",
+    "セルヴィリア",
+    "プブリオ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 セストの裁きとロンド",
+   "group_label": "第2幕",
+   "roles": [
+    "セスト",
+    "ティート",
+    "プブリオ",
+    "アンニオ"
+   ]
+  },
+  {
+   "label": "第2幕 ヴィテッリアのロンド（もはや花の輪を）",
+   "group_label": "第2幕",
+   "roles": [
+    "ヴィテッリア"
+   ]
+  },
+  {
+   "label": "第2幕 フィナーレ（赦し）",
+   "group_label": "第2幕",
+   "roles": [
+    "ティート",
+    "セスト",
+    "ヴィテッリア",
+    "セルヴィリア",
+    "アンニオ",
+    "プブリオ",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "チェンバロ",
+   "count": 1,
+   "section": "continuo",
+   "note": "レチタティーヴォ"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

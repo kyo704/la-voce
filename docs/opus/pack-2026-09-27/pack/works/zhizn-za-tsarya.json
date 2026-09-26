@@ -1,0 +1,201 @@
+{
+  "title": "イワン・スサーニン（皇帝に捧げた命）",
+  "title_original": "Жизнь за царя",
+  "aliases": [
+    "皇帝に捧げた命",
+    "生命を皇帝に"
+  ],
+  "composer": "グリンカ",
+  "composer_sort": "Glinka, Mikhail",
+  "kind": "opera",
+  "year_written": 1836,
+  "duration_min": 180,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "zhizn-za-tsarya",
+  "roles": [
+    {
+      "label": "イワン・スサーニン"
+    },
+    {
+      "label": "アントニーダ"
+    },
+    {
+      "label": "ヴァーニャ"
+    },
+    {
+      "label": "ボグダン・ソビーニン"
+    },
+    {
+      "label": "ポーランドの司令官"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ドムニノ村（婚礼の支度）",
+      "group_label": "第1幕",
+      "roles": [
+        "イワン・スサーニン",
+        "アントニーダ",
+        "ボグダン・ソビーニン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ★アントニーダのカヴァティーナとロンド",
+      "group_label": "第1幕",
+      "roles": [
+        "アントニーダ"
+      ]
+    },
+    {
+      "label": "第2幕 ★ポーランドの舞踏会（ポロネーズ・クラコヴィアク・マズルカ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ポーランドの司令官",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ヴァーニャの歌と四重唱",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァーニャ",
+        "イワン・スサーニン",
+        "アントニーダ",
+        "ボグダン・ソビーニン"
+      ]
+    },
+    {
+      "label": "第3幕 ポーランド軍の来訪とスサーニンの偽の道案内",
+      "group_label": "第3幕",
+      "roles": [
+        "イワン・スサーニン",
+        "ポーランドの司令官",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★アントニーダのロマンス（花嫁の嘆き）",
+      "group_label": "第3幕",
+      "roles": [
+        "アントニーダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 ★森の中（スサーニンのアリア「夜明けが来る」）",
+      "group_label": "第4幕",
+      "roles": [
+        "イワン・スサーニン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★エピローグ（モスクワ・赤の広場の栄光の合唱）",
+      "group_label": "終曲",
+      "roles": [
+        "アントニーダ",
+        "ヴァーニャ",
+        "ボグダン・ソビーニン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

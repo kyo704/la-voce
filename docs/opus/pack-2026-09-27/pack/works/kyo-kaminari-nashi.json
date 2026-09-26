@@ -1,0 +1,69 @@
+{
+  "title": "蝸牛",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 30,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kaminari-nashi",
+  "note": "★山伏狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（山伏）"
+    },
+    {
+      "label": "アド（太郎冠者）"
+    },
+    {
+      "label": "小アド（主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "祖父の薬に蝸牛を探せと言われる",
+      "group_label": "段",
+      "roles": [
+        "アド（太郎冠者）",
+        "小アド（主）"
+      ]
+    },
+    {
+      "label": "寝ている山伏を蝸牛と思う",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "★山伏が蝸牛だと言い張る",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "★でんでん虫の囃子で踊りながら帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（太郎冠者）",
+        "小アド（主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

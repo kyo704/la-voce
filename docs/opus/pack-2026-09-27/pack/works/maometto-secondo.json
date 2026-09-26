@@ -1,0 +1,191 @@
+{
+  "title": "マオメット2世",
+  "title_original": "Maometto II",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1820,
+  "duration_min": 185,
+  "language": "it",
+  "source": "hand",
+  "source_id": "maometto-secondo",
+  "note": "★仏語改作が『コリントの包囲』",
+  "roles": [
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "マオメット2世"
+    },
+    {
+      "label": "パオロ・エリッソ"
+    },
+    {
+      "label": "カルボ"
+    },
+    {
+      "label": "コンドゥルミエーロ"
+    },
+    {
+      "label": "セリモ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ネグロポンテの評議（籠城か降伏か）",
+      "group_label": "第1幕",
+      "roles": [
+        "パオロ・エリッソ",
+        "カルボ",
+        "コンドゥルミエーロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アンナの祈りと父への告白",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ",
+        "パオロ・エリッソ"
+      ]
+    },
+    {
+      "label": "第1幕 ★大三重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ",
+        "パオロ・エリッソ",
+        "カルボ"
+      ]
+    },
+    {
+      "label": "第1幕 マオメットの入城（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "マオメット2世",
+        "アンナ",
+        "パオロ・エリッソ",
+        "セリモ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 マオメットとアンナの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "マオメット2世",
+        "アンナ"
+      ]
+    },
+    {
+      "label": "第2幕 アンナの裏切りの疑い（父と夫）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ",
+        "パオロ・エリッソ",
+        "カルボ"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（アンナの自害）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ",
+        "マオメット2世",
+        "パオロ・エリッソ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

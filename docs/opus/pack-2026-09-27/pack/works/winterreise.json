@@ -1,0 +1,224 @@
+{
+ "title": "冬の旅",
+ "title_original": "Winterreise",
+ "aliases": [
+  "ウィンターライゼ"
+ ],
+ "composer": "シューベルト",
+ "composer_sort": "Schubert, Franz",
+ "kind": "song_cycle",
+ "year_written": 1827,
+ "duration_min": 70,
+ "language": "de",
+ "source_id": "schubert-winterreise",
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. おやすみ（Gute Nacht）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. 風見の旗（Die Wetterfahne）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. 凍った涙（Gefrorne Tränen）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 凍結（Erstarrung）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. 菩提樹（Der Lindenbaum）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. あふれる涙（Wasserflut）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. 川の上で（Auf dem Flusse）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. 回想（Rückblick）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "9. 鬼火（Irrlicht）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "10. 休息（Rast）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "11. 春の夢（Frühlingstraum）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "12. 孤独（Einsamkeit）",
+   "group_label": "第1部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "13. 郵便馬車（Die Post）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "14. 霜おく頭（Der greise Kopf）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "15. からす（Die Krähe）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "16. 最後の希望（Letzte Hoffnung）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "17. 村にて（Im Dorfe）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "18. 嵐の朝（Der stürmische Morgen）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "19. まぼろし（Täuschung）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "20. 道しるべ（Der Wegweiser）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "21. 宿屋（Das Wirtshaus）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "22. 勇気（Mut）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "23. 幻の太陽（Die Nebensonnen）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "24. 辻音楽師（Der Leiermann）",
+   "group_label": "第2部",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand"
+}

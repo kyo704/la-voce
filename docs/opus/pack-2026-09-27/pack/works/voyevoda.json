@@ -1,0 +1,191 @@
+{
+  "title": "地方長官",
+  "title_original": "Воевода",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr Ilyich",
+  "kind": "opera",
+  "year_written": 1869,
+  "duration_min": 130,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "voyevoda",
+  "note": "★作曲者自身が楽譜を破棄。残された断片から復元して上演される",
+  "roles": [
+    {
+      "label": "ネチャイ・シャローガ（地方長官）"
+    },
+    {
+      "label": "マリヤ"
+    },
+    {
+      "label": "オレーナ"
+    },
+    {
+      "label": "バスチリョフ"
+    },
+    {
+      "label": "ドゥブロヴィン"
+    },
+    {
+      "label": "ナスターシヤ"
+    },
+    {
+      "label": "ボルボチェニ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 バスチリョフの庭（娘の縁談）",
+      "group_label": "第1幕",
+      "roles": [
+        "バスチリョフ",
+        "マリヤ",
+        "オレーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 地方長官の横恋慕",
+      "group_label": "第1幕",
+      "roles": [
+        "ネチャイ・シャローガ（地方長官）",
+        "バスチリョフ",
+        "マリヤ"
+      ]
+    },
+    {
+      "label": "第2幕 ドゥブロヴィンの家（奪われた妻）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドゥブロヴィン",
+        "ナスターシヤ",
+        "ボルボチェニ"
+      ]
+    },
+    {
+      "label": "第2幕 2人の男の同盟",
+      "group_label": "第2幕",
+      "roles": [
+        "ドゥブロヴィン",
+        "ボルボチェニ"
+      ]
+    },
+    {
+      "label": "第3幕 ★夜の庭（娘たちの合唱と連れ去り）",
+      "group_label": "第3幕",
+      "roles": [
+        "マリヤ",
+        "オレーナ",
+        "ドゥブロヴィン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（新しい長官の到着・旧長官の失脚）",
+      "group_label": "第3幕",
+      "roles": [
+        "ネチャイ・シャローガ（地方長官）",
+        "マリヤ",
+        "ドゥブロヴィン",
+        "ナスターシヤ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

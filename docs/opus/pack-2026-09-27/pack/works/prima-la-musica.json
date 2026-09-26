@@ -1,0 +1,156 @@
+{
+  "title": "まず音楽、そして言葉",
+  "title_original": "Prima la musica e poi le parole",
+  "composer": "サリエリ",
+  "composer_sort": "Salieri, Antonio",
+  "kind": "opera",
+  "year_written": 1786,
+  "duration_min": 60,
+  "language": "it",
+  "source": "hand",
+  "source_id": "prima-la-musica",
+  "note": "★モーツァルトの『劇場支配人』と同じ夜に上演された",
+  "roles": [
+    {
+      "label": "エレオノーラ"
+    },
+    {
+      "label": "トニーナ"
+    },
+    {
+      "label": "楽長"
+    },
+    {
+      "label": "詩人"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★4日で作れという注文（楽長と詩人の言い争い）",
+      "group_label": "第1場",
+      "roles": [
+        "楽長",
+        "詩人"
+      ]
+    },
+    {
+      "label": "★できている音楽に言葉を当てる",
+      "group_label": "第2場",
+      "roles": [
+        "楽長",
+        "詩人"
+      ]
+    },
+    {
+      "label": "★エレオノーラの登場（悲劇の歌い手）",
+      "group_label": "第3場",
+      "roles": [
+        "エレオノーラ",
+        "楽長",
+        "詩人"
+      ]
+    },
+    {
+      "label": "★トニーナの登場（ブッファの歌い手・役を争う）",
+      "group_label": "第4場",
+      "roles": [
+        "トニーナ",
+        "エレオノーラ",
+        "楽長",
+        "詩人"
+      ]
+    },
+    {
+      "label": "★終曲（2人の歌い手が同時に歌い、まとまる）",
+      "group_label": "終場",
+      "roles": [
+        "エレオノーラ",
+        "トニーナ",
+        "楽長",
+        "詩人"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

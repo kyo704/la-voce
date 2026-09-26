@@ -1,0 +1,149 @@
+{
+  "title": "スザンナの秘密",
+  "title_original": "Il segreto di Susanna",
+  "composer": "ヴォルフ＝フェラーリ",
+  "composer_sort": "Wolf-Ferrari, Ermanno",
+  "kind": "opera",
+  "year_written": 1909,
+  "duration_min": 50,
+  "language": "it",
+  "source": "hand",
+  "source_id": "segreto-susanna",
+  "roles": [
+    {
+      "label": "スザンナ"
+    },
+    {
+      "label": "ジル伯爵"
+    },
+    {
+      "label": "サンテ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "スザンナの帰宅（外出の言いわけ）",
+      "group_label": "第1場",
+      "roles": [
+        "スザンナ",
+        "ジル伯爵",
+        "サンテ"
+      ]
+    },
+    {
+      "label": "★ジル伯爵が煙草の匂いに気づく（浮気の疑い）",
+      "group_label": "第2場",
+      "roles": [
+        "ジル伯爵",
+        "スザンナ"
+      ]
+    },
+    {
+      "label": "第3場 伯爵の家捜しと嫉妬",
+      "group_label": "第3場",
+      "roles": [
+        "ジル伯爵",
+        "サンテ",
+        "スザンナ"
+      ]
+    },
+    {
+      "label": "★スザンナのアリア（お願い、許して）",
+      "group_label": "第4場",
+      "roles": [
+        "スザンナ"
+      ]
+    },
+    {
+      "label": "★終曲（秘密は煙草・2人で吸う）",
+      "group_label": "終場",
+      "roles": [
+        "スザンナ",
+        "ジル伯爵",
+        "サンテ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "title": "旅の歌",
+  "title_original": "Songs of Travel",
+  "composer": "ヴォーン・ウィリアムズ",
+  "composer_sort": "Vaughan Williams, Ralph",
+  "kind": "song_cycle",
+  "year_written": 1904,
+  "duration_min": 25,
+  "language": "en",
+  "source": "hand",
+  "source_id": "vw-songs-travel",
+  "note": "★作詩 スティーヴンソン ／ ★★バリトンのための 曲。★管弦楽版も あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 放浪者（The Vagabond）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. ぼくをおいて行くのか（Let Beauty Awake）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 街道（The Roadside Fire）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 若く美しい人よ（Youth and Love）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 夢のなかで（In Dreams）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. 無限の星空（The Infinite Shining Heavens）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "7. 明るい炎はもう燃えず（Whither Must I Wander?）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "8. 輝く星よ（Bright is the Ring of Words）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "9. ぼくは旅を続ける（I Have Trod the Upward and the Downward Slope）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

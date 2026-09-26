@@ -1,0 +1,217 @@
+{
+ "title": "ニュルンベルクのマイスタージンガー",
+ "title_original": "Die Meistersinger von Nürnberg",
+ "aliases": [
+  "マイスタージンガー"
+ ],
+ "composer": "ワーグナー",
+ "composer_sort": "Wagner, Richard",
+ "kind": "opera",
+ "year_written": 1868,
+ "duration_min": 280,
+ "language": "de",
+ "source": "hand",
+ "source_id": "wagner-meistersinger",
+ "roles": [
+  {
+   "label": "ハンス・ザックス",
+   "voice": "バスバリトン"
+  },
+  {
+   "label": "エヴァ"
+  },
+  {
+   "label": "ヴァルター",
+   "voice": "テノール"
+  },
+  {
+   "label": "ベックメッサー",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ダーヴィト"
+  },
+  {
+   "label": "マグダレーネ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "ポーグナー",
+   "voice": "バス"
+  },
+  {
+   "label": "マイスターたち",
+   "is_group": true
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕への前奏曲",
+   "group_label": "第1幕",
+   "roles": []
+  },
+  {
+   "label": "第1幕 教会とヴァルターの試験",
+   "group_label": "第1幕",
+   "roles": [
+    "ヴァルター",
+    "エヴァ",
+    "マグダレーネ",
+    "ダーヴィト",
+    "ポーグナー",
+    "ベックメッサー",
+    "マイスターたち"
+   ]
+  },
+  {
+   "label": "第2幕 夏の夜・ザックスの靴屋の歌",
+   "group_label": "第2幕",
+   "roles": [
+    "ハンス・ザックス",
+    "エヴァ",
+    "ヴァルター"
+   ]
+  },
+  {
+   "label": "第2幕 セレナードと乱闘",
+   "group_label": "第2幕",
+   "roles": [
+    "ベックメッサー",
+    "ダーヴィト",
+    "ハンス・ザックス",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 ザックスのモノローグ（迷いだ）",
+   "group_label": "第3幕",
+   "roles": [
+    "ハンス・ザックス",
+    "ダーヴィト"
+   ]
+  },
+  {
+   "label": "第3幕 ヴァルターの夢と五重唱",
+   "group_label": "第3幕",
+   "roles": [
+    "ヴァルター",
+    "ハンス・ザックス",
+    "エヴァ",
+    "ダーヴィト",
+    "マグダレーネ"
+   ]
+  },
+  {
+   "label": "第3幕 祭りの広場・歌合戦とフィナーレ",
+   "group_label": "第3幕",
+   "roles": [
+    "ハンス・ザックス",
+    "ヴァルター",
+    "ベックメッサー",
+    "エヴァ",
+    "ポーグナー",
+    "マイスターたち",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "舞台上の楽隊",
+   "count": 0,
+   "section": "banda",
+   "note": "祭りの行進"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

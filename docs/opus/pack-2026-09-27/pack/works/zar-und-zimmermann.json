@@ -1,0 +1,198 @@
+{
+  "title": "皇帝と船大工",
+  "title_original": "Zar und Zimmermann",
+  "composer": "ロルツィング",
+  "composer_sort": "Lortzing, Albert",
+  "kind": "opera",
+  "year_written": 1837,
+  "duration_min": 150,
+  "language": "de",
+  "source": "hand",
+  "source_id": "zar-und-zimmermann",
+  "roles": [
+    {
+      "label": "マリー"
+    },
+    {
+      "label": "ペーター・イワノフ"
+    },
+    {
+      "label": "ピョートル大帝"
+    },
+    {
+      "label": "ファン・ベット"
+    },
+    {
+      "label": "シャトーヌフ侯爵"
+    },
+    {
+      "label": "レフォール将軍"
+    },
+    {
+      "label": "ウィドウ・ブラウン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ザールダムの造船所（2人のペーター）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピョートル大帝",
+        "ペーター・イワノフ",
+        "マリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ★マリーとイワノフの二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "マリー",
+        "ペーター・イワノフ"
+      ]
+    },
+    {
+      "label": "第1幕 3国の使節の取り違え",
+      "group_label": "第1幕",
+      "roles": [
+        "ファン・ベット",
+        "シャトーヌフ侯爵",
+        "レフォール将軍",
+        "ペーター・イワノフ"
+      ]
+    },
+    {
+      "label": "★第2幕 宿屋の宴（オランダの踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "ウィドウ・ブラウン",
+        "マリー",
+        "ピョートル大帝",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 夜の混乱（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファン・ベット",
+        "ピョートル大帝",
+        "ペーター・イワノフ",
+        "マリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ファン・ベットのカンタータの稽古",
+      "group_label": "第3幕",
+      "roles": [
+        "ファン・ベット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ピョートルのアリア（かつての日の思い出）",
+      "group_label": "第3幕",
+      "roles": [
+        "ピョートル大帝"
+      ]
+    },
+    {
+      "label": "★終曲（皇帝の正体と2人の婚礼）",
+      "group_label": "第3幕",
+      "roles": [
+        "ピョートル大帝",
+        "マリー",
+        "ペーター・イワノフ",
+        "ファン・ベット",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

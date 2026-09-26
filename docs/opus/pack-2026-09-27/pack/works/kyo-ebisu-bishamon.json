@@ -1,0 +1,61 @@
+{
+  "title": "夷毘沙門",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-ebisu-bishamon",
+  "note": "★脇狂言（祝言物） ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（恵比須）"
+    },
+    {
+      "label": "アド（毘沙門天）"
+    },
+    {
+      "label": "小アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "娘の聟を求めて参詣する",
+      "group_label": "段",
+      "roles": [
+        "小アド（何某）"
+      ]
+    },
+    {
+      "label": "★恵比須と毘沙門が名乗り出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（恵比須）",
+        "アド（毘沙門天）",
+        "小アド（何某）"
+      ]
+    },
+    {
+      "label": "★★二神が競い、めでたく収まる",
+      "group_label": "段",
+      "roles": [
+        "シテ（恵比須）",
+        "アド（毘沙門天）",
+        "小アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

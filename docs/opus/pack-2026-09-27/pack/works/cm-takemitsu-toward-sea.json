@@ -1,0 +1,58 @@
+{
+  "title": "海へ",
+  "title_original": "Toward the Sea",
+  "composer": "武満徹",
+  "composer_sort": "Takemitsu, Toru",
+  "kind": "chamber",
+  "year_written": 1981,
+  "duration_min": 12,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-takemitsu-toward-sea",
+  "roles": [
+    {
+      "label": "アルトフルート"
+    },
+    {
+      "label": "ギター"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 夜",
+      "group_label": "楽章",
+      "roles": [
+        "アルトフルート",
+        "ギター"
+      ]
+    },
+    {
+      "label": "2. 白鯨",
+      "group_label": "楽章",
+      "roles": [
+        "アルトフルート",
+        "ギター"
+      ]
+    },
+    {
+      "label": "3. 鱈岬",
+      "group_label": "楽章",
+      "roles": [
+        "アルトフルート",
+        "ギター"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "アルトフルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

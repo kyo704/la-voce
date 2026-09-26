@@ -1,0 +1,240 @@
+{
+ "title": "ジャンニ・スキッキ",
+ "composer": "プッチーニ",
+ "composer_sort": "Puccini, Giacomo",
+ "kind": "opera",
+ "year_written": 1918,
+ "source": "hand",
+ "source_id": "puccini-schicchi",
+ "roles": [
+  {
+   "label": "ジャンニ・スキッキ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ラウレッタ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ツィータ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "リヌッチョ",
+   "voice": "テノール"
+  },
+  {
+   "label": "ゲラルド",
+   "voice": "テノール"
+  },
+  {
+   "label": "ネッラ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ベット",
+   "voice": "バス"
+  },
+  {
+   "label": "シモーネ",
+   "voice": "バス"
+  },
+  {
+   "label": "マルコ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "チェスカ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "スピネロッチョ医師"
+  },
+  {
+   "label": "公証人"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "導入（親族の嘆き）",
+   "group_label": "全1幕",
+   "roles": [
+    "ツィータ",
+    "リヌッチョ",
+    "ゲラルド",
+    "ネッラ",
+    "ベット",
+    "シモーネ",
+    "マルコ",
+    "チェスカ"
+   ]
+  },
+  {
+   "label": "遺言の捜索",
+   "group_label": "全1幕",
+   "roles": [
+    "リヌッチョ",
+    "ツィータ",
+    "シモーネ",
+    "マルコ",
+    "ベット"
+   ]
+  },
+  {
+   "label": "フィレンツェは花咲く木のように（リヌッチョのアリア）",
+   "group_label": "全1幕",
+   "roles": [
+    "リヌッチョ"
+   ]
+  },
+  {
+   "label": "スキッキの登場",
+   "group_label": "全1幕",
+   "roles": [
+    "ジャンニ・スキッキ",
+    "ラウレッタ",
+    "ツィータ"
+   ]
+  },
+  {
+   "label": "私のお父さん（ラウレッタのアリア）",
+   "group_label": "全1幕",
+   "roles": [
+    "ラウレッタ",
+    "ジャンニ・スキッキ"
+   ]
+  },
+  {
+   "label": "計略の場（医師をだます）",
+   "group_label": "全1幕",
+   "roles": [
+    "ジャンニ・スキッキ",
+    "スピネロッチョ医師",
+    "ツィータ",
+    "シモーネ",
+    "マルコ",
+    "ベット",
+    "ネッラ",
+    "チェスカ",
+    "ゲラルド",
+    "リヌッチョ"
+   ]
+  },
+  {
+   "label": "公証人の場（遺言の口述）",
+   "group_label": "全1幕",
+   "roles": [
+    "ジャンニ・スキッキ",
+    "公証人",
+    "ツィータ",
+    "シモーネ",
+    "マルコ",
+    "ベット",
+    "ネッラ",
+    "チェスカ",
+    "ゲラルド"
+   ]
+  },
+  {
+   "label": "フィナーレ（追い出しと結び）",
+   "group_label": "全1幕",
+   "roles": [
+    "ジャンニ・スキッキ",
+    "ラウレッタ",
+    "リヌッチョ"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "バスクラリネット"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion",
+   "note": "鐘・トライアングル・大太鼓"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "チェレスタ",
+   "count": 1,
+   "section": "keyboard",
+   "is_optional": true
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

@@ -1,0 +1,65 @@
+{
+  "title": "伯母ヶ酒",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-oba-ga-sake",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（甥）"
+    },
+    {
+      "label": "アド（伯母）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "甥が伯母の酒屋で酒を乞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（甥）",
+        "アド（伯母）"
+      ]
+    },
+    {
+      "label": "★断られる",
+      "group_label": "段",
+      "roles": [
+        "シテ（甥）",
+        "アド（伯母）"
+      ]
+    },
+    {
+      "label": "★★鬼の面をつけて脅し、酒を奪う",
+      "group_label": "段",
+      "roles": [
+        "シテ（甥）",
+        "アド（伯母）"
+      ]
+    },
+    {
+      "label": "★酔って寝入り、露見する",
+      "group_label": "段",
+      "roles": [
+        "シテ（甥）",
+        "アド（伯母）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

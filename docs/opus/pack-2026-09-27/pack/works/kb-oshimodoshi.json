@@ -1,0 +1,58 @@
+{
+  "title": "押戻",
+  "title_original": "押戻",
+  "aliases": [],
+  "composer": "歌舞伎（市川宗家 歌舞伎十八番）",
+  "composer_sort": "Kabuki Juhachiban",
+  "kind": "kabuki",
+  "year_written": 1697,
+  "source": "hand",
+  "source_id": "kabuki-oshimodoshi",
+  "duration_min": 20,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "竹抜五郎"
+    },
+    {
+      "label": "悪霊（押し戻される役）"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "花道の押戻",
+      "group_label": "全",
+      "roles": [
+        "竹抜五郎",
+        "悪霊（押し戻される役）",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線（舞台上の雛壇）"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽（舞台袖）"
+    }
+  ],
+  "note": "★独立した演目ではなく、他の演目の幕切れに付く／★型（音羽屋型・成田屋型など）により 演出が変わる",
+  "school": "成田屋（市川宗家）"
+}

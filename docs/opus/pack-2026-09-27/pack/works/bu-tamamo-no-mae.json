@@ -1,0 +1,95 @@
+{
+  "title": "玉藻前曦袂",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1751,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-tamamo-no-mae",
+  "note": "★文楽（人形浄瑠璃） ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "萩の方"
+    },
+    {
+      "label": "桂姫"
+    },
+    {
+      "label": "初菊"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    },
+    {
+      "label": "玉藻前（金毛九尾の狐）"
+    },
+    {
+      "label": "薄雲皇子"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★道春館（★萩の方と采女）",
+      "group_label": "三段目",
+      "roles": [
+        "萩の方",
+        "桂姫",
+        "初菊",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★玉藻前の正体（★九尾の狐）",
+      "group_label": "四段目",
+      "roles": [
+        "玉藻前（金毛九尾の狐）",
+        "薄雲皇子",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

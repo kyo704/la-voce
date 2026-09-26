@@ -1,0 +1,143 @@
+{
+  "title": "春鶯囀",
+  "composer": "雅楽",
+  "composer_sort": "Gagaku",
+  "kind": "gagaku",
+  "duration_min": 60,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "gagaku-shunnoden",
+  "note": "★舞楽 ／ 調子 壱越調 ／ 左方（唐楽） ／ ★★★雅楽 最大の 曲の1つ。★六つの 部分から なります",
+  "roles": [
+    {
+      "label": "管方（篳篥・龍笛・笙）",
+      "is_group": true
+    },
+    {
+      "label": "絃方（楽琵琶・楽箏）",
+      "is_group": true
+    },
+    {
+      "label": "打物（鞨鼓・太鼓・鉦鼓）",
+      "is_group": true
+    },
+    {
+      "label": "立方（舞人）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "遊声",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "絃方（楽琵琶・楽箏）",
+        "打物（鞨鼓・太鼓・鉦鼓）"
+      ]
+    },
+    {
+      "label": "序",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "絃方（楽琵琶・楽箏）",
+        "打物（鞨鼓・太鼓・鉦鼓）",
+        "立方（舞人）"
+      ]
+    },
+    {
+      "label": "颯踏",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "絃方（楽琵琶・楽箏）",
+        "打物（鞨鼓・太鼓・鉦鼓）",
+        "立方（舞人）"
+      ]
+    },
+    {
+      "label": "入破",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "絃方（楽琵琶・楽箏）",
+        "打物（鞨鼓・太鼓・鉦鼓）",
+        "立方（舞人）"
+      ]
+    },
+    {
+      "label": "鳥声",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "絃方（楽琵琶・楽箏）",
+        "打物（鞨鼓・太鼓・鉦鼓）",
+        "立方（舞人）"
+      ]
+    },
+    {
+      "label": "急声",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）",
+        "絃方（楽琵琶・楽箏）",
+        "打物（鞨鼓・太鼓・鉦鼓）",
+        "立方（舞人）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "篳篥",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "龍笛",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "笙",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "楽琵琶",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "楽箏",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "鞨鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "鉦鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "立方（舞人）",
+      "count": 4,
+      "section": "other",
+      "note": "曲により1〜6人"
+    }
+  ]
+}

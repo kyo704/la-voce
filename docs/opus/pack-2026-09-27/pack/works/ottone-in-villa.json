@@ -1,0 +1,172 @@
+{
+  "title": "オットーネ・イン・ヴィッラ",
+  "title_original": "Ottone in villa",
+  "composer": "ヴィヴァルディ",
+  "composer_sort": "Vivaldi, Antonio",
+  "kind": "opera",
+  "year_written": 1713,
+  "duration_min": 170,
+  "language": "it",
+  "source": "hand",
+  "source_id": "ottone-in-villa",
+  "note": "★★ヴィヴァルディ最初のオペラ",
+  "roles": [
+    {
+      "label": "オットーネ"
+    },
+    {
+      "label": "クレオニッラ"
+    },
+    {
+      "label": "カイオ・シルヴィオ"
+    },
+    {
+      "label": "トゥッリア（オスティーリオ）"
+    },
+    {
+      "label": "デチオ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 別荘の庭（クレオニッラの浮気）",
+      "group_label": "第1幕",
+      "roles": [
+        "クレオニッラ",
+        "カイオ・シルヴィオ",
+        "デチオ"
+      ]
+    },
+    {
+      "label": "★第1幕 オットーネの盲目な愛",
+      "group_label": "第1幕",
+      "roles": [
+        "オットーネ",
+        "クレオニッラ",
+        "デチオ"
+      ]
+    },
+    {
+      "label": "★第1幕 男装のトゥッリアの登場",
+      "group_label": "第1幕",
+      "roles": [
+        "トゥッリア（オスティーリオ）",
+        "クレオニッラ"
+      ]
+    },
+    {
+      "label": "★第2幕 クレオニッラが『オスティーリオ』に心を移す",
+      "group_label": "第2幕",
+      "roles": [
+        "クレオニッラ",
+        "トゥッリア（オスティーリオ）",
+        "カイオ・シルヴィオ"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★カイオのアリア（Gelosia, tu già rendi l'alma mia）",
+      "group_label": "第2幕",
+      "roles": [
+        "カイオ・シルヴィオ"
+      ]
+    },
+    {
+      "label": "★第3幕 洞窟の取り違えとオットーネの発見",
+      "group_label": "第3幕",
+      "roles": [
+        "オットーネ",
+        "クレオニッラ",
+        "カイオ・シルヴィオ",
+        "トゥッリア（オスティーリオ）"
+      ]
+    },
+    {
+      "label": "★終曲（トゥッリアの正体とオットーネの赦し）",
+      "group_label": "第3幕",
+      "roles": [
+        "オットーネ",
+        "クレオニッラ",
+        "カイオ・シルヴィオ",
+        "トゥッリア（オスティーリオ）",
+        "デチオ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

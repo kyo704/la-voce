@@ -1,0 +1,57 @@
+{
+  "title": "地蔵舞",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-jizo-mai",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（旅僧）"
+    },
+    {
+      "label": "アド（宿の主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "旅僧が宿を借りようとする",
+      "group_label": "段",
+      "roles": [
+        "シテ（旅僧）",
+        "アド（宿の主）"
+      ]
+    },
+    {
+      "label": "断られて出家の徳を説く",
+      "group_label": "段",
+      "roles": [
+        "シテ（旅僧）",
+        "アド（宿の主）"
+      ]
+    },
+    {
+      "label": "酒宴になり地蔵の舞を舞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（旅僧）",
+        "アド（宿の主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

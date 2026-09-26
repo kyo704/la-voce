@@ -1,0 +1,102 @@
+{
+  "title": "毛抜",
+  "title_original": "毛抜",
+  "aliases": [],
+  "composer": "歌舞伎（市川宗家 歌舞伎十八番）",
+  "composer_sort": "Kabuki Juhachiban",
+  "kind": "kabuki",
+  "year_written": 1742,
+  "source": "hand",
+  "source_id": "kabuki-kenuki",
+  "duration_min": 90,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "粂寺弾正"
+    },
+    {
+      "label": "小野春道"
+    },
+    {
+      "label": "錦の前"
+    },
+    {
+      "label": "八剣玄蕃"
+    },
+    {
+      "label": "秦民部"
+    },
+    {
+      "label": "腰元",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "小野家の騒動",
+      "group_label": "序",
+      "roles": [
+        "小野春道",
+        "錦の前",
+        "八剣玄蕃",
+        "秦民部",
+        "腰元",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "弾正の登場と詮議",
+      "group_label": "中",
+      "roles": [
+        "粂寺弾正",
+        "腰元",
+        "秦民部",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "毛抜が立つ（磁石の謎解き）",
+      "group_label": "中",
+      "roles": [
+        "粂寺弾正",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "玄蕃の悪事露見と幕切れ",
+      "group_label": "終",
+      "roles": [
+        "粂寺弾正",
+        "八剣玄蕃",
+        "小野春道",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線（舞台上の雛壇）"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽（舞台袖）"
+    }
+  ],
+  "school": "成田屋（市川宗家）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}

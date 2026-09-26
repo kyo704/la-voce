@@ -1,0 +1,216 @@
+{
+  "title": "オルレアンの少女",
+  "title_original": "Орлеанская дева",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr Ilyich",
+  "kind": "opera",
+  "year_written": 1879,
+  "duration_min": 185,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "maid-orleans",
+  "roles": [
+    {
+      "label": "ジャンヌ・ダルク"
+    },
+    {
+      "label": "シャルル7世"
+    },
+    {
+      "label": "アニェス・ソレル"
+    },
+    {
+      "label": "デュノワ"
+    },
+    {
+      "label": "ライモン"
+    },
+    {
+      "label": "ティボー"
+    },
+    {
+      "label": "リオネル"
+    },
+    {
+      "label": "大司教"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ドンレミの村（娘たちの合唱と父の疑い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "ティボー",
+        "ライモン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ★ジャンヌの別れのアリア（さらば、故郷の丘よ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャンヌ・ダルク"
+      ]
+    },
+    {
+      "label": "第1幕 天使たちの合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 シノンの宮廷（★道化とジプシーの踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "シャルル7世",
+        "アニェス・ソレル",
+        "デュノワ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ジャンヌの登場と王の夢の証し",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "シャルル7世",
+        "大司教",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★戦場（ジャンヌとリオネルの二重唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "リオネル"
+      ]
+    },
+    {
+      "label": "第3幕 ランスの戴冠と父の告発",
+      "group_label": "第3幕",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "ティボー",
+        "シャルル7世",
+        "大司教",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 森の2人（愛の二重唱）",
+      "group_label": "第4幕",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "リオネル"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（火刑）",
+      "group_label": "第4幕",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "リオネル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

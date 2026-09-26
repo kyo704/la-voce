@@ -1,0 +1,92 @@
+{
+  "title": "リチャード三世",
+  "title_original": "Richard III",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1593,
+  "duration_min": 180,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dr-richard-3",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "リチャード（グロスター公）"
+    },
+    {
+      "label": "マーガレット"
+    },
+    {
+      "label": "エリザベス"
+    },
+    {
+      "label": "アン"
+    },
+    {
+      "label": "バッキンガム"
+    },
+    {
+      "label": "クラレンス"
+    },
+    {
+      "label": "リッチモンド"
+    },
+    {
+      "label": "侍臣・兵士",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★リチャードの独白（『今は不満の冬』）",
+      "group_label": "第1幕",
+      "roles": [
+        "リチャード（グロスター公）"
+      ]
+    },
+    {
+      "label": "★アンへの求婚",
+      "group_label": "第1幕",
+      "roles": [
+        "リチャード（グロスター公）",
+        "アン"
+      ]
+    },
+    {
+      "label": "★王位への道",
+      "group_label": "第3幕",
+      "roles": [
+        "リチャード（グロスター公）",
+        "バッキンガム",
+        "侍臣・兵士"
+      ]
+    },
+    {
+      "label": "★女たちの嘆き",
+      "group_label": "第4幕",
+      "roles": [
+        "マーガレット",
+        "エリザベス",
+        "アン"
+      ]
+    },
+    {
+      "label": "★★ボズワースの戦い（『馬をくれ、馬を！』）",
+      "group_label": "第5幕",
+      "roles": [
+        "リチャード（グロスター公）",
+        "リッチモンド",
+        "侍臣・兵士"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

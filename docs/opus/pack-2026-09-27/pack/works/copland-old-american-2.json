@@ -1,0 +1,38 @@
+{
+  "title": "古いアメリカの歌 第2集",
+  "title_original": "Old American Songs, Set 2",
+  "composer": "コープランド",
+  "composer_sort": "Copland, Aaron",
+  "kind": "song_cycle",
+  "year_written": 1952,
+  "duration_min": 13,
+  "language": "en",
+  "source": "hand",
+  "source_id": "copland-old-2",
+  "note": "★★曲名を 全部 確かめられなかったので ★曲数（5曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全5曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

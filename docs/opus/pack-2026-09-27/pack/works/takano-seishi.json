@@ -1,0 +1,169 @@
+{
+  "title": "高野聖",
+  "title_original": "高野聖",
+  "composer": "池辺晋一郎",
+  "composer_sort": "Ikebe, Shinichiro",
+  "kind": "opera",
+  "year_written": 2005,
+  "duration_min": 110,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "takano-seishi",
+  "note": "★泉鏡花の同名小説による",
+  "roles": [
+    {
+      "label": "宗朝"
+    },
+    {
+      "label": "女"
+    },
+    {
+      "label": "親仁"
+    },
+    {
+      "label": "白痴の男"
+    },
+    {
+      "label": "富山の薬売り"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 峠の茶屋（薬売りの話）",
+      "group_label": "第1幕",
+      "roles": [
+        "宗朝",
+        "富山の薬売り",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第1幕 飛騨の山中（孤家の女）",
+      "group_label": "第1幕",
+      "roles": [
+        "宗朝",
+        "女",
+        "白痴の男"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★水浴の場（女の妖しさ）",
+      "group_label": "第2幕",
+      "roles": [
+        "宗朝",
+        "女"
+      ]
+    },
+    {
+      "label": "★★第2幕 獣たちの夜（魔性の露見）",
+      "group_label": "第2幕",
+      "roles": [
+        "宗朝",
+        "女",
+        "白痴の男",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（親仁の語り・女の正体と宗朝の下山）",
+      "group_label": "終幕",
+      "roles": [
+        "宗朝",
+        "親仁",
+        "女",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

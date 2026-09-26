@@ -1,0 +1,202 @@
+{
+ "title": "修道女アンジェリカ",
+ "composer": "プッチーニ",
+ "composer_sort": "Puccini, Giacomo",
+ "kind": "opera",
+ "year_written": 1918,
+ "source": "hand",
+ "source_id": "puccini-angelica",
+ "roles": [
+  {
+   "label": "アンジェリカ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "公爵夫人",
+   "voice": "アルト"
+  },
+  {
+   "label": "修道院長",
+   "voice": "メゾ"
+  },
+  {
+   "label": "修道女長",
+   "voice": "メゾ"
+  },
+  {
+   "label": "修練長"
+  },
+  {
+   "label": "ジェノヴィエッファ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "オスミーナ"
+  },
+  {
+   "label": "ドルチーナ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "祈りの場（修道院の朝）",
+   "group_label": "全1幕",
+   "roles": [
+    "合唱",
+    "修道院長"
+   ]
+  },
+  {
+   "label": "罰の場（修道女長）",
+   "group_label": "全1幕",
+   "roles": [
+    "修道女長",
+    "オスミーナ",
+    "ジェノヴィエッファ",
+    "合唱",
+    "修練長"
+   ]
+  },
+  {
+   "label": "願いの場（修道女たちの望み）",
+   "group_label": "全1幕",
+   "roles": [
+    "ジェノヴィエッファ",
+    "ドルチーナ",
+    "アンジェリカ",
+    "合唱",
+    "修練長"
+   ]
+  },
+  {
+   "label": "公爵夫人の訪問",
+   "group_label": "全1幕",
+   "roles": [
+    "アンジェリカ",
+    "公爵夫人"
+   ]
+  },
+  {
+   "label": "母もなしに（アンジェリカのアリア）",
+   "group_label": "全1幕",
+   "roles": [
+    "アンジェリカ"
+   ]
+  },
+  {
+   "label": "奇跡（フィナーレ）",
+   "group_label": "全1幕",
+   "roles": [
+    "アンジェリカ",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "バスクラリネット"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion",
+   "note": "鐘・グロッケン・トライアングル・大太鼓"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard",
+   "is_optional": true
+  },
+  {
+   "part": "オルガン",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "舞台裏の楽器",
+   "count": 0,
+   "section": "banda",
+   "note": "トランペット・鐘・舞台裏の合唱"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

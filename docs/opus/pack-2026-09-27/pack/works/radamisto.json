@@ -1,0 +1,186 @@
+{
+  "title": "ラダミスト",
+  "title_original": "Radamisto",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1720,
+  "duration_min": 185,
+  "language": "it",
+  "source": "hand",
+  "source_id": "radamisto",
+  "note": "★王立音楽アカデミーの最初の作",
+  "roles": [
+    {
+      "label": "ラダミスト"
+    },
+    {
+      "label": "ゼノービア"
+    },
+    {
+      "label": "ティリダーテ"
+    },
+    {
+      "label": "ポリッセーナ"
+    },
+    {
+      "label": "ファルナーチェ"
+    },
+    {
+      "label": "ティグラーネ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 包囲されたアルメニアの城",
+      "group_label": "第1幕",
+      "roles": [
+        "ポリッセーナ",
+        "ティグラーネ",
+        "ファルナーチェ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ポリッセーナのアリア（夫と兄のあいだで）",
+      "group_label": "第1幕",
+      "roles": [
+        "ポリッセーナ",
+        "ティリダーテ"
+      ]
+    },
+    {
+      "label": "第1幕 ラダミストとゼノービアの別れ",
+      "group_label": "第1幕",
+      "roles": [
+        "ラダミスト",
+        "ゼノービア"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ゼノービアの川への投身の企て",
+      "group_label": "第2幕",
+      "roles": [
+        "ゼノービア",
+        "ティリダーテ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ラダミストのアリア（Ombra cara ─ 愛しい影よ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ラダミスト"
+      ]
+    },
+    {
+      "label": "第2幕 変装したラダミストの潜入",
+      "group_label": "第2幕",
+      "roles": [
+        "ラダミスト",
+        "ゼノービア",
+        "ティリダーテ"
+      ]
+    },
+    {
+      "label": "第3幕 ティグラーネとファルナーチェの離反",
+      "group_label": "第3幕",
+      "roles": [
+        "ティグラーネ",
+        "ファルナーチェ",
+        "ポリッセーナ"
+      ]
+    },
+    {
+      "label": "★終曲（ティリダーテの改心と和解）",
+      "group_label": "第3幕",
+      "roles": [
+        "ラダミスト",
+        "ゼノービア",
+        "ティリダーテ",
+        "ポリッセーナ",
+        "ティグラーネ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

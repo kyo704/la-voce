@@ -1,0 +1,110 @@
+{
+  "title": "与話情浮名横櫛（切られ与三）",
+  "aliases": [
+    "切られ与三",
+    "源氏店"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1853,
+  "duration_min": 140,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kirare-yosa",
+  "note": "★歌舞伎 ／ 作者 三代目瀬川如皐 ／ ★★★『源氏店』のせりふが名高い。★世話物の代表 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "伊豆屋与三郎"
+    },
+    {
+      "label": "お富"
+    },
+    {
+      "label": "赤間源左衛門"
+    },
+    {
+      "label": "和泉屋多左衛門"
+    },
+    {
+      "label": "蝙蝠安"
+    },
+    {
+      "label": "鳶頭金五郎"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 木更津海岸見染め",
+      "group_label": "序幕",
+      "roles": [
+        "伊豆屋与三郎",
+        "お富",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★★第2幕 赤間別荘（★与三郎が34か所斬られる）",
+      "group_label": "第2幕",
+      "roles": [
+        "伊豆屋与三郎",
+        "お富",
+        "赤間源左衛門",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★★第3幕 源氏店（★『御新造さんへ、おかみさんへ』のせりふ）",
+      "group_label": "第3幕",
+      "roles": [
+        "伊豆屋与三郎",
+        "お富",
+        "蝙蝠安",
+        "和泉屋多左衛門",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★第4幕 蜄屋（結末）",
+      "group_label": "第4幕",
+      "roles": [
+        "伊豆屋与三郎",
+        "お富",
+        "鳶頭金五郎",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "title": "ヴァネッサ",
+  "title_original": "Vanessa",
+  "composer": "バーバー",
+  "composer_sort": "Barber, Samuel",
+  "kind": "opera",
+  "year_written": 1958,
+  "duration_min": 125,
+  "language": "en",
+  "source": "hand",
+  "source_id": "vanessa",
+  "note": "★台本はメノッティ",
+  "roles": [
+    {
+      "label": "ヴァネッサ"
+    },
+    {
+      "label": "エリカ"
+    },
+    {
+      "label": "老男爵夫人"
+    },
+    {
+      "label": "アナトール"
+    },
+    {
+      "label": "医師"
+    },
+    {
+      "label": "ニコラス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 雪の館（20年幕を閉ざした鏡）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴァネッサ",
+        "エリカ",
+        "老男爵夫人",
+        "医師"
+      ]
+    },
+    {
+      "label": "★第1幕 アナトールの到来（別人だった）",
+      "group_label": "第1幕",
+      "roles": [
+        "アナトール",
+        "ヴァネッサ",
+        "エリカ"
+      ]
+    },
+    {
+      "label": "★第1幕 エリカとアナトールの夜",
+      "group_label": "第1幕",
+      "roles": [
+        "エリカ",
+        "アナトール"
+      ]
+    },
+    {
+      "label": "★第2幕 ★エリカの独白（彼を愛しているのはわたし）",
+      "group_label": "第2幕",
+      "roles": [
+        "エリカ",
+        "老男爵夫人"
+      ]
+    },
+    {
+      "label": "★第2幕 ★スケートと医師の酔いのアリア",
+      "group_label": "第2幕",
+      "roles": [
+        "医師",
+        "ヴァネッサ",
+        "アナトール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★舞踏会（★四重唱：これが愛か）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァネッサ",
+        "エリカ",
+        "アナトール",
+        "医師",
+        "老男爵夫人"
+      ]
+    },
+    {
+      "label": "★第3幕 エリカの雪の中への出奔（子を失う）",
+      "group_label": "第3幕",
+      "roles": [
+        "エリカ",
+        "老男爵夫人",
+        "ニコラス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（ヴァネッサとアナトールの旅立ち・エリカが鏡を閉ざす）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァネッサ",
+        "アナトール",
+        "エリカ",
+        "老男爵夫人"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

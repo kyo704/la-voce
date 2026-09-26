@@ -1,0 +1,97 @@
+{
+  "title": "源平布引滝",
+  "aliases": [
+    "実盛物語"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1749,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-genpei-nunobiki",
+  "note": "★歌舞伎 ／ 作者 並木千柳・三好松洛 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "斎藤別当実盛"
+    },
+    {
+      "label": "瀬尾十郎"
+    },
+    {
+      "label": "小万"
+    },
+    {
+      "label": "九郎助"
+    },
+    {
+      "label": "太郎吉"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "葉末"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★実盛物語（★小万の片腕と白旗）",
+      "group_label": "二段目",
+      "roles": [
+        "斎藤別当実盛",
+        "瀬尾十郎",
+        "小万",
+        "九郎助",
+        "太郎吉",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★実盛物語 馬上の引込み",
+      "group_label": "二段目",
+      "roles": [
+        "斎藤別当実盛",
+        "太郎吉",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★三段目 九郎助住家",
+      "group_label": "三段目",
+      "roles": [
+        "小万",
+        "九郎助",
+        "葉末",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

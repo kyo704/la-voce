@@ -1,0 +1,256 @@
+{
+ "title": "ランメルモールのルチア",
+ "composer": "ドニゼッティ",
+ "composer_sort": "Donizetti, Gaetano",
+ "kind": "opera",
+ "year_written": 1835,
+ "source": "hand",
+ "source_id": "donizetti-lucia",
+ "roles": [
+  {
+   "label": "ルチア",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "エドガルド",
+   "voice": "テノール"
+  },
+  {
+   "label": "エンリーコ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ライモンド",
+   "voice": "バス"
+  },
+  {
+   "label": "アルトゥーロ",
+   "voice": "テノール"
+  },
+  {
+   "label": "アリーサ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "ノルマンノ",
+   "voice": "テノール"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "導入の合唱（あたりを探れ）",
+   "group_label": "第1幕",
+   "roles": [
+    "ノルマンノ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "エンリーコのカヴァティーナ（むごい運命よ）",
+   "group_label": "第1幕",
+   "roles": [
+    "エンリーコ",
+    "ライモンド",
+    "ノルマンノ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ルチアのカヴァティーナ（あたりは沈黙に包まれ〜穏やかな喜びが）",
+   "group_label": "第1幕",
+   "roles": [
+    "ルチア",
+    "アリーサ"
+   ]
+  },
+  {
+   "label": "ルチアとエドガルドの二重唱（別れの場）",
+   "group_label": "第1幕",
+   "roles": [
+    "ルチア",
+    "エドガルド"
+   ]
+  },
+  {
+   "label": "ルチアとエンリーコの二重唱（偽りの手紙）",
+   "group_label": "第2幕",
+   "roles": [
+    "ルチア",
+    "エンリーコ"
+   ]
+  },
+  {
+   "label": "ライモンドの説得",
+   "group_label": "第2幕",
+   "roles": [
+    "ルチア",
+    "ライモンド"
+   ]
+  },
+  {
+   "label": "婚礼の合唱",
+   "group_label": "第2幕",
+   "roles": [
+    "アルトゥーロ",
+    "エンリーコ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "六重唱（我が祖先の墓よ〜第2幕フィナーレ）",
+   "group_label": "第2幕",
+   "roles": [
+    "ルチア",
+    "エドガルド",
+    "エンリーコ",
+    "ライモンド",
+    "アリーサ",
+    "アルトゥーロ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "塔の場（エドガルドとエンリーコの二重唱）",
+   "group_label": "第3幕",
+   "roles": [
+    "エドガルド",
+    "エンリーコ"
+   ]
+  },
+  {
+   "label": "ライモンドの知らせ",
+   "group_label": "第3幕",
+   "roles": [
+    "ライモンド",
+    "合唱"
+   ]
+  },
+  {
+   "label": "狂乱の場（あの方の優しい声が）",
+   "group_label": "第3幕",
+   "roles": [
+    "ルチア",
+    "ライモンド",
+    "エンリーコ",
+    "アリーサ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "エドガルドのアリアとフィナーレ（我が祖先の墓よ〜やがて天使に）",
+   "group_label": "第3幕",
+   "roles": [
+    "エドガルド",
+    "ライモンド",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チンバッソ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion",
+   "note": "大太鼓・シンバル"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "グラスハーモニカ",
+   "count": 1,
+   "section": "other",
+   "is_optional": true,
+   "note": "狂乱の場。フルートで代えることが多い"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ],
+ "title_original": "Lucia di Lammermoor",
+ "aliases": [
+  "ルチア",
+  "Lucia"
+ ],
+ "duration_min": 150,
+ "language": "it"
+}

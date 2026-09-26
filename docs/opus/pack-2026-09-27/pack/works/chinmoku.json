@@ -1,0 +1,193 @@
+{
+  "title": "沈黙",
+  "title_original": "沈黙",
+  "composer": "松村禎三",
+  "composer_sort": "Matsumura, Teizo",
+  "kind": "opera",
+  "year_written": 1993,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "chinmoku",
+  "note": "★遠藤周作の同名小説による。★日本の戦後オペラの代表作とされる",
+  "roles": [
+    {
+      "label": "ロドリゴ"
+    },
+    {
+      "label": "キチジロー"
+    },
+    {
+      "label": "フェレイラ"
+    },
+    {
+      "label": "井上筑後守"
+    },
+    {
+      "label": "モニカ"
+    },
+    {
+      "label": "ガルペ"
+    },
+    {
+      "label": "通辞"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 長崎への潜入（ロドリゴとガルペ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドリゴ",
+        "ガルペ",
+        "キチジロー"
+      ]
+    },
+    {
+      "label": "★第1幕 隠れ切支丹の村（モニカ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドリゴ",
+        "モニカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第1幕 ★踏絵と水磔（村人の死）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドリゴ",
+        "モニカ",
+        "井上筑後守",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 キチジローの裏切りと捕縛",
+      "group_label": "第2幕",
+      "roles": [
+        "キチジロー",
+        "ロドリゴ",
+        "通辞"
+      ]
+    },
+    {
+      "label": "★★第2幕 井上筑後守との対話（日本という泥沼）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロドリゴ",
+        "井上筑後守",
+        "通辞"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★フェレイラとの再会（転んだ師）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロドリゴ",
+        "フェレイラ"
+      ]
+    },
+    {
+      "label": "★★★終曲（★穴吊りの声と『踏むがいい』── 沈黙が破れる）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロドリゴ",
+        "フェレイラ",
+        "キチジロー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

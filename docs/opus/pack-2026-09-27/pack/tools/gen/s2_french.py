@@ -1,0 +1,161 @@
+# -*- coding: utf-8 -*-
+"""★歌曲集 ── フランス"""
+import sys, os; sys.path.insert(0, os.path.dirname(__file__))
+from sc import SC
+F = dict(lang="fr")
+
+SC("berlioz-nuits-ete.json", "夏の夜 作品7", "ベルリオーズ",
+   ["1. ヴィラネル（Villanelle）", "2. 薔薇の精（Le spectre de la rose）",
+    "3. 入江のほとり（Sur les lagunes）", "4. 君なくて（Absence）",
+    "5. 墓地にて（Au cimetière）", "6. 知られぬ島（L’île inconnue）"],
+   orig="Les nuits d’été op.7", y=1841, dur=30, poet="ゴーティエ",
+   sort="Berlioz, Hector", sid="berlioz-op7", **F,
+   note="★★管弦楽版が よく 用いられます。★6曲を 別の 歌手で 分ける ことも あります",
+   inst=[{"part": "管弦楽（またはピアノ）", "count": 0, "section": "other"}])
+SC("duparc-melodies.json", "デュパルク 歌曲集", "デュパルク",
+   ["1. 旅への誘い（L’invitation au voyage）", "2. 恍惚（Extase）",
+    "3. 悲しき歌（Chanson triste）", "4. 波と鐘（La vague et la cloche）",
+    "5. フィディレ（Phidylé）", "6. 嘆き（Lamento）",
+    "7. ためいき（Soupir）", "8. 遺言（Testament）",
+    "9. ロズモンドの館（Le manoir de Rosemonde）",
+    "10. 前世（La vie antérieure）", "11. エレジー（Élégie）",
+    "12. セレナード（Sérénade）", "13. ミニョンのロマンス（Romance de Mignon）"],
+   y=1884, dur=45, sort="Duparc, Henri", sid="duparc-melodies", **F,
+   note="★★★デュパルクは 生涯に 17曲ほどしか 残しませんでした。★★1つ1つが 濃い 曲")
+SC("chausson-poeme-amour-mer.json", "愛と海の詩 作品19", "ショーソン",
+   ["1. 水の花（La fleur des eaux）", "2. 間奏曲（Interlude）",
+    "3. 愛の死（La mort de l’amour）"],
+   orig="Poème de l’amour et de la mer op.19", y=1893, dur=30, poet="ブショール",
+   sort="Chausson, Ernest", sid="chausson-op19", **F,
+   note="★★管弦楽つき。★第3曲の 終わり『リラの花咲く頃』が 名高い",
+   inst=[{"part": "管弦楽（またはピアノ）", "count": 0, "section": "other"}])
+SC("faure-bonne-chanson.json", "優しい歌 作品61", "フォーレ",
+   ["1. 聖なる後光（Une Sainte en son auréole）",
+    "2. 夜明けが広がるので（Puisque l’aube grandit）",
+    "3. 白い月（La lune blanche luit dans les bois）",
+    "4. 長く恐ろしい旅のあとで（J’allais par des chemins perfides）",
+    "5. ぼくはほとんど恐い（J’ai presque peur, en vérité）",
+    "6. きみが去る前に（Avant que tu ne t’en ailles）",
+    "7. ぼくは奇妙な夢のなかを（Donc, ce sera par un clair jour d’été）",
+    "8. これは気だるい恍惚（N’est-ce pas?）",
+    "9. 冬は終わった（L’hiver a cessé）"],
+   orig="La bonne chanson op.61", y=1894, dur=25, poet="ヴェルレーヌ",
+   sort="Fauré, Gabriel", sid="faure-op61", **F,
+   note="★★弦楽五重奏とピアノの 版も あります",)
+SC("faure-horizon-chimerique.json", "幻想の水平線 作品118", "フォーレ",
+   ["1. 海は果てしなく（La mer est infinie）", "2. わたしは船出した（Je me suis embarqué）",
+    "3. ディアーナ、セレネ（Diane, Séléné）", "4. 船よ、ぼくらは君を愛した（Vaisseaux, nous vous aurons aimés）"],
+   orig="L’horizon chimérique op.118", y=1921, dur=10, poet="ミルモン",
+   sort="Fauré, Gabriel", sid="faure-op118", **F,
+   note="★★フォーレ 最後の 歌曲集")
+SC("faure-chanson-eve.json", "イヴの歌 作品95", "フォーレ",
+   [], n_songs=10, orig="La chanson d’Ève op.95", y=1910, dur=28,
+   poet="ヴァン・レルベルグ", sort="Fauré, Gabriel", sid="faure-op95", **F)
+SC("faure-jardin-clos.json", "閉ざされた庭 作品106", "フォーレ",
+   [], n_songs=8, orig="Le jardin clos op.106", y=1914, dur=18,
+   poet="ヴァン・レルベルグ", sort="Fauré, Gabriel", sid="faure-op106", **F)
+SC("debussy-bilitis.json", "ビリティスの3つの歌", "ドビュッシー",
+   ["1. パンの笛（La flûte de Pan）", "2. 髪（La chevelure）",
+    "3. ナイアードの墓（Le tombeau des naïades）"],
+   orig="Trois chansons de Bilitis", y=1898, dur=12, poet="ルイス",
+   sort="Debussy, Claude", sid="debussy-bilitis", **F)
+SC("debussy-baudelaire.json", "ボードレールの5つの詩", "ドビュッシー",
+   ["1. バルコニー（Le balcon）", "2. 夕べの調べ（Harmonie du soir）",
+    "3. 噴水（Le jet d’eau）", "4. 瞑想（Recueillement）",
+    "5. 恋人たちの死（La mort des amants）"],
+   orig="Cinq poèmes de Baudelaire", y=1889, dur=25, poet="ボードレール",
+   sort="Debussy, Claude", sid="debussy-baudelaire", **F)
+SC("debussy-fetes-galantes-1.json", "艶なる宴 第1集", "ドビュッシー",
+   ["1. ひそやかに（En sourdine）", "2. 操り人形（Fantoches）",
+    "3. 月の光（Clair de lune）"],
+   orig="Fêtes galantes I", y=1891, dur=9, poet="ヴェルレーヌ",
+   sort="Debussy, Claude", sid="debussy-fetes-1", **F)
+SC("debussy-fetes-galantes-2.json", "艶なる宴 第2集", "ドビュッシー",
+   ["1. 無言劇のように（Les ingénus）", "2. 牧神（Le faune）",
+    "3. 感傷的な対話（Colloque sentimental）"],
+   orig="Fêtes galantes II", y=1904, dur=9, poet="ヴェルレーヌ",
+   sort="Debussy, Claude", sid="debussy-fetes-2", **F)
+SC("debussy-ariettes-oubliees.json", "忘れられた小唄", "ドビュッシー",
+   ["1. これは切ない恍惚（C’est l’extase langoureuse）",
+    "2. 巷に雨の降るごとく（Il pleure dans mon cœur）",
+    "3. 木々の影（L’ombre des arbres）", "4. 木馬（Chevaux de bois）",
+    "5. 緑（Green）", "6. 憂鬱（Spleen）"],
+   orig="Ariettes oubliées", y=1888, dur=18, poet="ヴェルレーヌ",
+   sort="Debussy, Claude", sid="debussy-ariettes", **F)
+SC("ravel-sheherazade.json", "シェエラザード", "ラヴェル",
+   ["1. アジア（Asie）", "2. 魔法の笛（La flûte enchantée）",
+    "3. つれない人（L’indifférent）"],
+   orig="Shéhérazade", y=1903, dur=17, poet="トリスタン・クリングソル",
+   sort="Ravel, Maurice", sid="ravel-sheherazade", **F,
+   note="★★管弦楽つきが もとの 形",
+   inst=[{"part": "管弦楽（またはピアノ）", "count": 0, "section": "other"}])
+SC("ravel-histoires-naturelles.json", "博物誌", "ラヴェル",
+   ["1. 孔雀（Le paon）", "2. こおろぎ（Le grillon）", "3. 白鳥（Le cygne）",
+    "4. かわせみ（Le martin-pêcheur）", "5. ほろほろ鳥（La pintade）"],
+   orig="Histoires naturelles", y=1906, dur=17, poet="ジュール・ルナール",
+   sort="Ravel, Maurice", sid="ravel-histoires", **F,
+   note="★★★語るように 歌う 曲。★語尾の e を 落とす 歌い方が 当時 物議を 呼びました")
+SC("ravel-don-quichotte.json", "ドゥルシネア姫に心を寄せるドン・キホーテ", "ラヴェル",
+   ["1. ロマネスクな歌（Chanson romanesque）",
+    "2. 叙事的な歌（Chanson épique）", "3. 酒の歌（Chanson à boire）"],
+   orig="Don Quichotte à Dulcinée", y=1933, dur=8, poet="モラン",
+   sort="Ravel, Maurice", sid="ravel-don-quichotte", **F,
+   note="★★ラヴェル 最後の 作品。★バリトンのための 曲",
+   inst=[{"part": "管弦楽（またはピアノ）", "count": 0, "section": "other"}])
+SC("ravel-mallarme.json", "ステファヌ・マラルメの3つの詩", "ラヴェル",
+   ["1. ため息（Soupir）", "2. 空しい願い（Placet futile）",
+    "3. 尻からとび出た（Surgi de la croupe et du bond）"],
+   orig="Trois poèmes de Stéphane Mallarmé", y=1913, dur=12, poet="マラルメ",
+   sort="Ravel, Maurice", sid="ravel-mallarme", **F,
+   inst=[{"part": "室内合奏（ピッコロ・フルート・クラリネット・バスクラリネット・弦楽四重奏・ピアノ）",
+          "count": 0, "section": "other"}])
+SC("ravel-chansons-madecasses.json", "マダガスカル島民の歌", "ラヴェル",
+   ["1. ナアンドーヴ（Nahandove）",
+    "2. 白い人を信ずるな（Aoua! Méfiez-vous des blancs）",
+    "3. 横になるのは快い（Il est doux）"],
+   orig="Chansons madécasses", y=1926, dur=14, poet="パルニー",
+   sort="Ravel, Maurice", sid="ravel-madecasses", **F,
+   note="★★第2曲は 植民地への 抗議の 歌",
+   inst=[{"part": "フルート", "count": 1, "section": "woodwind"},
+         {"part": "チェロ", "count": 1, "section": "strings"},
+         {"part": "ピアノ", "count": 1, "section": "keyboard"}])
+SC("ravel-cinq-melodies-grecques.json", "5つのギリシャ民謡", "ラヴェル",
+   [], n_songs=5, orig="Cinq mélodies populaires grecques", y=1906, dur=9,
+   sort="Ravel, Maurice", sid="ravel-grecques", **F)
+SC("poulenc-bestiaire.json", "動物詩集", "プーランク",
+   ["1. らくだ（Le dromadaire）", "2. チベットの山羊（La chèvre du Thibet）",
+    "3. ばった（La sauterelle）", "4. いるか（Le dauphin）",
+    "5. ざりがに（L’écrevisse）", "6. こい（La carpe）"],
+   orig="Le bestiaire", y=1919, dur=7, poet="アポリネール",
+   sort="Poulenc, Francis", sid="poulenc-bestiaire", **F,
+   inst=[{"part": "室内合奏（またはピアノ）", "count": 0, "section": "other"}])
+SC("poulenc-tel-jour.json", "そんな日 そんな夜", "プーランク",
+   [], n_songs=9, orig="Tel jour, telle nuit", y=1937, dur=20,
+   poet="エリュアール", sort="Poulenc, Francis", sid="poulenc-tel-jour", **F,
+   note="★★プーランクの 歌曲集の 代表作")
+SC("poulenc-travail-peintre.json", "画家の仕事", "プーランク",
+   ["1. パブロ・ピカソ（Pablo Picasso）", "2. マルク・シャガール（Marc Chagall）",
+    "3. ポール・クレー（Paul Klee）", "4. ホアン・ミロ（Joan Miró）",
+    "5. ジャック・ヴィヨン（Jacques Villon）",
+    "6. ジョルジュ・ブラック（Georges Braque）",
+    "7. ジュアン・グリス（Juan Gris）"],
+   orig="Le travail du peintre", y=1956, dur=18, poet="エリュアール",
+   sort="Poulenc, Francis", sid="poulenc-peintre", **F)
+SC("poulenc-chansons-gaillardes.json", "シャンソン・ガイヤルド", "プーランク",
+   [], n_songs=8, orig="Chansons gaillardes", y=1926, dur=12,
+   poet="17世紀の匿名詩", sort="Poulenc, Francis", sid="poulenc-gaillardes", **F,
+   note="★★酒と 恋の 気まぐれな 歌。★バリトンのための 曲")
+SC("poulenc-banalites.json", "平凡な話", "プーランク",
+   ["1. オルクニーズの歌（Chanson d’Orkenise）", "2. ホテル（Hôtel）",
+    "3. 沼地（Fagnes de Wallonie）", "4. パリへの旅（Voyage à Paris）",
+    "5. サンギーヌ（Sanglots）"],
+   orig="Banalités", y=1940, dur=10, poet="アポリネール",
+   sort="Poulenc, Francis", sid="poulenc-banalites", **F,
+   note="★★『ホテル』は 世界で 最も 短い 名曲の 1つと 言われます")
+SC("messiaen-harawi.json", "ハラウィ", "メシアン",
+   [], n_songs=12, orig="Harawi", y=1945, dur=55,
+   sort="Messiaen, Olivier", sid="messiaen-harawi", **F,
+   note="★★★『トリスタン三部作』の 1つ。★ソプラノに 大きな 声量と 音域を 要します")
+SC("messiaen-chants-terre-ciel.json", "天と地の歌", "メシアン",
+   [], n_songs=6, orig="Chants de terre et de ciel", y=1938, dur=27,
+   sort="Messiaen, Olivier", sid="messiaen-chants", **F)

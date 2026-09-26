@@ -1,0 +1,177 @@
+{
+  "title": "物語の始まり",
+  "title_original": "Počátek románu",
+  "composer": "ヤナーチェク",
+  "composer_sort": "Janáček, Leoš",
+  "kind": "opera",
+  "year_written": 1891,
+  "duration_min": 60,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "beginning-romance",
+  "note": "★モラヴィア民謡と舞曲を多く用いた1幕物",
+  "roles": [
+    {
+      "label": "ポルーシュカ"
+    },
+    {
+      "label": "ユーリク"
+    },
+    {
+      "label": "アダムの伯爵"
+    },
+    {
+      "label": "ミハル"
+    },
+    {
+      "label": "ヴォイテク"
+    },
+    {
+      "label": "老婆"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★森の中（ポルーシュカと羊飼いの歌）",
+      "group_label": "第1場",
+      "roles": [
+        "ポルーシュカ",
+        "ユーリク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "伯爵の求愛",
+      "group_label": "第2場",
+      "roles": [
+        "アダムの伯爵",
+        "ポルーシュカ"
+      ]
+    },
+    {
+      "label": "父ミハルの欲と娘の拒み",
+      "group_label": "第3場",
+      "roles": [
+        "ミハル",
+        "ポルーシュカ",
+        "老婆"
+      ]
+    },
+    {
+      "label": "ヴォイテクの取りなし",
+      "group_label": "第4場",
+      "roles": [
+        "ヴォイテク",
+        "アダムの伯爵",
+        "ミハル"
+      ]
+    },
+    {
+      "label": "★終曲（ポルーシュカはユーリクを選ぶ・モラヴィアの踊り）",
+      "group_label": "終場",
+      "roles": [
+        "ポルーシュカ",
+        "ユーリク",
+        "アダムの伯爵",
+        "ミハル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

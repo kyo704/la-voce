@@ -1,0 +1,217 @@
+{
+  "title": "グロリアーナ",
+  "title_original": "Gloriana",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1953,
+  "duration_min": 155,
+  "language": "en",
+  "source": "hand",
+  "source_id": "gloriana",
+  "note": "★エリザベス2世の戴冠を記念して書かれた",
+  "roles": [
+    {
+      "label": "エリザベス1世"
+    },
+    {
+      "label": "ロバート・デヴァルー（エセックス伯）"
+    },
+    {
+      "label": "フランセス（エセックス伯夫人）"
+    },
+    {
+      "label": "ペネロープ・リッチ夫人"
+    },
+    {
+      "label": "チャールズ・ブラント（マウントジョイ卿）"
+    },
+    {
+      "label": "サー・ロバート・セシル"
+    },
+    {
+      "label": "サー・ウォルター・ローリー"
+    },
+    {
+      "label": "盲目のバラード歌い"
+    },
+    {
+      "label": "町の呼び声"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 馬上槍試合（エセックスとマウントジョイの争い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロバート・デヴァルー（エセックス伯）",
+        "チャールズ・ブラント（マウントジョイ卿）",
+        "エリザベス1世",
+        "サー・ウォルター・ローリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 女王とセシルの対話（★女王の祈り）",
+      "group_label": "第1幕",
+      "roles": [
+        "エリザベス1世",
+        "サー・ロバート・セシル"
+      ]
+    },
+    {
+      "label": "★第2幕 ノリッジの仮面劇（★時と豊穣の踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベス1世",
+        "ロバート・デヴァルー（エセックス伯）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 エセックス家の庭（★リュートの歌と4人の重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロバート・デヴァルー（エセックス伯）",
+        "フランセス（エセックス伯夫人）",
+        "ペネロープ・リッチ夫人",
+        "チャールズ・ブラント（マウントジョイ卿）"
+      ]
+    },
+    {
+      "label": "★第2幕 宮廷の舞踏会（★女王がフランセスの衣裳を着る）",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベス1世",
+        "フランセス（エセックス伯夫人）",
+        "ロバート・デヴァルー（エセックス伯）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★エセックスが女王の寝所に踏み込む（かつらのない女王）",
+      "group_label": "第3幕",
+      "roles": [
+        "エリザベス1世",
+        "ロバート・デヴァルー（エセックス伯）",
+        "サー・ロバート・セシル"
+      ]
+    },
+    {
+      "label": "★第3幕 街（盲目のバラード歌いが反乱を語る）",
+      "group_label": "第3幕",
+      "roles": [
+        "盲目のバラード歌い",
+        "町の呼び声",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 3人の女の嘆願と死刑状の署名",
+      "group_label": "第3幕",
+      "roles": [
+        "エリザベス1世",
+        "フランセス（エセックス伯夫人）",
+        "ペネロープ・リッチ夫人"
+      ]
+    },
+    {
+      "label": "★終曲（女王の独白と死・語りの断片）",
+      "group_label": "第3幕",
+      "roles": [
+        "エリザベス1世"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

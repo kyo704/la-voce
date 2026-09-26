@@ -1,0 +1,113 @@
+{
+ "title": "マクベス（戯曲）",
+ "composer": "シェイクスピア",
+ "composer_sort": "Shakespeare, William",
+ "kind": "drama",
+ "year_written": 1606,
+ "source": "hand",
+ "source_id": "shakespeare-macbeth",
+ "roles": [
+  {
+   "label": "マクベス"
+  },
+  {
+   "label": "マクベス夫人"
+  },
+  {
+   "label": "バンクォー"
+  },
+  {
+   "label": "マクダフ"
+  },
+  {
+   "label": "ダンカン王"
+  },
+  {
+   "label": "マルカム"
+  },
+  {
+   "label": "魔女",
+   "is_group": true
+  },
+  {
+   "label": "その他",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 荒野の魔女／予言",
+   "group_label": "第1幕",
+   "roles": [
+    "魔女",
+    "マクベス",
+    "バンクォー"
+   ]
+  },
+  {
+   "label": "第1幕 城（夫人の手紙）",
+   "group_label": "第1幕",
+   "roles": [
+    "マクベス夫人",
+    "マクベス",
+    "ダンカン王"
+   ]
+  },
+  {
+   "label": "第2幕 ダンカン王の殺害",
+   "group_label": "第2幕",
+   "roles": [
+    "マクベス",
+    "マクベス夫人",
+    "マクダフ",
+    "マルカム",
+    "その他"
+   ]
+  },
+  {
+   "label": "第3幕 バンクォーの死と宴の亡霊",
+   "group_label": "第3幕",
+   "roles": [
+    "マクベス",
+    "マクベス夫人",
+    "バンクォー",
+    "その他"
+   ]
+  },
+  {
+   "label": "第4幕 魔女の第2の予言／マクダフ一家",
+   "group_label": "第4幕",
+   "roles": [
+    "魔女",
+    "マクベス",
+    "マクダフ",
+    "マルカム"
+   ]
+  },
+  {
+   "label": "第5幕 夢遊の場と決闘",
+   "group_label": "第5幕",
+   "roles": [
+    "マクベス夫人",
+    "マクベス",
+    "マクダフ",
+    "マルカム",
+    "その他"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "効果音・音楽",
+   "count": 1,
+   "section": "other",
+   "is_optional": true
+  }
+ ],
+ "title_original": "Macbeth",
+ "aliases": [
+  "マクベス"
+ ],
+ "duration_min": 140,
+ "language": "en"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "濯ぎ川",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-susugi-gawa",
+  "note": "★新作狂言（女狂言） ／ ★★フランスの 笑劇を 元に 飯沢匡が 書いた 新作。★★古典では ありません ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（夫）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "小アド（姑）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "夫が家事を言いつけられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★★覚え書きを作り、それに無いことはしないと言う",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）",
+        "小アド（姑）"
+      ]
+    },
+    {
+      "label": "★川に落ちた妻を、覚え書きに無いと言って助けない",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）",
+        "小アド（姑）"
+      ]
+    },
+    {
+      "label": "★書き足させて助ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）",
+        "小アド（姑）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

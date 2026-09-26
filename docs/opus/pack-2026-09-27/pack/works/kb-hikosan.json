@@ -1,0 +1,75 @@
+{
+  "title": "彦山権現誓助剣",
+  "aliases": [
+    "毛谷村"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1786,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-hikosan",
+  "note": "★歌舞伎 ／ 作者 梅野下風・近松保蔵 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "毛谷村六助"
+    },
+    {
+      "label": "お園"
+    },
+    {
+      "label": "微塵弾正（京極内匠）"
+    },
+    {
+      "label": "杣斧右衛門"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★毛谷村（★六助とお園）",
+      "group_label": "九段目",
+      "roles": [
+        "毛谷村六助",
+        "お園",
+        "微塵弾正（京極内匠）",
+        "杣斧右衛門",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★毛谷村 お園の女武道",
+      "group_label": "九段目",
+      "roles": [
+        "お園",
+        "毛谷村六助",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

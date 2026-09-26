@@ -1,0 +1,209 @@
+{
+  "title": "アントニーとクレオパトラ",
+  "title_original": "Antony and Cleopatra",
+  "composer": "バーバー",
+  "composer_sort": "Barber, Samuel",
+  "kind": "opera",
+  "year_written": 1966,
+  "duration_min": 160,
+  "edition": "1966 原典版（メトロポリタン開場）／1975 メノッティ改訂版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "antony-cleopatra",
+  "roles": [
+    {
+      "label": "クレオパトラ"
+    },
+    {
+      "label": "アントニー"
+    },
+    {
+      "label": "オクタヴィウス・シーザー"
+    },
+    {
+      "label": "エノバーバス"
+    },
+    {
+      "label": "チャーミアン"
+    },
+    {
+      "label": "イーラス"
+    },
+    {
+      "label": "オクタヴィア"
+    },
+    {
+      "label": "占い師"
+    },
+    {
+      "label": "エロス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ローマとアレクサンドリア（★合唱の口上）",
+      "group_label": "第1幕",
+      "roles": [
+        "エノバーバス",
+        "アントニー",
+        "クレオパトラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★エノバーバスのクレオパトラの描写（舟の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "エノバーバス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 アントニーとオクタヴィアの政略結婚",
+      "group_label": "第1幕",
+      "roles": [
+        "オクタヴィウス・シーザー",
+        "オクタヴィア",
+        "アントニー"
+      ]
+    },
+    {
+      "label": "★第2幕 クレオパトラの嘆きと怒り",
+      "group_label": "第2幕",
+      "roles": [
+        "クレオパトラ",
+        "チャーミアン",
+        "イーラス",
+        "占い師"
+      ]
+    },
+    {
+      "label": "★第2幕 アクティウムの海戦とアントニーの敗走",
+      "group_label": "第2幕",
+      "roles": [
+        "アントニー",
+        "エノバーバス",
+        "クレオパトラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 エノバーバスの離反と死",
+      "group_label": "第3幕",
+      "roles": [
+        "エノバーバス"
+      ]
+    },
+    {
+      "label": "★第3幕 アントニーの自害（エロスの拒み）",
+      "group_label": "第3幕",
+      "roles": [
+        "アントニー",
+        "エロス",
+        "クレオパトラ"
+      ]
+    },
+    {
+      "label": "★終曲（★クレオパトラの死・蛇と「わたしは炎と大気」）",
+      "group_label": "第3幕",
+      "roles": [
+        "クレオパトラ",
+        "チャーミアン",
+        "イーラス",
+        "オクタヴィウス・シーザー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

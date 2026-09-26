@@ -1,0 +1,144 @@
+{
+  "title": "カーリュー・リヴァー",
+  "title_original": "Curlew River",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1964,
+  "duration_min": 70,
+  "language": "en",
+  "source": "hand",
+  "source_id": "curlew-river",
+  "note": "★★能『隅田川』に学んだ『教会上演用比喩劇』。★全役を男声が演じる（狂女もテノール）",
+  "roles": [
+    {
+      "label": "狂女"
+    },
+    {
+      "label": "渡し守"
+    },
+    {
+      "label": "旅人"
+    },
+    {
+      "label": "修道院長"
+    },
+    {
+      "label": "霊の声"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（修道僧たちの入場・グレゴリオ聖歌）",
+      "group_label": "序",
+      "roles": [
+        "修道院長",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★渡し場（渡し守の呼びかけ）",
+      "group_label": "本編",
+      "roles": [
+        "渡し守",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★旅人の乗船",
+      "group_label": "本編",
+      "roles": [
+        "旅人",
+        "渡し守"
+      ]
+    },
+    {
+      "label": "★狂女の登場（★都の鳥ならば）",
+      "group_label": "本編",
+      "roles": [
+        "狂女",
+        "渡し守",
+        "旅人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★渡し守の物語（1年前に死んだ子の話）",
+      "group_label": "本編",
+      "roles": [
+        "渡し守",
+        "狂女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★母だと分かる",
+      "group_label": "本編",
+      "roles": [
+        "狂女",
+        "渡し守",
+        "旅人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★墓の前の祈りと★子の霊の声",
+      "group_label": "本編",
+      "roles": [
+        "狂女",
+        "霊の声",
+        "渡し守",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（修道僧たちの退場）",
+      "group_label": "終",
+      "roles": [
+        "修道院長",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート（ピッコロ持ち替え）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "打楽器（小太鼓・ドラム・鐘）",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

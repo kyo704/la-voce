@@ -1,0 +1,221 @@
+{
+  "title": "カーチャ・カバノヴァー",
+  "title_original": "Káťa Kabanová",
+  "composer": "ヤナーチェク",
+  "composer_sort": "Janáček, Leoš",
+  "kind": "opera",
+  "year_written": 1921,
+  "duration_min": 100,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "katya-kabanova",
+  "roles": [
+    {
+      "label": "カーチャ"
+    },
+    {
+      "label": "カバニハ"
+    },
+    {
+      "label": "チーホン"
+    },
+    {
+      "label": "ボリス"
+    },
+    {
+      "label": "ヴァルヴァラ"
+    },
+    {
+      "label": "クドリャーシ"
+    },
+    {
+      "label": "ジコイ"
+    },
+    {
+      "label": "グラーシャ"
+    },
+    {
+      "label": "フェクルーシャ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ヴォルガの岸（クドリャーシとジコイ）",
+      "group_label": "第1幕",
+      "roles": [
+        "クドリャーシ",
+        "ジコイ",
+        "ボリス",
+        "グラーシャ"
+      ]
+    },
+    {
+      "label": "第1幕 カバニハの叱り（母と息子）",
+      "group_label": "第1幕",
+      "roles": [
+        "カバニハ",
+        "チーホン",
+        "カーチャ",
+        "ヴァルヴァラ"
+      ]
+    },
+    {
+      "label": "★第1幕 カーチャの独白（教会と飛ぶ夢）",
+      "group_label": "第1幕",
+      "roles": [
+        "カーチャ",
+        "ヴァルヴァラ"
+      ]
+    },
+    {
+      "label": "第1幕 チーホンの旅立ちと誓いの拒まれ",
+      "group_label": "第1幕",
+      "roles": [
+        "カーチャ",
+        "チーホン",
+        "カバニハ"
+      ]
+    },
+    {
+      "label": "第2幕 家の中（鍵を渡される）",
+      "group_label": "第2幕",
+      "roles": [
+        "カーチャ",
+        "ヴァルヴァラ",
+        "カバニハ"
+      ]
+    },
+    {
+      "label": "★第2幕 夜の庭（2組の逢瀬・クドリャーシの歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "カーチャ",
+        "ボリス",
+        "ヴァルヴァラ",
+        "クドリャーシ"
+      ]
+    },
+    {
+      "label": "★第3幕 廃屋と嵐（カーチャの告白）",
+      "group_label": "第3幕",
+      "roles": [
+        "カーチャ",
+        "チーホン",
+        "カバニハ",
+        "ボリス",
+        "クドリャーシ",
+        "ジコイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ヴォルガのほとり（ボリスとの別れ）",
+      "group_label": "第3幕",
+      "roles": [
+        "カーチャ",
+        "ボリス"
+      ]
+    },
+    {
+      "label": "★終曲（カーチャの投身とカバニハの会釈）",
+      "group_label": "第3幕",
+      "roles": [
+        "カーチャ",
+        "カバニハ",
+        "チーホン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

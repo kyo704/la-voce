@@ -1,0 +1,104 @@
+{
+  "title": "銘苅子",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1719,
+  "duration_min": 80,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-mekaru-shi",
+  "note": "★組踊（琉球の歌舞劇） ／ 作者 玉城朝薫 ／ ★★★玉城朝薫『五番』の1つ。★羽衣伝説の琉球版 ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "銘苅子"
+    },
+    {
+      "label": "天女"
+    },
+    {
+      "label": "兄（子）"
+    },
+    {
+      "label": "妹（子）"
+    },
+    {
+      "label": "按司の使い"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★天女の水浴びと羽衣を隠す",
+      "group_label": "段",
+      "roles": [
+        "銘苅子",
+        "天女",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★天女が妻となり子を産む",
+      "group_label": "段",
+      "roles": [
+        "銘苅子",
+        "天女",
+        "兄（子）",
+        "妹（子）",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★★羽衣を見つけて昇天する",
+      "group_label": "段",
+      "roles": [
+        "天女",
+        "兄（子）",
+        "妹（子）",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★★★残された子らと父・按司の召し",
+      "group_label": "段",
+      "roles": [
+        "銘苅子",
+        "兄（子）",
+        "妹（子）",
+        "按司の使い",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

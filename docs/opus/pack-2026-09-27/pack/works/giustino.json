@@ -1,0 +1,187 @@
+{
+  "title": "ジュスティーノ",
+  "title_original": "Giustino",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1737,
+  "duration_min": 175,
+  "language": "it",
+  "source": "hand",
+  "source_id": "giustino",
+  "note": "★機械仕掛けと怪物の登場する舞台効果の多い作",
+  "roles": [
+    {
+      "label": "ジュスティーノ"
+    },
+    {
+      "label": "アリアンナ"
+    },
+    {
+      "label": "レオカスタ"
+    },
+    {
+      "label": "アナスタージオ"
+    },
+    {
+      "label": "ヴィタリアーノ"
+    },
+    {
+      "label": "アマンツィオ"
+    },
+    {
+      "label": "ポリダルテ"
+    },
+    {
+      "label": "フォルトゥーナ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 農夫ジュスティーノの夢（★フォルトゥーナの出現）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュスティーノ",
+        "フォルトゥーナ"
+      ]
+    },
+    {
+      "label": "第1幕 ビザンチンの宮廷（アリアンナとアナスタージオ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アリアンナ",
+        "アナスタージオ",
+        "アマンツィオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★海の怪物に縛られたレオカスタの救出",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュスティーノ",
+        "レオカスタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ヴィタリアーノの捕縛",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴィタリアーノ",
+        "ジュスティーノ",
+        "ポリダルテ"
+      ]
+    },
+    {
+      "label": "★第3幕 アマンツィオの裏切りとアリアンナの危機",
+      "group_label": "第3幕",
+      "roles": [
+        "アマンツィオ",
+        "アリアンナ",
+        "アナスタージオ"
+      ]
+    },
+    {
+      "label": "★第3幕 ★洞窟の場（先祖の霊とジュスティーノの正体）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジュスティーノ",
+        "ヴィタリアーノ"
+      ]
+    },
+    {
+      "label": "★終曲（ジュスティーノの即位）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジュスティーノ",
+        "アリアンナ",
+        "レオカスタ",
+        "アナスタージオ",
+        "ヴィタリアーノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

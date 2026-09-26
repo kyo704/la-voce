@@ -1,0 +1,90 @@
+{
+  "title": "蘭陵王",
+  "title_original": "蘭陵王",
+  "aliases": [
+    "らんりょうおう"
+  ],
+  "composer": "雅楽（舞楽）",
+  "composer_sort": "Gagaku Bugaku",
+  "kind": "gagaku",
+  "year_written": 800,
+  "source": "hand",
+  "source_id": "gagaku-ranryoo",
+  "duration_min": 20,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "舞人（蘭陵王）"
+    },
+    {
+      "label": "楽人",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "乱序",
+      "group_label": "全",
+      "roles": [
+        "楽人"
+      ]
+    },
+    {
+      "label": "舞",
+      "group_label": "全",
+      "roles": [
+        "舞人（蘭陵王）",
+        "楽人"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "篳篥",
+      "count": 3,
+      "section": "other",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "龍笛",
+      "count": 3,
+      "section": "other",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "笙",
+      "count": 3,
+      "section": "other",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "琵琶",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "鞨鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "鉦鼓",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

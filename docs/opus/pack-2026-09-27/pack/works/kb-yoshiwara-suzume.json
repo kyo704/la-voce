@@ -1,0 +1,58 @@
+{
+  "title": "吉原雀（長唄）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1768,
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-yoshiwara-suzume",
+  "note": "★歌舞伎舞踊（所作事） ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "鳥売りの男"
+    },
+    {
+      "label": "鳥売りの女"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★鳥売りの夫婦",
+      "group_label": "一段",
+      "roles": [
+        "鳥売りの男",
+        "鳥売りの女",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★吉原の風俗を写す",
+      "group_label": "一段",
+      "roles": [
+        "鳥売りの男",
+        "鳥売りの女",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

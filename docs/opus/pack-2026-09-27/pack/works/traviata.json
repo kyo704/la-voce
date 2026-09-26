@@ -1,0 +1,278 @@
+{
+ "title": "椿姫",
+ "composer": "ヴェルディ",
+ "composer_sort": "Verdi, Giuseppe",
+ "kind": "opera",
+ "year_written": 1853,
+ "source": "hand",
+ "source_id": "verdi-traviata",
+ "instrumentation": [
+  "管弦楽"
+ ],
+ "roles": [
+  {
+   "label": "ヴィオレッタ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "アルフレード",
+   "voice": "テノール"
+  },
+  {
+   "label": "ジェルモン",
+   "voice": "バリトン"
+  },
+  {
+   "label": "フローラ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "ガストン",
+   "voice": "テノール"
+  },
+  {
+   "label": "ドゥフォール男爵",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ドビニー侯爵",
+   "voice": "バス"
+  },
+  {
+   "label": "グランヴィル医師",
+   "voice": "バス"
+  },
+  {
+   "label": "アンニーナ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ジュゼッペ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "前奏曲（第1幕への）",
+   "group_label": "第1幕",
+   "roles": []
+  },
+  {
+   "label": "導入と乾杯の歌（華やかな夜会／乾杯の歌）",
+   "group_label": "第1幕",
+   "roles": [
+    "ヴィオレッタ",
+    "アルフレード",
+    "フローラ",
+    "ガストン",
+    "ドゥフォール男爵",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ワルツと二重唱（ああ、そは彼の人か・私のことを心配してくださるの）",
+   "group_label": "第1幕",
+   "roles": [
+    "ヴィオレッタ",
+    "アルフレード"
+   ]
+  },
+  {
+   "label": "ヴィオレッタのアリア（ああ、そは彼の人か〜花から花へ）",
+   "group_label": "第1幕",
+   "roles": [
+    "ヴィオレッタ",
+    "アルフレード"
+   ]
+  },
+  {
+   "label": "アルフレードのアリア（燃える心を）",
+   "group_label": "第2幕 第1場",
+   "roles": [
+    "アルフレード"
+   ]
+  },
+  {
+   "label": "ヴィオレッタとジェルモンの二重唱（プロヴァンスの海と陸〜の前）",
+   "group_label": "第2幕 第1場",
+   "roles": [
+    "ヴィオレッタ",
+    "ジェルモン"
+   ]
+  },
+  {
+   "label": "ジェルモンのアリア（プロヴァンスの海と陸）",
+   "group_label": "第2幕 第1場",
+   "roles": [
+    "ジェルモン",
+    "アルフレード"
+   ]
+  },
+  {
+   "label": "ジプシーと闘牛士の合唱",
+   "group_label": "第2幕 第2場",
+   "roles": [
+    "フローラ",
+    "ドビニー侯爵",
+    "合唱"
+   ]
+  },
+  {
+   "label": "賭けの場面とフィナーレ（第2幕）",
+   "group_label": "第2幕 第2場",
+   "roles": [
+    "ヴィオレッタ",
+    "アルフレード",
+    "ジェルモン",
+    "フローラ",
+    "ドゥフォール男爵",
+    "合唱",
+    "ジュゼッペ"
+   ]
+  },
+  {
+   "label": "前奏曲（第3幕への）",
+   "group_label": "第3幕",
+   "roles": []
+  },
+  {
+   "label": "手紙の場とアリア（さようなら、過ぎ去った日よ）",
+   "group_label": "第3幕",
+   "roles": [
+    "ヴィオレッタ",
+    "アンニーナ"
+   ]
+  },
+  {
+   "label": "謝肉祭の合唱",
+   "group_label": "第3幕",
+   "roles": [
+    "合唱"
+   ]
+  },
+  {
+   "label": "二重唱（パリを離れて）",
+   "group_label": "第3幕",
+   "roles": [
+    "ヴィオレッタ",
+    "アルフレード"
+   ]
+  },
+  {
+   "label": "フィナーレ（第3幕）",
+   "group_label": "第3幕",
+   "roles": [
+    "ヴィオレッタ",
+    "アルフレード",
+    "ジェルモン",
+    "アンニーナ",
+    "グランヴィル医師",
+    "ジュゼッペ"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チンバッソ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 1,
+   "section": "percussion",
+   "note": "大太鼓・シンバル・トライアングル"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "舞台裏の楽隊",
+   "count": 0,
+   "section": "banda",
+   "note": "第2幕第2場の舞踏会"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ],
+ "title_original": "La traviata",
+ "aliases": [
+  "Traviata"
+ ],
+ "duration_min": 135,
+ "language": "it"
+}

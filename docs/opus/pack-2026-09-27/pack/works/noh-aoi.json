@@ -1,0 +1,109 @@
+{
+  "title": "葵上",
+  "title_original": "葵上",
+  "aliases": [],
+  "composer": "能（四番目物（雑））",
+  "composer_sort": "Noh 四番目（雑）",
+  "kind": "noh",
+  "year_written": 1430,
+  "source": "hand",
+  "source_id": "noh-aoi-kanze",
+  "duration_min": 70,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（六条御息所の生霊）"
+    },
+    {
+      "label": "ツレ（照日の巫女）"
+    },
+    {
+      "label": "ワキ（横川小聖）"
+    },
+    {
+      "label": "ワキツレ（臣下）"
+    },
+    {
+      "label": "アイ（従者）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "巫女の梓の弓",
+      "group_label": "前段",
+      "roles": [
+        "ツレ（照日の巫女）",
+        "ワキツレ（臣下）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "生霊の出現と葵上への打擲",
+      "group_label": "前段",
+      "roles": [
+        "シテ（六条御息所の生霊）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "アイの語り",
+      "group_label": "中入",
+      "roles": [
+        "アイ（従者）"
+      ]
+    },
+    {
+      "label": "横川小聖の祈り",
+      "group_label": "後段",
+      "roles": [
+        "ワキ（横川小聖）",
+        "シテ（六条御息所の生霊）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "鬼の姿と成仏",
+      "group_label": "後段",
+      "roles": [
+        "シテ（六条御息所の生霊）",
+        "ワキ（横川小聖）",
+        "囃子方",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う"
+}

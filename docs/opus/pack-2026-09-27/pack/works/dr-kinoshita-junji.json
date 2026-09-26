@@ -1,0 +1,67 @@
+{
+ "title": "夕鶴",
+ "composer": "木下順二",
+ "composer_sort": "Kinoshita, Junji",
+ "kind": "drama",
+ "year_written": 1949,
+ "duration_min": 110,
+ "language": "ja",
+ "source": "hand",
+ "source_id": "dr-kinoshita-junji",
+ "note": "★★團伊玖磨の 歌劇『夕鶴』の 元 ／ ★★台詞の 文は 入れて いません",
+ "roles": [
+  {
+   "label": "つう"
+  },
+  {
+   "label": "与ひょう"
+  },
+  {
+   "label": "運ず"
+  },
+  {
+   "label": "惣ど"
+  },
+  {
+   "label": "子どもたち",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "与ひょうとつうの暮らし",
+   "group_label": "第1幕",
+   "roles": [
+    "つう",
+    "与ひょう"
+   ]
+  },
+  {
+   "label": "★布を織る（覗いてはならぬ）",
+   "group_label": "第2幕",
+   "roles": [
+    "つう",
+    "与ひょう",
+    "運ず",
+    "惣ど"
+   ]
+  },
+  {
+   "label": "★★覗かれて去る",
+   "group_label": "第3幕",
+   "roles": [
+    "つう",
+    "与ひょう",
+    "子どもたち"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "なし（劇音楽がつく上演もあります）",
+   "count": 0,
+   "section": "other",
+   "note": "上演ごと"
+  }
+ ]
+}

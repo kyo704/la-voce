@@ -1,0 +1,68 @@
+{
+  "title": "バッコスの信女",
+  "composer": "エウリピデス",
+  "composer_sort": "Euripides",
+  "kind": "drama",
+  "year_written": -405,
+  "duration_min": 120,
+  "language": "el",
+  "source": "hand",
+  "source_id": "dr-bacchae",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ディオニュソス"
+    },
+    {
+      "label": "ペンテウス"
+    },
+    {
+      "label": "アガウエ"
+    },
+    {
+      "label": "カドモス"
+    },
+    {
+      "label": "テイレシアス"
+    },
+    {
+      "label": "合唱団（コロス）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ディオニュソスの到来",
+      "group_label": "一幕物",
+      "roles": [
+        "ディオニュソス",
+        "合唱団（コロス）"
+      ]
+    },
+    {
+      "label": "★ペンテウスの拘束と誘惑",
+      "group_label": "一幕物",
+      "roles": [
+        "ディオニュソス",
+        "ペンテウス"
+      ]
+    },
+    {
+      "label": "★★アガウエが我が子を殺したと知る",
+      "group_label": "一幕物",
+      "roles": [
+        "アガウエ",
+        "カドモス",
+        "合唱団（コロス）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

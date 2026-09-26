@@ -1,0 +1,180 @@
+{
+  "title": "ケニルワース城のエリザベッタ",
+  "title_original": "Elisabetta al castello di Kenilworth",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1829,
+  "duration_min": 135,
+  "language": "it",
+  "source": "hand",
+  "source_id": "kenilworth",
+  "roles": [
+    {
+      "label": "エリザベッタ"
+    },
+    {
+      "label": "アメリア・ロブサール"
+    },
+    {
+      "label": "ワーニー"
+    },
+    {
+      "label": "レスター伯爵"
+    },
+    {
+      "label": "ランベルト"
+    },
+    {
+      "label": "ファンニー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ケニルワース城（秘めた妻アメリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "アメリア・ロブサール",
+        "ファンニー",
+        "ランベルト"
+      ]
+    },
+    {
+      "label": "第1幕 レスターの苦しみとワーニーの唆し",
+      "group_label": "第1幕",
+      "roles": [
+        "レスター伯爵",
+        "ワーニー"
+      ]
+    },
+    {
+      "label": "第1幕 女王の来訪（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "エリザベッタ",
+        "レスター伯爵",
+        "アメリア・ロブサール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アメリアと女王の対面",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベッタ",
+        "アメリア・ロブサール"
+      ]
+    },
+    {
+      "label": "第2幕 ワーニーの企みの露見",
+      "group_label": "第2幕",
+      "roles": [
+        "ワーニー",
+        "レスター伯爵",
+        "ランベルト"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（女王の裁きと赦し）",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベッタ",
+        "レスター伯爵",
+        "アメリア・ロブサール",
+        "ワーニー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

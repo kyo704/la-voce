@@ -1,0 +1,102 @@
+{
+  "title": "組踊 執心鐘入",
+  "title_original": "組踊 執心鐘入",
+  "aliases": [
+    "しゅうしんかねいり"
+  ],
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1719,
+  "source": "hand",
+  "source_id": "kumiodori-shushin",
+  "duration_min": 60,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "中城若松"
+    },
+    {
+      "label": "宿の女"
+    },
+    {
+      "label": "座主"
+    },
+    {
+      "label": "小僧",
+      "is_group": true
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "若松の道行",
+      "group_label": "序",
+      "roles": [
+        "中城若松",
+        "地謡"
+      ]
+    },
+    {
+      "label": "宿を乞う",
+      "group_label": "中",
+      "roles": [
+        "中城若松",
+        "宿の女",
+        "地謡"
+      ]
+    },
+    {
+      "label": "鐘に隠れる",
+      "group_label": "中",
+      "roles": [
+        "中城若松",
+        "座主",
+        "小僧",
+        "地謡"
+      ]
+    },
+    {
+      "label": "鬼女と成仏",
+      "group_label": "終",
+      "roles": [
+        "宿の女",
+        "座主",
+        "小僧",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "三線",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other"
+    }
+  ],
+  "note": "★沖縄の組踊（ユネスコ無形文化遺産）。地謡は舞台上"
+}

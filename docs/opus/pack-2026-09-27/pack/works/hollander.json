@@ -1,0 +1,223 @@
+{
+ "title": "さまよえるオランダ人",
+ "title_original": "Der fliegende Holländer",
+ "aliases": [
+  "オランダ人",
+  "Hollander"
+ ],
+ "composer": "ワーグナー",
+ "composer_sort": "Wagner, Richard",
+ "kind": "opera",
+ "year_written": 1843,
+ "duration_min": 135,
+ "language": "de",
+ "source": "hand",
+ "source_id": "wagner-hollander",
+ "roles": [
+  {
+   "label": "オランダ人",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ゼンタ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ダーラント",
+   "voice": "バス"
+  },
+  {
+   "label": "エリック",
+   "voice": "テノール"
+  },
+  {
+   "label": "マリー",
+   "voice": "メゾ"
+  },
+  {
+   "label": "舵取り"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "序曲",
+   "group_label": "序曲",
+   "roles": []
+  },
+  {
+   "label": "第1幕 嵐の入江・ダーラントの船",
+   "group_label": "第1幕",
+   "roles": [
+    "ダーラント",
+    "舵取り",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 オランダ人のモノローグ（期限は切れた）",
+   "group_label": "第1幕",
+   "roles": [
+    "オランダ人"
+   ]
+  },
+  {
+   "label": "第1幕 二重唱（ダーラントとの取引）",
+   "group_label": "第1幕",
+   "roles": [
+    "オランダ人",
+    "ダーラント"
+   ]
+  },
+  {
+   "label": "第2幕 糸紡ぎの合唱",
+   "group_label": "第2幕",
+   "roles": [
+    "マリー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 ゼンタのバラード",
+   "group_label": "第2幕",
+   "roles": [
+    "ゼンタ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 エリックの訴え",
+   "group_label": "第2幕",
+   "roles": [
+    "エリック",
+    "ゼンタ"
+   ]
+  },
+  {
+   "label": "第2幕 オランダ人とゼンタの二重唱",
+   "group_label": "第2幕",
+   "roles": [
+    "オランダ人",
+    "ゼンタ",
+    "ダーラント"
+   ]
+  },
+  {
+   "label": "第3幕 水夫の合唱と幽霊船",
+   "group_label": "第3幕",
+   "roles": [
+    "舵取り",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 フィナーレ（ゼンタの身投げ）",
+   "group_label": "第3幕",
+   "roles": [
+    "ゼンタ",
+    "オランダ人",
+    "エリック",
+    "ダーラント",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "舞台裏の合唱",
+   "count": 0,
+   "section": "banda",
+   "note": "幽霊船"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

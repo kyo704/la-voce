@@ -1,0 +1,82 @@
+{
+  "title": "加賀見山旧錦絵",
+  "aliases": [
+    "鏡山",
+    "加賀見山"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1782,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kagamiyama",
+  "note": "★歌舞伎 ／ 作者 容楊黛 ／ ★★女の忠義の 代表作 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "尾上"
+    },
+    {
+      "label": "お初"
+    },
+    {
+      "label": "岩藤"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★長局（★尾上とお初）",
+      "group_label": "大詰",
+      "roles": [
+        "尾上",
+        "お初",
+        "岩藤",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★草履打ち（★岩藤の辱め）",
+      "group_label": "大詰",
+      "roles": [
+        "尾上",
+        "岩藤",
+        "お初",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★奥庭仇討（★お初の討入り）",
+      "group_label": "大詰",
+      "roles": [
+        "お初",
+        "岩藤",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

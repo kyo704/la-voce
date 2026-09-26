@@ -1,0 +1,215 @@
+{
+ "title": "ねじの回転",
+ "title_original": "The Turn of the Screw",
+ "composer": "ブリテン",
+ "composer_sort": "Britten, Benjamin",
+ "kind": "opera",
+ "year_written": 1954,
+ "duration_min": 105,
+ "language": "en",
+ "source": "hand",
+ "source_id": "turn-of-screw",
+ "note": "★室内オペラ（13人）。★全曲が1つの主題の15の変奏として組まれている",
+ "roles": [
+  {
+   "label": "家庭教師",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ピーター・クイント"
+  },
+  {
+   "label": "ミス・ジェセル"
+  },
+  {
+   "label": "マイルズ",
+   "voice": "ボーイソプラノ"
+  },
+  {
+   "label": "フローラ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "グロース夫人",
+   "voice": "メゾ"
+  },
+  {
+   "label": "語り手（プロローグ）",
+   "voice": "テノール"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "★プロローグ（古い手記の読み上げ）",
+   "group_label": "序",
+   "roles": [
+    "語り手（プロローグ）"
+   ]
+  },
+  {
+   "label": "★第1幕 馬車の道（家庭教師の旅立ち）",
+   "group_label": "第1幕",
+   "roles": [
+    "家庭教師"
+   ]
+  },
+  {
+   "label": "第1幕 ブライ荘の到着（2人の子）",
+   "group_label": "第1幕",
+   "roles": [
+    "家庭教師",
+    "グロース夫人",
+    "マイルズ",
+    "フローラ"
+   ]
+  },
+  {
+   "label": "★第1幕 塔の上のクイントの姿",
+   "group_label": "第1幕",
+   "roles": [
+    "家庭教師",
+    "ピーター・クイント"
+   ]
+  },
+  {
+   "label": "★第1幕 湖のミス・ジェセルとフローラの子守歌",
+   "group_label": "第1幕",
+   "roles": [
+    "家庭教師",
+    "ミス・ジェセル",
+    "フローラ",
+    "グロース夫人"
+   ]
+  },
+  {
+   "label": "★第1幕 ★夜（クイントとジェセルが子らを呼ぶ・セレモニー）",
+   "group_label": "第1幕",
+   "roles": [
+    "ピーター・クイント",
+    "ミス・ジェセル",
+    "マイルズ",
+    "フローラ",
+    "家庭教師"
+   ]
+  },
+  {
+   "label": "★第2幕 ★2人の亡霊の二重唱（悪しきものが世に放たれる）",
+   "group_label": "第2幕",
+   "roles": [
+    "ピーター・クイント",
+    "ミス・ジェセル"
+   ]
+  },
+  {
+   "label": "★第2幕 教会の墓地（子どもたちの歌）",
+   "group_label": "第2幕",
+   "roles": [
+    "マイルズ",
+    "フローラ",
+    "家庭教師",
+    "グロース夫人"
+   ]
+  },
+  {
+   "label": "★第2幕 ★マイルズのピアノとフローラの逃げ出し",
+   "group_label": "第2幕",
+   "roles": [
+    "マイルズ",
+    "フローラ",
+    "家庭教師",
+    "グロース夫人"
+   ]
+  },
+  {
+   "label": "★第2幕 ミス・ジェセルとの対決・グロース夫人の去り",
+   "group_label": "第2幕",
+   "roles": [
+    "家庭教師",
+    "ミス・ジェセル",
+    "グロース夫人",
+    "フローラ"
+   ]
+  },
+  {
+   "label": "★終曲（名を言わせる・マイルズの死）",
+   "group_label": "第2幕",
+   "roles": [
+    "家庭教師",
+    "マイルズ",
+    "ピーター・クイント"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 1,
+   "section": "woodwind"
+  },
+  {
+   "part": "オーボエ",
+   "count": 1,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 1,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 1,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "打楽器",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

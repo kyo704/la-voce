@@ -1,0 +1,184 @@
+{
+ "title": "イェヌーファ",
+ "title_original": "Její pastorkyňa / Jenůfa",
+ "aliases": [
+  "Jenufa"
+ ],
+ "composer": "ヤナーチェク",
+ "composer_sort": "Janacek, Leos",
+ "kind": "opera",
+ "year_written": 1904,
+ "duration_min": 125,
+ "language": "cs",
+ "source": "hand",
+ "source_id": "janacek-jenufa",
+ "roles": [
+  {
+   "label": "イェヌーファ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "コステルニチカ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ラツァ",
+   "voice": "テノール"
+  },
+  {
+   "label": "シュテヴァ",
+   "voice": "テノール"
+  },
+  {
+   "label": "老婆ブリヤ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 水車小屋",
+   "group_label": "第1幕",
+   "roles": [
+    "イェヌーファ",
+    "ラツァ",
+    "シュテヴァ",
+    "老婆ブリヤ",
+    "コステルニチカ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 頬を切られる",
+   "group_label": "第1幕",
+   "roles": [
+    "イェヌーファ",
+    "ラツァ"
+   ]
+  },
+  {
+   "label": "第2幕 コステルニチカの決断",
+   "group_label": "第2幕",
+   "roles": [
+    "コステルニチカ",
+    "イェヌーファ",
+    "シュテヴァ",
+    "ラツァ"
+   ]
+  },
+  {
+   "label": "第3幕 結婚の支度と発覚",
+   "group_label": "第3幕",
+   "roles": [
+    "イェヌーファ",
+    "ラツァ",
+    "コステルニチカ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 フィナーレ（赦し）",
+   "group_label": "第3幕",
+   "roles": [
+    "イェヌーファ",
+    "ラツァ"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 3,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "シロフォン",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

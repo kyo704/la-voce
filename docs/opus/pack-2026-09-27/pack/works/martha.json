@@ -1,0 +1,191 @@
+{
+  "title": "マルタ",
+  "title_original": "Martha",
+  "composer": "フロトー",
+  "composer_sort": "Flotow, Friedrich von",
+  "kind": "opera",
+  "year_written": 1847,
+  "duration_min": 145,
+  "language": "de",
+  "source": "hand",
+  "source_id": "martha",
+  "roles": [
+    {
+      "label": "レディ・ハリエット（マルタ）"
+    },
+    {
+      "label": "ナンシー（ユーリア）"
+    },
+    {
+      "label": "ライオネル"
+    },
+    {
+      "label": "プルンケット"
+    },
+    {
+      "label": "トリスタン卿"
+    },
+    {
+      "label": "裁判官"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 レディ・ハリエットの倦みと女中の思いつき",
+      "group_label": "第1幕",
+      "roles": [
+        "レディ・ハリエット（マルタ）",
+        "ナンシー（ユーリア）",
+        "トリスタン卿"
+      ]
+    },
+    {
+      "label": "★第1幕 リッチモンドの雇い市（1年の契約）",
+      "group_label": "第1幕",
+      "roles": [
+        "レディ・ハリエット（マルタ）",
+        "ナンシー（ユーリア）",
+        "ライオネル",
+        "プルンケット",
+        "裁判官",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 農場（糸車の四重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "レディ・ハリエット（マルタ）",
+        "ナンシー（ユーリア）",
+        "ライオネル",
+        "プルンケット"
+      ]
+    },
+    {
+      "label": "★第2幕 庭の千草（最後のばら）",
+      "group_label": "第2幕",
+      "roles": [
+        "レディ・ハリエット（マルタ）",
+        "ライオネル"
+      ]
+    },
+    {
+      "label": "第2幕 真夜中の四重唱と逃亡",
+      "group_label": "第2幕",
+      "roles": [
+        "レディ・ハリエット（マルタ）",
+        "ナンシー（ユーリア）",
+        "ライオネル",
+        "プルンケット"
+      ]
+    },
+    {
+      "label": "★第3幕 森の宿（ポーターの歌とライオネルのアリア）",
+      "group_label": "第3幕",
+      "roles": [
+        "プルンケット",
+        "ライオネル",
+        "レディ・ハリエット（マルタ）",
+        "ナンシー（ユーリア）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（雇い市を再現して和解）",
+      "group_label": "第4幕",
+      "roles": [
+        "レディ・ハリエット（マルタ）",
+        "ライオネル",
+        "ナンシー（ユーリア）",
+        "プルンケット",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

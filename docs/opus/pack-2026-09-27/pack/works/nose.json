@@ -1,0 +1,229 @@
+{
+  "title": "鼻",
+  "title_original": "Нос",
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "opera",
+  "year_written": 1930,
+  "duration_min": 110,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "nose",
+  "note": "★ゴーゴリによる。歌手約80人の役（多くは兼ねる）",
+  "roles": [
+    {
+      "label": "コワリョフ"
+    },
+    {
+      "label": "イワン・ヤコヴレヴィチ（理髪師）"
+    },
+    {
+      "label": "鼻"
+    },
+    {
+      "label": "警察署長"
+    },
+    {
+      "label": "イワン（従僕）"
+    },
+    {
+      "label": "プラスコーヴィヤ・オシポヴナ"
+    },
+    {
+      "label": "新聞係"
+    },
+    {
+      "label": "ポドトーチナ夫人"
+    },
+    {
+      "label": "その娘"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 理髪師の店（鼻を切り落とす）",
+      "group_label": "第1幕",
+      "roles": [
+        "イワン・ヤコヴレヴィチ（理髪師）",
+        "コワリョフ"
+      ]
+    },
+    {
+      "label": "第2場 コワリョフの目覚め（鼻がない）",
+      "group_label": "第1幕",
+      "roles": [
+        "コワリョフ",
+        "イワン（従僕）"
+      ]
+    },
+    {
+      "label": "第3場 ★カザン大聖堂（五等官の姿の鼻）",
+      "group_label": "第1幕",
+      "roles": [
+        "コワリョフ",
+        "鼻",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4場 警察署長の家",
+      "group_label": "第2幕",
+      "roles": [
+        "コワリョフ",
+        "警察署長"
+      ]
+    },
+    {
+      "label": "第5場 ★新聞社（広告を断られる）",
+      "group_label": "第2幕",
+      "roles": [
+        "コワリョフ",
+        "新聞係",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第6場 コワリョフの部屋（従僕のバラライカ）",
+      "group_label": "第2幕",
+      "roles": [
+        "コワリョフ",
+        "イワン（従僕）"
+      ]
+    },
+    {
+      "label": "★第7場 駅の捕り物（鼻をつかまえる）",
+      "group_label": "第3幕",
+      "roles": [
+        "警察署長",
+        "鼻",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第8場 鼻が戻らない（医者と手紙）",
+      "group_label": "第3幕",
+      "roles": [
+        "コワリョフ",
+        "ポドトーチナ夫人",
+        "その娘"
+      ]
+    },
+    {
+      "label": "★第9場 噂の広がり（群衆の場）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終場 ネフスキー大通り（鼻は元に戻っている）",
+      "group_label": "終幕",
+      "roles": [
+        "コワリョフ",
+        "イワン・ヤコヴレヴィチ（理髪師）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

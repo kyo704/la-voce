@@ -1,0 +1,63 @@
+{
+  "title": "鉢叩",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 20,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-hachiku",
+  "note": "★雑狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（鉢叩の男）"
+    },
+    {
+      "label": "アド（茶屋）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★空也念仏の鉢叩が通る",
+      "group_label": "段",
+      "roles": [
+        "シテ（鉢叩の男）"
+      ]
+    },
+    {
+      "label": "茶屋で休む",
+      "group_label": "段",
+      "roles": [
+        "シテ（鉢叩の男）",
+        "アド（茶屋）"
+      ]
+    },
+    {
+      "label": "★鉢を叩いて歌う",
+      "group_label": "段",
+      "roles": [
+        "シテ（鉢叩の男）"
+      ]
+    },
+    {
+      "label": "★別れ",
+      "group_label": "段",
+      "roles": [
+        "シテ（鉢叩の男）",
+        "アド（茶屋）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

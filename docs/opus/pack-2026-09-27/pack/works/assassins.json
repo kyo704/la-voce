@@ -1,0 +1,263 @@
+{
+  "title": "アサシンズ",
+  "title_original": "Assassins",
+  "composer": "ソンドハイム",
+  "composer_sort": "Sondheim, Stephen",
+  "kind": "musical",
+  "year_written": 1990,
+  "duration_min": 105,
+  "edition": "★★1990 オフ・ブロードウェイ初演版／★1992 ロンドン版で『Something Just Broke』を追加／★2004 ブロードウェイ版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "assassins",
+  "note": "★作詞 ソンドハイム ／ 脚本 ジョン・ワイドマン ／ ★★歴代アメリカ大統領の暗殺者たちが時代を越えて同じ舞台に立つ。★休憩なしの1幕物",
+  "roles": [
+    {
+      "label": "ジョン・ウィルクス・ブース"
+    },
+    {
+      "label": "リー・ハーヴェイ・オズワルド"
+    },
+    {
+      "label": "チャールズ・ギトー"
+    },
+    {
+      "label": "レオン・チョルゴッシュ"
+    },
+    {
+      "label": "ジュゼッペ・ザンガラ"
+    },
+    {
+      "label": "サミュエル・ビック"
+    },
+    {
+      "label": "リネット・フロム（スクィーキー）"
+    },
+    {
+      "label": "サラ・ジェーン・ムーア"
+    },
+    {
+      "label": "ジョン・ヒンクリー"
+    },
+    {
+      "label": "バラッド歌い"
+    },
+    {
+      "label": "興行主（プロプライエター）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★エヴリバディズ・ガット・ザ・ライト（射的場の口上）",
+      "group_label": "本編",
+      "roles": [
+        "興行主（プロプライエター）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ブースのバラード（The Ballad of Booth）",
+      "group_label": "本編",
+      "roles": [
+        "バラッド歌い",
+        "ジョン・ウィルクス・ブース"
+      ]
+    },
+    {
+      "label": "M3 ★★ハウ・アイ・セイヴド・ルーズヴェルト（ザンガラ）",
+      "group_label": "本編",
+      "roles": [
+        "ジュゼッペ・ザンガラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ギトーのバラード（The Ballad of Guiteau ─ 絞首台のカンカン）",
+      "group_label": "本編",
+      "roles": [
+        "チャールズ・ギトー",
+        "バラッド歌い"
+      ]
+    },
+    {
+      "label": "M5 ★★ガン・ソング（銃の歌・四重唱）",
+      "group_label": "本編",
+      "roles": [
+        "レオン・チョルゴッシュ",
+        "ジョン・ウィルクス・ブース",
+        "チャールズ・ギトー",
+        "サラ・ジェーン・ムーア"
+      ]
+    },
+    {
+      "label": "M6 ★★チョルゴッシュのバラード",
+      "group_label": "本編",
+      "roles": [
+        "レオン・チョルゴッシュ",
+        "バラッド歌い",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★アンワース・オブ・ユア・ラヴ（ヒンクリーとフロムの二重唱）",
+      "group_label": "本編",
+      "roles": [
+        "ジョン・ヒンクリー",
+        "リネット・フロム（スクィーキー）"
+      ]
+    },
+    {
+      "label": "M8 ★★フロムとムーアのフォード大統領狙撃",
+      "group_label": "本編",
+      "roles": [
+        "リネット・フロム（スクィーキー）",
+        "サラ・ジェーン・ムーア"
+      ]
+    },
+    {
+      "label": "M9 ★★サミュエル・ビックの独白（サンタの服でテープに語る）",
+      "group_label": "本編",
+      "roles": [
+        "サミュエル・ビック"
+      ]
+    },
+    {
+      "label": "M10 ★★★ダラスの教科書倉庫（★ブースがオズワルドを説く）",
+      "group_label": "本編",
+      "roles": [
+        "リー・ハーヴェイ・オズワルド",
+        "ジョン・ウィルクス・ブース",
+        "チャールズ・ギトー",
+        "レオン・チョルゴッシュ",
+        "ジュゼッペ・ザンガラ",
+        "サミュエル・ビック",
+        "リネット・フロム（スクィーキー）",
+        "サラ・ジェーン・ムーア",
+        "ジョン・ヒンクリー"
+      ]
+    },
+    {
+      "label": "M11 ★★★エヴリバディズ・ガット・ザ・ライト（終曲）",
+      "group_label": "本編",
+      "roles": [
+        "ジョン・ウィルクス・ブース",
+        "リー・ハーヴェイ・オズワルド",
+        "チャールズ・ギトー",
+        "レオン・チョルゴッシュ",
+        "ジュゼッペ・ザンガラ",
+        "サミュエル・ビック",
+        "リネット・フロム（スクィーキー）",
+        "サラ・ジェーン・ムーア",
+        "ジョン・ヒンクリー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

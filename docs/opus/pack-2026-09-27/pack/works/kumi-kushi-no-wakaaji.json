@@ -1,0 +1,85 @@
+{
+  "title": "久志の若按司",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1780,
+  "duration_min": 70,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-kushi-no-wakaaji",
+  "note": "★組踊（琉球の歌舞劇） ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "久志の若按司"
+    },
+    {
+      "label": "乳母"
+    },
+    {
+      "label": "敵"
+    },
+    {
+      "label": "供の者"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★若按司が難を逃れる",
+      "group_label": "段",
+      "roles": [
+        "久志の若按司",
+        "乳母"
+      ]
+    },
+    {
+      "label": "★★敵に追われる",
+      "group_label": "段",
+      "roles": [
+        "久志の若按司",
+        "敵",
+        "供の者"
+      ]
+    },
+    {
+      "label": "★仇を討つ",
+      "group_label": "段",
+      "roles": [
+        "久志の若按司",
+        "敵"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

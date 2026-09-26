@@ -1,0 +1,197 @@
+{
+  "title": "ボヘミアのブランデンブルク人",
+  "title_original": "Braniboři v Čechách",
+  "composer": "スメタナ",
+  "composer_sort": "Smetana, Bedřich",
+  "kind": "opera",
+  "year_written": 1866,
+  "duration_min": 150,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "brandenburgers",
+  "roles": [
+    {
+      "label": "ヴォルフラム・オロムツキー"
+    },
+    {
+      "label": "オルドジフ・ロコヤナ"
+    },
+    {
+      "label": "ユニシュ"
+    },
+    {
+      "label": "ヴァルネマン"
+    },
+    {
+      "label": "ルドィシェ"
+    },
+    {
+      "label": "ヴラスタ"
+    },
+    {
+      "label": "デチーナ"
+    },
+    {
+      "label": "イラ"
+    },
+    {
+      "label": "タウゼンドマルク"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 プラハ（占領と民の苦しみ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴォルフラム・オロムツキー",
+        "ユニシュ",
+        "タウゼンドマルク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 イラの扇動（貧しい者たちの合唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "イラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 村（連れ去られた3人の娘）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルドィシェ",
+        "ヴラスタ",
+        "デチーナ",
+        "ヴァルネマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 イラの裁き（村の集会）",
+      "group_label": "第2幕",
+      "roles": [
+        "イラ",
+        "オルドジフ・ロコヤナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★タウゼンドマルクの企みとルドィシェの拒み",
+      "group_label": "第3幕",
+      "roles": [
+        "タウゼンドマルク",
+        "ルドィシェ",
+        "ユニシュ"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（イラの汚名が晴れ、婚礼）",
+      "group_label": "第3幕",
+      "roles": [
+        "イラ",
+        "ルドィシェ",
+        "ユニシュ",
+        "ヴォルフラム・オロムツキー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

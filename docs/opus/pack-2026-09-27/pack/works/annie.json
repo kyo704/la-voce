@@ -1,0 +1,275 @@
+{
+  "title": "アニー",
+  "title_original": "Annie",
+  "composer": "チャールズ・ストラウス",
+  "kind": "musical",
+  "year_written": 1977,
+  "duration_min": 140,
+  "edition": "1977 ブロードウェイ初演版（★1982／2014 映画版・2012 リバイバル版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "annie",
+  "note": "★作詞 マーティン・チャーニン ／ 脚本 トーマス・ミーハン ／ ★新聞漫画『小さな孤児アニー』による。★★サンディは本物の犬が出る",
+  "roles": [
+    {
+      "label": "アニー"
+    },
+    {
+      "label": "オリヴァー・ウォーバックス"
+    },
+    {
+      "label": "ミス・ハニガン"
+    },
+    {
+      "label": "グレース・ファレル"
+    },
+    {
+      "label": "ルースター・ハニガン"
+    },
+    {
+      "label": "リリー・セント・レジス"
+    },
+    {
+      "label": "モリー"
+    },
+    {
+      "label": "ペパー"
+    },
+    {
+      "label": "デューリー"
+    },
+    {
+      "label": "フランクリン・ルーズヴェルト"
+    },
+    {
+      "label": "サンディ（犬）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★メイビー",
+      "group_label": "第1幕",
+      "roles": [
+        "アニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★★イット・ズ・ザ・ハード・ノック・ライフ",
+      "group_label": "第1幕",
+      "roles": [
+        "アニー",
+        "モリー",
+        "ペパー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★リトル・ガールズ",
+      "group_label": "第1幕",
+      "roles": [
+        "ミス・ハニガン"
+      ]
+    },
+    {
+      "label": "M4 ★★アイ・シンク・アイム・ゴナ・ライク・イット・ヒア",
+      "group_label": "第1幕",
+      "roles": [
+        "アニー",
+        "グレース・ファレル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★N.Y.C.",
+      "group_label": "第1幕",
+      "roles": [
+        "オリヴァー・ウォーバックス",
+        "アニー",
+        "グレース・ファレル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★イースィー・ストリート",
+      "group_label": "第1幕",
+      "roles": [
+        "ミス・ハニガン",
+        "ルースター・ハニガン",
+        "リリー・セント・レジス"
+      ]
+    },
+    {
+      "label": "M7 ★★ユー・ウォント・ビー・アン・オーファン・フォー・ロング（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "オリヴァー・ウォーバックス",
+        "グレース・ファレル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★メイビー（再現）とラジオ放送",
+      "group_label": "第2幕",
+      "roles": [
+        "アニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★★トゥモロー（ホワイトハウス）",
+      "group_label": "第2幕",
+      "roles": [
+        "アニー",
+        "フランクリン・ルーズヴェルト",
+        "オリヴァー・ウォーバックス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★サムシング・ワズ・ミッシング",
+      "group_label": "第2幕",
+      "roles": [
+        "オリヴァー・ウォーバックス"
+      ]
+    },
+    {
+      "label": "M11 ★★アイ・ドント・ニード・エニシング・バット・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "オリヴァー・ウォーバックス",
+        "アニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★偽の両親の露見",
+      "group_label": "第2幕",
+      "roles": [
+        "ルースター・ハニガン",
+        "リリー・セント・レジス",
+        "ミス・ハニガン",
+        "アニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★終曲（New Deal for Christmas）",
+      "group_label": "第2幕",
+      "roles": [
+        "アニー",
+        "オリヴァー・ウォーバックス",
+        "グレース・ファレル",
+        "サンディ（犬）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

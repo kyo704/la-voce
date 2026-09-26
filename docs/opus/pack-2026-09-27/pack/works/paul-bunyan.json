@@ -1,0 +1,220 @@
+{
+  "title": "ポール・バニヤン",
+  "title_original": "Paul Bunyan",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1941,
+  "duration_min": 125,
+  "edition": "1976 改訂版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "paul-bunyan",
+  "note": "★アメリカ滞在中の作。★台本はオーデン。ポール・バニヤンは姿を見せず声だけ",
+  "roles": [
+    {
+      "label": "ポール・バニヤンの声"
+    },
+    {
+      "label": "ジョニー・インクスリンガー"
+    },
+    {
+      "label": "ティニー"
+    },
+    {
+      "label": "ハル・ホルシー"
+    },
+    {
+      "label": "ヘル・ショルダーズ"
+    },
+    {
+      "label": "サム・シャーキー"
+    },
+    {
+      "label": "ジェン・ジェンセン"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "3羽のがん"
+    },
+    {
+      "label": "バニヤンの猫"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（がんと森の歌・アメリカの前史）",
+      "group_label": "序",
+      "roles": [
+        "3羽のがん",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ポール・バニヤンの誕生（青い月の夜）",
+      "group_label": "第1幕",
+      "roles": [
+        "ポール・バニヤンの声",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 木こりたちの集まり",
+      "group_label": "第1幕",
+      "roles": [
+        "ハル・ホルシー",
+        "サム・シャーキー",
+        "ヘル・ショルダーズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★サムの料理の歌と料理場の争い",
+      "group_label": "第1幕",
+      "roles": [
+        "サム・シャーキー",
+        "ハル・ホルシー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ジョニー・インクスリンガーの登場（★帳簿の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョニー・インクスリンガー",
+        "ポール・バニヤンの声"
+      ]
+    },
+    {
+      "label": "★第2幕 農場（ティニーの登場・★ティニーの嘆きの歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ティニー",
+        "ジェン・ジェンセン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★猫と犬の四重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "バニヤンの猫",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ヘル・ショルダーズの造反と追放",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘル・ショルダーズ",
+        "ポール・バニヤンの声",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（別れの宴・ポールの最後の言葉）",
+      "group_label": "第2幕",
+      "roles": [
+        "ポール・バニヤンの声",
+        "ジョニー・インクスリンガー",
+        "ティニー",
+        "ハル・ホルシー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

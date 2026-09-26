@@ -1,0 +1,207 @@
+{
+  "title": "イポリートとアリシー",
+  "title_original": "Hippolyte et Aricie",
+  "composer": "ラモー",
+  "composer_sort": "Rameau, Jean-Philippe",
+  "kind": "opera",
+  "year_written": 1733,
+  "duration_min": 195,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "hippolyte-aricie",
+  "note": "★★ラモー最初の悲劇オペラ（50歳）。★リュリ派との論争を呼んだ",
+  "roles": [
+    {
+      "label": "イポリート"
+    },
+    {
+      "label": "アリシー"
+    },
+    {
+      "label": "フェードル"
+    },
+    {
+      "label": "テゼ"
+    },
+    {
+      "label": "ディアーヌ"
+    },
+    {
+      "label": "プリュトン"
+    },
+    {
+      "label": "ティジフォーヌ"
+    },
+    {
+      "label": "メルキュール"
+    },
+    {
+      "label": "運命の3神"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★序幕 ディアーヌとアムールの争い（森の神々）",
+      "group_label": "序幕",
+      "roles": [
+        "ディアーヌ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ディアーヌの神殿（アリシーの誓いと拒み）",
+      "group_label": "第1幕",
+      "roles": [
+        "アリシー",
+        "イポリート",
+        "フェードル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★冥界（テゼの降下・★運命の3神の三重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "テゼ",
+        "プリュトン",
+        "ティジフォーヌ",
+        "運命の3神",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 フェードルの告白とテゼの誤解",
+      "group_label": "第3幕",
+      "roles": [
+        "フェードル",
+        "イポリート",
+        "テゼ"
+      ]
+    },
+    {
+      "label": "★第3幕 ★水夫たちのリゴードン（勝利の祝い）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第4幕 ★海の怪物とイポリートの死",
+      "group_label": "第4幕",
+      "roles": [
+        "イポリート",
+        "アリシー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 フェードルの自害の告白",
+      "group_label": "第4幕",
+      "roles": [
+        "フェードル",
+        "テゼ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第5幕 メルキュールの知らせとディアーヌの取りなし",
+      "group_label": "第5幕",
+      "roles": [
+        "メルキュール",
+        "テゼ",
+        "ディアーヌ"
+      ]
+    },
+    {
+      "label": "★終曲（★アリシーの森・イポリートの復活とシャコンヌ）",
+      "group_label": "第5幕",
+      "roles": [
+        "イポリート",
+        "アリシー",
+        "ディアーヌ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "title": "三人片輪",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-sannin-katawa",
+  "note": "★集狂言 ／ ★★★偽って 障がいを 装う筋です。★上演では 扱いに 気を配ります ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "小アド（何某二）"
+    },
+    {
+      "label": "小アド（何某三）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "三人が身体の不自由を装って奉公に入る",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "小アド（何某二）",
+        "小アド（何某三）"
+      ]
+    },
+    {
+      "label": "主が留守の間に酒を飲む",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "小アド（何某二）",
+        "小アド（何某三）"
+      ]
+    },
+    {
+      "label": "謡い舞うところを見つかる",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "追われて逃げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（主）",
+        "小アド（何某二）",
+        "小アド（何某三）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

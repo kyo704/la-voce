@@ -1,0 +1,163 @@
+{
+  "title": "マッダレーナ",
+  "title_original": "Маддалена",
+  "composer": "プロコフィエフ",
+  "composer_sort": "Prokofiev, Sergei",
+  "kind": "opera",
+  "year_written": 1913,
+  "duration_min": 40,
+  "edition": "エドワード・ダウンズ補筆版",
+  "language": "ru",
+  "source": "hand",
+  "source_id": "maddalena",
+  "note": "★第1場のみ作曲者が管弦楽化。残りはダウンズの管弦楽化で1979年初演",
+  "roles": [
+    {
+      "label": "マッダレーナ"
+    },
+    {
+      "label": "ジェンナーロ"
+    },
+    {
+      "label": "ステーニオ"
+    },
+    {
+      "label": "ロメオ"
+    },
+    {
+      "label": "隣の女"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1場 ヴェネツィアの家（マッダレーナの待ち）",
+      "group_label": "第1場",
+      "roles": [
+        "マッダレーナ",
+        "隣の女"
+      ]
+    },
+    {
+      "label": "第2場 夫ジェンナーロの帰宅（幻視を語る）",
+      "group_label": "第2場",
+      "roles": [
+        "マッダレーナ",
+        "ジェンナーロ"
+      ]
+    },
+    {
+      "label": "第3場 ステーニオの訪れ（友の秘めた恋）",
+      "group_label": "第3場",
+      "roles": [
+        "ジェンナーロ",
+        "ステーニオ"
+      ]
+    },
+    {
+      "label": "★第4場 三人の対決（同じ女だった）",
+      "group_label": "第4場",
+      "roles": [
+        "マッダレーナ",
+        "ジェンナーロ",
+        "ステーニオ"
+      ]
+    },
+    {
+      "label": "★終曲（2人が刺し合い、マッダレーナが助けを呼ぶ）",
+      "group_label": "第4場",
+      "roles": [
+        "マッダレーナ",
+        "ジェンナーロ",
+        "ステーニオ",
+        "ロメオ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

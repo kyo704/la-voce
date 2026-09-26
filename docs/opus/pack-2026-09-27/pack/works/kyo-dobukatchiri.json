@@ -1,0 +1,62 @@
+{
+  "title": "どぶかっちり",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-dobukatchiri",
+  "note": "★座頭狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（夫（盲人））"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "小アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "夫婦が言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫（盲人））",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "按摩の男が加わる",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫（盲人））",
+        "アド（妻）",
+        "小アド（何某）"
+      ]
+    },
+    {
+      "label": "取り違えから騒ぎになる",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫（盲人））",
+        "アド（妻）",
+        "小アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

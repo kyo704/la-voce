@@ -1,0 +1,67 @@
+{
+  "title": "井杭",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-igui",
+  "note": "★小名狂言 ／ ★★姿が 見えない という 約束ごとで 演じます ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（井杭）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "小アド（算置）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "頭を打たれるのに困り、清水に願う",
+      "group_label": "段",
+      "roles": [
+        "シテ（井杭）"
+      ]
+    },
+    {
+      "label": "★隠れ頭巾を授かる",
+      "group_label": "段",
+      "roles": [
+        "シテ（井杭）"
+      ]
+    },
+    {
+      "label": "★★姿を消して仕返しをする",
+      "group_label": "段",
+      "roles": [
+        "シテ（井杭）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "★算置（占い師）に見つけられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（井杭）",
+        "アド（何某）",
+        "小アド（算置）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

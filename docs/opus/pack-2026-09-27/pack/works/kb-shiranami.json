@@ -1,0 +1,95 @@
+{
+  "title": "白浪五人男（青砥稿花紅彩画）",
+  "title_original": "白浪五人男（青砥稿花紅彩画）",
+  "aliases": [
+    "稲瀬川",
+    "弁天娘"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1862,
+  "source": "hand",
+  "source_id": "kabuki-shiranami",
+  "duration_min": 180,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "弁天小僧菊之助"
+    },
+    {
+      "label": "南郷力丸"
+    },
+    {
+      "label": "日本駄右衛門"
+    },
+    {
+      "label": "忠信利平"
+    },
+    {
+      "label": "赤星十三郎"
+    },
+    {
+      "label": "浜松屋幸兵衛"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "浜松屋見世先の場",
+      "group_label": "序",
+      "roles": [
+        "弁天小僧菊之助",
+        "南郷力丸",
+        "浜松屋幸兵衛",
+        "日本駄右衛門"
+      ]
+    },
+    {
+      "label": "稲瀬川勢揃いの場",
+      "group_label": "中",
+      "roles": [
+        "弁天小僧菊之助",
+        "南郷力丸",
+        "日本駄右衛門",
+        "忠信利平",
+        "赤星十三郎",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "極楽寺屋根立腹の場",
+      "group_label": "終",
+      "roles": [
+        "弁天小僧菊之助",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽"
+    },
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "長唄囃子連中。人数は公演ごと"
+    }
+  ],
+  "school": "歌舞伎（上演の家により型が違う）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}

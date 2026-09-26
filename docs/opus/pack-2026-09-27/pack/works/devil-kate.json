@@ -1,0 +1,195 @@
+{
+  "title": "悪魔とカーチャ",
+  "title_original": "Čert a Káča",
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvořák, Antonín",
+  "kind": "opera",
+  "year_written": 1899,
+  "duration_min": 120,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "devil-kate",
+  "roles": [
+    {
+      "label": "カーチャ"
+    },
+    {
+      "label": "マルブエル"
+    },
+    {
+      "label": "イルカ"
+    },
+    {
+      "label": "母"
+    },
+    {
+      "label": "公爵夫人"
+    },
+    {
+      "label": "元帥"
+    },
+    {
+      "label": "門番"
+    },
+    {
+      "label": "ルツィフェル"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 村の宿（誰も踊ってくれないカーチャ）",
+      "group_label": "第1幕",
+      "roles": [
+        "カーチャ",
+        "母",
+        "イルカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 マルブエルの登場と「地獄へでも」",
+      "group_label": "第1幕",
+      "roles": [
+        "マルブエル",
+        "カーチャ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 地獄（カーチャがしゃべり続けて悪魔が困る）",
+      "group_label": "第2幕",
+      "roles": [
+        "マルブエル",
+        "カーチャ",
+        "ルツィフェル",
+        "門番",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 イルカの助けと羊飼いの笛",
+      "group_label": "第2幕",
+      "roles": [
+        "イルカ",
+        "マルブエル",
+        "カーチャ"
+      ]
+    },
+    {
+      "label": "第3幕 城（公爵夫人の悔いと元帥）",
+      "group_label": "第3幕",
+      "roles": [
+        "公爵夫人",
+        "元帥",
+        "イルカ"
+      ]
+    },
+    {
+      "label": "★終曲（カーチャが悪魔を追い返す・農民の解放）",
+      "group_label": "第3幕",
+      "roles": [
+        "カーチャ",
+        "マルブエル",
+        "イルカ",
+        "公爵夫人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+ "title": "イル・トロヴァトーレ",
+ "title_original": "Il trovatore",
+ "aliases": [
+  "トロヴァトーレ",
+  "アンヴィル"
+ ],
+ "composer": "ヴェルディ",
+ "composer_sort": "Verdi, Giuseppe",
+ "kind": "opera",
+ "year_written": 1853,
+ "duration_min": 135,
+ "language": "it",
+ "source": "hand",
+ "source_id": "verdi-trovatore",
+ "roles": [
+  {
+   "label": "レオノーラ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "マンリーコ",
+   "voice": "テノール"
+  },
+  {
+   "label": "ルーナ伯爵",
+   "voice": "バリトン"
+  },
+  {
+   "label": "アズチェーナ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "フェルランド",
+   "voice": "バス"
+  },
+  {
+   "label": "イネス",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 フェルランドの語り",
+   "group_label": "第1幕",
+   "roles": [
+    "フェルランド",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第1幕 レオノーラのカヴァティーナと三重唱",
+   "group_label": "第1幕",
+   "roles": [
+    "レオノーラ",
+    "イネス",
+    "ルーナ伯爵",
+    "マンリーコ"
+   ]
+  },
+  {
+   "label": "第2幕 鍛冶屋の合唱（アンヴィル・コーラス）",
+   "group_label": "第2幕",
+   "roles": [
+    "合唱",
+    "アズチェーナ"
+   ]
+  },
+  {
+   "label": "第2幕 アズチェーナの語り（炎は燃えて）",
+   "group_label": "第2幕",
+   "roles": [
+    "アズチェーナ",
+    "マンリーコ"
+   ]
+  },
+  {
+   "label": "第2幕 修道院の場",
+   "group_label": "第2幕",
+   "roles": [
+    "ルーナ伯爵",
+    "レオノーラ",
+    "マンリーコ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 兵士の合唱と「見よ、恐ろしい炎を」",
+   "group_label": "第3幕",
+   "roles": [
+    "合唱",
+    "マンリーコ",
+    "レオノーラ",
+    "アズチェーナ"
+   ]
+  },
+  {
+   "label": "第4幕 ミゼレーレ",
+   "group_label": "第4幕",
+   "roles": [
+    "レオノーラ",
+    "マンリーコ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第4幕 牢獄・フィナーレ",
+   "group_label": "第4幕",
+   "roles": [
+    "レオノーラ",
+    "マンリーコ",
+    "アズチェーナ",
+    "ルーナ伯爵"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チンバッソ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

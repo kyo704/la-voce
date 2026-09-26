@@ -1,0 +1,89 @@
+{
+  "title": "花街模様薊色縫",
+  "aliases": [
+    "十六夜清心"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1859,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-izayoi-seishin",
+  "note": "★歌舞伎 ／ 作者 河竹黙阿弥 ／ ★★★善人が 悪人に 変わる 一瞬（★『しかし待てよ』）が 見せ場 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "清心"
+    },
+    {
+      "label": "十六夜"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "求女"
+    },
+    {
+      "label": "鬼薊清吉（清心）"
+    },
+    {
+      "label": "十六夜（おさよ）"
+    },
+    {
+      "label": "白蓮"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★稲瀬川百本杭（★十六夜と清心の心中しそね）",
+      "group_label": "序幕",
+      "roles": [
+        "清心",
+        "十六夜",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★川中（★清心の悪への転落・『しかし待てよ』）",
+      "group_label": "二幕",
+      "roles": [
+        "清心",
+        "求女",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★白蓮屋敷（★鬼薊清吉として）",
+      "group_label": "三幕",
+      "roles": [
+        "鬼薊清吉（清心）",
+        "十六夜（おさよ）",
+        "白蓮",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

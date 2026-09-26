@@ -1,0 +1,242 @@
+{
+  "title": "ムツェンスク郡のマクベス夫人",
+  "title_original": "Леди Макбет Мценского уезда",
+  "aliases": [
+    "カテリーナ・イズマイロワ"
+  ],
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "opera",
+  "year_written": 1934,
+  "duration_min": 170,
+  "edition": "1934 原典版／1963 改訂版『カテリーナ・イズマイロワ』op.114",
+  "language": "ru",
+  "source": "hand",
+  "source_id": "lady-macbeth-mtsensk",
+  "note": "★1936年に批判を受け、1962年まで上演が絶えた",
+  "roles": [
+    {
+      "label": "カテリーナ・イズマイロワ"
+    },
+    {
+      "label": "セルゲイ"
+    },
+    {
+      "label": "ボリス・イズマイロフ"
+    },
+    {
+      "label": "ジノーヴィー・イズマイロフ"
+    },
+    {
+      "label": "アクシーニャ"
+    },
+    {
+      "label": "みじめな百姓"
+    },
+    {
+      "label": "司祭"
+    },
+    {
+      "label": "警察署長"
+    },
+    {
+      "label": "ソニェートカ"
+    },
+    {
+      "label": "年寄りの囚人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1場 ★カテリーナの独白（退屈な家）",
+      "group_label": "第1幕",
+      "roles": [
+        "カテリーナ・イズマイロワ",
+        "ボリス・イズマイロフ",
+        "ジノーヴィー・イズマイロフ"
+      ]
+    },
+    {
+      "label": "第2場 ★台所（アクシーニャへの乱暴とセルゲイとの取っ組み合い）",
+      "group_label": "第1幕",
+      "roles": [
+        "セルゲイ",
+        "アクシーニャ",
+        "カテリーナ・イズマイロワ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3場 寝室（セルゲイとの夜・間奏曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "カテリーナ・イズマイロワ",
+        "セルゲイ",
+        "ボリス・イズマイロフ"
+      ]
+    },
+    {
+      "label": "★第4場 ボリスの毒殺（きのこ）",
+      "group_label": "第2幕",
+      "roles": [
+        "カテリーナ・イズマイロワ",
+        "ボリス・イズマイロフ",
+        "司祭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第5場 亡霊と夫の帰宅・絞殺",
+      "group_label": "第2幕",
+      "roles": [
+        "カテリーナ・イズマイロワ",
+        "セルゲイ",
+        "ジノーヴィー・イズマイロフ",
+        "ボリス・イズマイロフ"
+      ]
+    },
+    {
+      "label": "第6場 ★地下室を暴く（みじめな百姓）",
+      "group_label": "第3幕",
+      "roles": [
+        "みじめな百姓",
+        "カテリーナ・イズマイロワ",
+        "セルゲイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第7場 警察署（署長の場）と婚礼への乱入",
+      "group_label": "第3幕",
+      "roles": [
+        "警察署長",
+        "みじめな百姓",
+        "カテリーナ・イズマイロワ",
+        "セルゲイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第8場 シベリアへの道（年寄りの囚人の歌）",
+      "group_label": "第4幕",
+      "roles": [
+        "年寄りの囚人",
+        "カテリーナ・イズマイロワ",
+        "セルゲイ",
+        "ソニェートカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（カテリーナとソニェートカの投身）",
+      "group_label": "第4幕",
+      "roles": [
+        "カテリーナ・イズマイロワ",
+        "ソニェートカ",
+        "セルゲイ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

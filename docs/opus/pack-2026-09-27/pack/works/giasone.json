@@ -1,0 +1,169 @@
+{
+  "title": "ジャゾーネ",
+  "title_original": "Il Giasone",
+  "composer": "カヴァッリ",
+  "composer_sort": "Cavalli, Francesco",
+  "kind": "opera",
+  "year_written": 1649,
+  "duration_min": 195,
+  "language": "it",
+  "source": "hand",
+  "source_id": "giasone",
+  "note": "★★17世紀に最も多く上演されたオペラ。★喜劇と悲劇が混じる",
+  "roles": [
+    {
+      "label": "ジャゾーネ"
+    },
+    {
+      "label": "メデア"
+    },
+    {
+      "label": "イジフィレ"
+    },
+    {
+      "label": "エルコレ"
+    },
+    {
+      "label": "オレステ"
+    },
+    {
+      "label": "デモ"
+    },
+    {
+      "label": "デルファ"
+    },
+    {
+      "label": "ベッスォ"
+    },
+    {
+      "label": "アリンダ"
+    },
+    {
+      "label": "エジェオ"
+    },
+    {
+      "label": "アモーレ"
+    },
+    {
+      "label": "ソーレ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕（太陽と愛の神の言い争い）",
+      "group_label": "序幕",
+      "roles": [
+        "ソーレ",
+        "アモーレ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ジャゾーネのアリア（Delizie contente ─ 満ち足りた喜び）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャゾーネ",
+        "メデア"
+      ]
+    },
+    {
+      "label": "★第1幕 エルコレの叱り（金羊毛を忘れるな）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルコレ",
+        "ベッスォ",
+        "ジャゾーネ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★デモの吃音の歌（喜劇的な役）",
+      "group_label": "第1幕",
+      "roles": [
+        "デモ",
+        "オレステ"
+      ]
+    },
+    {
+      "label": "★★第2幕 メデアの魔術の場（地獄の霊を呼ぶ）",
+      "group_label": "第2幕",
+      "roles": [
+        "メデア"
+      ]
+    },
+    {
+      "label": "★第2幕 イジフィレの嘆き（捨てられた妻）",
+      "group_label": "第2幕",
+      "roles": [
+        "イジフィレ",
+        "オレステ",
+        "アリンダ"
+      ]
+    },
+    {
+      "label": "★第2幕 金羊毛の獲得",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャゾーネ",
+        "メデア",
+        "エルコレ"
+      ]
+    },
+    {
+      "label": "★★第3幕 取り違えの殺害の企て（暗闇の場）",
+      "group_label": "第3幕",
+      "roles": [
+        "メデア",
+        "イジフィレ",
+        "ジャゾーネ",
+        "ベッスォ"
+      ]
+    },
+    {
+      "label": "★第3幕 メデアの投身とエジェオの救い",
+      "group_label": "第3幕",
+      "roles": [
+        "メデア",
+        "エジェオ",
+        "デルファ"
+      ]
+    },
+    {
+      "label": "★終曲（ジャゾーネはイジフィレへ、メデアはエジェオへ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジャゾーネ",
+        "イジフィレ",
+        "メデア",
+        "エジェオ",
+        "エルコレ",
+        "オレステ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "通奏低音（チェロ・ヴィオローネ）",
+      "count": 2,
+      "section": "strings"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "title": "セールスマンの死",
+  "composer": "アーサー・ミラー",
+  "composer_sort": "Miller, Arthur",
+  "kind": "drama",
+  "year_written": 1949,
+  "duration_min": 170,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dr-death-salesman",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ウィリー・ローマン"
+    },
+    {
+      "label": "リンダ"
+    },
+    {
+      "label": "ビフ"
+    },
+    {
+      "label": "ハッピー"
+    },
+    {
+      "label": "チャーリー"
+    },
+    {
+      "label": "ベン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "帰宅と過去の入り混じり",
+      "group_label": "第1幕",
+      "roles": [
+        "ウィリー・ローマン",
+        "リンダ",
+        "ビフ",
+        "ハッピー"
+      ]
+    },
+    {
+      "label": "★ベンの影",
+      "group_label": "第1幕",
+      "roles": [
+        "ウィリー・ローマン",
+        "ベン"
+      ]
+    },
+    {
+      "label": "★解雇とレストランの場",
+      "group_label": "第2幕",
+      "roles": [
+        "ウィリー・ローマン",
+        "ビフ",
+        "ハッピー",
+        "チャーリー"
+      ]
+    },
+    {
+      "label": "★★死と『レクイエム』",
+      "group_label": "第2幕",
+      "roles": [
+        "リンダ",
+        "ビフ",
+        "ハッピー",
+        "チャーリー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

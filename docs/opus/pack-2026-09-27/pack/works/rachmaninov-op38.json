@@ -1,0 +1,38 @@
+{
+  "title": "6つの歌 作品38",
+  "title_original": "6 стихотворений op.38",
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninov, Sergei",
+  "kind": "song_cycle",
+  "year_written": 1916,
+  "duration_min": 20,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "rachmaninov-op38",
+  "note": "★ラフマニノフ 最後の 歌曲集 ／ ★★曲名を 全部 確かめられなかったので ★曲数（6曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全6曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

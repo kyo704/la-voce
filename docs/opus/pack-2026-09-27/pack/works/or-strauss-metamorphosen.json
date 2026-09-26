@@ -1,0 +1,28 @@
+{
+  "title": "メタモルフォーゼン",
+  "title_original": "Metamorphosen",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "orchestra",
+  "year_written": 1945,
+  "duration_min": 27,
+  "language": "—",
+  "source": "hand",
+  "source_id": "or-strauss-vier-letzte-orch",
+  "note": "★★★23人 全員が 別の 譜面を 弾きます",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "★一曲（23の 独奏弦楽器）",
+      "group_label": "楽章",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "独奏弦楽器 23（ヴァイオリン10・ヴィオラ5・チェロ5・コントラバス3）",
+      "count": 23,
+      "section": "strings"
+    }
+  ]
+}

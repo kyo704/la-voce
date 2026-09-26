@@ -1,0 +1,57 @@
+{
+  "title": "近松 現代語上演（文芸座・新劇の形）",
+  "composer": "近松門左衛門",
+  "composer_sort": "Chikamatsu drama",
+  "kind": "drama",
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "dr-chikamatsu-drama",
+  "note": "★★★人形浄瑠璃を 俳優で 演じる 形の 記し方です（★作品ごとに 役名が 変わります）。★★元の 作品は bunraku・kabuki に 入っています ／ ★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "主人公の男"
+    },
+    {
+      "label": "主人公の女"
+    },
+    {
+      "label": "周りの人"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "出会いと約束",
+      "group_label": "上",
+      "roles": [
+        "主人公の男",
+        "主人公の女"
+      ]
+    },
+    {
+      "label": "★追い詰められる",
+      "group_label": "中",
+      "roles": [
+        "主人公の男",
+        "主人公の女",
+        "周りの人"
+      ]
+    },
+    {
+      "label": "★★結末",
+      "group_label": "下",
+      "roles": [
+        "主人公の男",
+        "主人公の女"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

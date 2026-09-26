@@ -1,0 +1,208 @@
+{
+ "title": "ワルキューレ",
+ "title_original": "Die Walküre",
+ "aliases": [
+  "Walkure",
+  "指環"
+ ],
+ "composer": "ワーグナー",
+ "composer_sort": "Wagner, Richard",
+ "kind": "opera",
+ "year_written": 1870,
+ "duration_min": 235,
+ "language": "de",
+ "source": "hand",
+ "source_id": "wagner-walkure",
+ "roles": [
+  {
+   "label": "ジークムント",
+   "voice": "テノール"
+  },
+  {
+   "label": "ジークリンデ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ブリュンヒルデ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ヴォータン",
+   "voice": "バスバリトン"
+  },
+  {
+   "label": "フリッカ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "フンディング",
+   "voice": "バス"
+  },
+  {
+   "label": "ワルキューレたち",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 フンディングの家（嵐）",
+   "group_label": "第1幕",
+   "roles": [
+    "ジークムント",
+    "ジークリンデ",
+    "フンディング"
+   ]
+  },
+  {
+   "label": "第1幕 冬の嵐は去り・剣の場",
+   "group_label": "第1幕",
+   "roles": [
+    "ジークムント",
+    "ジークリンデ"
+   ]
+  },
+  {
+   "label": "第2幕 ヴォータンとフリッカ",
+   "group_label": "第2幕",
+   "roles": [
+    "ヴォータン",
+    "フリッカ"
+   ]
+  },
+  {
+   "label": "第2幕 ヴォータンの告白とブリュンヒルデ",
+   "group_label": "第2幕",
+   "roles": [
+    "ヴォータン",
+    "ブリュンヒルデ"
+   ]
+  },
+  {
+   "label": "第2幕 死の告知と決闘",
+   "group_label": "第2幕",
+   "roles": [
+    "ブリュンヒルデ",
+    "ジークムント",
+    "ジークリンデ",
+    "フンディング",
+    "ヴォータン"
+   ]
+  },
+  {
+   "label": "第3幕 ワルキューレの騎行",
+   "group_label": "第3幕",
+   "roles": [
+    "ワルキューレたち",
+    "ブリュンヒルデ",
+    "ジークリンデ"
+   ]
+  },
+  {
+   "label": "第3幕 ヴォータンの別れと魔の炎",
+   "group_label": "第3幕",
+   "roles": [
+    "ヴォータン",
+    "ブリュンヒルデ"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 8,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 4,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 6,
+   "section": "harp"
+  },
+  {
+   "part": "ワーグナーチューバ",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "バスクラリネット",
+   "count": 1,
+   "section": "woodwind"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

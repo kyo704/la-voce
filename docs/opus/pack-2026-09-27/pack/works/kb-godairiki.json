@@ -1,0 +1,68 @@
+{
+  "title": "五大力恋緘",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1794,
+  "duration_min": 110,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-godairiki",
+  "note": "★歌舞伎 ／ 作者 並木五瓶 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "薩摩源五兵衛"
+    },
+    {
+      "label": "芸者小万"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "笹野三五兵衛"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★薩摩源五兵衛",
+      "group_label": "序幕",
+      "roles": [
+        "薩摩源五兵衛",
+        "芸者小万",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★笹野屋（★源五兵衛の殺し）",
+      "group_label": "二幕",
+      "roles": [
+        "薩摩源五兵衛",
+        "芸者小万",
+        "笹野三五兵衛",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

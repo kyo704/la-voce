@@ -1,0 +1,38 @@
+{
+  "title": "12のエミリー・ディキンソンの詩",
+  "title_original": "Twelve Poems of Emily Dickinson",
+  "composer": "コープランド",
+  "composer_sort": "Copland, Aaron",
+  "kind": "song_cycle",
+  "year_written": 1950,
+  "duration_min": 30,
+  "language": "en",
+  "source": "hand",
+  "source_id": "copland-dickinson",
+  "note": "★作詩 エミリー・ディキンソン ／ ★★曲名を 全部 確かめられなかったので ★曲数（12曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全12曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

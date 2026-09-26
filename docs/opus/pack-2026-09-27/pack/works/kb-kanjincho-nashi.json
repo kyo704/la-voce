@@ -1,0 +1,114 @@
+{
+  "title": "一谷嫩軍記",
+  "aliases": [
+    "熊谷陣屋"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1751,
+  "duration_min": 120,
+  "edition": "★『熊谷陣屋』が単独で出る形がほとんど",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kanjincho-nashi",
+  "note": "★歌舞伎 ／ 作者 並木宗輔 ／ ★★立役の最高の役の1つとされる ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "熊谷次郎直実"
+    },
+    {
+      "label": "相模"
+    },
+    {
+      "label": "藤の方"
+    },
+    {
+      "label": "源義経"
+    },
+    {
+      "label": "白毫弥陀六（弥平兵衛宗清）"
+    },
+    {
+      "label": "堤軍次"
+    },
+    {
+      "label": "平敦盛／小次郎"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "二段目 陣門・組打（一の谷の浜）",
+      "group_label": "二段目",
+      "roles": [
+        "熊谷次郎直実",
+        "平敦盛／小次郎",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★三段目 熊谷陣屋（★制札の見得）",
+      "group_label": "三段目",
+      "roles": [
+        "熊谷次郎直実",
+        "相模",
+        "藤の方",
+        "源義経",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★熊谷陣屋 首実検（★我が子の首を差し出す）",
+      "group_label": "三段目",
+      "roles": [
+        "熊谷次郎直実",
+        "源義経",
+        "相模",
+        "藤の方",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★熊谷陣屋 幕切れ（★十六年は一昔・出家）",
+      "group_label": "三段目",
+      "roles": [
+        "熊谷次郎直実",
+        "白毫弥陀六（弥平兵衛宗清）",
+        "堤軍次",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

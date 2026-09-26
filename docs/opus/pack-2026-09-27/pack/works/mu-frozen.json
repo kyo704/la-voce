@@ -1,0 +1,182 @@
+{
+  "title": "アナと雪の女王（舞台版）",
+  "title_original": "Frozen",
+  "composer": "クリステン・アンダーソン＝ロペス／ロバート・ロペス",
+  "kind": "musical",
+  "year_written": 2018,
+  "duration_min": 140,
+  "edition": "★ブロードウェイ版（2018）── ★映画にない新曲が入ります",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-frozen",
+  "note": "★作詞 同 ／ 脚本 ジェニファー・リー",
+  "roles": [
+    {
+      "label": "エルサ"
+    },
+    {
+      "label": "アナ"
+    },
+    {
+      "label": "クリストフ"
+    },
+    {
+      "label": "ハンス"
+    },
+    {
+      "label": "オラフ"
+    },
+    {
+      "label": "ウェーゼルトン公爵"
+    },
+    {
+      "label": "パビー"
+    },
+    {
+      "label": "若いエルサ"
+    },
+    {
+      "label": "若いアナ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "幼い姉妹と魔法",
+      "group_label": "第1幕",
+      "roles": [
+        "若いエルサ",
+        "若いアナ",
+        "パビー"
+      ]
+    },
+    {
+      "label": "戴冠の日",
+      "group_label": "第1幕",
+      "roles": [
+        "エルサ",
+        "アナ",
+        "ハンス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★氷の宮殿（★第1幕の幕切れ・衣裳の早替り）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルサ"
+      ]
+    },
+    {
+      "label": "山のクリストフとオラフ",
+      "group_label": "第2幕",
+      "roles": [
+        "アナ",
+        "クリストフ",
+        "オラフ"
+      ]
+    },
+    {
+      "label": "ハンスの裏切り",
+      "group_label": "第2幕",
+      "roles": [
+        "アナ",
+        "ハンス"
+      ]
+    },
+    {
+      "label": "★姉妹の和解",
+      "group_label": "第2幕",
+      "roles": [
+        "エルサ",
+        "アナ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

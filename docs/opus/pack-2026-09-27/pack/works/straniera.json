@@ -1,0 +1,194 @@
+{
+  "title": "異国の女",
+  "title_original": "La straniera",
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1829,
+  "duration_min": 140,
+  "language": "it",
+  "source": "hand",
+  "source_id": "straniera",
+  "roles": [
+    {
+      "label": "アライデ"
+    },
+    {
+      "label": "アルトゥーロ"
+    },
+    {
+      "label": "ヴァルデブルゴ"
+    },
+    {
+      "label": "イゾレッタ"
+    },
+    {
+      "label": "モントリーノ領主"
+    },
+    {
+      "label": "オスブルゴ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 婚礼の支度と『異国の女』の噂",
+      "group_label": "第1幕",
+      "roles": [
+        "イゾレッタ",
+        "モントリーノ領主",
+        "オスブルゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アライデの小舟（湖の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "アライデ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アルトゥーロの訪問",
+      "group_label": "第1幕",
+      "roles": [
+        "アルトゥーロ",
+        "アライデ"
+      ]
+    },
+    {
+      "label": "第1幕 ヴァルデブルゴの登場と兄妹の秘密",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴァルデブルゴ",
+        "アライデ",
+        "アルトゥーロ"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（湖の争いと誤解）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルトゥーロ",
+        "ヴァルデブルゴ",
+        "アライデ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 裁きの場（アライデの正体）",
+      "group_label": "第2幕",
+      "roles": [
+        "アライデ",
+        "アルトゥーロ",
+        "ヴァルデブルゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アライデの別れ",
+      "group_label": "第2幕",
+      "roles": [
+        "アライデ",
+        "アルトゥーロ"
+      ]
+    },
+    {
+      "label": "第2幕 フィナーレ（教会の前・アルトゥーロの死）",
+      "group_label": "第2幕",
+      "roles": [
+        "アライデ",
+        "アルトゥーロ",
+        "イゾレッタ",
+        "ヴァルデブルゴ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

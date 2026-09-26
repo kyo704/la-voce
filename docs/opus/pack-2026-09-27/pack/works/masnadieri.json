@@ -1,0 +1,201 @@
+{
+  "title": "群盗",
+  "title_original": "I masnadieri",
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1847,
+  "duration_min": 125,
+  "language": "it",
+  "source": "hand",
+  "source_id": "masnadieri",
+  "roles": [
+    {
+      "label": "カルロ"
+    },
+    {
+      "label": "アマーリア"
+    },
+    {
+      "label": "フランチェスコ"
+    },
+    {
+      "label": "マッシミリアーノ"
+    },
+    {
+      "label": "アルミニオ"
+    },
+    {
+      "label": "モーゼル"
+    },
+    {
+      "label": "ロッラ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲（チェロ独奏つき）",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 カルロと仲間たち",
+      "group_label": "第1幕",
+      "roles": [
+        "カルロ",
+        "ロッラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 フランチェスコの企み",
+      "group_label": "第1幕",
+      "roles": [
+        "フランチェスコ",
+        "アルミニオ"
+      ]
+    },
+    {
+      "label": "第1幕 アマーリアと老マッシミリアーノ",
+      "group_label": "第1幕",
+      "roles": [
+        "アマーリア",
+        "マッシミリアーノ",
+        "フランチェスコ"
+      ]
+    },
+    {
+      "label": "第2幕 アマーリアの嘆き（墓地）",
+      "group_label": "第2幕",
+      "roles": [
+        "アマーリア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 フランチェスコの迫り",
+      "group_label": "第2幕",
+      "roles": [
+        "アマーリア",
+        "フランチェスコ"
+      ]
+    },
+    {
+      "label": "第2幕 森の盗賊たち",
+      "group_label": "第2幕",
+      "roles": [
+        "カルロ",
+        "モーゼル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 カルロとアマーリアの再会",
+      "group_label": "第3幕",
+      "roles": [
+        "カルロ",
+        "アマーリア"
+      ]
+    },
+    {
+      "label": "第3幕 廃墟の父（マッシミリアーノの告白）",
+      "group_label": "第3幕",
+      "roles": [
+        "カルロ",
+        "マッシミリアーノ",
+        "アルミニオ"
+      ]
+    },
+    {
+      "label": "第4幕 フィナーレ（アマーリアの死）",
+      "group_label": "第4幕",
+      "roles": [
+        "カルロ",
+        "アマーリア",
+        "マッシミリアーノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

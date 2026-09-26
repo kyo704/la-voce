@@ -1,0 +1,218 @@
+{
+  "title": "幽霊屋敷",
+  "title_original": "Straszny dwór",
+  "composer": "モニューシュコ",
+  "composer_sort": "Moniuszko, Stanisław",
+  "kind": "opera",
+  "year_written": 1865,
+  "duration_min": 160,
+  "language": "pl",
+  "source": "hand",
+  "source_id": "haunted-manor",
+  "roles": [
+    {
+      "label": "ハンナ"
+    },
+    {
+      "label": "ヤドヴィガ"
+    },
+    {
+      "label": "ステファン"
+    },
+    {
+      "label": "ズビグニェフ"
+    },
+    {
+      "label": "チェシニコヴァ"
+    },
+    {
+      "label": "マチェイ"
+    },
+    {
+      "label": "ダマジ"
+    },
+    {
+      "label": "スコウバ"
+    },
+    {
+      "label": "マルタ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 兵士たちの帰還と独身の誓い",
+      "group_label": "第1幕",
+      "roles": [
+        "ステファン",
+        "ズビグニェフ",
+        "マチェイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 チェシニコヴァの縁談の押しつけ",
+      "group_label": "第1幕",
+      "roles": [
+        "チェシニコヴァ",
+        "ステファン",
+        "ズビグニェフ"
+      ]
+    },
+    {
+      "label": "★第2幕 大晦日の蝋占い（娘たちの合唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "ハンナ",
+        "ヤドヴィガ",
+        "マルタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ハンナのアリア",
+      "group_label": "第2幕",
+      "roles": [
+        "ハンナ"
+      ]
+    },
+    {
+      "label": "★第3幕 古い柱時計とマチェイの怖がり",
+      "group_label": "第3幕",
+      "roles": [
+        "マチェイ",
+        "ステファン",
+        "ズビグニェフ",
+        "ダマジ"
+      ]
+    },
+    {
+      "label": "★第3幕 ステファンの柱時計のアリア（父の形見）",
+      "group_label": "第3幕",
+      "roles": [
+        "ステファン"
+      ]
+    },
+    {
+      "label": "★第4幕 マズルカと肖像画の仕掛けの種明かし",
+      "group_label": "第4幕",
+      "roles": [
+        "ハンナ",
+        "ヤドヴィガ",
+        "ステファン",
+        "ズビグニェフ",
+        "スコウバ",
+        "ダマジ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "終曲（2組の婚礼）",
+      "group_label": "第4幕",
+      "roles": [
+        "ハンナ",
+        "ヤドヴィガ",
+        "ステファン",
+        "ズビグニェフ",
+        "チェシニコヴァ",
+        "マチェイ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

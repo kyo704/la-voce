@@ -1,0 +1,180 @@
+{
+  "title": "囚われ人",
+  "title_original": "Il prigioniero",
+  "composer": "ダラピッコラ",
+  "composer_sort": "Dallapiccola, Luigi",
+  "kind": "opera",
+  "year_written": 1950,
+  "duration_min": 50,
+  "language": "it",
+  "source": "hand",
+  "source_id": "prigioniero",
+  "note": "★★『希望が最大の拷問である』── 十二音技法による",
+  "roles": [
+    {
+      "label": "囚人"
+    },
+    {
+      "label": "母"
+    },
+    {
+      "label": "牢番／大審問官"
+    },
+    {
+      "label": "第1の司祭"
+    },
+    {
+      "label": "第2の司祭"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★前奏曲（合唱つき・祈りの歌）",
+      "group_label": "前奏曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1場 母のアリア（息子の夢）",
+      "group_label": "第1場",
+      "roles": [
+        "母",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2場 牢（囚人と母の再会）",
+      "group_label": "第2場",
+      "roles": [
+        "囚人",
+        "母"
+      ]
+    },
+    {
+      "label": "★第3場 牢番の『希望』（兄弟よ、と呼ぶ）",
+      "group_label": "第3場",
+      "roles": [
+        "囚人",
+        "牢番／大審問官"
+      ]
+    },
+    {
+      "label": "★間奏曲（オルガンと合唱のリチェルカーレ）",
+      "group_label": "間奏曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4場 地下道の逃走",
+      "group_label": "第4場",
+      "roles": [
+        "囚人",
+        "第1の司祭",
+        "第2の司祭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（庭に出る・大審問官が待っている「兄弟よ」）",
+      "group_label": "第4場",
+      "roles": [
+        "囚人",
+        "牢番／大審問官",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

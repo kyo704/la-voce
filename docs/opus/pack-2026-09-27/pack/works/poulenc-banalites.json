@@ -1,0 +1,70 @@
+{
+  "title": "平凡な話",
+  "title_original": "Banalités",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "song_cycle",
+  "year_written": 1940,
+  "duration_min": 10,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "poulenc-banalites",
+  "note": "★作詩 アポリネール ／ ★★『ホテル』は 世界で 最も 短い 名曲の 1つと 言われます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. オルクニーズの歌（Chanson d’Orkenise）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. ホテル（Hôtel）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 沼地（Fagnes de Wallonie）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. パリへの旅（Voyage à Paris）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. サンギーヌ（Sanglots）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

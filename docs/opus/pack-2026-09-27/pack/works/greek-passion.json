@@ -1,0 +1,220 @@
+{
+  "title": "ギリシャ受難劇",
+  "title_original": "Řecké pašije",
+  "composer": "マルティヌー",
+  "composer_sort": "Martinů, Bohuslav",
+  "kind": "opera",
+  "year_written": 1961,
+  "duration_min": 125,
+  "edition": "1959 第1版（ロンドン版）／1961 第2版（チューリヒ版）。★近年は第1版の上演も多い",
+  "language": "cs",
+  "source": "hand",
+  "source_id": "greek-passion",
+  "roles": [
+    {
+      "label": "マノリオス"
+    },
+    {
+      "label": "カテリーナ"
+    },
+    {
+      "label": "グリゴリス神父"
+    },
+    {
+      "label": "フォティス神父"
+    },
+    {
+      "label": "ヤナコス"
+    },
+    {
+      "label": "ラダス"
+    },
+    {
+      "label": "ミケーリス"
+    },
+    {
+      "label": "コスタンディス"
+    },
+    {
+      "label": "レニオ"
+    },
+    {
+      "label": "パナイス"
+    },
+    {
+      "label": "デスピニオ"
+    },
+    {
+      "label": "長老"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 リコヴリシの村（受難劇の役の割り振り）",
+      "group_label": "第1幕",
+      "roles": [
+        "グリゴリス神父",
+        "マノリオス",
+        "カテリーナ",
+        "ヤナコス",
+        "ミケーリス",
+        "コスタンディス",
+        "レニオ",
+        "パナイス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 難民の到来（フォティス神父）",
+      "group_label": "第1幕",
+      "roles": [
+        "フォティス神父",
+        "グリゴリス神父",
+        "デスピニオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 サラキナ山の難民の野営",
+      "group_label": "第2幕",
+      "roles": [
+        "フォティス神父",
+        "マノリオス",
+        "ヤナコス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 カテリーナの変わり（マノリオスへの思い）",
+      "group_label": "第2幕",
+      "roles": [
+        "カテリーナ",
+        "マノリオス",
+        "パナイス"
+      ]
+    },
+    {
+      "label": "★第3幕 マノリオスの説教（財を分けよ）",
+      "group_label": "第3幕",
+      "roles": [
+        "マノリオス",
+        "ラダス",
+        "グリゴリス神父",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 破門",
+      "group_label": "第3幕",
+      "roles": [
+        "グリゴリス神父",
+        "マノリオス",
+        "長老",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 終曲（マノリオスの殺害と難民の旅立ち）",
+      "group_label": "第4幕",
+      "roles": [
+        "マノリオス",
+        "パナイス",
+        "カテリーナ",
+        "フォティス神父",
+        "グリゴリス神父",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

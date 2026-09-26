@@ -397,7 +397,7 @@ html[data-th="dark"] .shelf2 div{background:#241D17;border-color:var(--line)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
 :root{--sp1:8px;--sp2:24px;--sp3:48px}
-</style><style>body>h1,body>p.lead,#demo,#lg,#spec{display:none!important}body{margin:0;padding:8px 0 0}</style></head><body>
+</style></head><body>
 <h1>Woolsong 動く見本 ── PC・iPad（個人）</h1>
 <p class="lead">声を使う人 ご本人の 画面です。左のナビと、画面の中を 押してください。<br>
 下の「デモの 切替」で、端末の 大きさ・状態を 変えられます。スマホ版と 同じ 中身です。</p>
@@ -1136,12 +1136,14 @@ function P_hitsuji(){
  +'「◯点のうち ◯点」は、進み具合の 帯に 化けます。</div>'}
 
 /* ══════════════════ 下の 画面 ══════════════════ */
-var SC={'よてい':SC_yotei,'時間割':SC_jikan,'本番の予定':SC_honban,'もっと':SC_motto,'しらべる':SC_sira};
+var SC={'よてい':SC_yotei,'時間割':SC_jikan,'本番の予定':SC_honban,'もっと':SC_motto,'しらべる':SC_sira,
+ '運営に切り替える':SC_kiri};
 /* ══════════════════ もっと（⚙）══════════════════
    A10。法律の導線を 1か所に 集めます。題は「もっと」のまま（規約が この語で 書かれています）。
    ここから 運営モード（教室機能）へ 移ります。 */
 function SC_motto(){
- var G=[['設定','文字の 大きさ・明るさ・羊の 動き'],
+ var G=[['★運営に 切り替える','役職の ある ところの 名簿・日程・出欠・公演へ'],
+  ['設定','文字の 大きさ・明るさ・羊の 動き'],
   ['毎日 聞いてほしいこと','5つまで　／　いつ書くかも 自分で 決めます'],
   ['アカウント','名前・入っている 教室'],
   ['プラン','いま：無料　／　しらべる・よそおい'],
@@ -1153,8 +1155,11 @@ function SC_motto(){
  +'<div class="col2" style="align-items:flex-start">'
  +'<div style="flex:1;min-width:320px">'
  +'<div class="card p0">'+G.map(function(x){
-   return '<div class="li" onclick="toast(\''+esc(x[0])+'（見本では 開きません）\')">'
-   +'<span>'+x[0]+'<br><span class="usu">'+x[1]+'</span></span><s>›</s></div>'}).join('')+'</div>'
+   var k=x[0].replace('★','');
+   var act=(k==='運営に 切り替える')?"push('運営に切り替える')":("toast('"+esc(k)+"（見本では 開きません）')");
+   return '<div class="li" onclick="'+act+'">'
+   +'<span>'+k+(k==='運営に 切り替える'?' <span class="usu">（役職の ある方だけ）</span>':'')
+   +'<br><span class="usu">'+x[1]+'</span></span><s>›</s></div>'}).join('')+'</div>'
  +'<div class="note">この画面の 題は <b>「もっと」</b>です。規約が この語で 書かれています。<br>'
  +'退会を 隠しません。引き止めを 2回以上 出しません。<br>'
  +'書き出しは <b>いつでも 無料</b>です。有料の 壁に しません。<br>退会された あとも、お手元の ファイルは あなたの ものです。</div>'
@@ -1165,18 +1170,78 @@ function SC_motto(){
  +'<div class="usu" style="line-height:1.95">役職の ある方にだけ 出ます。<br>'
  +'押すと <b>運営モード</b>（別の シェル）に 移ります。<br>'
  +'個人アプリの 中に、もう1つの アプリが 入っている形です。</div>'
- +'<div style="margin-top:12px"><span class="btn" onclick="opsOpen()">運営モードへ ›</span></div>'
+ +'<div style="margin-top:12px"><span class="btn" onclick="push(\'運営に切り替える\')">運営に 切り替える ›</span></div>'
  +'<div class="usu" style="margin-top:10px">この 見本では、運営は <b>別ファイル</b>です（PC・iPad 運営）。<br>'
  +'本番では 同じアプリの 中で 切り替わります。</div>'
  +'</div>'
  +'<div class="warn" style="margin-top:12px">運営モードには、<b>健康に関するものが 1つも ありません</b>。<br>'
  +'名簿・日程・出欠・行事・連絡・ご請求だけです。</div>'
  +'</div></div>'}
-function opsOpen(){
- var u=location.href.replace('（個人）','（運営）').replace('-PC個人','-PC');
- if(u===location.href){toast('運営の 見本は 別ファイルです ── 00-動く見本-PC・iPad（運営）.html');return}
+/* ══════════════════ 個人 ⇄ 運営 の 行き来 ══════════════════
+   ★ここが 効いていませんでした。
+   file:// で 開くと location.href は 日本語が %EF%BC%88… の形に なります。
+   そのため '（個人）' の 取り替えが 1度も 当たらず、
+   押しても 案内（toast）だけが 出て、運営に 移れませんでした。
+   ★日本語のまま／符号化ずみ の どちらでも 当たるように します。
+   ★あわせて window.open ではなく <a href> に します（file:// で 止められないため）。 */
+function swapURL(a,b){
+ var h=location.href,i;
+ var forms=[[a,b],[encodeURI(a),encodeURI(b)],[encodeURIComponent(a),encodeURIComponent(b)]];
+ for(i=0;i<forms.length;i++){if(h.indexOf(forms[i][0])>=0)return h.replace(forms[i][0],forms[i][1])}
+ return ''}
+function opsURL(){return swapURL('（個人）','（運営）')}
+function opsLink(lab,cls){
+ var u=opsURL(),c=cls||'btn';
+ if(!u)return '<span class="'+c+'" onclick="toast(\'この 見本を 名前を 変えずに 保存すると 開けます ── 00-動く見本-PC・iPad（運営）.html\')">'+lab+'</span>';
+ return '<a class="'+c+'" href="'+u+'" target="_blank" rel="noopener" style="text-decoration:none">'+lab+'</a>'}
+function opsOpen(){var u=opsURL();
+ if(!u){toast('運営の 見本は 別ファイルです ── 00-動く見本-PC・iPad（運営）.html');return}
  var w=window.open(u,'_blank');
- if(!w)toast('別ファイルを 開きます ── 00-動く見本-PC・iPad（運営）.html');}
+ if(!w)toast('別ファイルを 開きます ── 00-動く見本-PC・iPad（運営）.html')}
+
+/* ══════════════════ 運営に 切り替える（画面）══════════════════
+   ★「個人から 運営に 飛ぶ 画面が ない」ため 足しました。
+   ★役職の ある ところだけ 押せます。ない ところは 見せて、押せなくします（隠しません）。 */
+var KIRI=[{id:'u',post:'伴奏科 助手',can:1},{id:'m',post:'',can:0}];
+function SC_kiri(){
+ var me=KIRI.filter(function(x){return x.can})[0];
+ return bk('もっと')+'<h2>運営に 切り替える</h2>'
+ +'<div class="col2" style="align-items:flex-start">'
+ +'<div style="flex:1;min-width:330px">'
+ +'<div class="card" style="background:var(--band);border-color:var(--line3)">'
+ +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">'
+ +'<div><div class="usu">いま</div><div style="font-size:16px;font-weight:700">個人の 画面</div>'
+ +'<div class="usu">高木 みなみ　声楽3年</div></div>'
+ +'<div style="font-size:22px;color:var(--ink3)">→</div>'
+ +'<div><div class="usu">移る先</div><div style="font-size:16px;font-weight:700">'+org('u').n+'　の運営</div>'
+ +'<div class="usu">役職　'+(me?me.post:'なし')+'</div></div>'
+ +'</div></div>'
+ +'<div class="h3">通っている ところ</div>'
+ +'<div class="card p0">'+KIRI.map(function(x){var o=org(x.id);
+   return '<div class="li"><span><b>'+o.n+'</b><br><span class="usu">'+o.k+'　／　'
+   +(x.can?'役職　'+x.post:'役職が ありません')+'</span></span>'
+   +'<s>'+(x.can?opsLink('運営に 移る ›','btn sm'):'<span class="btn g sm" style="opacity:.5;cursor:default" title="役職の ある方にだけ 出ます">移れません</span>')+'</s></div>'}).join('')+'</div>'
+ +'<div class="note">運営に 移れるのは <b>役職の ある ところ</b>だけです。<br>'
+ +'役職が ない ところは <b>隠しません</b>。見せて、押せなくします。<br>'
+ +'移っても、<b>あなたが 通う 生徒としての 立場は 変わりません</b>。'
+ +'自分の レッスンの 出席を 自分で つけることは できません。</div>'
+ +'</div>'
+ +'<div style="flex:0 0 340px">'
+ +'<div class="warn"><b>運営に 移っても、こうです</b><br>'
+ +'・運営の 画面には <b>健康に関するものが 1つも ありません</b>（画面そのものが ありません）<br>'
+ +'・あなたの 声・からだの 記録は、<b>運営に 移っても 見えません</b><br>'
+ +'・ノート・レパートリー・たぶんノートも <b>見えません</b><br>'
+ +'・運営に 移ったことは、<b>誰にも 知らされません</b><br>'
+ +'・運営で できるのは 名簿・日程・出欠・行事・連絡・ご請求・公演です</div>'
+ +'<div class="card" style="margin-top:12px"><div class="usu" style="line-height:1.95">'
+ +'<b>戻るとき</b><br>運営の 画面 左上の <b>「‹ 個人に 戻る」</b>を 押します。<br>'
+ +'どちらの 画面に いるかは、上の 帯の 色で 分かります（個人は 白、運営は 濃い 色）。</div>'
+ +'<div style="margin-top:12px">'+opsLink('運営の 画面を 開く ›')+'</div>'
+ +'<div class="usu" style="margin-top:10px">この 見本では 運営は <b>別ファイル</b>です。'
+ +'本番では 同じアプリの 中で 切り替わります。</div></div>'
+ +'</div></div>'}
+function org(id){for(var i=0;i<ORGS.length;i++)if(ORGS[i].id===id)return ORGS[i];return {n:'',k:''}}
+
 
 function SC_honban(){
  return bk('きょう')+'<h2>本番の 予定</h2>'
@@ -1407,4 +1472,4 @@ function legend(){
  return L||'<b>'+t+'</b><ul><li>戻るときは 左上の ‹ を 押します</li></ul>'}
 setTh(0);draw();
 
-</script><script>window.addEventListener("load",function(){setTimeout(function(){try{setDev("ipadL")}catch(e){}},200)})</script></body></html>
+</script></body></html>

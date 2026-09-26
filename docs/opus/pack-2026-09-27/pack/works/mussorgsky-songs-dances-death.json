@@ -1,0 +1,62 @@
+{
+  "title": "死の歌と踊り",
+  "title_original": "Песни и пляски смерти",
+  "composer": "ムソルグスキー",
+  "composer_sort": "Mussorgsky, Modest",
+  "kind": "song_cycle",
+  "year_written": 1877,
+  "duration_min": 20,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "mussorgsky-death",
+  "note": "★作詩 ゴレニシチェフ＝クトゥーゾフ ／ ★★★低い声のための 大作。★管弦楽版（ショスタコーヴィチ編ほか）も あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 子守歌（Колыбельная）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. セレナード（Серенада）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. トレパーク（Трепак）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 司令官（Полководец）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

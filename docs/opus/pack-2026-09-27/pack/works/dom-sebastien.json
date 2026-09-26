@@ -1,0 +1,199 @@
+{
+  "title": "ポルトガル王ドン・セバスティアン",
+  "title_original": "Dom Sébastien, roi de Portugal",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1843,
+  "duration_min": 200,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "dom-sebastien",
+  "roles": [
+    {
+      "label": "ドン・セバスティアン"
+    },
+    {
+      "label": "ザイダ"
+    },
+    {
+      "label": "カモンイス"
+    },
+    {
+      "label": "ジュアン・デ・シルヴァ"
+    },
+    {
+      "label": "アバヤルドス"
+    },
+    {
+      "label": "ドン・アントニオ"
+    },
+    {
+      "label": "ドン・エンリケ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 リスボンの港（出航）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・セバスティアン",
+        "カモンイス",
+        "ジュアン・デ・シルヴァ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ザイダの死刑と赦免",
+      "group_label": "第1幕",
+      "roles": [
+        "ザイダ",
+        "ドン・セバスティアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アフリカの戦場（敗北）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドン・セバスティアン",
+        "アバヤルドス",
+        "ザイダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 リスボンの国葬（偽の葬列）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジュアン・デ・シルヴァ",
+        "カモンイス",
+        "ドン・セバスティアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 セバスティアンの名乗りと捕縛",
+      "group_label": "第3幕",
+      "roles": [
+        "ドン・セバスティアン",
+        "ザイダ",
+        "ジュアン・デ・シルヴァ",
+        "アバヤルドス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 宗教裁判",
+      "group_label": "第4幕",
+      "roles": [
+        "ドン・セバスティアン",
+        "ザイダ",
+        "ジュアン・デ・シルヴァ",
+        "アバヤルドス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5幕 塔の牢（カモンイスの助け）と終曲",
+      "group_label": "第5幕",
+      "roles": [
+        "ドン・セバスティアン",
+        "ザイダ",
+        "カモンイス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

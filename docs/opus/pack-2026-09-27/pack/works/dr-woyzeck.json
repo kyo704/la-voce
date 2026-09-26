@@ -1,0 +1,76 @@
+{
+  "title": "ヴォイツェク",
+  "composer": "ビューヒナー",
+  "composer_sort": "Büchner, Georg",
+  "kind": "drama",
+  "year_written": 1837,
+  "duration_min": 100,
+  "language": "de",
+  "source": "hand",
+  "source_id": "dr-woyzeck",
+  "note": "★★未完の 断章。★場の 順は 上演ごとに 決めます。★ベルクの 歌劇の 元 ／ ★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ヴォイツェク"
+    },
+    {
+      "label": "マリー"
+    },
+    {
+      "label": "鼓手長"
+    },
+    {
+      "label": "大尉"
+    },
+    {
+      "label": "医者"
+    },
+    {
+      "label": "町の者",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ヴォイツェクと大尉",
+      "group_label": "断章",
+      "roles": [
+        "ヴォイツェク",
+        "大尉"
+      ]
+    },
+    {
+      "label": "★医者の実験",
+      "group_label": "断章",
+      "roles": [
+        "ヴォイツェク",
+        "医者"
+      ]
+    },
+    {
+      "label": "★マリーと鼓手長",
+      "group_label": "断章",
+      "roles": [
+        "マリー",
+        "鼓手長",
+        "町の者"
+      ]
+    },
+    {
+      "label": "★★池のほとりの殺害",
+      "group_label": "断章",
+      "roles": [
+        "ヴォイツェク",
+        "マリー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

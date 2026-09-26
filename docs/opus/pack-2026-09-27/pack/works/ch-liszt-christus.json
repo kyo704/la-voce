@@ -1,0 +1,71 @@
+{
+  "title": "キリスト",
+  "title_original": "Christus",
+  "composer": "リスト",
+  "composer_sort": "Liszt, Franz",
+  "kind": "chorus",
+  "year_written": 1866,
+  "duration_min": 180,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-liszt-christus",
+  "note": "★★★3時間近い 大作。★全曲上演は 稀 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "降誕の 牧歌",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★羊飼いの歌",
+      "group_label": "第1部",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★主の祈り・受難",
+      "group_label": "第2部",
+      "roles": [
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★復活",
+      "group_label": "第3部",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

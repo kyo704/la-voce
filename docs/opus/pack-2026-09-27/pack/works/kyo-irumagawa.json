@@ -1,0 +1,69 @@
+{
+  "title": "入間川",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-irumagawa",
+  "note": "★大名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（大名）"
+    },
+    {
+      "label": "アド（太郎冠者）"
+    },
+    {
+      "label": "小アド（里人）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "帰国の道で入間川に着く",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "里人に浅瀬を尋ねて渡り、水に落ちる",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "小アド（里人）"
+      ]
+    },
+    {
+      "label": "入間様（逆さ言葉）と知る",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "小アド（里人）"
+      ]
+    },
+    {
+      "label": "逆さ言葉で言い合って収まる",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "小アド（里人）",
+        "アド（太郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

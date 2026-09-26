@@ -1,0 +1,305 @@
+{
+  "title": "ウィキッド",
+  "title_original": "Wicked",
+  "composer": "スティーヴン・シュワルツ",
+  "kind": "musical",
+  "year_written": 2003,
+  "duration_min": 165,
+  "edition": "2003 ブロードウェイ初演版（★2006 ロンドン版で台詞に手が入る。★日本版〈劇団四季〉は日本語訳詞。★2024／2025 映画版は2部に分けて曲を追加）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "wicked",
+  "note": "★作詞 スティーヴン・シュワルツ ／ 脚本 ウィニー・ホルツマン ／ ★グレゴリー・マグワイアの小説による。★★『オズの魔法使い』の前史を悪い魔女の側から描く",
+  "roles": [
+    {
+      "label": "エルファバ"
+    },
+    {
+      "label": "グリンダ"
+    },
+    {
+      "label": "フィエロ"
+    },
+    {
+      "label": "ネッサローズ"
+    },
+    {
+      "label": "マダム・モリブル"
+    },
+    {
+      "label": "ボック"
+    },
+    {
+      "label": "ディラモンド博士"
+    },
+    {
+      "label": "オズの魔法使い"
+    },
+    {
+      "label": "フレックス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★ノー・ワン・モーンズ・ザ・ウィキッド（悪い魔女は死んだ）",
+      "group_label": "第1幕",
+      "roles": [
+        "グリンダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ザ・ウィザード・アンド・アイ",
+      "group_label": "第1幕",
+      "roles": [
+        "エルファバ",
+        "マダム・モリブル"
+      ]
+    },
+    {
+      "label": "M3 ★★★ホワット・イズ・ジス・フィーリング？（2人の憎み合い）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルファバ",
+        "グリンダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★サムシング・バッド（ディラモンド博士の警告）",
+      "group_label": "第1幕",
+      "roles": [
+        "ディラモンド博士",
+        "エルファバ"
+      ]
+    },
+    {
+      "label": "M5 ★★★ダンシング・スルー・ライフ",
+      "group_label": "第1幕",
+      "roles": [
+        "フィエロ",
+        "グリンダ",
+        "エルファバ",
+        "ボック",
+        "ネッサローズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★ポピュラー",
+      "group_label": "第1幕",
+      "roles": [
+        "グリンダ"
+      ]
+    },
+    {
+      "label": "M7 ★★★アイム・ノット・ザット・ガール",
+      "group_label": "第1幕",
+      "roles": [
+        "エルファバ"
+      ]
+    },
+    {
+      "label": "M8 ★★ワン・ショート・デイ（エメラルド・シティ）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルファバ",
+        "グリンダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★★魔法使いとの対面（A Sentimental Man／猿に羽を生やす）",
+      "group_label": "第1幕",
+      "roles": [
+        "オズの魔法使い",
+        "エルファバ",
+        "グリンダ",
+        "マダム・モリブル"
+      ]
+    },
+    {
+      "label": "M10 ★★★ディファイング・グラヴィティ（第1幕終曲・★箒で飛ぶ）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルファバ",
+        "グリンダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★サンク・グッドネス",
+      "group_label": "第2幕",
+      "roles": [
+        "グリンダ",
+        "マダム・モリブル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★ワンダフル",
+      "group_label": "第2幕",
+      "roles": [
+        "オズの魔法使い",
+        "エルファバ"
+      ]
+    },
+    {
+      "label": "M13 ★★★アズ・ロング・アズ・ユーアー・マイン",
+      "group_label": "第2幕",
+      "roles": [
+        "エルファバ",
+        "フィエロ"
+      ]
+    },
+    {
+      "label": "M14 ★★★ノー・グッド・ディード",
+      "group_label": "第2幕",
+      "roles": [
+        "エルファバ"
+      ]
+    },
+    {
+      "label": "M15 ★★マーチ・オブ・ザ・ウィッチ・ハンターズ",
+      "group_label": "第2幕",
+      "roles": [
+        "ボック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M16 ★★★フォー・グッド（2人の別れ）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルファバ",
+        "グリンダ"
+      ]
+    },
+    {
+      "label": "M17 ★★★終曲（水をかけられたふりとエルファバの生存）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルファバ",
+        "グリンダ",
+        "フィエロ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

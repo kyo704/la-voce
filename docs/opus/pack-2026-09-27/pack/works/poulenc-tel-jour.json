@@ -1,0 +1,38 @@
+{
+  "title": "そんな日 そんな夜",
+  "title_original": "Tel jour, telle nuit",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "song_cycle",
+  "year_written": 1937,
+  "duration_min": 20,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "poulenc-tel-jour",
+  "note": "★作詩 エリュアール ／ ★★プーランクの 歌曲集の 代表作 ／ ★★曲名を 全部 確かめられなかったので ★曲数（9曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全9曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

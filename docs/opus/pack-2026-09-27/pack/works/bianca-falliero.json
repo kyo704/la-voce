@@ -1,0 +1,193 @@
+{
+  "title": "ビアンカとファッリエロ",
+  "title_original": "Bianca e Falliero",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1819,
+  "duration_min": 175,
+  "language": "it",
+  "source": "hand",
+  "source_id": "bianca-falliero",
+  "roles": [
+    {
+      "label": "ビアンカ"
+    },
+    {
+      "label": "ファッリエロ"
+    },
+    {
+      "label": "コンタレーノ"
+    },
+    {
+      "label": "カピッリオ"
+    },
+    {
+      "label": "コスタンツァ"
+    },
+    {
+      "label": "ロレダーノ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ヴェネツィアの和平の祝い",
+      "group_label": "第1幕",
+      "roles": [
+        "コンタレーノ",
+        "カピッリオ",
+        "ロレダーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ビアンカとコスタンツァ",
+      "group_label": "第1幕",
+      "roles": [
+        "ビアンカ",
+        "コスタンツァ"
+      ]
+    },
+    {
+      "label": "第1幕 ファッリエロの帰還（二重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビアンカ",
+        "ファッリエロ"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（婚礼の強要）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビアンカ",
+        "ファッリエロ",
+        "コンタレーノ",
+        "カピッリオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★四重唱（ヴェネツィアの夜）",
+      "group_label": "第2幕",
+      "roles": [
+        "ビアンカ",
+        "ファッリエロ",
+        "コンタレーノ",
+        "カピッリオ"
+      ]
+    },
+    {
+      "label": "第2幕 十人委員会の裁き",
+      "group_label": "第2幕",
+      "roles": [
+        "ファッリエロ",
+        "コンタレーノ",
+        "ロレダーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（ビアンカの証言と赦し）",
+      "group_label": "第2幕",
+      "roles": [
+        "ビアンカ",
+        "ファッリエロ",
+        "コンタレーノ",
+        "カピッリオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

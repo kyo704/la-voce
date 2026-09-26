@@ -1,0 +1,162 @@
+{
+  "title": "中国の不思議な役人",
+  "composer": "バルトーク",
+  "composer_sort": "Bartók, Béla",
+  "kind": "dance",
+  "year_written": 1926,
+  "duration_min": 30,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-miraculous-mandarin",
+  "note": "★★内容が 理由で 上演が 禁じられた ことが あります ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "娘"
+    },
+    {
+      "label": "役人"
+    },
+    {
+      "label": "ならず者（一）"
+    },
+    {
+      "label": "ならず者（二）"
+    },
+    {
+      "label": "ならず者（三）"
+    },
+    {
+      "label": "若者"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ならず者が娘に客を誘わせる",
+      "group_label": "一幕物",
+      "roles": [
+        "娘",
+        "ならず者（一）",
+        "ならず者（二）",
+        "ならず者（三）"
+      ]
+    },
+    {
+      "label": "★老紳士と若者",
+      "group_label": "一幕物",
+      "roles": [
+        "娘",
+        "若者"
+      ]
+    },
+    {
+      "label": "★★役人の出現と三度の死",
+      "group_label": "一幕物",
+      "roles": [
+        "娘",
+        "役人",
+        "ならず者（一）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★娘に抱かれて役人が死ぬ",
+      "group_label": "一幕物",
+      "roles": [
+        "娘",
+        "役人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

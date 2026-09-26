@@ -1,0 +1,95 @@
+{
+  "title": "勧進帳",
+  "composer": "並木五瓶（歌舞伎十八番）",
+  "composer_sort": "Namiki, Gohei",
+  "kind": "kabuki",
+  "year_written": 1840,
+  "source": "hand",
+  "source_id": "kabuki-kanjincho",
+  "roles": [
+    {
+      "label": "武蔵坊弁慶"
+    },
+    {
+      "label": "富樫左衛門"
+    },
+    {
+      "label": "源義経"
+    },
+    {
+      "label": "四天王",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "置き浄瑠璃・幕開き",
+      "group_label": "全曲",
+      "roles": [
+        "長唄囃子連中",
+        "富樫左衛門"
+      ]
+    },
+    {
+      "label": "山伏問答",
+      "group_label": "全曲",
+      "roles": [
+        "武蔵坊弁慶",
+        "富樫左衛門",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "勧進帳の読み上げ",
+      "group_label": "全曲",
+      "roles": [
+        "武蔵坊弁慶",
+        "富樫左衛門"
+      ]
+    },
+    {
+      "label": "義経打擲",
+      "group_label": "全曲",
+      "roles": [
+        "武蔵坊弁慶",
+        "源義経",
+        "富樫左衛門",
+        "四天王"
+      ]
+    },
+    {
+      "label": "延年の舞・飛び六方",
+      "group_label": "全曲",
+      "roles": [
+        "武蔵坊弁慶",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    }
+  ],
+  "note": "★歌舞伎は 役の呼び方と 音楽の扱いが洋物と違う（長唄囃子連中＝舞台上）。上演の形で確かめる／★歌舞伎十八番。型により演出が変わる",
+  "title_original": "勧進帳",
+  "aliases": [
+    "かんじんちょう"
+  ],
+  "duration_min": 60,
+  "language": "ja",
+  "school": "成田屋（市川宗家）"
+}

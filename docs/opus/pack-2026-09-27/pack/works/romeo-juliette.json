@@ -1,0 +1,248 @@
+{
+ "title": "ロメオとジュリエット",
+ "composer": "グノー",
+ "composer_sort": "Gounod, Charles",
+ "kind": "opera",
+ "year_written": 1867,
+ "source": "hand",
+ "source_id": "gounod-romeo",
+ "roles": [
+  {
+   "label": "ロメオ",
+   "voice": "テノール"
+  },
+  {
+   "label": "ジュリエット",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "メルキューシオ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "ステファノ",
+   "voice": "メゾ"
+  },
+  {
+   "label": "ティバルト"
+  },
+  {
+   "label": "キャピュレット",
+   "voice": "バス"
+  },
+  {
+   "label": "ロラン神父"
+  },
+  {
+   "label": "ガートルード"
+  },
+  {
+   "label": "大公"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "プロローグ（合唱）",
+   "group_label": "プロローグ",
+   "roles": [
+    "合唱"
+   ]
+  },
+  {
+   "label": "舞踏会の合唱",
+   "group_label": "第1幕",
+   "roles": [
+    "キャピュレット",
+    "ティバルト",
+    "合唱"
+   ]
+  },
+  {
+   "label": "ジュリエットのワルツ（夢に生きたい）",
+   "group_label": "第1幕",
+   "roles": [
+    "ジュリエット"
+   ]
+  },
+  {
+   "label": "ロメオとジュリエットの出会い（マドリガル）",
+   "group_label": "第1幕",
+   "roles": [
+    "ロメオ",
+    "ジュリエット"
+   ]
+  },
+  {
+   "label": "マブの女王（メルキューシオ）",
+   "group_label": "第1幕",
+   "roles": [
+    "メルキューシオ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "バルコニーの場（ああ、太陽よ昇れ）",
+   "group_label": "第2幕",
+   "roles": [
+    "ロメオ",
+    "ジュリエット"
+   ]
+  },
+  {
+   "label": "ロラン神父の庵（結婚）",
+   "group_label": "第3幕",
+   "roles": [
+    "ロメオ",
+    "ジュリエット",
+    "ロラン神父",
+    "ガートルード"
+   ]
+  },
+  {
+   "label": "ステファノの歌（白い鳩よ）",
+   "group_label": "第3幕",
+   "roles": [
+    "ステファノ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "決闘の場（メルキューシオとティバルトの死）",
+   "group_label": "第3幕",
+   "roles": [
+    "ロメオ",
+    "メルキューシオ",
+    "ティバルト",
+    "大公",
+    "合唱"
+   ]
+  },
+  {
+   "label": "寝室の二重唱（夜のうぐいす）",
+   "group_label": "第4幕",
+   "roles": [
+    "ロメオ",
+    "ジュリエット"
+   ]
+  },
+  {
+   "label": "眠り薬の場",
+   "group_label": "第4幕",
+   "roles": [
+    "ジュリエット",
+    "ロラン神父",
+    "キャピュレット"
+   ]
+  },
+  {
+   "label": "墓所のフィナーレ",
+   "group_label": "第5幕",
+   "roles": [
+    "ロメオ",
+    "ジュリエット",
+    "ロラン神父"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "コルネット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion",
+   "note": "大太鼓・シンバル・トライアングル"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "オルガン",
+   "count": 1,
+   "section": "keyboard",
+   "is_optional": true,
+   "note": "第3幕の結婚の場"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}

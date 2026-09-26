@@ -1,0 +1,217 @@
+{
+ "title": "オルフェオとエウリディーチェ",
+ "composer": "グルック",
+ "composer_sort": "Gluck, Christoph Willibald",
+ "kind": "opera",
+ "year_written": 1762,
+ "source": "hand",
+ "source_id": "gluck-orfeo",
+ "roles": [
+  {
+   "label": "オルフェオ",
+   "voice": "アルト"
+  },
+  {
+   "label": "エウリディーチェ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "アモーレ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "序曲",
+   "group_label": "序曲",
+   "roles": []
+  },
+  {
+   "label": "墓前の合唱（エウリディーチェの葬礼）",
+   "group_label": "第1幕",
+   "roles": [
+    "オルフェオ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "オルフェオの嘆き（エウリディーチェ！）",
+   "group_label": "第1幕",
+   "roles": [
+    "オルフェオ"
+   ]
+  },
+  {
+   "label": "アモーレの登場（神々の許し）",
+   "group_label": "第1幕",
+   "roles": [
+    "アモーレ",
+    "オルフェオ"
+   ]
+  },
+  {
+   "label": "オルフェオのアリア（行こう、望みをかけて）",
+   "group_label": "第1幕",
+   "roles": [
+    "オルフェオ"
+   ]
+  },
+  {
+   "label": "地獄の場（復讐の女神たちの合唱と踊り）",
+   "group_label": "第2幕",
+   "roles": [
+    "オルフェオ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "精霊の踊り（フルート独奏）",
+   "group_label": "第2幕",
+   "roles": []
+  },
+  {
+   "label": "エリュシオンの場（なんと清らかな空）",
+   "group_label": "第2幕",
+   "roles": [
+    "オルフェオ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "エウリディーチェとの再会",
+   "group_label": "第2幕",
+   "roles": [
+    "オルフェオ",
+    "エウリディーチェ",
+    "合唱"
+   ]
+  },
+  {
+   "label": "二重唱（振り向かないで）",
+   "group_label": "第3幕",
+   "roles": [
+    "オルフェオ",
+    "エウリディーチェ"
+   ]
+  },
+  {
+   "label": "エウリディーチェを失って（オルフェオのアリア）",
+   "group_label": "第3幕",
+   "roles": [
+    "オルフェオ"
+   ]
+  },
+  {
+   "label": "アモーレの再登場とフィナーレ",
+   "group_label": "第3幕",
+   "roles": [
+    "オルフェオ",
+    "エウリディーチェ",
+    "アモーレ",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind",
+   "is_optional": true,
+   "note": "パリ版"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "コルネット",
+   "count": 1,
+   "section": "brass",
+   "is_optional": true,
+   "note": "ウィーン版"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "チェンバロ",
+   "count": 1,
+   "section": "continuo"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ],
+ "title_original": "Orfeo ed Euridice",
+ "aliases": [
+  "オルフェオ",
+  "Orfeo"
+ ],
+ "duration_min": 120,
+ "language": "it"
+}

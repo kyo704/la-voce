@@ -1,0 +1,98 @@
+{
+  "title": "女物狂",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1719,
+  "duration_min": 70,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-mekarushi",
+  "note": "★組踊（琉球の歌舞劇） ／ 作者 玉城朝薫 ／ ★★玉城朝薫『五番』の1つ。★能『三井寺』に近い型 ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "母"
+    },
+    {
+      "label": "盗人"
+    },
+    {
+      "label": "子"
+    },
+    {
+      "label": "僧"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★子が盗人にさらわれる",
+      "group_label": "段",
+      "roles": [
+        "子",
+        "盗人",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★★母が狂う（物狂いの舞）",
+      "group_label": "段",
+      "roles": [
+        "母",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★寺で子と再会",
+      "group_label": "段",
+      "roles": [
+        "母",
+        "子",
+        "僧",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★★盗人が捕らえられ、母子が帰る",
+      "group_label": "段",
+      "roles": [
+        "母",
+        "子",
+        "僧",
+        "盗人",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

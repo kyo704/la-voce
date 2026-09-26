@@ -1,0 +1,335 @@
+{
+ "title": "魔笛",
+ "composer": "モーツァルト",
+ "composer_sort": "Mozart, Wolfgang Amadeus",
+ "kind": "opera",
+ "year_written": 1791,
+ "source": "hand",
+ "source_id": "mozart-zauberflote",
+ "instrumentation": [
+  "管弦楽"
+ ],
+ "roles": [
+  {
+   "label": "タミーノ",
+   "voice": "テノール"
+  },
+  {
+   "label": "パミーナ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "パパゲーノ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "パパゲーナ",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "夜の女王",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "ザラストロ",
+   "voice": "バス"
+  },
+  {
+   "label": "モノスタトス",
+   "voice": "テノール"
+  },
+  {
+   "label": "弁者",
+   "voice": "バス"
+  },
+  {
+   "label": "侍女",
+   "is_group": true
+  },
+  {
+   "label": "童子",
+   "is_group": true
+  },
+  {
+   "label": "僧侶",
+   "is_group": true
+  },
+  {
+   "label": "武士",
+   "is_group": true
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "序曲",
+   "group_label": "序曲",
+   "roles": []
+  },
+  {
+   "label": "第1番 導入（助けてくれ）",
+   "group_label": "第1幕",
+   "roles": [
+    "タミーノ",
+    "侍女"
+   ]
+  },
+  {
+   "label": "第2番 アリア（私は鳥刺し）",
+   "group_label": "第1幕",
+   "roles": [
+    "パパゲーノ"
+   ]
+  },
+  {
+   "label": "第3番 アリア（なんと美しい絵姿）",
+   "group_label": "第1幕",
+   "roles": [
+    "タミーノ"
+   ]
+  },
+  {
+   "label": "第4番 レチタティーヴォとアリア（おお、震えおののかずとも）",
+   "group_label": "第1幕",
+   "roles": [
+    "夜の女王"
+   ]
+  },
+  {
+   "label": "第5番 五重唱（んーんーんー）",
+   "group_label": "第1幕",
+   "roles": [
+    "タミーノ",
+    "パパゲーノ",
+    "侍女"
+   ]
+  },
+  {
+   "label": "第6番 三重唱（かわいい娘よ、さあ来い）",
+   "group_label": "第1幕",
+   "roles": [
+    "パミーナ",
+    "パパゲーノ",
+    "モノスタトス"
+   ]
+  },
+  {
+   "label": "第7番 二重唱（愛を知る男の人たちは）",
+   "group_label": "第1幕",
+   "roles": [
+    "パミーナ",
+    "パパゲーノ"
+   ]
+  },
+  {
+   "label": "第8番 フィナーレ",
+   "group_label": "第1幕",
+   "roles": [
+    "タミーノ",
+    "パミーナ",
+    "パパゲーノ",
+    "モノスタトス",
+    "ザラストロ",
+    "弁者",
+    "童子",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第9番 僧侶の行進",
+   "group_label": "第2幕",
+   "roles": [
+    "僧侶"
+   ]
+  },
+  {
+   "label": "第10番 アリアと合唱（おおイシスとオシリスよ）",
+   "group_label": "第2幕",
+   "roles": [
+    "ザラストロ",
+    "僧侶"
+   ]
+  },
+  {
+   "label": "第11番 二重唱（女の策略に用心せよ）",
+   "group_label": "第2幕",
+   "roles": [
+    "僧侶"
+   ]
+  },
+  {
+   "label": "第12番 五重唱（なぜ、あなた方はここに）",
+   "group_label": "第2幕",
+   "roles": [
+    "タミーノ",
+    "パパゲーノ",
+    "侍女"
+   ]
+  },
+  {
+   "label": "第13番 アリア（誰でも恋の喜びを知っている）",
+   "group_label": "第2幕",
+   "roles": [
+    "モノスタトス"
+   ]
+  },
+  {
+   "label": "第14番 アリア（復讐の心は地獄のように）",
+   "group_label": "第2幕",
+   "roles": [
+    "夜の女王"
+   ]
+  },
+  {
+   "label": "第15番 アリア（この聖なる殿堂には）",
+   "group_label": "第2幕",
+   "roles": [
+    "ザラストロ"
+   ]
+  },
+  {
+   "label": "第16番 三重唱（ようこそ、二度目に）",
+   "group_label": "第2幕",
+   "roles": [
+    "童子"
+   ]
+  },
+  {
+   "label": "第17番 アリア（ああ、私には分かる、消えてしまった）",
+   "group_label": "第2幕",
+   "roles": [
+    "パミーナ"
+   ]
+  },
+  {
+   "label": "第18番 合唱（おおイシスとオシリスよ）",
+   "group_label": "第2幕",
+   "roles": [
+    "僧侶"
+   ]
+  },
+  {
+   "label": "第19番 三重唱（もう二度と会えないのですか）",
+   "group_label": "第2幕",
+   "roles": [
+    "パミーナ",
+    "タミーノ",
+    "ザラストロ"
+   ]
+  },
+  {
+   "label": "第20番 アリア（恋人か女房が）",
+   "group_label": "第2幕",
+   "roles": [
+    "パパゲーノ"
+   ]
+  },
+  {
+   "label": "第21番 フィナーレ",
+   "group_label": "第2幕",
+   "roles": [
+    "タミーノ",
+    "パミーナ",
+    "パパゲーノ",
+    "パパゲーナ",
+    "夜の女王",
+    "ザラストロ",
+    "モノスタトス",
+    "侍女",
+    "童子",
+    "武士",
+    "合唱"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "バセットホルン"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 2,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "グロッケンシュピール",
+   "count": 1,
+   "section": "percussion",
+   "note": "パパゲーノの鈴"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ],
+ "title_original": "Die Zauberflöte",
+ "aliases": [
+  "Zauberflote",
+  "Magic Flute"
+ ],
+ "duration_min": 165,
+ "language": "de"
+}

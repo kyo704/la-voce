@@ -1,0 +1,221 @@
+{
+  "title": "オペラ座の怪人（2021 新演出版）",
+  "title_original": "The Phantom of the Opera",
+  "composer": "アンドルー・ロイド・ウェバー",
+  "kind": "musical",
+  "year_written": 2021,
+  "duration_min": 150,
+  "edition": "★★2021 新演出版（回転する円筒の装置をやめた形）── ★オリジナル版とは装置と一部の運びが違います",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-phantom-lnd",
+  "note": "★作詞 チャールズ・ハート／リチャード・スティルゴー ／ 脚本 ロイド・ウェバー／リチャード・スティルゴー ／ ★★曲は オリジナル版と ほぼ同じ。★編成を 小さくした 版も あります",
+  "roles": [
+    {
+      "label": "ファントム"
+    },
+    {
+      "label": "クリスティーヌ・ダーエ"
+    },
+    {
+      "label": "ラウル"
+    },
+    {
+      "label": "カルロッタ"
+    },
+    {
+      "label": "ピアンジ"
+    },
+    {
+      "label": "マダム・ジリー"
+    },
+    {
+      "label": "メグ・ジリー"
+    },
+    {
+      "label": "ムッシュー・フィルマン"
+    },
+    {
+      "label": "ムッシュー・アンドレ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "競売・シャンデリアの上昇",
+      "group_label": "第1幕",
+      "roles": [
+        "ムッシュー・フィルマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "『ハンニバル』の稽古",
+      "group_label": "第1幕",
+      "roles": [
+        "カルロッタ",
+        "ピアンジ",
+        "クリスティーヌ・ダーエ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★鏡の場・地下への道行",
+      "group_label": "第1幕",
+      "roles": [
+        "ファントム",
+        "クリスティーヌ・ダーエ"
+      ]
+    },
+    {
+      "label": "★★仮面をはがす場",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ファントム"
+      ]
+    },
+    {
+      "label": "★屋上の二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ラウル"
+      ]
+    },
+    {
+      "label": "★仮面舞踏会",
+      "group_label": "第2幕",
+      "roles": [
+        "ファントム",
+        "クリスティーヌ・ダーエ",
+        "ラウル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "墓場の場",
+      "group_label": "第2幕",
+      "roles": [
+        "クリスティーヌ・ダーエ",
+        "ファントム",
+        "ラウル"
+      ]
+    },
+    {
+      "label": "★★『ドン・ファンの勝利』と地下の結末",
+      "group_label": "第2幕",
+      "roles": [
+        "ファントム",
+        "クリスティーヌ・ダーエ",
+        "ラウル"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

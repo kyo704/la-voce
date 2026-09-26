@@ -1,0 +1,282 @@
+{
+  "title": "レベッカ",
+  "title_original": "Rebecca",
+  "composer": "シルヴェスター・リヴァイ",
+  "composer_sort": "Levay, Sylvester",
+  "kind": "musical",
+  "year_written": 2006,
+  "duration_min": 160,
+  "edition": "2006 ウィーン初演版（★2008 東宝版〈日本語訳詞〉。★2012 にブロードウェイ上演が企画されたが中止）",
+  "language": "de",
+  "source": "hand",
+  "source_id": "rebecca",
+  "note": "★作詞・脚本 ミヒャエル・クンツェ ／ ★ダフネ・デュ・モーリアの小説による。★★主人公『わたし』には名前が与えられない",
+  "roles": [
+    {
+      "label": "わたし（第2のド・ウィンター夫人）"
+    },
+    {
+      "label": "マキシム・ド・ウィンター"
+    },
+    {
+      "label": "ダンヴァース夫人"
+    },
+    {
+      "label": "ジャック・ファヴェル"
+    },
+    {
+      "label": "ベアトリス"
+    },
+    {
+      "label": "ジャイルズ"
+    },
+    {
+      "label": "フランク・クローリー"
+    },
+    {
+      "label": "ヴァン・ホッパー夫人"
+    },
+    {
+      "label": "ベン"
+    },
+    {
+      "label": "ジュリアン大佐"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★プロローグ（昨夜、マンダレイの夢を見た）",
+      "group_label": "第1幕",
+      "roles": [
+        "わたし（第2のド・ウィンター夫人）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★★モンテカルロの出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "わたし（第2のド・ウィンター夫人）",
+        "マキシム・ド・ウィンター",
+        "ヴァン・ホッパー夫人"
+      ]
+    },
+    {
+      "label": "M3 ★★★マンダレイへの到着（Ich hab' geträumt von Manderley）",
+      "group_label": "第1幕",
+      "roles": [
+        "わたし（第2のド・ウィンター夫人）",
+        "マキシム・ド・ウィンター",
+        "ダンヴァース夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★★ダンヴァース夫人の紹介（Sie ergibt sich nicht）",
+      "group_label": "第1幕",
+      "roles": [
+        "ダンヴァース夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★★レベッカ（★ダンヴァース夫人の大曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ダンヴァース夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★西棟の部屋（レベッカの遺品）",
+      "group_label": "第1幕",
+      "roles": [
+        "ダンヴァース夫人",
+        "わたし（第2のド・ウィンター夫人）"
+      ]
+    },
+    {
+      "label": "M7 ★★★ファヴェルの登場",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャック・ファヴェル",
+        "ダンヴァース夫人",
+        "わたし（第2のド・ウィンター夫人）"
+      ]
+    },
+    {
+      "label": "M8 ★★★仮装舞踏会（★レベッカと同じ衣裳を着させられる・第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "わたし（第2のド・ウィンター夫人）",
+        "マキシム・ド・ウィンター",
+        "ダンヴァース夫人",
+        "ベアトリス",
+        "ジャイルズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★★崖からの誘い（Sie war gewohnt zu siegen）",
+      "group_label": "第2幕",
+      "roles": [
+        "ダンヴァース夫人",
+        "わたし（第2のド・ウィンター夫人）"
+      ]
+    },
+    {
+      "label": "M10 ★★★船の発見とマキシムの告白（★レベッカを殺したのは自分）",
+      "group_label": "第2幕",
+      "roles": [
+        "マキシム・ド・ウィンター",
+        "わたし（第2のド・ウィンター夫人）"
+      ]
+    },
+    {
+      "label": "M11 ★★★審問（Eine Hand wäscht die andre Hand）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリアン大佐",
+        "ジャック・ファヴェル",
+        "マキシム・ド・ウィンター",
+        "ベン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★ロンドンの医師（★レベッカは不治の病だった）",
+      "group_label": "第2幕",
+      "roles": [
+        "マキシム・ド・ウィンター",
+        "わたし（第2のド・ウィンター夫人）",
+        "フランク・クローリー"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（★ダンヴァース夫人がマンダレイに火を放つ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ダンヴァース夫人",
+        "わたし（第2のド・ウィンター夫人）",
+        "マキシム・ド・ウィンター",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

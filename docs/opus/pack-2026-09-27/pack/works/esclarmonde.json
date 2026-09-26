@@ -1,0 +1,206 @@
+{
+  "title": "エスクラルモンド",
+  "title_original": "Esclarmonde",
+  "composer": "マスネ",
+  "composer_sort": "Massenet, Jules",
+  "kind": "opera",
+  "year_written": 1889,
+  "duration_min": 165,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "esclarmonde",
+  "roles": [
+    {
+      "label": "エスクラルモンド"
+    },
+    {
+      "label": "ロラン"
+    },
+    {
+      "label": "フォルカス"
+    },
+    {
+      "label": "パルフォリオ"
+    },
+    {
+      "label": "エノアス"
+    },
+    {
+      "label": "ペアルト"
+    },
+    {
+      "label": "クレオメール"
+    },
+    {
+      "label": "ビザンチン皇帝"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序幕 ビザンチンの戴冠（顔を隠す掟）",
+      "group_label": "序幕",
+      "roles": [
+        "エスクラルモンド",
+        "ペアルト",
+        "フォルカス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 エスクラルモンドの魔術と幻",
+      "group_label": "第1幕",
+      "roles": [
+        "エスクラルモンド",
+        "ペアルト"
+      ]
+    },
+    {
+      "label": "第2幕 魔法の島（ロランとの夜）",
+      "group_label": "第2幕",
+      "roles": [
+        "エスクラルモンド",
+        "ロラン"
+      ]
+    },
+    {
+      "label": "第2幕 掟（名を問うてはならぬ）",
+      "group_label": "第2幕",
+      "roles": [
+        "エスクラルモンド",
+        "ロラン"
+      ]
+    },
+    {
+      "label": "第3幕 ブロワの町（王女の婚礼の申し出）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロラン",
+        "クレオメール",
+        "エノアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 司教の追及とロランの告白",
+      "group_label": "第3幕",
+      "roles": [
+        "ロラン",
+        "エノアス",
+        "エスクラルモンド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 森（エスクラルモンドの別れ）",
+      "group_label": "第4幕",
+      "roles": [
+        "エスクラルモンド",
+        "ロラン",
+        "ペアルト"
+      ]
+    },
+    {
+      "label": "終幕 武術試合と終曲",
+      "group_label": "終幕",
+      "roles": [
+        "エスクラルモンド",
+        "ロラン",
+        "フォルカス",
+        "ビザンチン皇帝",
+        "パルフォリオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

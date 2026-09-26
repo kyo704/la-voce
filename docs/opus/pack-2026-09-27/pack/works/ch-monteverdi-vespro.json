@@ -1,0 +1,139 @@
+{
+  "title": "聖母マリアの夕べの祈り",
+  "title_original": "Vespro della Beata Vergine",
+  "composer": "モンテヴェルディ",
+  "composer_sort": "Monteverdi, Claudio",
+  "kind": "chorus",
+  "year_written": 1610,
+  "duration_min": 110,
+  "edition": "★版と 校訂で 中身が 変わります",
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-monteverdi-vespro",
+  "note": "★★★編成と 曲の 組み方に いくつもの 考え方が あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★ドミネ・アド・アジュヴァンドゥム",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ディキシト・ドミヌス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ニグラ・スム（テノール独唱）",
+      "group_label": "―",
+      "roles": [
+        "テノール独唱"
+      ]
+    },
+    {
+      "label": "ラウダーテ・プエリ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★プルクラ・エス（ソプラノ二重唱）",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱"
+      ]
+    },
+    {
+      "label": "ラエタートゥス・スム",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ドゥオ・セラフィム（テノール三重唱）",
+      "group_label": "―",
+      "roles": [
+        "テノール独唱"
+      ]
+    },
+    {
+      "label": "ニシ・ドミヌス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★アウディ・チェルム",
+      "group_label": "―",
+      "roles": [
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ラウダ・イェルザレム",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★ソナタ・ソプラ・サンクタ・マリア",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "アヴェ・マリス・ステラ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★マニフィカト",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

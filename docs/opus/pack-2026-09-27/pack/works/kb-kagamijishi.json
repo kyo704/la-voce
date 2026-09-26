@@ -1,0 +1,81 @@
+{
+  "title": "春興鏡獅子",
+  "title_original": "春興鏡獅子",
+  "aliases": [
+    "鏡獅子"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1893,
+  "source": "hand",
+  "source_id": "kabuki-kagamijishi",
+  "duration_min": 55,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "小姓弥生（獅子の精）"
+    },
+    {
+      "label": "家老"
+    },
+    {
+      "label": "胡蝶の精",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "弥生の踊り",
+      "group_label": "序",
+      "roles": [
+        "小姓弥生（獅子の精）",
+        "家老",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "胡蝶の舞（間）",
+      "group_label": "中",
+      "roles": [
+        "胡蝶の精",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "獅子の精の毛振り",
+      "group_label": "終",
+      "roles": [
+        "小姓弥生（獅子の精）",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽"
+    },
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "長唄囃子連中。人数は公演ごと"
+    }
+  ],
+  "school": "歌舞伎（上演の家により型が違う）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}

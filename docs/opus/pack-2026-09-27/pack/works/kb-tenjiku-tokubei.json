@@ -1,0 +1,83 @@
+{
+  "title": "天竺徳兵衛韓噺",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1804,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-tenjiku-tokubei",
+  "note": "★歌舞伎 ／ 作者 四世鶴屋南北 ／ ★★仕掛け（ケレン）の 多い 曲 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "天竺徳兵衛"
+    },
+    {
+      "label": "佐々木桂之介"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "捕手",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★徳兵衛の物語",
+      "group_label": "序幕",
+      "roles": [
+        "天竺徳兵衛",
+        "佐々木桂之介",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★大蝦蟇の出（★ケレン・仕掛け）",
+      "group_label": "二幕",
+      "roles": [
+        "天竺徳兵衛",
+        "佐々木桂之介",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★水中の立廻り",
+      "group_label": "三幕",
+      "roles": [
+        "天竺徳兵衛",
+        "捕手",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

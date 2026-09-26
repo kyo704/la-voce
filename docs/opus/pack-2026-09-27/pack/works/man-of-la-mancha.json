@@ -1,0 +1,270 @@
+{
+  "title": "ラ・マンチャの男",
+  "title_original": "Man of La Mancha",
+  "composer": "ミッチ・リー",
+  "kind": "musical",
+  "year_written": 1965,
+  "duration_min": 130,
+  "edition": "1965 ブロードウェイ初演版（★休憩なしの1幕物として上演されることが多い）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "man-of-la-mancha",
+  "note": "★作詞 ジョー・ダリオン ／ 脚本 デイル・ワッサーマン ／ ★★劇中劇。セルバンテスが囚人たちとドン・キホーテを演じる。★日本では松本白鸚（幸四郎）の上演が長く続く",
+  "roles": [
+    {
+      "label": "セルバンテス／ドン・キホーテ"
+    },
+    {
+      "label": "アルドンサ／ドゥルシネア"
+    },
+    {
+      "label": "サンチョ"
+    },
+    {
+      "label": "床屋"
+    },
+    {
+      "label": "カラスコ博士"
+    },
+    {
+      "label": "神父"
+    },
+    {
+      "label": "宿屋の主人"
+    },
+    {
+      "label": "アントニア"
+    },
+    {
+      "label": "家政婦"
+    },
+    {
+      "label": "ペドロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★地下牢への降下（ミュージカル劇の始まり）",
+      "group_label": "第1幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ",
+        "サンチョ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ラ・マンチャの男（Man of La Mancha ─ I, Don Quixote）",
+      "group_label": "第1幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ",
+        "サンチョ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★アルドンサの歌（It's All the Same）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルドンサ／ドゥルシネア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ドゥルシネア",
+      "group_label": "第1幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★アイム・オンリー・シンキング・オブ・ヒム",
+      "group_label": "第1幕",
+      "roles": [
+        "アントニア",
+        "家政婦",
+        "神父"
+      ]
+    },
+    {
+      "label": "M6 ★★私は床屋（Barber's Song）と黄金の兜",
+      "group_label": "第1幕",
+      "roles": [
+        "床屋",
+        "セルバンテス／ドン・キホーテ",
+        "サンチョ"
+      ]
+    },
+    {
+      "label": "M7 ★★見果てぬ夢（The Impossible Dream ─ Quest）",
+      "group_label": "第1幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ"
+      ]
+    },
+    {
+      "label": "M8 ★★騎士の叙任と風車",
+      "group_label": "第1幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ",
+        "アルドンサ／ドゥルシネア",
+        "宿屋の主人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★アルドンサの受難（ラバ追いたちの暴行）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルドンサ／ドゥルシネア",
+        "ペドロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★鏡の騎士（カラスコ博士の攻め）",
+      "group_label": "第2幕",
+      "roles": [
+        "カラスコ博士",
+        "セルバンテス／ドン・キホーテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★アロンソ・キハーノの死の床",
+      "group_label": "第2幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ",
+        "アルドンサ／ドゥルシネア",
+        "サンチョ",
+        "アントニア"
+      ]
+    },
+    {
+      "label": "M12 ★★見果てぬ夢（再現）とドン・キホーテの死",
+      "group_label": "第2幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ",
+        "アルドンサ／ドゥルシネア",
+        "サンチョ"
+      ]
+    },
+    {
+      "label": "M13 ★★終曲（囚人たちの合唱・セルバンテスの出廷）",
+      "group_label": "第2幕",
+      "roles": [
+        "セルバンテス／ドン・キホーテ",
+        "アルドンサ／ドゥルシネア",
+        "サンチョ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

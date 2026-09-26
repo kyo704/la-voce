@@ -1,0 +1,257 @@
+{
+  "title": "三つのオレンジへの恋",
+  "title_original": "Любовь к трём апельсинам",
+  "composer": "プロコフィエフ",
+  "composer_sort": "Prokofiev, Sergei",
+  "kind": "opera",
+  "year_written": 1919,
+  "duration_min": 110,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "love-three-oranges",
+  "roles": [
+    {
+      "label": "王子"
+    },
+    {
+      "label": "トルファルディーノ"
+    },
+    {
+      "label": "トレヴェッロ王"
+    },
+    {
+      "label": "レアンドル"
+    },
+    {
+      "label": "クラリーチェ"
+    },
+    {
+      "label": "チェリオ"
+    },
+    {
+      "label": "ファータ・モルガーナ"
+    },
+    {
+      "label": "ニネッタ"
+    },
+    {
+      "label": "リネッタ"
+    },
+    {
+      "label": "ニコレッタ"
+    },
+    {
+      "label": "スメラルディーナ"
+    },
+    {
+      "label": "料理番"
+    },
+    {
+      "label": "パンタローネ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 見物人たちの言い争い（悲劇派・喜劇派・空頭派）",
+      "group_label": "序幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 王子の病（笑わない）",
+      "group_label": "第1幕",
+      "roles": [
+        "トレヴェッロ王",
+        "パンタローネ",
+        "王子",
+        "トルファルディーノ"
+      ]
+    },
+    {
+      "label": "第1幕 レアンドルとクラリーチェの陰謀",
+      "group_label": "第1幕",
+      "roles": [
+        "レアンドル",
+        "クラリーチェ",
+        "スメラルディーナ"
+      ]
+    },
+    {
+      "label": "第1幕 ★魔術師チェリオとファータ・モルガーナのカルタ勝負",
+      "group_label": "第1幕",
+      "roles": [
+        "チェリオ",
+        "ファータ・モルガーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★行進曲と祭り（王子は笑わない）",
+      "group_label": "第2幕",
+      "roles": [
+        "王子",
+        "トルファルディーノ",
+        "トレヴェッロ王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ファータ・モルガーナが転ぶ・王子が笑う・呪い",
+      "group_label": "第2幕",
+      "roles": [
+        "王子",
+        "ファータ・モルガーナ",
+        "トルファルディーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 砂漠（チェリオとリボン）と料理番の城",
+      "group_label": "第3幕",
+      "roles": [
+        "王子",
+        "トルファルディーノ",
+        "チェリオ",
+        "料理番"
+      ]
+    },
+    {
+      "label": "★第3幕 3つのオレンジ（2人の王女の渇死とニネッタ）",
+      "group_label": "第3幕",
+      "roles": [
+        "王子",
+        "トルファルディーノ",
+        "リネッタ",
+        "ニコレッタ",
+        "ニネッタ"
+      ]
+    },
+    {
+      "label": "第3幕 ニネッタがねずみに変えられる",
+      "group_label": "第3幕",
+      "roles": [
+        "ニネッタ",
+        "スメラルディーナ",
+        "ファータ・モルガーナ",
+        "王子",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 魔術師たちの決着と終曲（婚礼）",
+      "group_label": "第4幕",
+      "roles": [
+        "チェリオ",
+        "ファータ・モルガーナ",
+        "王子",
+        "ニネッタ",
+        "トレヴェッロ王",
+        "レアンドル",
+        "クラリーチェ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

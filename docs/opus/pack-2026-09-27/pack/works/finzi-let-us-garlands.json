@@ -1,0 +1,70 @@
+{
+  "title": "花輪をささげよう 作品18",
+  "title_original": "Let Us Garlands Bring op.18",
+  "composer": "フィンジ",
+  "composer_sort": "Finzi, Gerald",
+  "kind": "song_cycle",
+  "year_written": 1942,
+  "duration_min": 15,
+  "language": "en",
+  "source": "hand",
+  "source_id": "finzi-op18",
+  "note": "★作詩 シェイクスピア ／  ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 来たれ、死よ（Come Away, Come Away, Death）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 恋人がいるなら（Who Is Silvia?）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 恐れるな（Fear No More the Heat o’ the Sun）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. おお、恋人よ（O Mistress Mine）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 吹けよ、冬の風（Blow, Blow, Thou Winter Wind）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

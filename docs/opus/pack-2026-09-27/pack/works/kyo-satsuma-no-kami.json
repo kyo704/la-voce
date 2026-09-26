@@ -1,0 +1,68 @@
+{
+  "title": "薩摩守",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-satsuma-no-kami",
+  "note": "★出家狂言 ／ ★★薩摩守忠度（ただのり）＝『只乗り』の 言葉遊び ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（旅僧）"
+    },
+    {
+      "label": "アド（船頭）"
+    },
+    {
+      "label": "小アド（茶屋の主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "渡し賃を持たずに乗る",
+      "group_label": "段",
+      "roles": [
+        "シテ（旅僧）",
+        "アド（船頭）"
+      ]
+    },
+    {
+      "label": "★茶屋で『薩摩守』の秀句を教わる",
+      "group_label": "段",
+      "roles": [
+        "シテ（旅僧）",
+        "小アド（茶屋の主）"
+      ]
+    },
+    {
+      "label": "★★『薩摩守（ただのり）』と名乗って渡る",
+      "group_label": "段",
+      "roles": [
+        "シテ（旅僧）",
+        "アド（船頭）"
+      ]
+    },
+    {
+      "label": "★船頭に言い返される",
+      "group_label": "段",
+      "roles": [
+        "シテ（旅僧）",
+        "アド（船頭）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+ "title": "マノン",
+ "title_original": "Manon",
+ "aliases": [
+  "マスネのマノン"
+ ],
+ "composer": "マスネ",
+ "composer_sort": "Massenet, Jules",
+ "kind": "opera",
+ "year_written": 1884,
+ "duration_min": 180,
+ "language": "fr",
+ "source": "hand",
+ "source_id": "massenet-manon",
+ "roles": [
+  {
+   "label": "マノン",
+   "voice": "ソプラノ"
+  },
+  {
+   "label": "デ・グリュー",
+   "voice": "テノール"
+  },
+  {
+   "label": "レスコー",
+   "voice": "バリトン"
+  },
+  {
+   "label": "デ・グリュー伯爵",
+   "voice": "バス"
+  },
+  {
+   "label": "ギヨー",
+   "voice": "テノール"
+  },
+  {
+   "label": "ブレティニ",
+   "voice": "バリトン"
+  },
+  {
+   "label": "合唱",
+   "is_group": true
+  }
+ ],
+ "scenes": [
+  {
+   "label": "第1幕 アミアンの宿",
+   "group_label": "第1幕",
+   "roles": [
+    "マノン",
+    "レスコー",
+    "ギヨー",
+    "ブレティニ",
+    "デ・グリュー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第2幕 パリの部屋（夢の歌）",
+   "group_label": "第2幕",
+   "roles": [
+    "マノン",
+    "デ・グリュー",
+    "レスコー",
+    "ブレティニ"
+   ]
+  },
+  {
+   "label": "第3幕 クール・ラ・レーヌの祭り",
+   "group_label": "第3幕",
+   "roles": [
+    "マノン",
+    "レスコー",
+    "ギヨー",
+    "ブレティニ",
+    "デ・グリュー伯爵",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第3幕 サン・シュルピス教会",
+   "group_label": "第3幕",
+   "roles": [
+    "デ・グリュー",
+    "デ・グリュー伯爵",
+    "マノン",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第4幕 賭博場",
+   "group_label": "第4幕",
+   "roles": [
+    "マノン",
+    "デ・グリュー",
+    "レスコー",
+    "ギヨー",
+    "合唱"
+   ]
+  },
+  {
+   "label": "第5幕 ル・アーヴルへの道・フィナーレ",
+   "group_label": "第5幕",
+   "roles": [
+    "マノン",
+    "デ・グリュー",
+    "レスコー"
+   ]
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind",
+   "doubling": "ピッコロ"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind",
+   "doubling": "コーラングレ"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "トランペット",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "トロンボーン",
+   "count": 3,
+   "section": "brass"
+  },
+  {
+   "part": "チューバ",
+   "count": 1,
+   "section": "brass"
+  },
+  {
+   "part": "ティンパニ",
+   "count": 1,
+   "section": "percussion"
+  },
+  {
+   "part": "打楽器",
+   "count": 2,
+   "section": "percussion"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "harp"
+  },
+  {
+   "part": "第1ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "第2ヴァイオリン",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "ヴィオラ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "チェロ",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  },
+  {
+   "part": "コントラバス",
+   "count": 0,
+   "section": "strings",
+   "note": "人数は公演ごと"
+  }
+ ]
+}
