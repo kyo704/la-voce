@@ -1,0 +1,28 @@
+{
+  "title": "弦楽のためのレクイエム",
+  "composer": "武満徹",
+  "composer_sort": "Takemitsu, Toru",
+  "kind": "orchestra",
+  "year_written": 1957,
+  "duration_min": 10,
+  "language": "—",
+  "source": "hand",
+  "source_id": "or-takemitsu-requiem-strings",
+  "note": "★★★ストラヴィンスキーが 高く 評価した 作品",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "★一曲",
+      "group_label": "楽章",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "弦楽合奏",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

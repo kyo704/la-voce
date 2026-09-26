@@ -1,0 +1,205 @@
+{
+  "title": "ティレジアスの乳房",
+  "title_original": "Les mamelles de Tirésias",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "opera",
+  "year_written": 1947,
+  "duration_min": 60,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "mamelles-tiresias",
+  "note": "★台本はアポリネール",
+  "roles": [
+    {
+      "label": "テレーズ／ティレジアス"
+    },
+    {
+      "label": "夫"
+    },
+    {
+      "label": "憲兵"
+    },
+    {
+      "label": "興行主"
+    },
+    {
+      "label": "新聞記者"
+    },
+    {
+      "label": "息子"
+    },
+    {
+      "label": "ラクーフ氏"
+    },
+    {
+      "label": "プレスト氏"
+    },
+    {
+      "label": "パリの人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲（興行主の口上）",
+      "group_label": "序曲",
+      "roles": [
+        "興行主"
+      ]
+    },
+    {
+      "label": "第1幕 ★テレーズの反乱（乳房が風船になって飛ぶ）",
+      "group_label": "第1幕",
+      "roles": [
+        "テレーズ／ティレジアス",
+        "夫"
+      ]
+    },
+    {
+      "label": "第1幕 テレーズがティレジアスになる（男装）",
+      "group_label": "第1幕",
+      "roles": [
+        "テレーズ／ティレジアス",
+        "夫"
+      ]
+    },
+    {
+      "label": "第1幕 夫が女装させられる",
+      "group_label": "第1幕",
+      "roles": [
+        "夫",
+        "憲兵"
+      ]
+    },
+    {
+      "label": "第1幕 ★ラクーフとプレストの決闘（二重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "ラクーフ氏",
+        "プレスト氏",
+        "憲兵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★夫が4万人の子を産む",
+      "group_label": "第2幕",
+      "roles": [
+        "夫",
+        "憲兵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 新聞記者と息子",
+      "group_label": "第2幕",
+      "roles": [
+        "新聞記者",
+        "息子",
+        "夫"
+      ]
+    },
+    {
+      "label": "第2幕 占い師（テレーズの帰還）と終曲",
+      "group_label": "第2幕",
+      "roles": [
+        "テレーズ／ティレジアス",
+        "夫",
+        "憲兵",
+        "パリの人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

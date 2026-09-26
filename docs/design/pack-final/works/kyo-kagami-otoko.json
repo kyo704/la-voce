@@ -1,0 +1,57 @@
+{
+  "title": "鏡男",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kagami-otoko",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（男）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "都から鏡を土産に持ち帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（男）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "妻が鏡を見て、別の女だと怒る",
+      "group_label": "段",
+      "roles": [
+        "シテ（男）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "鏡の理を説いて収める",
+      "group_label": "段",
+      "roles": [
+        "シテ（男）",
+        "アド（妻）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

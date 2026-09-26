@@ -88,8 +88,13 @@ function t(名, 条件) {
     /layoutV2 && moreSection === "合言葉で入る"/.test(vt));
 
   console.log("\n=== ⑦ 戻る 道は 1つ ===");
-  t("★パンくずを 出さない",
-    /moreSection !== "合言葉で入る"/.test(vt));
+  // ★★★2026-09-26、★決めの 場所が 移りました（★坂本さんの お決め・DECISION_1）。
+  //   ★★前は 画面の 紙（`VocalTracker.jsx`）に 名を 書いて いました。
+  //   ★★いまは `lib/moreCrumb.js` の `NO_CRUMB` が 持ちます。
+  //     ★★新しい 画面が 増える たびに 画面の 紙が 長く なる のを やめました。
+  t("★パンくずを 出さない（★`lib/moreCrumb.js` の `NO_CRUMB`）",
+    /NO_CRUMB = Object\.freeze\(\["合言葉で入る"\]\)/
+      .test(readRaw("lib", "moreCrumb.js")));
   t("★自分の 戻る 道は「通っている ところ」へ",
     /setMoreSection\("通っているところ"\)/.test(vt));
   t("★戻る とき 打ったものを 残さない",

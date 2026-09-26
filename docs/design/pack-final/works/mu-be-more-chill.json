@@ -1,0 +1,165 @@
+{
+  "title": "ビー・モア・チル",
+  "title_original": "Be More Chill",
+  "composer": "ジョー・アイコニス",
+  "kind": "musical",
+  "year_written": 2019,
+  "duration_min": 140,
+  "edition": "★ブロードウェイ版（2019）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-be-more-chill",
+  "note": "★作詞 ジョー・アイコニス ／ 脚本 ジョー・トレイシー",
+  "roles": [
+    {
+      "label": "ジェレミー"
+    },
+    {
+      "label": "マイケル"
+    },
+    {
+      "label": "クリスティーン"
+    },
+    {
+      "label": "リッチ"
+    },
+    {
+      "label": "スクイップ"
+    },
+    {
+      "label": "父"
+    },
+    {
+      "label": "ジェナ"
+    },
+    {
+      "label": "クロエ"
+    },
+    {
+      "label": "ブルック"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "高校の廊下",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェレミー",
+        "マイケル",
+        "クリスティーン"
+      ]
+    },
+    {
+      "label": "★スクイップを飲む",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェレミー",
+        "リッチ",
+        "スクイップ"
+      ]
+    },
+    {
+      "label": "変わっていく",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェレミー",
+        "マイケル",
+        "クロエ",
+        "ブルック",
+        "ジェナ"
+      ]
+    },
+    {
+      "label": "★元に戻る",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェレミー",
+        "マイケル",
+        "クリスティーン",
+        "父"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

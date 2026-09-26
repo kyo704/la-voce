@@ -1,0 +1,202 @@
+{
+  "title": "魔女（チャロデイカ）",
+  "title_original": "Чародейка",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr Ilyich",
+  "kind": "opera",
+  "year_written": 1887,
+  "duration_min": 195,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "enchantress",
+  "roles": [
+    {
+      "label": "ナスターシヤ（クマ）"
+    },
+    {
+      "label": "ユーリー"
+    },
+    {
+      "label": "ニキータ公"
+    },
+    {
+      "label": "エウプラクシヤ公爵夫人"
+    },
+    {
+      "label": "ママーロフ"
+    },
+    {
+      "label": "ネナイラ"
+    },
+    {
+      "label": "パイシー"
+    },
+    {
+      "label": "クリチコフ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ★オカ河畔のナスターシヤの家（宴と踊り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ナスターシヤ（クマ）",
+        "ネナイラ",
+        "ママーロフ",
+        "クリチコフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ニキータ公の来訪と心を奪われる",
+      "group_label": "第1幕",
+      "roles": [
+        "ニキータ公",
+        "ナスターシヤ（クマ）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 公爵の館（夫人の疑いとパイシーの密告）",
+      "group_label": "第2幕",
+      "roles": [
+        "エウプラクシヤ公爵夫人",
+        "パイシー",
+        "ニキータ公",
+        "ユーリー"
+      ]
+    },
+    {
+      "label": "第2幕 母と子（ユーリーの誓い）",
+      "group_label": "第2幕",
+      "roles": [
+        "エウプラクシヤ公爵夫人",
+        "ユーリー"
+      ]
+    },
+    {
+      "label": "第3幕 ★ナスターシヤとユーリーの二重唱（殺しに来て恋に落ちる）",
+      "group_label": "第3幕",
+      "roles": [
+        "ナスターシヤ（クマ）",
+        "ユーリー"
+      ]
+    },
+    {
+      "label": "第4幕 森の小屋（逃亡の支度）",
+      "group_label": "第4幕",
+      "roles": [
+        "ナスターシヤ（クマ）",
+        "ユーリー",
+        "ネナイラ"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（夫人の毒とニキータ公の狂気）",
+      "group_label": "第4幕",
+      "roles": [
+        "ナスターシヤ（クマ）",
+        "ユーリー",
+        "エウプラクシヤ公爵夫人",
+        "ニキータ公",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

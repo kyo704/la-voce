@@ -1,0 +1,247 @@
+{
+  "title": "ピピン",
+  "title_original": "Pippin",
+  "composer": "スティーヴン・シュワルツ",
+  "kind": "musical",
+  "year_written": 1972,
+  "duration_min": 140,
+  "edition": "1972 ブロードウェイ初演版（★2013 ダイアン・パウルス版はサーカスの演出で、曲に手が入る）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "pippin",
+  "note": "★作詞 スティーヴン・シュワルツ ／ 脚本 ロジャー・O・ハーソン ／ ★★劇中一座（プレイヤーズ）が主役を破滅へ導く構造。★振付ボブ・フォッシー",
+  "roles": [
+    {
+      "label": "ピピン"
+    },
+    {
+      "label": "リーディング・プレイヤー（座長）"
+    },
+    {
+      "label": "カール大帝"
+    },
+    {
+      "label": "ファストラーダ"
+    },
+    {
+      "label": "ルイス"
+    },
+    {
+      "label": "ベルタ（祖母）"
+    },
+    {
+      "label": "キャサリン"
+    },
+    {
+      "label": "シオ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★マジック・トゥ・ドゥ（Magic to Do ─ 一座の口上）",
+      "group_label": "第1幕",
+      "roles": [
+        "リーディング・プレイヤー（座長）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★コーナー・オブ・ザ・スカイ",
+      "group_label": "第1幕",
+      "roles": [
+        "ピピン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★ウォー・イズ・ア・サイエンス",
+      "group_label": "第1幕",
+      "roles": [
+        "カール大帝",
+        "ピピン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★グローリー（戦場の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "リーディング・プレイヤー（座長）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★シンプル・ジョイズ",
+      "group_label": "第1幕",
+      "roles": [
+        "リーディング・プレイヤー（座長）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ノー・タイム・アット・オール（祖母の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベルタ（祖母）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ウィズ・ユー",
+      "group_label": "第1幕",
+      "roles": [
+        "ピピン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★スプレッド・ア・リトル・サンシャイン",
+      "group_label": "第1幕",
+      "roles": [
+        "ファストラーダ"
+      ]
+    },
+    {
+      "label": "M9 ★★モーニング・グロウ（第1幕終曲・父の殺害と即位）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピピン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★オン・ザ・ライト・トラック",
+      "group_label": "第2幕",
+      "roles": [
+        "リーディング・プレイヤー（座長）",
+        "ピピン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★キャサリンとの出会い（Kind of Woman）",
+      "group_label": "第2幕",
+      "roles": [
+        "キャサリン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★エクストラオーディナリー",
+      "group_label": "第2幕",
+      "roles": [
+        "ピピン"
+      ]
+    },
+    {
+      "label": "M13 ★★ラヴ・ソング",
+      "group_label": "第2幕",
+      "roles": [
+        "ピピン",
+        "キャサリン"
+      ]
+    },
+    {
+      "label": "M14 ★★★フィナーレ（★一座が焼身自殺を勧め、ピピンが拒む）",
+      "group_label": "第2幕",
+      "roles": [
+        "ピピン",
+        "リーディング・プレイヤー（座長）",
+        "キャサリン",
+        "シオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

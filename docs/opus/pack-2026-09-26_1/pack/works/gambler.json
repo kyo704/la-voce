@@ -1,0 +1,215 @@
+{
+  "title": "賭博者",
+  "title_original": "Игрок",
+  "composer": "プロコフィエフ",
+  "composer_sort": "Prokofiev, Sergei",
+  "kind": "opera",
+  "year_written": 1917,
+  "duration_min": 135,
+  "edition": "1927 改訂版（初演1929 ブリュッセル）",
+  "language": "ru",
+  "source": "hand",
+  "source_id": "gambler",
+  "roles": [
+    {
+      "label": "アレクセイ"
+    },
+    {
+      "label": "ポリーナ"
+    },
+    {
+      "label": "将軍"
+    },
+    {
+      "label": "おばあさん（バーブレンカ）"
+    },
+    {
+      "label": "侯爵"
+    },
+    {
+      "label": "ミスター・アストレー"
+    },
+    {
+      "label": "ブランシュ"
+    },
+    {
+      "label": "ポタペッチ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ルーレッテンブルクのホテル（借金の将軍）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレクセイ",
+        "ポリーナ",
+        "将軍",
+        "侯爵",
+        "ミスター・アストレー"
+      ]
+    },
+    {
+      "label": "第1幕 アレクセイとポリーナ（金と愛）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレクセイ",
+        "ポリーナ"
+      ]
+    },
+    {
+      "label": "第2幕 ★おばあさんの到着（皆の当て外れ）",
+      "group_label": "第2幕",
+      "roles": [
+        "おばあさん（バーブレンカ）",
+        "将軍",
+        "侯爵",
+        "ブランシュ",
+        "ポタペッチ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 おばあさんの大負け（賭博場）",
+      "group_label": "第3幕",
+      "roles": [
+        "おばあさん（バーブレンカ）",
+        "アレクセイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 将軍の崩れとブランシュの離脱",
+      "group_label": "第3幕",
+      "roles": [
+        "将軍",
+        "ブランシュ",
+        "侯爵"
+      ]
+    },
+    {
+      "label": "第4幕 ポリーナの来訪（侯爵の手紙）",
+      "group_label": "第4幕",
+      "roles": [
+        "ポリーナ",
+        "アレクセイ"
+      ]
+    },
+    {
+      "label": "★第4幕 賭博場の場（アレクセイの大勝ち）",
+      "group_label": "第4幕",
+      "roles": [
+        "アレクセイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（ポリーナが金を投げつけて去る）",
+      "group_label": "第4幕",
+      "roles": [
+        "アレクセイ",
+        "ポリーナ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

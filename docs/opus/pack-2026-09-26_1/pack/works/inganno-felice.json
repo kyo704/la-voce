@@ -1,0 +1,167 @@
+{
+  "title": "幸せな間違い",
+  "title_original": "L'inganno felice",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1812,
+  "duration_min": 85,
+  "language": "it",
+  "source": "hand",
+  "source_id": "inganno-felice",
+  "roles": [
+    {
+      "label": "イザベッラ"
+    },
+    {
+      "label": "ベルトランド公爵"
+    },
+    {
+      "label": "オルモンド"
+    },
+    {
+      "label": "タラボット"
+    },
+    {
+      "label": "バトーネ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "鉱山の朝（タラボットとイザベッラ）",
+      "group_label": "第1場",
+      "roles": [
+        "タラボット",
+        "イザベッラ"
+      ]
+    },
+    {
+      "label": "公爵の一行の到着",
+      "group_label": "第2場",
+      "roles": [
+        "ベルトランド公爵",
+        "オルモンド",
+        "タラボット"
+      ]
+    },
+    {
+      "label": "イザベッラを見た公爵の動揺",
+      "group_label": "第3場",
+      "roles": [
+        "ベルトランド公爵",
+        "イザベッラ"
+      ]
+    },
+    {
+      "label": "オルモンドとバトーネの企み",
+      "group_label": "第4場",
+      "roles": [
+        "オルモンド",
+        "バトーネ"
+      ]
+    },
+    {
+      "label": "洞窟の場（取り違えの四重唱）",
+      "group_label": "第5場",
+      "roles": [
+        "イザベッラ",
+        "ベルトランド公爵",
+        "オルモンド",
+        "バトーネ"
+      ]
+    },
+    {
+      "label": "終曲（オルモンドの罪の露見）",
+      "group_label": "終場",
+      "roles": [
+        "イザベッラ",
+        "ベルトランド公爵",
+        "オルモンド",
+        "タラボット",
+        "バトーネ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

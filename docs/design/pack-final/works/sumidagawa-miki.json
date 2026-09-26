@@ -1,0 +1,172 @@
+{
+  "title": "隅田川（三木稔）",
+  "title_original": "隅田川",
+  "composer": "三木稔",
+  "composer_sort": "Miki, Minoru",
+  "kind": "opera",
+  "year_written": 1995,
+  "duration_min": 55,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "sumidagawa-miki",
+  "note": "★★能『隅田川』による。★ブリテン『カーリュー・リヴァー』と同じ原作",
+  "roles": [
+    {
+      "label": "狂女（梅若の母）"
+    },
+    {
+      "label": "渡し守"
+    },
+    {
+      "label": "旅人"
+    },
+    {
+      "label": "梅若の霊"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★渡し場（渡し守の呼びかけ）",
+      "group_label": "本編",
+      "roles": [
+        "渡し守",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★旅人の乗船と狂女の登場",
+      "group_label": "本編",
+      "roles": [
+        "旅人",
+        "狂女（梅若の母）",
+        "渡し守"
+      ]
+    },
+    {
+      "label": "★★狂女の舞と歌（都鳥）",
+      "group_label": "本編",
+      "roles": [
+        "狂女（梅若の母）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★渡し守の物語（1年前の子の死）",
+      "group_label": "本編",
+      "roles": [
+        "渡し守",
+        "狂女（梅若の母）"
+      ]
+    },
+    {
+      "label": "★★母だと分かる",
+      "group_label": "本編",
+      "roles": [
+        "狂女（梅若の母）",
+        "渡し守",
+        "旅人"
+      ]
+    },
+    {
+      "label": "★★終曲（念仏と子の霊の声）",
+      "group_label": "本編",
+      "roles": [
+        "狂女（梅若の母）",
+        "梅若の霊",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "邦楽器（尺八・箏・三味線など）",
+      "count": 3,
+      "section": "other",
+      "note": "編成は作品ごと"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+ "title": "美しき水車小屋の娘",
+ "title_original": "Die schöne Müllerin",
+ "composer": "シューベルト",
+ "composer_sort": "Schubert, Franz",
+ "kind": "song_cycle",
+ "year_written": 1823,
+ "duration_min": 65,
+ "language": "de",
+ "source_id": "schubert-mullerin",
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. さすらい（Das Wandern）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. どこへ？（Wohin?）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. 止まれ！（Halt!）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 小川への感謝（Danksagung an den Bach）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. 仕事を終えた宵の集い（Am Feierabend）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. 知りたがる男（Der Neugierige）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. いらだち（Ungeduld）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. 朝の挨拶（Morgengruß）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "9. 水車屋の花（Des Müllers Blumen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "10. 涙の雨（Tränenregen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "11. ぼくのもの（Mein!）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "12. 休息（Pause）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "13. 緑のリュートの リボンで（Mit dem grünen Lautenbande）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "14. 狩人（Der Jäger）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "15. 嫉妬と誇り（Eifersucht und Stolz）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "16. 好きな色（Die liebe Farbe）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "17. いやな色（Die böse Farbe）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "18. 萎れた花（Trockne Blumen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "19. 水車屋と小川（Der Müller und der Bach）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "20. 小川の子守歌（Des Baches Wiegenlied）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand"
+}

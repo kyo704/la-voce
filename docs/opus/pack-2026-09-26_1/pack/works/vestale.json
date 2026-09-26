@@ -1,0 +1,182 @@
+{
+  "title": "ヴェスタの巫女",
+  "title_original": "La vestale",
+  "composer": "スポンティーニ",
+  "composer_sort": "Spontini, Gaspare",
+  "kind": "opera",
+  "year_written": 1807,
+  "duration_min": 155,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "vestale",
+  "roles": [
+    {
+      "label": "ジュリア"
+    },
+    {
+      "label": "リチニウス"
+    },
+    {
+      "label": "チンナ"
+    },
+    {
+      "label": "大祭司"
+    },
+    {
+      "label": "大巫女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ローマ（リチニウスの凱旋の前夜）",
+      "group_label": "第1幕",
+      "roles": [
+        "リチニウス",
+        "チンナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ジュリアの苦しみ（誓いと恋）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュリア",
+        "大巫女"
+      ]
+    },
+    {
+      "label": "★第2幕 ヴェスタの神殿（聖なる火の番）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリア"
+      ]
+    },
+    {
+      "label": "★第2幕 リチニウスの侵入と火の消滅",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリア",
+        "リチニウス",
+        "大祭司",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 生き埋めの刑の支度",
+      "group_label": "第3幕",
+      "roles": [
+        "ジュリア",
+        "大祭司",
+        "大巫女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（雷が祭壇の火をつけ、赦しの徴となる）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジュリア",
+        "リチニウス",
+        "チンナ",
+        "大祭司",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

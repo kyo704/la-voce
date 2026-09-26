@@ -1,0 +1,144 @@
+{
+  "title": "第一戒の責務",
+  "title_original": "Die Schuldigkeit des ersten Gebots",
+  "aliases": [
+    "K.35"
+  ],
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1767,
+  "duration_min": 70,
+  "language": "de",
+  "source": "hand",
+  "source_id": "schuldigkeit",
+  "note": "宗教的ジングシュピール。★3部作の第1部のみモーツァルト（第2部ミヒャエル・ハイドン／第3部アードルガッサー、いずれも消失）",
+  "roles": [
+    {
+      "label": "キリスト教の精神"
+    },
+    {
+      "label": "この世の精神"
+    },
+    {
+      "label": "神の慈悲"
+    },
+    {
+      "label": "神の正義"
+    },
+    {
+      "label": "なまぬるいキリスト教徒"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "シンフォニア",
+      "group_label": "シンフォニア",
+      "roles": []
+    },
+    {
+      "label": "第1部 なまぬるいキリスト教徒の眠り",
+      "group_label": "第1部",
+      "roles": [
+        "なまぬるいキリスト教徒",
+        "キリスト教の精神"
+      ]
+    },
+    {
+      "label": "第1部 この世の精神の誘い",
+      "group_label": "第1部",
+      "roles": [
+        "この世の精神",
+        "なまぬるいキリスト教徒"
+      ]
+    },
+    {
+      "label": "第1部 神の慈悲と正義の対話",
+      "group_label": "第1部",
+      "roles": [
+        "神の慈悲",
+        "神の正義"
+      ]
+    },
+    {
+      "label": "第1部 キリスト教の精神の訴え",
+      "group_label": "第1部",
+      "roles": [
+        "キリスト教の精神",
+        "なまぬるいキリスト教徒"
+      ]
+    },
+    {
+      "label": "第1部 終曲（目覚めへの呼びかけ）",
+      "group_label": "第1部",
+      "roles": [
+        "キリスト教の精神",
+        "神の慈悲",
+        "神の正義",
+        "なまぬるいキリスト教徒"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "title": "モテット『主に向かって新しい歌を歌え』BWV225",
+  "title_original": "Singet dem Herrn ein neues Lied BWV225",
+  "composer": "J.S.バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chorus",
+  "year_written": 1727,
+  "duration_min": 17,
+  "language": "de",
+  "source": "hand",
+  "source_id": "ch-bach-singet",
+  "note": "★★★二重合唱（8声）。★モーツァルトが 聴いて 驚いたと 伝えます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 主に向かって新しい歌を歌え",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "2. コラールとアリア",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★3. 主をほめたたえよ（二重フーガ）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

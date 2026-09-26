@@ -1,0 +1,184 @@
+{
+  "title": "ユダス・マカベウス",
+  "title_original": "Judas Maccabaeus",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "chorus",
+  "year_written": 1747,
+  "duration_min": 150,
+  "language": "en",
+  "source": "hand",
+  "source_id": "handel-judas",
+  "note": "★★『見よ、勇者は帰る』は日本では表彰式の曲として知られる",
+  "roles": [
+    {
+      "label": "ユダス・マカベウス"
+    },
+    {
+      "label": "シモン"
+    },
+    {
+      "label": "イスラエルの女1"
+    },
+    {
+      "label": "イスラエルの女2"
+    },
+    {
+      "label": "エウポレムス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★★マタティアスの死を悼む合唱",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★シモンの呼びかけ（立ち上がれ）",
+      "group_label": "第1部",
+      "roles": [
+        "シモン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ユダスの登場と戦いの決意",
+      "group_label": "第1部",
+      "roles": [
+        "ユダス・マカベウス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★勝利の合唱（Fallen is the foe）",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★来たれ、絶えず笑む自由よ（2人の女の二重唱）",
+      "group_label": "第2部",
+      "roles": [
+        "イスラエルの女1",
+        "イスラエルの女2"
+      ]
+    },
+    {
+      "label": "★偶像の破壊と神殿の清め",
+      "group_label": "第2部",
+      "roles": [
+        "ユダス・マカベウス",
+        "シモン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★天の父よ（シモンのアリア）",
+      "group_label": "第3部",
+      "roles": [
+        "シモン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★★見よ、勇者は帰る（See, the conqu'ring hero comes）",
+      "group_label": "第3部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（ローマとの同盟・ハレルヤ・アーメン）",
+      "group_label": "第3部",
+      "roles": [
+        "エウポレムス",
+        "ユダス・マカベウス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

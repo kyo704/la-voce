@@ -1,0 +1,237 @@
+{
+  "title": "炎の天使",
+  "title_original": "Огненный ангел",
+  "composer": "プロコフィエフ",
+  "composer_sort": "Prokofiev, Sergei",
+  "kind": "opera",
+  "year_written": 1927,
+  "duration_min": 125,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "fiery-angel",
+  "note": "★生前は舞台上演されず（初演1955 ヴェネツィア）",
+  "roles": [
+    {
+      "label": "ルナータ"
+    },
+    {
+      "label": "ルプレヒト"
+    },
+    {
+      "label": "ハインリヒ伯爵"
+    },
+    {
+      "label": "宿の女将"
+    },
+    {
+      "label": "占い女"
+    },
+    {
+      "label": "ヤーコプ・グロック"
+    },
+    {
+      "label": "アグリッパ・フォン・ネッテスハイム"
+    },
+    {
+      "label": "マティアス"
+    },
+    {
+      "label": "メフィストフェレス"
+    },
+    {
+      "label": "ファウスト"
+    },
+    {
+      "label": "修道院長"
+    },
+    {
+      "label": "宗教裁判官"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 宿屋（ルナータの幻視の発作）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルナータ",
+        "ルプレヒト",
+        "宿の女将"
+      ]
+    },
+    {
+      "label": "第1幕 占い女の血の予言",
+      "group_label": "第1幕",
+      "roles": [
+        "占い女",
+        "ルナータ",
+        "ルプレヒト"
+      ]
+    },
+    {
+      "label": "第2幕 ケルンの部屋（魔術書と壁を叩く音）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルナータ",
+        "ルプレヒト",
+        "ヤーコプ・グロック"
+      ]
+    },
+    {
+      "label": "★第2幕 アグリッパの書斎（3体の骸骨）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルプレヒト",
+        "アグリッパ・フォン・ネッテスハイム"
+      ]
+    },
+    {
+      "label": "第3幕 ハインリヒの家の前（ルナータの絶望）",
+      "group_label": "第3幕",
+      "roles": [
+        "ルナータ",
+        "ルプレヒト",
+        "マティアス"
+      ]
+    },
+    {
+      "label": "★第3幕 決闘とルプレヒトの傷",
+      "group_label": "第3幕",
+      "roles": [
+        "ルプレヒト",
+        "ハインリヒ伯爵",
+        "ルナータ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 ライン河畔（メフィストフェレスとファウスト・小僧を食う）",
+      "group_label": "第4幕",
+      "roles": [
+        "メフィストフェレス",
+        "ファウスト",
+        "ルプレヒト",
+        "宿の女将"
+      ]
+    },
+    {
+      "label": "★第5幕 修道院（集団憑依の場）",
+      "group_label": "第5幕",
+      "roles": [
+        "ルナータ",
+        "修道院長",
+        "宗教裁判官",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（宗教裁判官の断罪）",
+      "group_label": "第5幕",
+      "roles": [
+        "ルナータ",
+        "宗教裁判官",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

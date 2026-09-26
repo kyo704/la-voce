@@ -1,0 +1,188 @@
+{
+  "title": "バヤゼット",
+  "title_original": "Bajazet",
+  "aliases": [
+    "タメルラーノ（ヴィヴァルディ）"
+  ],
+  "composer": "ヴィヴァルディ",
+  "composer_sort": "Vivaldi, Antonio",
+  "kind": "opera",
+  "year_written": 1735,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "bajazet",
+  "note": "★★パスティッチョ（ヴィヴァルディと他の作曲家の曲を集めた作）。悪役の曲はハッセら他人の作",
+  "roles": [
+    {
+      "label": "バヤゼット"
+    },
+    {
+      "label": "タメルラーノ"
+    },
+    {
+      "label": "アステリア"
+    },
+    {
+      "label": "イレーネ"
+    },
+    {
+      "label": "アンドロニコ"
+    },
+    {
+      "label": "イダスペ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 囚われのバヤゼットと娘アステリア",
+      "group_label": "第1幕",
+      "roles": [
+        "バヤゼット",
+        "アステリア",
+        "アンドロニコ"
+      ]
+    },
+    {
+      "label": "★第1幕 タメルラーノの横恋慕",
+      "group_label": "第1幕",
+      "roles": [
+        "タメルラーノ",
+        "アステリア",
+        "イダスペ"
+      ]
+    },
+    {
+      "label": "★第1幕 イレーネの到着（約束された花嫁）",
+      "group_label": "第1幕",
+      "roles": [
+        "イレーネ",
+        "アンドロニコ"
+      ]
+    },
+    {
+      "label": "★第2幕 アステリアの偽りの受け入れ（短剣を隠す）",
+      "group_label": "第2幕",
+      "roles": [
+        "アステリア",
+        "タメルラーノ",
+        "バヤゼット"
+      ]
+    },
+    {
+      "label": "★★第2幕 バヤゼットの怒り（★Verrò crudel spietato）",
+      "group_label": "第2幕",
+      "roles": [
+        "バヤゼット",
+        "アステリア"
+      ]
+    },
+    {
+      "label": "★第3幕 毒杯の取り違え",
+      "group_label": "第3幕",
+      "roles": [
+        "アステリア",
+        "タメルラーノ",
+        "イレーネ",
+        "イダスペ"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★バヤゼットの死の場（Verrò crudel／自害の告白）",
+      "group_label": "第3幕",
+      "roles": [
+        "バヤゼット",
+        "アステリア",
+        "アンドロニコ"
+      ]
+    },
+    {
+      "label": "★終曲（タメルラーノの改心とイレーネとの結婚）",
+      "group_label": "第3幕",
+      "roles": [
+        "タメルラーノ",
+        "イレーネ",
+        "アステリア",
+        "アンドロニコ",
+        "イダスペ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

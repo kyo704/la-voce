@@ -1,0 +1,195 @@
+{
+  "title": "ダフネ",
+  "title_original": "Daphne",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1938,
+  "duration_min": 105,
+  "language": "de",
+  "source": "hand",
+  "source_id": "daphne",
+  "roles": [
+    {
+      "label": "ダフネ"
+    },
+    {
+      "label": "アポロ"
+    },
+    {
+      "label": "ロイキッポス"
+    },
+    {
+      "label": "ペーネイオス"
+    },
+    {
+      "label": "ガイア"
+    },
+    {
+      "label": "第1の女中"
+    },
+    {
+      "label": "第2の女中"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲（羊の群れ）",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "ダフネの独白（木々と語る）",
+      "group_label": "第1場",
+      "roles": [
+        "ダフネ"
+      ]
+    },
+    {
+      "label": "ロイキッポスの求愛",
+      "group_label": "第1場",
+      "roles": [
+        "ロイキッポス",
+        "ダフネ"
+      ]
+    },
+    {
+      "label": "ペーネイオスとガイア（神の来訪の予感）",
+      "group_label": "第1場",
+      "roles": [
+        "ペーネイオス",
+        "ガイア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "牛飼いの姿のアポロ",
+      "group_label": "第2場",
+      "roles": [
+        "アポロ",
+        "ダフネ",
+        "ペーネイオス"
+      ]
+    },
+    {
+      "label": "ディオニュソスの祭り（女装のロイキッポス）",
+      "group_label": "第2場",
+      "roles": [
+        "ロイキッポス",
+        "第1の女中",
+        "第2の女中",
+        "ダフネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アポロの怒りとロイキッポスの死",
+      "group_label": "第2場",
+      "roles": [
+        "アポロ",
+        "ロイキッポス",
+        "ダフネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アポロの祈りとダフネの変身（月桂樹）",
+      "group_label": "終場",
+      "roles": [
+        "アポロ",
+        "ダフネ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

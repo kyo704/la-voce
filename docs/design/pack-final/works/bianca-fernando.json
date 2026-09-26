@@ -1,0 +1,186 @@
+{
+  "title": "ビアンカとフェルナンド",
+  "title_original": "Bianca e Fernando",
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1828,
+  "duration_min": 140,
+  "edition": "1828 ジェノヴァ改訂版（1826 ナポリ初演時は『ビアンカとジェルナンド』）",
+  "language": "it",
+  "source": "hand",
+  "source_id": "bianca-fernando",
+  "roles": [
+    {
+      "label": "ビアンカ"
+    },
+    {
+      "label": "フェルナンド"
+    },
+    {
+      "label": "フィリッポ"
+    },
+    {
+      "label": "カルロ公爵"
+    },
+    {
+      "label": "クレメンテ"
+    },
+    {
+      "label": "ヴィスカルド"
+    },
+    {
+      "label": "エロイーザ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 アジェンノの城（フェルナンドの帰還）",
+      "group_label": "第1幕",
+      "roles": [
+        "フェルナンド",
+        "クレメンテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ビアンカの婚礼の支度",
+      "group_label": "第1幕",
+      "roles": [
+        "ビアンカ",
+        "エロイーザ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 フィリッポの野心",
+      "group_label": "第1幕",
+      "roles": [
+        "フィリッポ",
+        "ヴィスカルド"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（兄妹の気づかぬ再会）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビアンカ",
+        "フェルナンド",
+        "フィリッポ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 地下牢のカルロ公爵",
+      "group_label": "第2幕",
+      "roles": [
+        "カルロ公爵",
+        "フェルナンド"
+      ]
+    },
+    {
+      "label": "第2幕 ビアンカの苦しみ（子を思う）",
+      "group_label": "第2幕",
+      "roles": [
+        "ビアンカ"
+      ]
+    },
+    {
+      "label": "第2幕 フィナーレ（フィリッポの失墜）",
+      "group_label": "第2幕",
+      "roles": [
+        "ビアンカ",
+        "フェルナンド",
+        "フィリッポ",
+        "カルロ公爵",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

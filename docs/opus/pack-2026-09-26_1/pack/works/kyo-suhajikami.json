@@ -1,0 +1,57 @@
+{
+  "title": "酢薑",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-suhajikami",
+  "note": "★小名狂言 ／ ★★言葉遊びの 掛け合いだけで 持つ 曲 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（酢売り）"
+    },
+    {
+      "label": "アド（薑売り）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "道で二人が出会う",
+      "group_label": "段",
+      "roles": [
+        "シテ（酢売り）",
+        "アド（薑売り）"
+      ]
+    },
+    {
+      "label": "★どちらの品が勝るか言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（酢売り）",
+        "アド（薑売り）"
+      ]
+    },
+    {
+      "label": "★★掛け合いの秀句（言葉遊び）で競う",
+      "group_label": "段",
+      "roles": [
+        "シテ（酢売り）",
+        "アド（薑売り）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

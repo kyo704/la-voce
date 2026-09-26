@@ -1,0 +1,158 @@
+{
+  "title": "ウェイトレス",
+  "title_original": "Waitress",
+  "composer": "サラ・バレリス",
+  "kind": "musical",
+  "year_written": 2016,
+  "duration_min": 140,
+  "edition": "★ブロードウェイ版（2016）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-waitress",
+  "note": "★作詞 サラ・バレリス ／ 脚本 ジェシー・ネルソン",
+  "roles": [
+    {
+      "label": "ジェナ"
+    },
+    {
+      "label": "ドーン"
+    },
+    {
+      "label": "ベッキー"
+    },
+    {
+      "label": "アール"
+    },
+    {
+      "label": "ドクター・ポマター"
+    },
+    {
+      "label": "ジョー"
+    },
+    {
+      "label": "オギー"
+    },
+    {
+      "label": "カル"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "パイを焼く朝",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェナ",
+        "ドーン",
+        "ベッキー"
+      ]
+    },
+    {
+      "label": "★ジェナと医師",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェナ",
+        "ドクター・ポマター"
+      ]
+    },
+    {
+      "label": "パイのコンテスト",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェナ",
+        "ドーン",
+        "ベッキー",
+        "オギー"
+      ]
+    },
+    {
+      "label": "★ジェナの決断",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェナ",
+        "ジョー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "title": "モテット『イエスよ、わが喜び』BWV227",
+  "title_original": "Jesu, meine Freude BWV227",
+  "composer": "J.S.バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chorus",
+  "year_written": 1723,
+  "duration_min": 22,
+  "language": "de",
+  "source": "hand",
+  "source_id": "ch-bach-bwv140-nashi",
+  "note": "★★★バッハの モテットで 最も 長い もの。★左右対称に 組まれています ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. イエスよ、わが喜び",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "2. それゆえ今や罪に定めはない",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "3. 汝のもとに",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "4. 肉によらず霊によって",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★5. 汝の霊がある以上",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "6. されど汝らは肉によらず",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "7. さらばよ、罪の生",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "8. されど死すべき体に",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "9. さらばよ、うつろな栄華",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "10. 善き夜よ、おお存在よ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "11. 汝の霊がある以上（再）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

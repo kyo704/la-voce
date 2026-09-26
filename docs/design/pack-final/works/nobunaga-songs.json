@@ -1,0 +1,35 @@
+{
+  "title": "信長貴富 歌曲集",
+  "composer": "信長貴富",
+  "composer_sort": "Nobunaga, Takatomi",
+  "kind": "song_cycle",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "nobunaga-songs",
+  "note": "★★★いま 書かれている 作曲家。★★上演には 権利の 確認が 要ります ／ ★★1つの 曲集では ないので ★曲の 数と 並びは 公演ごとに 決めます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★選んで 組みます（★曲は 公演ごと）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

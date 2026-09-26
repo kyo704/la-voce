@@ -1,0 +1,224 @@
+{
+  "title": "アクナーテン",
+  "title_original": "Akhnaten",
+  "composer": "グラス",
+  "composer_sort": "Glass, Philip",
+  "kind": "opera",
+  "year_written": 1984,
+  "duration_min": 150,
+  "language": "en",
+  "source": "hand",
+  "source_id": "akhnaten",
+  "note": "★★歌詞は古代エジプト語・アッカド語・ヘブライ語と現代語。★ヴァイオリンを用いない（ヴィオラ以下の弦）。★アクナーテンはカウンターテナー",
+  "roles": [
+    {
+      "label": "アクナーテン"
+    },
+    {
+      "label": "ネフェルティティ"
+    },
+    {
+      "label": "クイーン・タイ"
+    },
+    {
+      "label": "ホルエムヘブ"
+    },
+    {
+      "label": "アイ"
+    },
+    {
+      "label": "アメン大司祭"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "6人の王女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★前奏曲（ファラオ・アメンホテプ3世の葬儀）",
+      "group_label": "前奏曲",
+      "roles": [
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★戴冠（アメン大司祭・ホルエムヘブ・アイ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アクナーテン",
+        "アメン大司祭",
+        "ホルエムヘブ",
+        "アイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★窓の出現（3人の重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "アクナーテン",
+        "ネフェルティティ",
+        "クイーン・タイ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★神殿（アメン神殿の破壊）",
+      "group_label": "第2幕",
+      "roles": [
+        "アクナーテン",
+        "アメン大司祭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★アクナーテンとネフェルティティの愛の二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "アクナーテン",
+        "ネフェルティティ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★太陽への讃歌（アクナーテン独唱・唯一の現代語の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "アクナーテン"
+      ]
+    },
+    {
+      "label": "★第2幕 ★都市アケトアテンの建設（舞踏）",
+      "group_label": "第2幕",
+      "roles": [
+        "アクナーテン",
+        "ネフェルティティ",
+        "6人の王女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★家族（王家の孤立）",
+      "group_label": "第3幕",
+      "roles": [
+        "アクナーテン",
+        "ネフェルティティ",
+        "6人の王女"
+      ]
+    },
+    {
+      "label": "★第3幕 ★攻撃と滅び",
+      "group_label": "第3幕",
+      "roles": [
+        "ホルエムヘブ",
+        "アイ",
+        "アメン大司祭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（★現代の廃墟・観光案内と亡霊たちの行進）",
+      "group_label": "終曲",
+      "roles": [
+        "語り手",
+        "アクナーテン",
+        "ネフェルティティ",
+        "クイーン・タイ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "電子オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

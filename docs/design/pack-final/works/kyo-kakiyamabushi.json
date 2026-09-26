@@ -1,0 +1,64 @@
+{
+  "title": "柿山伏",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kakiyamabushi",
+  "note": "★山伏狂言 ／ ★★教科書に載る代表曲 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（山伏）"
+    },
+    {
+      "label": "アド（柿の主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "山伏が柿を盗んで食う",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）"
+      ]
+    },
+    {
+      "label": "主が見つけ、鳥や猿の鳴き真似をさせる",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（柿の主）"
+      ]
+    },
+    {
+      "label": "鳶（とび）の真似で飛べと言われ落ちる",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（柿の主）"
+      ]
+    },
+    {
+      "label": "腰を打った山伏が祈り、主が担ぐ",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（柿の主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

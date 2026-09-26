@@ -1,0 +1,239 @@
+{
+  "title": "キャンディード",
+  "title_original": "Candide",
+  "composer": "バーンスタイン",
+  "composer_sort": "Bernstein, Leonard",
+  "kind": "opera",
+  "year_written": 1956,
+  "duration_min": 140,
+  "edition": "1956 原典／1974 ハロルド・プリンス版／1989 スコティッシュ・オペラ版（最終改訂）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "candide",
+  "note": "★オペラとミュージカルの境にある作。版が多く、上演に際して版を決める必要がある",
+  "roles": [
+    {
+      "label": "キャンディード"
+    },
+    {
+      "label": "クネゴンデ"
+    },
+    {
+      "label": "パングロス／マルティン"
+    },
+    {
+      "label": "老女"
+    },
+    {
+      "label": "マキシミリアン"
+    },
+    {
+      "label": "パケット"
+    },
+    {
+      "label": "総督／ヴァンデルデンドゥール／司祭"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 ウェストファリア（★最善の世界）",
+      "group_label": "第1幕",
+      "roles": [
+        "キャンディード",
+        "クネゴンデ",
+        "パングロス／マルティン",
+        "マキシミリアン",
+        "パケット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★おお、幸せな二人（愛の二重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "キャンディード",
+        "クネゴンデ"
+      ]
+    },
+    {
+      "label": "★第1幕 リスボンの地震と宗教裁判（★自動人形の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "キャンディード",
+        "パングロス／マルティン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 パリ（★輝かしく、華やかに ─ クネゴンデのアリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "クネゴンデ",
+        "老女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ユーちゃんとわたし（老女の物語）",
+      "group_label": "第1幕",
+      "roles": [
+        "老女",
+        "クネゴンデ",
+        "キャンディード"
+      ]
+    },
+    {
+      "label": "★第2幕 カルタヘナ（★私はやさしい）",
+      "group_label": "第2幕",
+      "roles": [
+        "老女",
+        "クネゴンデ",
+        "総督／ヴァンデルデンドゥール／司祭"
+      ]
+    },
+    {
+      "label": "★第2幕 ★エルドラド（黄金の国）",
+      "group_label": "第2幕",
+      "roles": [
+        "キャンディード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★羊を売る（ヴァンデルデンドゥールの詐欺）",
+      "group_label": "第2幕",
+      "roles": [
+        "キャンディード",
+        "総督／ヴァンデルデンドゥール／司祭",
+        "パングロス／マルティン"
+      ]
+    },
+    {
+      "label": "★第2幕 ヴェネツィアの賭博場（★ワルツと再会）",
+      "group_label": "第2幕",
+      "roles": [
+        "キャンディード",
+        "クネゴンデ",
+        "老女",
+        "マキシミリアン",
+        "パケット",
+        "パングロス／マルティン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（★われらの畑を耕そう ─ Make Our Garden Grow）",
+      "group_label": "第2幕",
+      "roles": [
+        "キャンディード",
+        "クネゴンデ",
+        "老女",
+        "パングロス／マルティン",
+        "マキシミリアン",
+        "パケット",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "title": "壺坂観音霊験記",
+  "aliases": [
+    "壺坂霊験記"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1879,
+  "duration_min": 60,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bun-tsubosaka",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 加古千賀 ／ ★★『妻は夫をいたわりつ』の文句が名高い。★短く上演しやすい曲 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "沢市"
+    },
+    {
+      "label": "お里"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★沢市内（★盲目の夫と妻の疑い）",
+      "group_label": "一段",
+      "roles": [
+        "沢市",
+        "お里",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★壺坂寺への道行",
+      "group_label": "一段",
+      "roles": [
+        "沢市",
+        "お里",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★沢市の投身",
+      "group_label": "一段",
+      "roles": [
+        "沢市",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★★お里も身を投げ、観音の霊験で目が開く",
+      "group_label": "一段",
+      "roles": [
+        "沢市",
+        "お里",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

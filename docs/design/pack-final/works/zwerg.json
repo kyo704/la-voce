@@ -1,0 +1,198 @@
+{
+  "title": "こびと",
+  "title_original": "Der Zwerg",
+  "composer": "ツェムリンスキー",
+  "composer_sort": "Zemlinsky, Alexander von",
+  "kind": "opera",
+  "year_written": 1922,
+  "duration_min": 90,
+  "language": "de",
+  "source": "hand",
+  "source_id": "zwerg",
+  "note": "★ワイルドの『王女の誕生日』による",
+  "roles": [
+    {
+      "label": "こびと"
+    },
+    {
+      "label": "ドンナ・クララ"
+    },
+    {
+      "label": "ギータ"
+    },
+    {
+      "label": "侍従"
+    },
+    {
+      "label": "第1の侍女"
+    },
+    {
+      "label": "第2の侍女"
+    },
+    {
+      "label": "第3の侍女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 スペインの宮廷（18歳の誕生日）",
+      "group_label": "第1場",
+      "roles": [
+        "ドンナ・クララ",
+        "侍従",
+        "第1の侍女",
+        "第2の侍女",
+        "第3の侍女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1場 贈り物のこびとの登場（自分の姿を知らない）",
+      "group_label": "第1場",
+      "roles": [
+        "こびと",
+        "ドンナ・クララ",
+        "侍従",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2場 こびとの歌（血の贈り物のオレンジ）",
+      "group_label": "第2場",
+      "roles": [
+        "こびと",
+        "ドンナ・クララ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2場 ギータの憐れみ",
+      "group_label": "第2場",
+      "roles": [
+        "ギータ",
+        "こびと"
+      ]
+    },
+    {
+      "label": "★第3場 鏡（こびとが自分の姿を見る）",
+      "group_label": "第3場",
+      "roles": [
+        "こびと",
+        "ドンナ・クララ",
+        "ギータ"
+      ]
+    },
+    {
+      "label": "★終曲（こびとの死とクララの無関心）",
+      "group_label": "第3場",
+      "roles": [
+        "こびと",
+        "ドンナ・クララ",
+        "ギータ",
+        "侍従",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

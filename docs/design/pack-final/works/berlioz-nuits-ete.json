@@ -1,0 +1,79 @@
+{
+  "title": "夏の夜 作品7",
+  "title_original": "Les nuits d’été op.7",
+  "composer": "ベルリオーズ",
+  "composer_sort": "Berlioz, Hector",
+  "kind": "song_cycle",
+  "year_written": 1841,
+  "duration_min": 30,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "berlioz-op7",
+  "note": "★作詩 ゴーティエ ／ ★★管弦楽版が よく 用いられます。★6曲を 別の 歌手で 分ける ことも あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. ヴィラネル（Villanelle）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 薔薇の精（Le spectre de la rose）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 入江のほとり（Sur les lagunes）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 君なくて（Absence）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 墓地にて（Au cimetière）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. 知られぬ島（L’île inconnue）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽（またはピアノ）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

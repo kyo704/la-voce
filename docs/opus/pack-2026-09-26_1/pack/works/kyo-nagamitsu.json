@@ -1,0 +1,70 @@
+{
+  "title": "長光",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-nagamitsu",
+  "note": "★すっぱ狂言（詐欺物） ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（すっぱ）"
+    },
+    {
+      "label": "アド（田舎者）"
+    },
+    {
+      "label": "小アド（目利き）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "市で田舎者の刀を掏る",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（田舎者）"
+      ]
+    },
+    {
+      "label": "★どちらの刀か言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（田舎者）"
+      ]
+    },
+    {
+      "label": "★★目利きに『長光』の見どころを問われる",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（田舎者）",
+        "小アド（目利き）"
+      ]
+    },
+    {
+      "label": "★答えられず露見する",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（田舎者）",
+        "小アド（目利き）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "title": "唐相撲",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 50,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-to-zumo",
+  "note": "★大曲（集狂言） ／ ★★★出る人が いちばん多い曲。★台詞に 唐音（からごえ）を 使います ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（唐人）"
+    },
+    {
+      "label": "アド（日本の相撲取り）"
+    },
+    {
+      "label": "小アド（帝）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "唐の帝の前で相撲を取る",
+      "group_label": "段",
+      "roles": [
+        "小アド（帝）",
+        "アド（日本の相撲取り）"
+      ]
+    },
+    {
+      "label": "唐人が次々に挑んでは投げられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（唐人）",
+        "アド（日本の相撲取り）"
+      ]
+    },
+    {
+      "label": "帝みずから組んで投げられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（唐人）",
+        "小アド（帝）",
+        "アド（日本の相撲取り）"
+      ]
+    },
+    {
+      "label": "一同で囃して送る",
+      "group_label": "段",
+      "roles": [
+        "シテ（唐人）",
+        "小アド（帝）",
+        "アド（日本の相撲取り）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

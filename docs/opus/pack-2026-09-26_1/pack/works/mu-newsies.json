@@ -1,0 +1,162 @@
+{
+  "title": "ニュージーズ",
+  "title_original": "Newsies",
+  "composer": "アラン・メンケン",
+  "kind": "musical",
+  "year_written": 2012,
+  "duration_min": 140,
+  "edition": "★ブロードウェイ版（2012）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-newsies",
+  "note": "★作詞 ジャック・フェルドマン ／ 脚本 ハーヴェイ・ファイアスタイン ／ ★★踊りの分量が 非常に 多い 作品",
+  "roles": [
+    {
+      "label": "ジャック・ケリー"
+    },
+    {
+      "label": "キャサリン"
+    },
+    {
+      "label": "クラッチー"
+    },
+    {
+      "label": "デイヴィー"
+    },
+    {
+      "label": "レス"
+    },
+    {
+      "label": "ジョセフ・ピュリツァー"
+    },
+    {
+      "label": "メダ・ラーキン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "新聞売りの少年たち",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャック・ケリー",
+        "クラッチー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★ストライキを決める（★群舞の見せ場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャック・ケリー",
+        "デイヴィー",
+        "レス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "新聞を作る",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャック・ケリー",
+        "キャサリン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★決着",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャック・ケリー",
+        "ジョセフ・ピュリツァー",
+        "キャサリン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

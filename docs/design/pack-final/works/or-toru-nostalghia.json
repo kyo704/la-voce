@@ -1,0 +1,34 @@
+{
+  "title": "ノスタルジア",
+  "composer": "武満徹",
+  "composer_sort": "Takemitsu, Toru",
+  "kind": "orchestra",
+  "year_written": 1987,
+  "duration_min": 13,
+  "language": "—",
+  "source": "hand",
+  "source_id": "or-toru-nostalghia",
+  "note": "★タルコフスキーに 捧げられました",
+  "roles": [
+    {
+      "label": "ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★一曲",
+      "group_label": "楽章",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "弦楽合奏",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

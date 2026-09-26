@@ -1,0 +1,183 @@
+{
+  "title": "アレッサンドロ",
+  "title_original": "Alessandro",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1726,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "alessandro",
+  "note": "★★ファリネッリの兄セネジーノとクッツォーニ・ボルドーニの三つ巴のために書かれた",
+  "roles": [
+    {
+      "label": "アレッサンドロ"
+    },
+    {
+      "label": "ロッサーネ"
+    },
+    {
+      "label": "リサウラ"
+    },
+    {
+      "label": "タッシーレ"
+    },
+    {
+      "label": "クレオーネ"
+    },
+    {
+      "label": "レオナート"
+    },
+    {
+      "label": "クリト"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 オッシドラケの城攻め（アレッサンドロの登城）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレッサンドロ",
+        "クリト",
+        "レオナート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ロッサーネとリサウラ（2人の女の競い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロッサーネ",
+        "リサウラ"
+      ]
+    },
+    {
+      "label": "第1幕 アレッサンドロの神格化（自らを神と称する）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレッサンドロ",
+        "クリト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ロッサーネのアリア（Lusinghe più care）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロッサーネ",
+        "アレッサンドロ"
+      ]
+    },
+    {
+      "label": "★第2幕 リサウラとタッシーレ",
+      "group_label": "第2幕",
+      "roles": [
+        "リサウラ",
+        "タッシーレ",
+        "クレオーネ"
+      ]
+    },
+    {
+      "label": "第3幕 陰謀とアレッサンドロの危機",
+      "group_label": "第3幕",
+      "roles": [
+        "クレオーネ",
+        "レオナート",
+        "アレッサンドロ"
+      ]
+    },
+    {
+      "label": "★終曲（アレッサンドロはロッサーネを、リサウラはタッシーレを）",
+      "group_label": "第3幕",
+      "roles": [
+        "アレッサンドロ",
+        "ロッサーネ",
+        "リサウラ",
+        "タッシーレ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

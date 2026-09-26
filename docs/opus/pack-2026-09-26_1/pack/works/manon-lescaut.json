@@ -1,0 +1,168 @@
+{
+  "title": "マノン・レスコー",
+  "title_original": "Manon Lescaut",
+  "aliases": [
+    "プッチーニのマノン"
+  ],
+  "composer": "プッチーニ",
+  "composer_sort": "Puccini, Giacomo",
+  "kind": "opera",
+  "year_written": 1893,
+  "duration_min": 125,
+  "language": "it",
+  "source": "hand",
+  "source_id": "puccini-manon-lescaut",
+  "roles": [
+    {
+      "label": "マノン"
+    },
+    {
+      "label": "デ・グリュー"
+    },
+    {
+      "label": "レスコー"
+    },
+    {
+      "label": "ジェロンテ"
+    },
+    {
+      "label": "エドモンド"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 アミアンの広場",
+      "group_label": "第1幕",
+      "roles": [
+        "マノン",
+        "デ・グリュー",
+        "レスコー",
+        "ジェロンテ",
+        "エドモンド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ジェロンテ邸（この柔らかなレースの中で）",
+      "group_label": "第2幕",
+      "roles": [
+        "マノン",
+        "レスコー",
+        "デ・グリュー",
+        "ジェロンテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ル・アーヴルの港（間奏曲のあと）",
+      "group_label": "第3幕",
+      "roles": [
+        "マノン",
+        "デ・グリュー",
+        "レスコー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 荒野・フィナーレ",
+      "group_label": "第4幕",
+      "roles": [
+        "マノン",
+        "デ・グリュー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

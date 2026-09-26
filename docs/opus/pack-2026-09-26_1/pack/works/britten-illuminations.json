@@ -1,0 +1,39 @@
+{
+  "title": "イリュミナシオン 作品18",
+  "title_original": "Les Illuminations op.18",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "song_cycle",
+  "year_written": 1939,
+  "duration_min": 22,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "britten-op18",
+  "note": "★作詩 ランボー ／ ★★★高い声（ソプラノまたはテノール）と 弦楽合奏。★歌詞は フランス語 ／ ★★曲名を 全部 確かめられなかったので ★曲数（9曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全9曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "弦楽合奏",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

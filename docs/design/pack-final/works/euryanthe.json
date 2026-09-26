@@ -1,0 +1,203 @@
+{
+  "title": "オイリアンテ",
+  "title_original": "Euryanthe",
+  "composer": "ウェーバー",
+  "composer_sort": "Weber, Carl Maria von",
+  "kind": "opera",
+  "year_written": 1823,
+  "duration_min": 165,
+  "language": "de",
+  "source": "hand",
+  "source_id": "euryanthe",
+  "note": "★台詞のない『大ロマン的オペラ』。ワーグナーの『ローエングリン』の先駆",
+  "roles": [
+    {
+      "label": "オイリアンテ"
+    },
+    {
+      "label": "アドラール"
+    },
+    {
+      "label": "エグランティーヌ"
+    },
+    {
+      "label": "リュジアール"
+    },
+    {
+      "label": "ルイ6世"
+    },
+    {
+      "label": "ベルタ"
+    },
+    {
+      "label": "ルドルフ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 宮廷（アドラールの貞節の賭け）",
+      "group_label": "第1幕",
+      "roles": [
+        "アドラール",
+        "リュジアール",
+        "ルイ6世",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 オイリアンテのアリアとエグランティーヌの企み",
+      "group_label": "第1幕",
+      "roles": [
+        "オイリアンテ",
+        "エグランティーヌ"
+      ]
+    },
+    {
+      "label": "★第2幕 エムマの墓の秘密（指輪）",
+      "group_label": "第2幕",
+      "roles": [
+        "エグランティーヌ",
+        "リュジアール"
+      ]
+    },
+    {
+      "label": "★第2幕 宮廷での告発（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "オイリアンテ",
+        "アドラール",
+        "エグランティーヌ",
+        "リュジアール",
+        "ルイ6世",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 荒野（アドラールがオイリアンテを置き去る）",
+      "group_label": "第3幕",
+      "roles": [
+        "アドラール",
+        "オイリアンテ"
+      ]
+    },
+    {
+      "label": "第3幕 ★狩人の合唱と王の救い",
+      "group_label": "第3幕",
+      "roles": [
+        "ルイ6世",
+        "オイリアンテ",
+        "ベルタ",
+        "ルドルフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（エグランティーヌの告白と2人の再会）",
+      "group_label": "第3幕",
+      "roles": [
+        "オイリアンテ",
+        "アドラール",
+        "エグランティーヌ",
+        "リュジアール",
+        "ルイ6世",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

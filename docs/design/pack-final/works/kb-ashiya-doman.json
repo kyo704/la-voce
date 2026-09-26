@@ -1,0 +1,82 @@
+{
+  "title": "蘆屋道満大内鑑",
+  "aliases": [
+    "葛の葉",
+    "子別れ"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1734,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-ashiya-doman",
+  "note": "★歌舞伎 ／ 作者 竹田出雲 ／ ★★★『曲書き』── 障子に 逆さ・後ろ手で 歌を 書く ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "葛の葉狐／葛の葉姫"
+    },
+    {
+      "label": "安倍童子"
+    },
+    {
+      "label": "安倍保名"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★四段目 葛の葉（★子別れ・曲書き）",
+      "group_label": "四段目",
+      "roles": [
+        "葛の葉狐／葛の葉姫",
+        "安倍童子",
+        "安倍保名",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★葛の葉 障子の曲書き（★左手・後ろ手・口で書く）",
+      "group_label": "四段目",
+      "roles": [
+        "葛の葉狐／葛の葉姫",
+        "安倍童子",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★葛の葉 幕切れ（★狐の姿で去る）",
+      "group_label": "四段目",
+      "roles": [
+        "葛の葉狐／葛の葉姫",
+        "安倍保名",
+        "安倍童子",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

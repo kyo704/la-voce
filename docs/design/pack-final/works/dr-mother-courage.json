@@ -1,0 +1,80 @@
+{
+  "title": "肝っ玉おっ母と子供たち",
+  "composer": "ブレヒト",
+  "composer_sort": "Brecht, Bertolt",
+  "kind": "drama",
+  "year_written": 1941,
+  "duration_min": 180,
+  "language": "de",
+  "source": "hand",
+  "source_id": "dr-mother-courage",
+  "note": "★★★『異化（Verfremdung）』── ★観客を 感情に 浸らせない 作り ／ ★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "アンナ・フィアリング（肝っ玉おっ母）"
+    },
+    {
+      "label": "カトリン"
+    },
+    {
+      "label": "アイリフ"
+    },
+    {
+      "label": "シュヴァイツァーカース"
+    },
+    {
+      "label": "従軍牧師"
+    },
+    {
+      "label": "料理人"
+    },
+    {
+      "label": "兵士",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "従軍商人の荷車",
+      "group_label": "第1場",
+      "roles": [
+        "アンナ・フィアリング（肝っ玉おっ母）",
+        "カトリン",
+        "アイリフ",
+        "シュヴァイツァーカース"
+      ]
+    },
+    {
+      "label": "★次男の死",
+      "group_label": "第3場",
+      "roles": [
+        "アンナ・フィアリング（肝っ玉おっ母）",
+        "シュヴァイツァーカース",
+        "兵士"
+      ]
+    },
+    {
+      "label": "★★カトリンの太鼓",
+      "group_label": "第11場",
+      "roles": [
+        "カトリン",
+        "兵士"
+      ]
+    },
+    {
+      "label": "★★一人で荷車を引いて去る",
+      "group_label": "第12場",
+      "roles": [
+        "アンナ・フィアリング（肝っ玉おっ母）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

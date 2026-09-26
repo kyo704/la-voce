@@ -1,0 +1,81 @@
+{
+  "title": "真珠道",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "duration_min": 70,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-madama-michi",
+  "note": "★組踊（琉球の歌舞劇） ／ ★★新作組踊。★★筋の 細かいところは 入れて いません ── ★曲名だけ 確かめました ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "主人公の武人"
+    },
+    {
+      "label": "女"
+    },
+    {
+      "label": "供の者"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★真珠道（まだまみち）を行く",
+      "group_label": "段",
+      "roles": [
+        "主人公の武人",
+        "供の者"
+      ]
+    },
+    {
+      "label": "★女との出会い",
+      "group_label": "段",
+      "roles": [
+        "主人公の武人",
+        "女"
+      ]
+    },
+    {
+      "label": "★結末",
+      "group_label": "段",
+      "roles": [
+        "主人公の武人",
+        "女",
+        "供の者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "title": "マゲローネのロマンス 作品33",
+  "title_original": "Die schöne Magelone op.33",
+  "composer": "ブラームス",
+  "composer_sort": "Brahms, Johannes",
+  "kind": "song_cycle",
+  "year_written": 1869,
+  "duration_min": 75,
+  "language": "de",
+  "source": "hand",
+  "source_id": "brahms-op33",
+  "note": "★作詩 ティーク ／ ★★ブラームス 唯一の 連作歌曲集。★語り（ナレーション）を 挟む 上演も あります ／ ★★曲名を 全部 確かめられなかったので ★曲数（15曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全15曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

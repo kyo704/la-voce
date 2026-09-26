@@ -1,0 +1,174 @@
+{
+  "title": "イメネーオ",
+  "title_original": "Imeneo",
+  "aliases": [
+    "ヒュメナイオス"
+  ],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1740,
+  "duration_min": 140,
+  "language": "it",
+  "source": "hand",
+  "source_id": "imeneo",
+  "note": "★『オペレッタ』と自ら呼んだ小ぶりの作",
+  "roles": [
+    {
+      "label": "イメネーオ"
+    },
+    {
+      "label": "ロズメーネ"
+    },
+    {
+      "label": "ティリント"
+    },
+    {
+      "label": "クローミ"
+    },
+    {
+      "label": "アルジェニオ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 イメネーオが海賊から娘たちを救う",
+      "group_label": "第1幕",
+      "roles": [
+        "イメネーオ",
+        "ロズメーネ",
+        "クローミ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ティリントの愛（先に結ばれていた）",
+      "group_label": "第1幕",
+      "roles": [
+        "ティリント",
+        "ロズメーネ"
+      ]
+    },
+    {
+      "label": "★第2幕 アルジェニオの裁き（誰にロズメーネを）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルジェニオ",
+        "イメネーオ",
+        "ティリント",
+        "ロズメーネ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ロズメーネの迷い（★狂乱を装う）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロズメーネ",
+        "ティリント",
+        "イメネーオ"
+      ]
+    },
+    {
+      "label": "★第3幕 ★三重唱（誰を選ぶのか）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロズメーネ",
+        "イメネーオ",
+        "ティリント"
+      ]
+    },
+    {
+      "label": "★終曲（ロズメーネは義理でイメネーオを選ぶ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロズメーネ",
+        "イメネーオ",
+        "ティリント",
+        "クローミ",
+        "アルジェニオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "title": "結婚",
+  "title_original": "Женитьба",
+  "composer": "ムソルグスキー",
+  "composer_sort": "Mussorgsky, Modest",
+  "kind": "opera",
+  "year_written": 1868,
+  "duration_min": 40,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "marriage",
+  "note": "★第1幕のみ（ピアノ伴奏で完成）。★ゴーゴリの散文をそのまま歌にした実験作。管弦楽化はイッポリトフ＝イワノフ他",
+  "roles": [
+    {
+      "label": "ポトコリョーシン"
+    },
+    {
+      "label": "ステパン"
+    },
+    {
+      "label": "フョークラ"
+    },
+    {
+      "label": "コチカリョフ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ポトコリョーシンの独白（結婚すべきか）",
+      "group_label": "第1幕",
+      "roles": [
+        "ポトコリョーシン",
+        "ステパン"
+      ]
+    },
+    {
+      "label": "第1幕 仲人フョークラの報せ",
+      "group_label": "第1幕",
+      "roles": [
+        "ポトコリョーシン",
+        "フョークラ"
+      ]
+    },
+    {
+      "label": "第1幕 コチカリョフの登場と急かし",
+      "group_label": "第1幕",
+      "roles": [
+        "コチカリョフ",
+        "ポトコリョーシン",
+        "フョークラ"
+      ]
+    },
+    {
+      "label": "第1幕 ★終わり（ここで筆が止まる）",
+      "group_label": "第1幕",
+      "roles": [
+        "コチカリョフ",
+        "ポトコリョーシン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

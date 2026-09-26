@@ -1,0 +1,61 @@
+{
+  "title": "泣尼",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-naki-ama",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（尼）"
+    },
+    {
+      "label": "アド（僧）"
+    },
+    {
+      "label": "小アド（施主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "僧が法事に泣き役の尼を連れて行く",
+      "group_label": "段",
+      "roles": [
+        "シテ（尼）",
+        "アド（僧）"
+      ]
+    },
+    {
+      "label": "説法の間に尼が寝てしまう",
+      "group_label": "段",
+      "roles": [
+        "シテ（尼）",
+        "アド（僧）",
+        "小アド（施主）"
+      ]
+    },
+    {
+      "label": "布施の分け方で言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（尼）",
+        "アド（僧）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "title": "延命袋",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-enmei-bukuro",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（妻）"
+    },
+    {
+      "label": "アド（夫）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "夫が離縁を言い出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（妻）",
+        "アド（夫）"
+      ]
+    },
+    {
+      "label": "妻が形見に袋をと願う",
+      "group_label": "段",
+      "roles": [
+        "シテ（妻）",
+        "アド（夫）"
+      ]
+    },
+    {
+      "label": "袋に夫を入れてしまう",
+      "group_label": "段",
+      "roles": [
+        "シテ（妻）",
+        "アド（夫）"
+      ]
+    },
+    {
+      "label": "詫びて和解する",
+      "group_label": "段",
+      "roles": [
+        "シテ（妻）",
+        "アド（夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

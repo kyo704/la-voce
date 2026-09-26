@@ -1,0 +1,54 @@
+{
+  "title": "艶なる宴 第2集",
+  "title_original": "Fêtes galantes II",
+  "composer": "ドビュッシー",
+  "composer_sort": "Debussy, Claude",
+  "kind": "song_cycle",
+  "year_written": 1904,
+  "duration_min": 9,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "debussy-fetes-2",
+  "note": "★作詩 ヴェルレーヌ ／  ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 無言劇のように（Les ingénus）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 牧神（Le faune）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 感傷的な対話（Colloque sentimental）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

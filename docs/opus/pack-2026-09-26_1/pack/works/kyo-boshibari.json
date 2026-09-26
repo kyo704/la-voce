@@ -1,0 +1,68 @@
+{
+  "title": "寝音曲",
+  "aliases": [
+    "寝音曲"
+  ],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-boshibari",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主が謡えと言う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "★膝枕でないと謡えぬと言い張る",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "起こすと謡えず、寝ると謡える",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "ばれて追われる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

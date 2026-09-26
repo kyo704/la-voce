@@ -1,0 +1,196 @@
+{
+  "title": "ルクレティアの犯され",
+  "title_original": "The Rape of Lucretia",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1946,
+  "duration_min": 115,
+  "language": "en",
+  "source": "hand",
+  "source_id": "rape-lucretia",
+  "note": "★室内オペラ（13人の器楽奏者）",
+  "roles": [
+    {
+      "label": "ルクレティア"
+    },
+    {
+      "label": "タルクィニウス"
+    },
+    {
+      "label": "コラティヌス"
+    },
+    {
+      "label": "ユニウス"
+    },
+    {
+      "label": "ビアンカ"
+    },
+    {
+      "label": "ルチア"
+    },
+    {
+      "label": "男の語り手"
+    },
+    {
+      "label": "女の語り手"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 語り手の口上（ローマの前史）",
+      "group_label": "第1幕",
+      "roles": [
+        "男の語り手",
+        "女の語り手"
+      ]
+    },
+    {
+      "label": "★第1幕 将軍たちの天幕（妻の貞節の言い争い）",
+      "group_label": "第1幕",
+      "roles": [
+        "タルクィニウス",
+        "コラティヌス",
+        "ユニウス"
+      ]
+    },
+    {
+      "label": "★第1幕 ★タルクィニウスの騎行（テヴェレ川を渡る）",
+      "group_label": "第1幕",
+      "roles": [
+        "タルクィニウス",
+        "男の語り手"
+      ]
+    },
+    {
+      "label": "第1幕 ルクレティアの家（糸を紡ぐ女たち）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルクレティア",
+        "ビアンカ",
+        "ルチア",
+        "女の語り手"
+      ]
+    },
+    {
+      "label": "★第1幕 タルクィニウスの投宿（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルクレティア",
+        "タルクィニウス",
+        "ビアンカ",
+        "ルチア"
+      ]
+    },
+    {
+      "label": "★第2幕 ルクレティアの眠りとタルクィニウスの侵入",
+      "group_label": "第2幕",
+      "roles": [
+        "ルクレティア",
+        "タルクィニウス",
+        "男の語り手",
+        "女の語り手"
+      ]
+    },
+    {
+      "label": "★第2幕 朝（ルクレティアの花と使い）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルクレティア",
+        "ビアンカ",
+        "ルチア"
+      ]
+    },
+    {
+      "label": "★第2幕 コラティヌスの帰りとルクレティアの自害",
+      "group_label": "第2幕",
+      "roles": [
+        "ルクレティア",
+        "コラティヌス",
+        "ユニウス",
+        "ビアンカ",
+        "ルチア"
+      ]
+    },
+    {
+      "label": "★終曲（受難のパッサカリアと語り手のエピローグ）",
+      "group_label": "第2幕",
+      "roles": [
+        "男の語り手",
+        "女の語り手"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

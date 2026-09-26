@@ -1,0 +1,168 @@
+{
+  "title": "ロデリンダ",
+  "title_original": "Rodelinda",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1725,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "handel-rodelinda",
+  "roles": [
+    {
+      "label": "ロデリンダ"
+    },
+    {
+      "label": "ベルタリード"
+    },
+    {
+      "label": "グリモアルド"
+    },
+    {
+      "label": "エドゥイージェ"
+    },
+    {
+      "label": "ウヌルフォ"
+    },
+    {
+      "label": "ガリバルド"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ロデリンダの嘆き",
+      "group_label": "第1幕",
+      "roles": [
+        "ロデリンダ",
+        "グリモアルド",
+        "ガリバルド"
+      ]
+    },
+    {
+      "label": "第1幕 ベルタリードの帰還（墓碑の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベルタリード",
+        "ウヌルフォ"
+      ]
+    },
+    {
+      "label": "第1幕 エドゥイージェの怒り",
+      "group_label": "第1幕",
+      "roles": [
+        "エドゥイージェ",
+        "グリモアルド"
+      ]
+    },
+    {
+      "label": "第2幕 ロデリンダの決断",
+      "group_label": "第2幕",
+      "roles": [
+        "ロデリンダ",
+        "グリモアルド",
+        "ベルタリード"
+      ]
+    },
+    {
+      "label": "第2幕 再会の二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ロデリンダ",
+        "ベルタリード"
+      ]
+    },
+    {
+      "label": "第3幕 牢獄の場",
+      "group_label": "第3幕",
+      "roles": [
+        "ベルタリード",
+        "ウヌルフォ",
+        "エドゥイージェ"
+      ]
+    },
+    {
+      "label": "第3幕 フィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "ロデリンダ",
+        "ベルタリード",
+        "グリモアルド",
+        "エドゥイージェ",
+        "ウヌルフォ",
+        "ガリバルド"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

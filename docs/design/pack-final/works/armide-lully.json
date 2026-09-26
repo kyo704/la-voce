@@ -1,0 +1,194 @@
+{
+  "title": "アルミード",
+  "title_original": "Armide",
+  "composer": "リュリ",
+  "composer_sort": "Lully, Jean-Baptiste",
+  "kind": "opera",
+  "year_written": 1686,
+  "duration_min": 170,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "armide-lully",
+  "note": "★★リュリ最後の完成作。★第2幕のアルミードの独白は朗唱の模範とされた",
+  "roles": [
+    {
+      "label": "アルミード"
+    },
+    {
+      "label": "ルノー"
+    },
+    {
+      "label": "イドラオ"
+    },
+    {
+      "label": "アロンテ"
+    },
+    {
+      "label": "ユバルド"
+    },
+    {
+      "label": "デンマークの騎士"
+    },
+    {
+      "label": "憎しみ（ラ・エヌ）"
+    },
+    {
+      "label": "フェニス"
+    },
+    {
+      "label": "シドニー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕（★栄光と知恵 ─ ルイ14世への頌詞）",
+      "group_label": "序幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ダマスクスの広場（アルミードの勝利とルノーへの執着）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミード",
+        "フェニス",
+        "シドニー",
+        "イドラオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★魔法の場（ルノーの眠り）と★アルミードの独白",
+      "group_label": "第2幕",
+      "roles": [
+        "ルノー",
+        "アルミード",
+        "イドラオ",
+        "アロンテ"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★『Enfin il est en ma puissance』（ついに彼はわが手に）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルミード"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★憎しみの女神を呼ぶ（愛を捨てられず追い返す）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルミード",
+        "憎しみ（ラ・エヌ）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 ユバルドとデンマークの騎士の試み（幻の女たち）",
+      "group_label": "第4幕",
+      "roles": [
+        "ユバルド",
+        "デンマークの騎士",
+        "フェニス",
+        "シドニー"
+      ]
+    },
+    {
+      "label": "★第5幕 ★快楽の宮殿（愛の二重唱とパッサカイユ）",
+      "group_label": "第5幕",
+      "roles": [
+        "アルミード",
+        "ルノー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（ルノーの去りとアルミードの宮殿の破壊）",
+      "group_label": "第5幕",
+      "roles": [
+        "アルミード",
+        "ルノー",
+        "ユバルド",
+        "デンマークの騎士",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

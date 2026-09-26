@@ -1,0 +1,70 @@
+{
+  "title": "博物誌",
+  "title_original": "Histoires naturelles",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "song_cycle",
+  "year_written": 1906,
+  "duration_min": 17,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "ravel-histoires",
+  "note": "★作詩 ジュール・ルナール ／ ★★★語るように 歌う 曲。★語尾の e を 落とす 歌い方が 当時 物議を 呼びました ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 孔雀（Le paon）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. こおろぎ（Le grillon）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 白鳥（Le cygne）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. かわせみ（Le martin-pêcheur）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. ほろほろ鳥（La pintade）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

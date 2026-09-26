@@ -1,0 +1,62 @@
+{
+  "title": "4つの厳粛な歌 作品121",
+  "title_original": "Vier ernste Gesänge op.121",
+  "composer": "ブラームス",
+  "composer_sort": "Brahms, Johannes",
+  "kind": "song_cycle",
+  "year_written": 1896,
+  "duration_min": 20,
+  "language": "de",
+  "source": "hand",
+  "source_id": "brahms-op121",
+  "note": "★作詩 聖書 ／ ★★★低い声のための 曲。★ブラームス 最後の 歌曲 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 人の子らに臨むことは（Denn es gehet dem Menschen）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. わたしはまた振り返って（Ich wandte mich und sahe）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 死よ、なんと苦しいものか（O Tod, wie bitter bist du）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. たとえわたしが人々の言葉で語ろうと（Wenn ich mit Menschen）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "title": "女殺油地獄",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1721,
+  "duration_min": 130,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bun-onnagoroshi",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松門左衛門 ／ ★★★油で滑りながらの殺しの場が名高い。★歌舞伎でも上演される ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "河内屋与兵衛"
+    },
+    {
+      "label": "お吉"
+    },
+    {
+      "label": "豊島屋七左衛門"
+    },
+    {
+      "label": "徳兵衛"
+    },
+    {
+      "label": "おさわ"
+    },
+    {
+      "label": "会津の小鉄"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★上の巻 徳庵堤（花見の場）",
+      "group_label": "上",
+      "roles": [
+        "河内屋与兵衛",
+        "会津の小鉄",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★中の巻 河内屋内（★親を蹴る不孝）",
+      "group_label": "中",
+      "roles": [
+        "河内屋与兵衛",
+        "徳兵衛",
+        "おさわ",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★★下の巻 豊島屋油店（★油に滑る殺しの場）",
+      "group_label": "下",
+      "roles": [
+        "河内屋与兵衛",
+        "お吉",
+        "豊島屋七左衛門",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

@@ -15,7 +15,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw, libUrl } = require("./_source");
+const { stripComments, readRaw, libUrl, inMihon } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -29,14 +29,19 @@ async function main() {
   const m = await import(libUrl("periodMarkers"));
 
   console.log("=== 一 ★下の 4行（★約束） ===");
-  const 約 = [
-    "置くのは 日だけ です。わけは うかがいません。",
-    "良い・悪いは 出しません。前と あとを 分けるだけです。",
-    "外しても、記録は 1つも 変わりません。",
+  // ★★★覚えません ── ★見本から 数えます（★`_source.js` の `inMihon`・2026-09-26）。
+  //   ★★写して 持つと、★見張りが 間違った 字を 守ります。★実際に 起きました。
+  const 約 = m.LIST_NOTES;
+  t(約.length === 4, `★4行（いま ${約.length}）`);
+  // ★★★4行目「…なります（いまは まだです）」は 見本に ありません ──
+  //   ★★見本は「分けて 見られます」と 書いて いました。
+  //   ★★2026-09-25 に 見本の 側が 直り、★註に わけが 書かれて います
+  //     （★「できない ことを できると 書かない」）。★だから ここは 例外 です。
+  const 見本に無い = new Set([
     "くらべるときに 前と あとを 分けて 見られるように なります（いまは まだです）。"
-  ];
-  t(m.LIST_NOTES.length === 4, `★4行（いま ${m.LIST_NOTES.length}）`);
-  約.forEach((l) => t(m.LIST_NOTES.includes(l), `★「${l.slice(0, 20)}…」`));
+  ]);
+  約.filter((l) => !見本に無い.has(l))
+    .forEach((l) => t(inMihon(l), `★見本に 同じ 字が ある …… 「${l.slice(0, 20)}…」`));
   t(m.LIST_HEAD_LINES.includes("日を 置くと、その 前と あとが 分かれます。"), "★上の 断り 1行目");
   t(m.LIST_HEAD_LINES.includes("記録は 止まりません。いつもどおり 書けます。"), "★上の 断り 2行目");
 

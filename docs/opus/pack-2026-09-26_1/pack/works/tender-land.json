@@ -1,0 +1,211 @@
+{
+  "title": "やさしい大地",
+  "title_original": "The Tender Land",
+  "composer": "コープランド",
+  "composer_sort": "Copland, Aaron",
+  "kind": "opera",
+  "year_written": 1954,
+  "duration_min": 105,
+  "language": "en",
+  "source": "hand",
+  "source_id": "tender-land",
+  "roles": [
+    {
+      "label": "ローリー・モス"
+    },
+    {
+      "label": "マーティン"
+    },
+    {
+      "label": "トップ"
+    },
+    {
+      "label": "モス夫人"
+    },
+    {
+      "label": "グランパ・モス"
+    },
+    {
+      "label": "ベス"
+    },
+    {
+      "label": "スプリンス氏"
+    },
+    {
+      "label": "スプリンス夫人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ★卒業の日の支度（母と娘）",
+      "group_label": "第1幕",
+      "roles": [
+        "ローリー・モス",
+        "モス夫人",
+        "ベス",
+        "グランパ・モス"
+      ]
+    },
+    {
+      "label": "★第1幕 2人の渡り労働者の来訪",
+      "group_label": "第1幕",
+      "roles": [
+        "マーティン",
+        "トップ",
+        "グランパ・モス",
+        "ローリー・モス"
+      ]
+    },
+    {
+      "label": "★第1幕 ★五重唱（われらに祝いを ─ The Promise of Living）",
+      "group_label": "第1幕",
+      "roles": [
+        "ローリー・モス",
+        "マーティン",
+        "トップ",
+        "モス夫人",
+        "グランパ・モス"
+      ]
+    },
+    {
+      "label": "★第2幕 ★卒業の宴（スクエア・ダンス）",
+      "group_label": "第2幕",
+      "roles": [
+        "ローリー・モス",
+        "マーティン",
+        "トップ",
+        "スプリンス氏",
+        "スプリンス夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ローリーとマーティンの愛の二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ローリー・モス",
+        "マーティン"
+      ]
+    },
+    {
+      "label": "★第2幕 疑いをかけられる（別の男の仕業）",
+      "group_label": "第2幕",
+      "roles": [
+        "スプリンス氏",
+        "グランパ・モス",
+        "マーティン",
+        "トップ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 夜明け（マーティンとトップは黙って去る）",
+      "group_label": "第3幕",
+      "roles": [
+        "マーティン",
+        "トップ"
+      ]
+    },
+    {
+      "label": "★終曲（★ローリーの旅立ちと母の受け入れ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ローリー・モス",
+        "モス夫人",
+        "グランパ・モス",
+        "ベス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "title": "十字架上の七つの言葉（合唱版）",
+  "composer": "ハイドン",
+  "composer_sort": "Haydn, Joseph",
+  "kind": "chorus",
+  "year_written": 1796,
+  "duration_min": 65,
+  "edition": "★★管弦楽版・弦楽四重奏版・合唱版が あります",
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-haydn-seasons-nashi",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★導入",
+      "group_label": "導入",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "父よ、彼らを赦してください",
+      "group_label": "第1",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "今日、あなたは私と共に",
+      "group_label": "第2",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "女よ、これがあなたの子です",
+      "group_label": "第3",
+      "roles": [
+        "アルト独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★わが神、なぜ私を捨てたのですか",
+      "group_label": "第4",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "私は渇く",
+      "group_label": "第5",
+      "roles": [
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "成し遂げられた",
+      "group_label": "第6",
+      "roles": [
+        "バス独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "父よ、わが霊を委ねます",
+      "group_label": "第7",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★地震",
+      "group_label": "終",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

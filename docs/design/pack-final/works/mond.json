@@ -1,0 +1,188 @@
+{
+  "title": "月",
+  "title_original": "Der Mond",
+  "composer": "オルフ",
+  "composer_sort": "Orff, Carl",
+  "kind": "opera",
+  "year_written": 1939,
+  "duration_min": 80,
+  "language": "de",
+  "source": "hand",
+  "source_id": "mond",
+  "roles": [
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "4人の若者"
+    },
+    {
+      "label": "宿の主人"
+    },
+    {
+      "label": "村長"
+    },
+    {
+      "label": "ペトルス"
+    },
+    {
+      "label": "老人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★語り手の口上（月のなかった国の話）",
+      "group_label": "序",
+      "roles": [
+        "語り手"
+      ]
+    },
+    {
+      "label": "★4人の若者が月を盗む",
+      "group_label": "第1場",
+      "roles": [
+        "4人の若者",
+        "宿の主人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★村に月をかける（4分の1ずつ）",
+      "group_label": "第2場",
+      "roles": [
+        "4人の若者",
+        "村長",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★4人が死に、月を棺に分けて持ち去る",
+      "group_label": "第3場",
+      "roles": [
+        "4人の若者",
+        "村長",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★黄泉の国（月の光で死者が騒ぎ出す）",
+      "group_label": "第4場",
+      "roles": [
+        "4人の若者",
+        "老人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（ペトルスが月を天に掛ける）",
+      "group_label": "終場",
+      "roles": [
+        "ペトルス",
+        "語り手",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ツィター",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

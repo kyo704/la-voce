@@ -1,0 +1,77 @@
+{
+  "title": "オレステイア三部作",
+  "aliases": [
+    "アガメムノン"
+  ],
+  "composer": "アイスキュロス",
+  "composer_sort": "Aeschylus",
+  "kind": "drama",
+  "year_written": -458,
+  "duration_min": 240,
+  "language": "el",
+  "source": "hand",
+  "source_id": "dr-oresteia",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "アガメムノン"
+    },
+    {
+      "label": "クリュタイムネストラ"
+    },
+    {
+      "label": "オレステス"
+    },
+    {
+      "label": "エレクトラ"
+    },
+    {
+      "label": "アポロン"
+    },
+    {
+      "label": "アテナ"
+    },
+    {
+      "label": "合唱団（コロス）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★王の帰還と殺害",
+      "group_label": "アガメムノン",
+      "roles": [
+        "アガメムノン",
+        "クリュタイムネストラ",
+        "合唱団（コロス）"
+      ]
+    },
+    {
+      "label": "★オレステスの復讐",
+      "group_label": "供養する女たち",
+      "roles": [
+        "オレステス",
+        "エレクトラ",
+        "クリュタイムネストラ"
+      ]
+    },
+    {
+      "label": "★★アテナイの裁判",
+      "group_label": "エウメニデス",
+      "roles": [
+        "オレステス",
+        "アポロン",
+        "アテナ",
+        "合唱団（コロス）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

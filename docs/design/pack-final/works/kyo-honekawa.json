@@ -1,0 +1,68 @@
+{
+  "title": "骨皮",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-honekawa",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（新発意）"
+    },
+    {
+      "label": "アド（住持）"
+    },
+    {
+      "label": "小アド（檀家）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "住持が寺の用を教えて出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "アド（住持）"
+      ]
+    },
+    {
+      "label": "★教えを取り違えて檀家に応える",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "小アド（檀家）"
+      ]
+    },
+    {
+      "label": "★★次の檀家にも取り違えて返す",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "小アド（檀家）"
+      ]
+    },
+    {
+      "label": "★住持に叱られる",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "アド（住持）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "title": "弓矢太郎",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-yumiya-taro",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（弓矢太郎）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "小アド（何某二）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "度胸自慢をする",
+      "group_label": "段",
+      "roles": [
+        "シテ（弓矢太郎）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "★墓地へ行って証を立てると言う",
+      "group_label": "段",
+      "roles": [
+        "シテ（弓矢太郎）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "★★仲間が鬼に化けて待つ",
+      "group_label": "段",
+      "roles": [
+        "シテ（弓矢太郎）",
+        "アド（何某）",
+        "小アド（何某二）"
+      ]
+    },
+    {
+      "label": "★腰を抜かす",
+      "group_label": "段",
+      "roles": [
+        "シテ（弓矢太郎）",
+        "アド（何某）",
+        "小アド（何某二）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "title": "ゲーテ歌曲集",
+  "title_original": "Gedichte von Goethe",
+  "composer": "ヴォルフ",
+  "composer_sort": "Wolf, Hugo",
+  "kind": "song_cycle",
+  "year_written": 1889,
+  "duration_min": 130,
+  "language": "de",
+  "source": "hand",
+  "source_id": "wolf-goethe",
+  "note": "★作詩 ゲーテ ／ ★『ミニョン』『竪琴弾き』『ガニュメート』などを 選んで 組みます ／ ★★曲名を 全部 確かめられなかったので ★曲数（51曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全51曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "title": "黒人の歌5つ",
+  "title_original": "Cinco canciones negras",
+  "composer": "モンサルバーチェ",
+  "composer_sort": "Montsalvatge, Xavier",
+  "kind": "song_cycle",
+  "year_written": 1945,
+  "duration_min": 13,
+  "language": "es",
+  "source": "hand",
+  "source_id": "montsalvatge-negras",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. キューバの子守歌（Cuba dentro de un piano）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. ハバナの女（Punto de habanera）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 黒人の歌（Chévere）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 黒人の子への子守歌（Canción de cuna para dormir a un negrito）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 黒人の歌の歌（Canto negro）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

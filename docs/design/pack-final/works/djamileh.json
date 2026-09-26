@@ -1,0 +1,171 @@
+{
+  "title": "ジャミレ",
+  "title_original": "Djamileh",
+  "composer": "ビゼー",
+  "composer_sort": "Bizet, Georges",
+  "kind": "opera",
+  "year_written": 1872,
+  "duration_min": 60,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "djamileh",
+  "roles": [
+    {
+      "label": "ジャミレ"
+    },
+    {
+      "label": "アルン"
+    },
+    {
+      "label": "スプレンディアーノ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "カイロの館（アルンの倦み）",
+      "group_label": "第1場",
+      "roles": [
+        "アルン",
+        "スプレンディアーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ジャミレのガゼル（月のように）",
+      "group_label": "第2場",
+      "roles": [
+        "ジャミレ"
+      ]
+    },
+    {
+      "label": "ジャミレの別れの日",
+      "group_label": "第3場",
+      "roles": [
+        "ジャミレ",
+        "アルン"
+      ]
+    },
+    {
+      "label": "スプレンディアーノの計（奴隷市で買い戻す）",
+      "group_label": "第4場",
+      "roles": [
+        "ジャミレ",
+        "スプレンディアーノ"
+      ]
+    },
+    {
+      "label": "★奴隷の踊りと入れ替わり",
+      "group_label": "第5場",
+      "roles": [
+        "ジャミレ",
+        "アルン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "終曲（アルンの気づきと愛）",
+      "group_label": "終場",
+      "roles": [
+        "ジャミレ",
+        "アルン",
+        "スプレンディアーノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

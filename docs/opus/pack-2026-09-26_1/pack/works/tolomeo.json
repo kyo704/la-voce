@@ -1,0 +1,157 @@
+{
+  "title": "トロメーオ",
+  "title_original": "Tolomeo, re d'Egitto",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1728,
+  "duration_min": 165,
+  "language": "it",
+  "source": "hand",
+  "source_id": "tolomeo",
+  "roles": [
+    {
+      "label": "トロメーオ"
+    },
+    {
+      "label": "セレウーチェ"
+    },
+    {
+      "label": "エリーサ"
+    },
+    {
+      "label": "アラスペ"
+    },
+    {
+      "label": "アレッサンドロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 キプロスの浜（羊飼いに身を隠すトロメーオ）",
+      "group_label": "第1幕",
+      "roles": [
+        "トロメーオ",
+        "アラスペ"
+      ]
+    },
+    {
+      "label": "第1幕 難破したセレウーチェ（夫を探す妻）",
+      "group_label": "第1幕",
+      "roles": [
+        "セレウーチェ",
+        "アレッサンドロ"
+      ]
+    },
+    {
+      "label": "第1幕 エリーサの恋",
+      "group_label": "第1幕",
+      "roles": [
+        "エリーサ",
+        "トロメーオ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★トロメーオのアリア（Stille amare ─ 苦い滴）",
+      "group_label": "第2幕",
+      "roles": [
+        "トロメーオ"
+      ]
+    },
+    {
+      "label": "★第2幕 夫婦の気づかぬ出会い",
+      "group_label": "第2幕",
+      "roles": [
+        "トロメーオ",
+        "セレウーチェ"
+      ]
+    },
+    {
+      "label": "第3幕 エリーサの毒杯（偽りの毒）",
+      "group_label": "第3幕",
+      "roles": [
+        "エリーサ",
+        "トロメーオ",
+        "アラスペ"
+      ]
+    },
+    {
+      "label": "★終曲（トロメーオの王位回復と再会）",
+      "group_label": "第3幕",
+      "roles": [
+        "トロメーオ",
+        "セレウーチェ",
+        "エリーサ",
+        "アレッサンドロ",
+        "アラスペ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

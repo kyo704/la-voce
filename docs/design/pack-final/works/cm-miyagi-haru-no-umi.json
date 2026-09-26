@@ -1,0 +1,42 @@
+{
+  "title": "春の海",
+  "composer": "宮城道雄",
+  "composer_sort": "Miyagi, Michio",
+  "kind": "chamber",
+  "year_written": 1929,
+  "duration_min": 7,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-miyagi-haru-no-umi",
+  "note": "★★尺八の 代わりに ヴァイオリンで 演奏する 形も あります",
+  "roles": [
+    {
+      "label": "箏"
+    },
+    {
+      "label": "尺八（またはヴァイオリン）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★一曲（★三部の 形）",
+      "group_label": "楽章",
+      "roles": [
+        "箏",
+        "尺八（またはヴァイオリン）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "尺八（またはヴァイオリン）",
+      "count": 1,
+      "section": "woodwind"
+    }
+  ]
+}

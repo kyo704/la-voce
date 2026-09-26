@@ -1,0 +1,121 @@
+{
+  "title": "昭君",
+  "composer": "能（四番目物（雑））",
+  "composer_sort": "Noh",
+  "kind": "noh",
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "noh-shokun",
+  "note": "★四番目物（雑） ／ ★謡（うたい）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（白桃（父））"
+    },
+    {
+      "label": "シテツレ（王母（母））"
+    },
+    {
+      "label": "シテツレ（王昭君の霊）"
+    },
+    {
+      "label": "ワキ（胡王）"
+    },
+    {
+      "label": "アイ（間狂言）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ワキの登場（唐土・王昭君の故郷）",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（胡王）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "シテの登場（白桃（父））",
+      "group_label": "前段",
+      "roles": [
+        "シテ（白桃（父））",
+        "シテツレ（王母（母））",
+        "シテツレ（王昭君の霊）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "問答・いわれ",
+      "group_label": "前段",
+      "roles": [
+        "シテ（白桃（父））",
+        "シテツレ（王母（母））",
+        "シテツレ（王昭君の霊）",
+        "ワキ（胡王）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "アイ（間狂言）",
+      "group_label": "中",
+      "roles": [
+        "アイ（間狂言）",
+        "ワキ（胡王）"
+      ]
+    },
+    {
+      "label": "鏡の段",
+      "group_label": "後段",
+      "roles": [
+        "シテ（白桃（父））",
+        "シテツレ（王母（母））",
+        "シテツレ（王昭君の霊）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "キリ（終曲）",
+      "group_label": "後段",
+      "roles": [
+        "シテ（白桃（父））",
+        "シテツレ（王母（母））",
+        "シテツレ（王昭君の霊）",
+        "ワキ（胡王）",
+        "地謡",
+        "囃子方"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛（能管）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "title": "花売の縁",
+  "aliases": [
+    "花売の縁"
+  ],
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1800,
+  "duration_min": 80,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-shushin-kaneiri-alt",
+  "note": "★組踊（琉球の歌舞劇） ／ 作者 高宮城親雲上 ／ ★★『五番』の後の作。★猿引の芸が入る ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "森川の子"
+    },
+    {
+      "label": "妻"
+    },
+    {
+      "label": "子"
+    },
+    {
+      "label": "猿引"
+    },
+    {
+      "label": "薪取"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★妻と子が夫を探して旅に出る",
+      "group_label": "段",
+      "roles": [
+        "妻",
+        "子",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★★薪取との出会い（道を尋ねる）",
+      "group_label": "段",
+      "roles": [
+        "妻",
+        "子",
+        "薪取",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★★猿引の芸（間の場）",
+      "group_label": "段",
+      "roles": [
+        "猿引",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    },
+    {
+      "label": "★★★花売りとなった夫との再会",
+      "group_label": "段",
+      "roles": [
+        "森川の子",
+        "妻",
+        "子",
+        "地謡（歌三線・箏・笛・胡弓・太鼓）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "title": "素襖落（歌舞伎）",
+  "aliases": [
+    "新歌舞伎十八番 素襖落"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1892,
+  "duration_min": 45,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-suo-otoshi-kb",
+  "note": "★歌舞伎 ／ 作者 福地桜痴 ／ ★狂言『素袍落』を 歌舞伎に 移したもの ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "太郎冠者"
+    },
+    {
+      "label": "主人"
+    },
+    {
+      "label": "姫"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "次郎冠者"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★使いを言いつかる",
+      "group_label": "一幕",
+      "roles": [
+        "太郎冠者",
+        "主人",
+        "姫",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★酔って舞い、素襖を落とす",
+      "group_label": "一幕",
+      "roles": [
+        "太郎冠者",
+        "主人",
+        "次郎冠者",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "title": "月見座頭",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-tsukimi-zato",
+  "note": "★雑狂言 ／ ★★狂言の中で ★笑いで終わらない数少ない曲 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（座頭（盲人））"
+    },
+    {
+      "label": "アド（上京の男）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★座頭が月見に出て虫の音を聞く",
+      "group_label": "段",
+      "roles": [
+        "シテ（座頭（盲人））"
+      ]
+    },
+    {
+      "label": "男が来て共に酒を飲み謡う",
+      "group_label": "段",
+      "roles": [
+        "シテ（座頭（盲人））",
+        "アド（上京の男）"
+      ]
+    },
+    {
+      "label": "別れたあと、男が声を変えて戻り座頭を突き倒す",
+      "group_label": "段",
+      "roles": [
+        "シテ（座頭（盲人））",
+        "アド（上京の男）"
+      ]
+    },
+    {
+      "label": "★★座頭がひとり残る（★笑いで終わらない曲）",
+      "group_label": "段",
+      "roles": [
+        "シテ（座頭（盲人））"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

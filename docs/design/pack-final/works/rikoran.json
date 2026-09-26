@@ -1,0 +1,232 @@
+{
+  "title": "李香蘭",
+  "composer": "三木たかし",
+  "composer_sort": "Miki, Takashi",
+  "kind": "musical",
+  "year_written": 1991,
+  "duration_min": 165,
+  "edition": "1991 劇団四季初演版（★『昭和の歴史3部作』の第1作。★1997／2005／2013 再演）",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "rikoran",
+  "note": "★作詞 浅利慶太 ／ 脚本・演出 浅利慶太（劇団四季） ／ ★山口淑子の自伝による。★★曲名は確かなものだけを書き、場面の名前で持っています",
+  "roles": [
+    {
+      "label": "李香蘭（山口淑子）"
+    },
+    {
+      "label": "川島芳子"
+    },
+    {
+      "label": "松岡謙一郎"
+    },
+    {
+      "label": "潘淑華"
+    },
+    {
+      "label": "李際春"
+    },
+    {
+      "label": "甘粕正彦"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ★奉天の少女時代（日本人として中国で育つ）",
+      "group_label": "第1幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ★満州映画協会と『李香蘭』の名",
+      "group_label": "第1幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "甘粕正彦",
+        "李際春"
+      ]
+    },
+    {
+      "label": "第1幕 ★中国人の親友 潘淑華",
+      "group_label": "第1幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "潘淑華"
+      ]
+    },
+    {
+      "label": "第1幕 ★川島芳子との出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "川島芳子"
+      ]
+    },
+    {
+      "label": "★第1幕終曲（歌手としての成功と引き裂かれる立場）",
+      "group_label": "第1幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "松岡謙一郎",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★日中戦争の激化",
+      "group_label": "第2幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "松岡謙一郎",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★潘淑華との別れ",
+      "group_label": "第2幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "潘淑華"
+      ]
+    },
+    {
+      "label": "第2幕 ★敗戦と漢奸裁判（★日本人であることの証明）",
+      "group_label": "第2幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "川島芳子",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（日本への帰国）",
+      "group_label": "第2幕",
+      "roles": [
+        "李香蘭（山口淑子）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "title": "悪太郎",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 40,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-akutaro",
+  "note": "★出家狂言 ／ ★★★終わりは 二人で 念仏を 謡いながら 橋掛りを 去ります ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（悪太郎）"
+    },
+    {
+      "label": "アド（伯父）"
+    },
+    {
+      "label": "小アド（僧）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "酒に酔って暴れる",
+      "group_label": "段",
+      "roles": [
+        "シテ（悪太郎）",
+        "アド（伯父）"
+      ]
+    },
+    {
+      "label": "伯父が髪を剃って寝かせる",
+      "group_label": "段",
+      "roles": [
+        "シテ（悪太郎）",
+        "アド（伯父）"
+      ]
+    },
+    {
+      "label": "目覚めて出家したと思い込む",
+      "group_label": "段",
+      "roles": [
+        "シテ（悪太郎）"
+      ]
+    },
+    {
+      "label": "通りの僧に南無阿弥陀仏と名を付けられ、共に念仏して去る",
+      "group_label": "段",
+      "roles": [
+        "シテ（悪太郎）",
+        "小アド（僧）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

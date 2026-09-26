@@ -1,0 +1,173 @@
+{
+  "title": "泥棒はチャンスを作る",
+  "title_original": "L'occasione fa il ladro",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1812,
+  "duration_min": 85,
+  "language": "it",
+  "source": "hand",
+  "source_id": "occasione-ladro",
+  "roles": [
+    {
+      "label": "ベレニーチェ"
+    },
+    {
+      "label": "ドン・エウゼービオ"
+    },
+    {
+      "label": "ドン・パルメニオーネ"
+    },
+    {
+      "label": "アルベルト伯爵"
+    },
+    {
+      "label": "エルネスティーナ"
+    },
+    {
+      "label": "マルティーノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲（嵐）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "宿屋（3人の旅人と嵐）",
+      "group_label": "第1場",
+      "roles": [
+        "アルベルト伯爵",
+        "ドン・パルメニオーネ",
+        "マルティーノ"
+      ]
+    },
+    {
+      "label": "鞄の取り違え",
+      "group_label": "第2場",
+      "roles": [
+        "ドン・パルメニオーネ",
+        "マルティーノ"
+      ]
+    },
+    {
+      "label": "ベレニーチェと侍女の入れ替わり",
+      "group_label": "第3場",
+      "roles": [
+        "ベレニーチェ",
+        "エルネスティーナ",
+        "ドン・エウゼービオ"
+      ]
+    },
+    {
+      "label": "アルベルトとベレニーチェ（互いに知らぬまま）",
+      "group_label": "第4場",
+      "roles": [
+        "アルベルト伯爵",
+        "ベレニーチェ"
+      ]
+    },
+    {
+      "label": "五重唱（総取り違え）",
+      "group_label": "第5場",
+      "roles": [
+        "ベレニーチェ",
+        "アルベルト伯爵",
+        "ドン・パルメニオーネ",
+        "エルネスティーナ",
+        "ドン・エウゼービオ"
+      ]
+    },
+    {
+      "label": "終曲（種明かし）",
+      "group_label": "終場",
+      "roles": [
+        "ベレニーチェ",
+        "アルベルト伯爵",
+        "ドン・パルメニオーネ",
+        "エルネスティーナ",
+        "ドン・エウゼービオ",
+        "マルティーノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "title": "籠釣瓶花街酔醒",
+  "aliases": [
+    "籠釣瓶花街酔醒"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1888,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kagotsurube",
+  "note": "★歌舞伎 ／ 作者 三代目河竹新七（黙阿弥門下） ／ ★★『縁切り』の場が名高い。★立役と女方の芯の芝居 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "次郎左衛門"
+    },
+    {
+      "label": "八ツ橋"
+    },
+    {
+      "label": "栄之丞"
+    },
+    {
+      "label": "釣鐘権八"
+    },
+    {
+      "label": "お孝"
+    },
+    {
+      "label": "治六"
+    },
+    {
+      "label": "喜助"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 吉原仲之町見染めの場（★八ツ橋の目と次郎左衛門）",
+      "group_label": "序幕",
+      "roles": [
+        "次郎左衛門",
+        "八ツ橋",
+        "治六",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★第2幕 兵庫屋（権八の唆し）",
+      "group_label": "第2幕",
+      "roles": [
+        "八ツ橋",
+        "栄之丞",
+        "釣鐘権八",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★★第3幕 縁切りの場（★八ツ橋が次郎左衛門を振る）",
+      "group_label": "第3幕",
+      "roles": [
+        "八ツ橋",
+        "次郎左衛門",
+        "栄之丞",
+        "お孝",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★第4幕 立花屋二階（★妖刀籠釣瓶による殺し）",
+      "group_label": "第4幕",
+      "roles": [
+        "次郎左衛門",
+        "八ツ橋",
+        "喜助",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

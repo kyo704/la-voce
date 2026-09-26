@@ -53,7 +53,9 @@ export default function TodoitaMono({ rows, onOpen, onBlock, onBack }) {
                   }}>{subOf(r)}</span>
                 </span>
                 <span style={{ fontSize: "0.75rem", color: C.inkSoft, whiteSpace: "nowrap" }}>
-                  {markOf(r) ? `${markOf(r)} ` : ""}›
+                  {/* ★★見本は 済が 無い ときも 「 ›」です（★前に 空きが 1つ）。
+                      ★★`(x[3]?'済':'')+' ›'` ── ★2026-09-26 に 数えました。 */}
+                  {`${markOf(r)} ›`}
                 </span>
               </button>
               {/* ★★止める 札。★渡されて いない ときは 出しません。 */}

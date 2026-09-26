@@ -1,0 +1,140 @@
+{
+  "title": "プルチネッラ",
+  "composer": "ストラヴィンスキー",
+  "composer_sort": "Stravinsky, Igor",
+  "kind": "dance",
+  "year_written": 1920,
+  "duration_min": 35,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-pulcinella",
+  "note": "★振付 マシーン ／ ★★ペルゴレージらの 曲を もとに した 作品。★★歌手が 3人 入ります ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★ナポリの街・プルチネッラ",
+      "group_label": "一幕物",
+      "roles": [
+        "群舞"
+      ]
+    },
+    {
+      "label": "★★歌のついた踊り（独唱つき）",
+      "group_label": "一幕物",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "バス独唱",
+        "群舞"
+      ]
+    },
+    {
+      "label": "★結末の祝い",
+      "group_label": "一幕物",
+      "roles": [
+        "群舞"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

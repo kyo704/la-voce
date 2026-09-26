@@ -1,0 +1,213 @@
+{
+  "title": "ベイビー・ドウのバラード",
+  "title_original": "The Ballad of Baby Doe",
+  "composer": "ムーア",
+  "composer_sort": "Moore, Douglas",
+  "kind": "opera",
+  "year_written": 1956,
+  "duration_min": 140,
+  "language": "en",
+  "source": "hand",
+  "source_id": "ballad-baby-doe",
+  "roles": [
+    {
+      "label": "ベイビー・ドウ"
+    },
+    {
+      "label": "ホレス・タボー"
+    },
+    {
+      "label": "オーガスタ・タボー"
+    },
+    {
+      "label": "ウィリアム・ジェニングス・ブライアン"
+    },
+    {
+      "label": "ママ・マクコート"
+    },
+    {
+      "label": "サミュエル"
+    },
+    {
+      "label": "アルバート"
+    },
+    {
+      "label": "ブッシー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 リードヴィルの酒場の前（銀山で当てたタボー）",
+      "group_label": "第1幕",
+      "roles": [
+        "ホレス・タボー",
+        "サミュエル",
+        "アルバート",
+        "ブッシー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ベイビー・ドウの登場（★柳の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベイビー・ドウ",
+        "ホレス・タボー"
+      ]
+    },
+    {
+      "label": "★第1幕 ★オーガスタの発見（手紙）",
+      "group_label": "第1幕",
+      "roles": [
+        "オーガスタ・タボー",
+        "ホレス・タボー"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ベイビー・ドウの手紙のアリア（母への）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベイビー・ドウ",
+        "ママ・マクコート"
+      ]
+    },
+    {
+      "label": "★第1幕 タボー・オペラハウスの開場と離縁",
+      "group_label": "第1幕",
+      "roles": [
+        "ホレス・タボー",
+        "オーガスタ・タボー",
+        "ベイビー・ドウ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ワシントンの婚礼（社交界の非難）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベイビー・ドウ",
+        "ホレス・タボー",
+        "ママ・マクコート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ブライアンの銀の演説",
+      "group_label": "第2幕",
+      "roles": [
+        "ウィリアム・ジェニングス・ブライアン",
+        "ホレス・タボー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 銀本位制の崩れとタボーの破産",
+      "group_label": "第2幕",
+      "roles": [
+        "ホレス・タボー",
+        "オーガスタ・タボー",
+        "ベイビー・ドウ"
+      ]
+    },
+    {
+      "label": "★終曲（★タボーの死とベイビー・ドウの「いつまでも」）",
+      "group_label": "第2幕",
+      "roles": [
+        "ホレス・タボー",
+        "ベイビー・ドウ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

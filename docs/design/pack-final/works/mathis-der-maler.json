@@ -1,0 +1,215 @@
+{
+  "title": "画家マティス",
+  "title_original": "Mathis der Maler",
+  "composer": "ヒンデミット",
+  "composer_sort": "Hindemith, Paul",
+  "kind": "opera",
+  "year_written": 1938,
+  "duration_min": 200,
+  "language": "de",
+  "source": "hand",
+  "source_id": "mathis-der-maler",
+  "note": "★ナチスに上演を禁じられ、初演はチューリヒ",
+  "roles": [
+    {
+      "label": "マティス"
+    },
+    {
+      "label": "レギーナ"
+    },
+    {
+      "label": "ウルズラ"
+    },
+    {
+      "label": "アルブレヒト枢機卿"
+    },
+    {
+      "label": "シュヴァルプ"
+    },
+    {
+      "label": "リーディンガー"
+    },
+    {
+      "label": "カピート"
+    },
+    {
+      "label": "ロレンツ・フォン・ポンメルスフェルデン"
+    },
+    {
+      "label": "グラフィン・ヘルフェンシュタイン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 修道院の壁を描くマティス",
+      "group_label": "第1場",
+      "roles": [
+        "マティス",
+        "シュヴァルプ",
+        "レギーナ"
+      ]
+    },
+    {
+      "label": "★第2場 マインツ（枢機卿と農民の訴え）",
+      "group_label": "第2場",
+      "roles": [
+        "アルブレヒト枢機卿",
+        "マティス",
+        "カピート",
+        "リーディンガー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3場 リーディンガーの家（焚書と秘密の集会）",
+      "group_label": "第3場",
+      "roles": [
+        "リーディンガー",
+        "ウルズラ",
+        "カピート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4場 農民戦争の戦場（伯爵夫人の場）",
+      "group_label": "第4場",
+      "roles": [
+        "マティス",
+        "シュヴァルプ",
+        "グラフィン・ヘルフェンシュタイン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第5場 枢機卿とウルズラ（信仰の対話）",
+      "group_label": "第5場",
+      "roles": [
+        "アルブレヒト枢機卿",
+        "ウルズラ",
+        "カピート",
+        "ロレンツ・フォン・ポンメルスフェルデン"
+      ]
+    },
+    {
+      "label": "★第6場 聖アントニウスの誘惑（幻の場）",
+      "group_label": "第6場",
+      "roles": [
+        "マティス",
+        "レギーナ",
+        "ウルズラ",
+        "グラフィン・ヘルフェンシュタイン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★天使の合奏（聖パウロとの対話）",
+      "group_label": "第6場",
+      "roles": [
+        "マティス",
+        "アルブレヒト枢機卿",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第7場 終曲（レギーナの死とマティスの荷造り）",
+      "group_label": "第7場",
+      "roles": [
+        "マティス",
+        "レギーナ",
+        "ウルズラ",
+        "アルブレヒト枢機卿"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

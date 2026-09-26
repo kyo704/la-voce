@@ -1,0 +1,192 @@
+{
+  "title": "プラテー",
+  "title_original": "Platée",
+  "composer": "ラモー",
+  "composer_sort": "Rameau, Jean-Philippe",
+  "kind": "opera",
+  "year_written": 1745,
+  "duration_min": 140,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "platee",
+  "note": "★★『バレエ・ブフォン』（喜劇）。★★沼の妖精プラテーは男声（オート・コントル＝高いテノール）が演じる",
+  "roles": [
+    {
+      "label": "プラテー"
+    },
+    {
+      "label": "ジュピテル"
+    },
+    {
+      "label": "ジュノン"
+    },
+    {
+      "label": "メルキュール"
+    },
+    {
+      "label": "シテロン"
+    },
+    {
+      "label": "タリー"
+    },
+    {
+      "label": "モミュス"
+    },
+    {
+      "label": "ラムール"
+    },
+    {
+      "label": "テスピス"
+    },
+    {
+      "label": "クラリーヌ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 ★テスピスとタリー（喜劇の女神・ワインの神）",
+      "group_label": "序幕",
+      "roles": [
+        "テスピス",
+        "タリー",
+        "モミュス",
+        "ラムール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★沼（★プラテーの登場・かえるの鳴き声）",
+      "group_label": "第1幕",
+      "roles": [
+        "プラテー",
+        "シテロン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 シテロンの計（ジュノンの嫉妬を治す）",
+      "group_label": "第1幕",
+      "roles": [
+        "シテロン",
+        "メルキュール"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★ジュピテルの変身（ろば・ふくろう・そして本来の姿）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュピテル",
+        "プラテー",
+        "メルキュール"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★モミュスの嘲りと★ラ・フォリ（狂気）の場",
+      "group_label": "第2幕",
+      "roles": [
+        "モミュス",
+        "ラムール",
+        "プラテー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 偽りの婚礼（プラテーの晴れ姿）",
+      "group_label": "第3幕",
+      "roles": [
+        "プラテー",
+        "ジュピテル",
+        "モミュス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（★ジュノンの登場と皆の大笑い・プラテーは沼へ戻る）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジュノン",
+        "ジュピテル",
+        "プラテー",
+        "シテロン",
+        "メルキュール",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

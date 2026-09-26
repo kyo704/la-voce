@@ -1,0 +1,197 @@
+{
+  "title": "アルセスト",
+  "title_original": "Alceste, ou Le triomphe d'Alcide",
+  "composer": "リュリ",
+  "composer_sort": "Lully, Jean-Baptiste",
+  "kind": "opera",
+  "year_written": 1674,
+  "duration_min": 175,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "alceste-lully",
+  "roles": [
+    {
+      "label": "アルセスト"
+    },
+    {
+      "label": "アドメート"
+    },
+    {
+      "label": "アルシード"
+    },
+    {
+      "label": "セフィーズ"
+    },
+    {
+      "label": "リコメード"
+    },
+    {
+      "label": "リカス"
+    },
+    {
+      "label": "カロン"
+    },
+    {
+      "label": "プリュトン"
+    },
+    {
+      "label": "プロゼルピーヌ"
+    },
+    {
+      "label": "アポロン"
+    },
+    {
+      "label": "エオール"
+    },
+    {
+      "label": "テティス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕（セーヌの妖精・王の帰還を待つ）",
+      "group_label": "序幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 婚礼の祝いとリコメードによる誘拐",
+      "group_label": "第1幕",
+      "roles": [
+        "アルセスト",
+        "アドメート",
+        "リコメード",
+        "セフィーズ",
+        "リカス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★海戦と島の攻め（エオールとテティス）",
+      "group_label": "第2幕",
+      "roles": [
+        "アドメート",
+        "アルシード",
+        "エオール",
+        "テティス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★アルセストの身代わりの死（葬送の場）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルセスト",
+        "アドメート",
+        "アルシード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★カロンの渡し（冥界の川）",
+      "group_label": "第3幕",
+      "roles": [
+        "カロン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第4幕 ★冥界（プリュトンとプロゼルピーヌ・アルシードの願い）",
+      "group_label": "第4幕",
+      "roles": [
+        "アルシード",
+        "プリュトン",
+        "プロゼルピーヌ",
+        "アルセスト"
+      ]
+    },
+    {
+      "label": "★★終曲（★アルシードが身を引く・アポロンの祝福）",
+      "group_label": "第5幕",
+      "roles": [
+        "アルセスト",
+        "アドメート",
+        "アルシード",
+        "アポロン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

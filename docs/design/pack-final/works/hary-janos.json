@@ -1,0 +1,196 @@
+{
+  "title": "ハーリ・ヤーノシュ",
+  "title_original": "Háry János",
+  "composer": "コダーイ",
+  "composer_sort": "Kodály, Zoltán",
+  "kind": "opera",
+  "year_written": 1926,
+  "duration_min": 95,
+  "language": "hu",
+  "source": "hand",
+  "source_id": "hary-janos",
+  "note": "★ジングシュピール（歌芝居）。台詞が多い。★組曲としての演奏が一般的",
+  "roles": [
+    {
+      "label": "ハーリ・ヤーノシュ"
+    },
+    {
+      "label": "エルジェ"
+    },
+    {
+      "label": "マリー・ルイーズ"
+    },
+    {
+      "label": "マルツィ"
+    },
+    {
+      "label": "皇后"
+    },
+    {
+      "label": "ナポレオン"
+    },
+    {
+      "label": "エーベルガイエル"
+    },
+    {
+      "label": "居酒屋の学生"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★前口上（くしゃみ＝これから語るのは本当の話）",
+      "group_label": "前口上",
+      "roles": [
+        "居酒屋の学生",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★国境（ロシアとオーストリアの境を動かす）",
+      "group_label": "第1の冒険",
+      "roles": [
+        "ハーリ・ヤーノシュ",
+        "エルジェ",
+        "マリー・ルイーズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ウィーンの宮廷（★皇帝の宮廷への入場）",
+      "group_label": "第2の冒険",
+      "roles": [
+        "ハーリ・ヤーノシュ",
+        "皇后",
+        "マリー・ルイーズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★イタリアの戦場（★ナポレオンを一人で降す）",
+      "group_label": "第3の冒険",
+      "roles": [
+        "ハーリ・ヤーノシュ",
+        "ナポレオン",
+        "マルツィ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★間奏曲（ハンガリーのチャールダーシュ）",
+      "group_label": "第3の冒険",
+      "roles": []
+    },
+    {
+      "label": "★ミラノの宮廷（エルジェとの再会）",
+      "group_label": "第4の冒険",
+      "roles": [
+        "ハーリ・ヤーノシュ",
+        "エルジェ",
+        "マリー・ルイーズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（村へ帰る・居酒屋の笑い）",
+      "group_label": "終曲",
+      "roles": [
+        "ハーリ・ヤーノシュ",
+        "エルジェ",
+        "居酒屋の学生",
+        "エーベルガイエル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

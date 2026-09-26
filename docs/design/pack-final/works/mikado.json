@@ -1,0 +1,226 @@
+{
+  "title": "ミカド",
+  "title_original": "The Mikado",
+  "composer": "サリヴァン",
+  "composer_sort": "Sullivan, Arthur",
+  "kind": "opera",
+  "year_written": 1885,
+  "duration_min": 140,
+  "language": "en",
+  "source": "hand",
+  "source_id": "mikado",
+  "roles": [
+    {
+      "label": "ナンキ・プー"
+    },
+    {
+      "label": "ヤム・ヤム"
+    },
+    {
+      "label": "ココ"
+    },
+    {
+      "label": "プー・バー"
+    },
+    {
+      "label": "カティシャ"
+    },
+    {
+      "label": "ミカド"
+    },
+    {
+      "label": "ピッシュ・タッシュ"
+    },
+    {
+      "label": "ピッティ・シング"
+    },
+    {
+      "label": "ピープ・ボー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 ★ティティプーの町（われらは日本の紳士）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピッシュ・タッシュ",
+        "ナンキ・プー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ナンキ・プーの歌（流しの吟遊詩人）",
+      "group_label": "第1幕",
+      "roles": [
+        "ナンキ・プー",
+        "プー・バー",
+        "ピッシュ・タッシュ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ココのリスト・ソング（死刑にすべき者の名簿）",
+      "group_label": "第1幕",
+      "roles": [
+        "ココ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★3人の娘たち（女学校から）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヤム・ヤム",
+        "ピッティ・シング",
+        "ピープ・ボー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 フィナーレ（カティシャの登場と追い出し）",
+      "group_label": "第1幕",
+      "roles": [
+        "カティシャ",
+        "ナンキ・プー",
+        "ヤム・ヤム",
+        "ココ",
+        "プー・バー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ヤム・ヤムの鏡の歌（太陽と月）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヤム・ヤム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★マダガスカルの三重唱と偽の処刑証書",
+      "group_label": "第2幕",
+      "roles": [
+        "ヤム・ヤム",
+        "ナンキ・プー",
+        "ココ",
+        "プー・バー",
+        "ピッティ・シング"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ミカドの歌（罰は罪にふさわしく）",
+      "group_label": "第2幕",
+      "roles": [
+        "ミカド",
+        "カティシャ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ココの柳の歌（ティット・ウィロー）とカティシャ",
+      "group_label": "第2幕",
+      "roles": [
+        "ココ",
+        "カティシャ"
+      ]
+    },
+    {
+      "label": "★終曲（種明かしとめでたい結び）",
+      "group_label": "第2幕",
+      "roles": [
+        "ナンキ・プー",
+        "ヤム・ヤム",
+        "ココ",
+        "カティシャ",
+        "ミカド",
+        "プー・バー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

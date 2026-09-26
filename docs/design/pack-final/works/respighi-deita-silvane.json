@@ -1,0 +1,70 @@
+{
+  "title": "林の神々",
+  "title_original": "Deità silvane",
+  "composer": "レスピーギ",
+  "composer_sort": "Respighi, Ottorino",
+  "kind": "song_cycle",
+  "year_written": 1917,
+  "duration_min": 15,
+  "language": "it",
+  "source": "hand",
+  "source_id": "respighi-deita",
+  "note": "★★室内合奏つきの 版も あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 牧神（Dèi silvani）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 泉に住む水の精（Acqua）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. こおろぎ（Crepuscolo）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 雨（Egle）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 音楽（Musica in horto）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

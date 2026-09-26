@@ -1,0 +1,211 @@
+{
+  "title": "オベロン",
+  "title_original": "Oberon",
+  "composer": "ウェーバー",
+  "composer_sort": "Weber, Carl Maria von",
+  "kind": "opera",
+  "year_written": 1826,
+  "duration_min": 145,
+  "language": "en",
+  "source": "hand",
+  "source_id": "oberon",
+  "note": "★ロンドンのために英語で書かれた。台詞が多く、上演では手が入ることが多い",
+  "roles": [
+    {
+      "label": "レツィア"
+    },
+    {
+      "label": "ヒュオン"
+    },
+    {
+      "label": "ファーティメ"
+    },
+    {
+      "label": "シェラスミン"
+    },
+    {
+      "label": "オベロン"
+    },
+    {
+      "label": "パック"
+    },
+    {
+      "label": "アルマンゾール"
+    },
+    {
+      "label": "ロシャーナ"
+    },
+    {
+      "label": "ハールーン・アッ＝ラシード"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 妖精の国（オベロンとティターニアの仲たがい）",
+      "group_label": "第1幕",
+      "roles": [
+        "オベロン",
+        "パック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ヒュオンへの幻（レツィアの姿）と角笛",
+      "group_label": "第1幕",
+      "roles": [
+        "オベロン",
+        "ヒュオン",
+        "シェラスミン"
+      ]
+    },
+    {
+      "label": "★第2幕 バグダードの宮廷（レツィアのアリア「海よ、巨大な怪物よ」）",
+      "group_label": "第2幕",
+      "roles": [
+        "レツィア",
+        "ファーティメ",
+        "ハールーン・アッ＝ラシード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 駆け落ちと難破",
+      "group_label": "第2幕",
+      "roles": [
+        "レツィア",
+        "ヒュオン",
+        "ファーティメ",
+        "シェラスミン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 人魚の歌と妖精たちの踊り",
+      "group_label": "第2幕",
+      "roles": [
+        "オベロン",
+        "パック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 チュニス（奴隷になった4人）",
+      "group_label": "第3幕",
+      "roles": [
+        "レツィア",
+        "ヒュオン",
+        "ファーティメ",
+        "シェラスミン",
+        "アルマンゾール",
+        "ロシャーナ"
+      ]
+    },
+    {
+      "label": "★終曲（火刑の場と角笛による救い）",
+      "group_label": "第3幕",
+      "roles": [
+        "レツィア",
+        "ヒュオン",
+        "オベロン",
+        "アルマンゾール",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "title": "ザイーラ",
+  "title_original": "Zaira",
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1829,
+  "duration_min": 145,
+  "language": "it",
+  "source": "hand",
+  "source_id": "zaira",
+  "roles": [
+    {
+      "label": "ザイーラ"
+    },
+    {
+      "label": "オロスマーネ"
+    },
+    {
+      "label": "ネレスターノ"
+    },
+    {
+      "label": "コラスミーノ"
+    },
+    {
+      "label": "リュシニャン"
+    },
+    {
+      "label": "フアティーマ"
+    },
+    {
+      "label": "メレダーテ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 エルサレムの宮廷（婚礼の支度）",
+      "group_label": "第1幕",
+      "roles": [
+        "オロスマーネ",
+        "コラスミーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ザイーラとフアティーマ",
+      "group_label": "第1幕",
+      "roles": [
+        "ザイーラ",
+        "フアティーマ"
+      ]
+    },
+    {
+      "label": "第1幕 ネレスターノの使節",
+      "group_label": "第1幕",
+      "roles": [
+        "ネレスターノ",
+        "オロスマーネ",
+        "ザイーラ"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（父リュシニャンの発見）",
+      "group_label": "第1幕",
+      "roles": [
+        "リュシニャン",
+        "ザイーラ",
+        "ネレスターノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ザイーラの苦しみ（信仰と愛）",
+      "group_label": "第2幕",
+      "roles": [
+        "ザイーラ",
+        "ネレスターノ"
+      ]
+    },
+    {
+      "label": "第2幕 オロスマーネの嫉妬",
+      "group_label": "第2幕",
+      "roles": [
+        "オロスマーネ",
+        "コラスミーノ",
+        "メレダーテ"
+      ]
+    },
+    {
+      "label": "第2幕 フィナーレ（ザイーラの死とオロスマーネの自害）",
+      "group_label": "第2幕",
+      "roles": [
+        "オロスマーネ",
+        "ザイーラ",
+        "ネレスターノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

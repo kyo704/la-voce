@@ -1,0 +1,197 @@
+{
+  "title": "ブリーカー街の聖女",
+  "title_original": "The Saint of Bleecker Street",
+  "composer": "メノッティ",
+  "composer_sort": "Menotti, Gian Carlo",
+  "kind": "opera",
+  "year_written": 1954,
+  "duration_min": 125,
+  "language": "en",
+  "source": "hand",
+  "source_id": "saint-bleecker",
+  "roles": [
+    {
+      "label": "アンニーナ"
+    },
+    {
+      "label": "ミケーレ"
+    },
+    {
+      "label": "デシデーリア"
+    },
+    {
+      "label": "カルメーラ"
+    },
+    {
+      "label": "マリア・コロナ"
+    },
+    {
+      "label": "アッスンタ"
+    },
+    {
+      "label": "ドン・マルコ神父"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ブリーカー街のアパート（聖金曜日・聖痕）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンニーナ",
+        "アッスンタ",
+        "カルメーラ",
+        "マリア・コロナ",
+        "ドン・マルコ神父",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ミケーレの怒り（妹を守る）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミケーレ",
+        "アンニーナ",
+        "ドン・マルコ神父"
+      ]
+    },
+    {
+      "label": "★第2幕 イタリア料理店の婚礼（タランテラ）",
+      "group_label": "第2幕",
+      "roles": [
+        "カルメーラ",
+        "アンニーナ",
+        "ミケーレ",
+        "デシデーリア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ミケーレのアリア（おれはよそ者だ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ミケーレ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 デシデーリアの挑発と刺殺",
+      "group_label": "第2幕",
+      "roles": [
+        "デシデーリア",
+        "ミケーレ",
+        "アンニーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 地下鉄の駅（兄と妹の別れ）",
+      "group_label": "第3幕",
+      "roles": [
+        "アンニーナ",
+        "ミケーレ"
+      ]
+    },
+    {
+      "label": "★終曲（誓願の式・アンニーナの死）",
+      "group_label": "第3幕",
+      "roles": [
+        "アンニーナ",
+        "ミケーレ",
+        "ドン・マルコ神父",
+        "カルメーラ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

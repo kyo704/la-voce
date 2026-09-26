@@ -1,0 +1,33 @@
+{
+  "title": "唱歌・童謡による合唱曲集",
+  "composer": "編曲者は版ごと",
+  "composer_sort": "Shoka gassho",
+  "kind": "chorus",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "ch-shin-ichiro",
+  "note": "★★★編曲版です。★『ふるさと』『赤とんぼ』『夏の思い出』などを 選んで 組みます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★選んで 組みます（★曲は 公演ごと）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

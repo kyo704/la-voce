@@ -1,0 +1,178 @@
+{
+  "title": "霊媒",
+  "title_original": "The Medium",
+  "composer": "メノッティ",
+  "composer_sort": "Menotti, Gian Carlo",
+  "kind": "opera",
+  "year_written": 1946,
+  "duration_min": 65,
+  "language": "en",
+  "source": "hand",
+  "source_id": "medium",
+  "note": "★口のきけないトビーは黙役（歌わない）",
+  "roles": [
+    {
+      "label": "マダム・フローラ（ババ）"
+    },
+    {
+      "label": "モニカ"
+    },
+    {
+      "label": "トビー"
+    },
+    {
+      "label": "ゴビノー夫人"
+    },
+    {
+      "label": "ゴビノー氏"
+    },
+    {
+      "label": "ノーラン夫人"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 交霊の支度（モニカとトビー）",
+      "group_label": "第1幕",
+      "roles": [
+        "マダム・フローラ（ババ）",
+        "モニカ",
+        "トビー"
+      ]
+    },
+    {
+      "label": "★第1幕 モニカの子守歌（黒い白鳥）",
+      "group_label": "第1幕",
+      "roles": [
+        "モニカ",
+        "トビー"
+      ]
+    },
+    {
+      "label": "★第1幕 交霊会（3人の客と偽の声）",
+      "group_label": "第1幕",
+      "roles": [
+        "マダム・フローラ（ババ）",
+        "モニカ",
+        "トビー",
+        "ゴビノー夫人",
+        "ゴビノー氏",
+        "ノーラン夫人"
+      ]
+    },
+    {
+      "label": "★第1幕 ★フローラが本当に手を感じる",
+      "group_label": "第1幕",
+      "roles": [
+        "マダム・フローラ（ババ）",
+        "モニカ",
+        "トビー"
+      ]
+    },
+    {
+      "label": "★第2幕 モニカとトビーの人形芝居とワルツ",
+      "group_label": "第2幕",
+      "roles": [
+        "モニカ",
+        "トビー"
+      ]
+    },
+    {
+      "label": "★第2幕 フローラの告白（客に種明かしをするが信じられない）",
+      "group_label": "第2幕",
+      "roles": [
+        "マダム・フローラ（ババ）",
+        "ゴビノー夫人",
+        "ゴビノー氏",
+        "ノーラン夫人",
+        "モニカ"
+      ]
+    },
+    {
+      "label": "★終曲（トビーを撃つ・あれはあなただったの？）",
+      "group_label": "第2幕",
+      "roles": [
+        "マダム・フローラ（ババ）",
+        "トビー",
+        "モニカ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

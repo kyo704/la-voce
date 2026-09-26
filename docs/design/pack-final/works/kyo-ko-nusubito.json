@@ -1,0 +1,63 @@
+{
+  "title": "子盗人",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-ko-nusubito",
+  "note": "★盗人狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（盗人）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "盗みに入る",
+      "group_label": "段",
+      "roles": [
+        "シテ（盗人）"
+      ]
+    },
+    {
+      "label": "★★赤子が泣き出し、あやしてしまう",
+      "group_label": "段",
+      "roles": [
+        "シテ（盗人）"
+      ]
+    },
+    {
+      "label": "★主に見つかる",
+      "group_label": "段",
+      "roles": [
+        "シテ（盗人）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "★あやした情で許される",
+      "group_label": "段",
+      "roles": [
+        "シテ（盗人）",
+        "アド（主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

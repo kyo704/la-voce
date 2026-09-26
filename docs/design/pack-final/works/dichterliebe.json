@@ -1,0 +1,157 @@
+{
+ "title": "詩人の恋",
+ "title_original": "Dichterliebe",
+ "composer": "シューマン",
+ "composer_sort": "Schumann, Robert",
+ "kind": "song_cycle",
+ "year_written": 1840,
+ "duration_min": 30,
+ "language": "de",
+ "source_id": "schumann-dichterliebe",
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. 美しい五月に（Im wunderschönen Monat Mai）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. わが涙より（Aus meinen Tränen sprießen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. ばら、ゆり、鳩（Die Rose, die Lilie）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 君の瞳を見つめると（Wenn ich in deine Augen seh）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. わが心を浸そう（Ich will meine Seele tauchen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. ラインの聖なる流れに（Im Rhein）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. ぼくは恨むまい（Ich grolle nicht）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. 花がわかってくれるなら（Und wüßten's die Blumen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "9. あれはフルートとバイオリン（Das ist ein Flöten und Geigen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "10. あの歌が聞こえてくると（Hör ich das Liedchen klingen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "11. 若者が娘を恋し（Ein Jüngling liebt ein Mädchen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "12. 明るい夏の朝に（Am leuchtenden Sommermorgen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "13. ぼくは夢の中で泣いた（Ich hab im Traum geweinet）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "14. 夜ごとの夢に（Allnächtlich im Traume）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "15. 昔ばなしの中から（Aus alten Märchen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "16. 昔のいまわしい歌（Die alten, bösen Lieder）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand"
+}

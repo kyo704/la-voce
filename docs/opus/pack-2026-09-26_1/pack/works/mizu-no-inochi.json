@@ -1,0 +1,72 @@
+{
+  "title": "水のいのち",
+  "title_original": "水のいのち",
+  "aliases": [],
+  "composer": "髙田三郎",
+  "composer_sort": "Takata, Saburo",
+  "kind": "chorus",
+  "year_written": 1964,
+  "source": "hand",
+  "source_id": "takata-mizu-no-inochi",
+  "duration_min": 20,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "合唱（混声4部）",
+      "is_group": true
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1 雨",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "2 水たまり",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "3 川",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "4 海",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "5 海よ",
+      "group_label": "全曲",
+      "roles": [
+        "合唱（混声4部）",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "作詩: 高野喜久雄"
+}

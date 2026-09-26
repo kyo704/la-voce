@@ -1,0 +1,181 @@
+{
+  "title": "ジェンマ・ディ・ヴェルジ",
+  "title_original": "Gemma di Vergy",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1834,
+  "duration_min": 130,
+  "language": "it",
+  "source": "hand",
+  "source_id": "gemma-vergy",
+  "roles": [
+    {
+      "label": "ジェンマ"
+    },
+    {
+      "label": "タマス"
+    },
+    {
+      "label": "ヴェルジ伯爵"
+    },
+    {
+      "label": "イーダ"
+    },
+    {
+      "label": "グイード"
+    },
+    {
+      "label": "ロランド"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ヴェルジ城（離縁の噂）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェンマ",
+        "ロランド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 奴隷タマスの秘めた思い",
+      "group_label": "第1幕",
+      "roles": [
+        "タマス",
+        "ジェンマ"
+      ]
+    },
+    {
+      "label": "第1幕 伯爵の帰還とイーダとの婚礼",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴェルジ伯爵",
+        "イーダ",
+        "グイード",
+        "ジェンマ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ジェンマの嘆きと決意",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェンマ",
+        "タマス"
+      ]
+    },
+    {
+      "label": "第2幕 タマスが伯爵を刺す",
+      "group_label": "第2幕",
+      "roles": [
+        "タマス",
+        "ヴェルジ伯爵",
+        "ジェンマ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（タマスの自害とジェンマの絶望）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェンマ",
+        "タマス",
+        "イーダ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

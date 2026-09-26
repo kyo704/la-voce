@@ -1,0 +1,213 @@
+{
+  "title": "ニクソン・イン・チャイナ",
+  "title_original": "Nixon in China",
+  "composer": "アダムズ",
+  "composer_sort": "Adams, John",
+  "kind": "opera",
+  "year_written": 1987,
+  "duration_min": 170,
+  "language": "en",
+  "source": "hand",
+  "source_id": "nixon-in-china",
+  "note": "★台本はアリス・グッドマン（韻文）。★演出はピーター・セラーズ",
+  "roles": [
+    {
+      "label": "リチャード・ニクソン"
+    },
+    {
+      "label": "パット・ニクソン"
+    },
+    {
+      "label": "毛沢東"
+    },
+    {
+      "label": "江青"
+    },
+    {
+      "label": "周恩来"
+    },
+    {
+      "label": "ヘンリー・キッシンジャー"
+    },
+    {
+      "label": "3人の秘書"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ★北京空港（★兵士たちの合唱：三大規律八項注意）",
+      "group_label": "第1幕",
+      "roles": [
+        "リチャード・ニクソン",
+        "周恩来",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ニクソンのアリア（News has a kind of mystery）",
+      "group_label": "第1幕",
+      "roles": [
+        "リチャード・ニクソン",
+        "パット・ニクソン",
+        "ヘンリー・キッシンジャー"
+      ]
+    },
+    {
+      "label": "★第1幕 ★毛沢東の書斎（哲学的な問答と3人の秘書）",
+      "group_label": "第1幕",
+      "roles": [
+        "毛沢東",
+        "リチャード・ニクソン",
+        "周恩来",
+        "ヘンリー・キッシンジャー",
+        "3人の秘書"
+      ]
+    },
+    {
+      "label": "★第1幕 ★人民大会堂の晩餐会（乾杯の合唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "周恩来",
+        "リチャード・ニクソン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★パットの北京めぐり（★I am the wife of Mao Tse-tung ではなく This is prophetic!）",
+      "group_label": "第2幕",
+      "roles": [
+        "パット・ニクソン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★バレエ『紅色婦人部隊』の観劇（劇中劇）",
+      "group_label": "第2幕",
+      "roles": [
+        "江青",
+        "パット・ニクソン",
+        "リチャード・ニクソン",
+        "ヘンリー・キッシンジャー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★江青のアリア（I am the wife of Mao Tse-tung）",
+      "group_label": "第2幕",
+      "roles": [
+        "江青",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★最後の夜（6人がそれぞれの寝床で過去を語る）",
+      "group_label": "第3幕",
+      "roles": [
+        "リチャード・ニクソン",
+        "パット・ニクソン",
+        "毛沢東",
+        "江青",
+        "周恩来",
+        "ヘンリー・キッシンジャー"
+      ]
+    },
+    {
+      "label": "★終曲（★周恩来の独白：How much of what we did was good?）",
+      "group_label": "第3幕",
+      "roles": [
+        "周恩来"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "title": "アレコ",
+  "title_original": "Алеко",
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninoff, Sergei",
+  "kind": "opera",
+  "year_written": 1892,
+  "duration_min": 65,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "aleko",
+  "note": "★モスクワ音楽院の卒業作品（19歳）",
+  "roles": [
+    {
+      "label": "アレコ"
+    },
+    {
+      "label": "ゼムフィーラ"
+    },
+    {
+      "label": "老人（ゼムフィーラの父）"
+    },
+    {
+      "label": "若いジプシー"
+    },
+    {
+      "label": "老いたジプシー女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "★ジプシーの野営（合唱）",
+      "group_label": "第1場",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★老人の物語（マリウラの話）",
+      "group_label": "第2場",
+      "roles": [
+        "老人（ゼムフィーラの父）",
+        "アレコ",
+        "ゼムフィーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★女たちの踊りと男たちの踊り",
+      "group_label": "第3場",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ゼムフィーラの歌（年老いた夫、恐ろしい夫）",
+      "group_label": "第4場",
+      "roles": [
+        "ゼムフィーラ",
+        "アレコ"
+      ]
+    },
+    {
+      "label": "★アレコのカヴァティーナ（みんな眠っている）",
+      "group_label": "第5場",
+      "roles": [
+        "アレコ"
+      ]
+    },
+    {
+      "label": "★若いジプシーのロマンスと逢瀬",
+      "group_label": "第6場",
+      "roles": [
+        "ゼムフィーラ",
+        "若いジプシー"
+      ]
+    },
+    {
+      "label": "終曲（2人を刺し、追放される）",
+      "group_label": "終場",
+      "roles": [
+        "アレコ",
+        "ゼムフィーラ",
+        "若いジプシー",
+        "老人（ゼムフィーラの父）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

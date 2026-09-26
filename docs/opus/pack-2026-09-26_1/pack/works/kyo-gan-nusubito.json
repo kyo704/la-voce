@@ -1,0 +1,56 @@
+{
+  "title": "鴈盗人",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-gan-nusubito",
+  "note": "★盗人狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（太郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "鴈を盗んで来る",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）"
+      ]
+    },
+    {
+      "label": "主に見つかり言い訳する",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "歌に詠んで許される",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（太郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

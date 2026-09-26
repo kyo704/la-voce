@@ -1,0 +1,38 @@
+{
+  "title": "イタリア歌曲集（ヴォルフ）",
+  "title_original": "Italienisches Liederbuch",
+  "composer": "ヴォルフ",
+  "composer_sort": "Wolf, Hugo",
+  "kind": "song_cycle",
+  "year_written": 1896,
+  "duration_min": 110,
+  "language": "de",
+  "source": "hand",
+  "source_id": "wolf-italienisches",
+  "note": "★作詩 ハイゼ（イタリア詩の独訳） ／ ★★男声と 女声で 分け合って 出す 形が 多い ／ ★★曲名を 全部 確かめられなかったので ★曲数（46曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全46曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

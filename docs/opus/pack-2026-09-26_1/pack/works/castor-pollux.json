@@ -1,0 +1,202 @@
+{
+  "title": "カストールとポリュックス",
+  "title_original": "Castor et Pollux",
+  "composer": "ラモー",
+  "composer_sort": "Rameau, Jean-Philippe",
+  "kind": "opera",
+  "year_written": 1737,
+  "duration_min": 190,
+  "edition": "1737 原典版（序幕つき）／1754 改訂版（序幕を削り第1幕を新作）",
+  "language": "fr",
+  "source": "hand",
+  "source_id": "castor-pollux",
+  "roles": [
+    {
+      "label": "カストール"
+    },
+    {
+      "label": "ポリュックス"
+    },
+    {
+      "label": "テライール"
+    },
+    {
+      "label": "フェベ"
+    },
+    {
+      "label": "ジュピテル"
+    },
+    {
+      "label": "大祭司"
+    },
+    {
+      "label": "メルキュール"
+    },
+    {
+      "label": "ラケダイモン人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★★第1幕 カストールの葬儀（★Tristes apprêts ─ 悲しき装い）",
+      "group_label": "第1幕",
+      "roles": [
+        "テライール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ポリュックスが兄弟の身代わりを申し出る",
+      "group_label": "第1幕",
+      "roles": [
+        "ポリュックス",
+        "テライール"
+      ]
+    },
+    {
+      "label": "★第2幕 ジュピテルの神殿（ポリュックスの願い）",
+      "group_label": "第2幕",
+      "roles": [
+        "ポリュックス",
+        "ジュピテル",
+        "大祭司",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★天上の喜びの場（誘惑の踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "ポリュックス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 フェベの嫉妬と冥界の門",
+      "group_label": "第3幕",
+      "roles": [
+        "フェベ",
+        "ポリュックス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第4幕 ★エリュシオンの野（★カストールのアリア Séjour de l'éternelle paix）",
+      "group_label": "第4幕",
+      "roles": [
+        "カストール",
+        "ポリュックス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 カストールの葛藤（1日だけ地上へ）",
+      "group_label": "第4幕",
+      "roles": [
+        "カストール",
+        "ポリュックス",
+        "テライール"
+      ]
+    },
+    {
+      "label": "★第5幕 テライールとカストールの再会と別れ",
+      "group_label": "第5幕",
+      "roles": [
+        "カストール",
+        "テライール"
+      ]
+    },
+    {
+      "label": "★終曲（★ジュピテルが2人を双子座に上げる・シャコンヌ）",
+      "group_label": "第5幕",
+      "roles": [
+        "ジュピテル",
+        "カストール",
+        "ポリュックス",
+        "テライール",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

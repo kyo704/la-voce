@@ -1,0 +1,210 @@
+{
+  "title": "ジュリエッタ",
+  "title_original": "Julietta",
+  "aliases": [
+    "夢の鍵"
+  ],
+  "composer": "マルティヌー",
+  "composer_sort": "Martinů, Bohuslav",
+  "kind": "opera",
+  "year_written": 1938,
+  "duration_min": 130,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "julietta",
+  "roles": [
+    {
+      "label": "ジュリエッタ"
+    },
+    {
+      "label": "ミシェル"
+    },
+    {
+      "label": "小さなアラビア人"
+    },
+    {
+      "label": "手風琴弾きの男"
+    },
+    {
+      "label": "記憶のない男"
+    },
+    {
+      "label": "鳥売りの女"
+    },
+    {
+      "label": "魚屋の女"
+    },
+    {
+      "label": "占い女"
+    },
+    {
+      "label": "中央事務所の役人"
+    },
+    {
+      "label": "祖父ちゃん"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 港町（誰も記憶がない）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミシェル",
+        "小さなアラビア人",
+        "手風琴弾きの男",
+        "鳥売りの女",
+        "魚屋の女"
+      ]
+    },
+    {
+      "label": "★第1幕 ジュリエッタの窓の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュリエッタ",
+        "ミシェル"
+      ]
+    },
+    {
+      "label": "第1幕 3人の祖父ちゃんと記憶の押しつけ",
+      "group_label": "第1幕",
+      "roles": [
+        "ミシェル",
+        "祖父ちゃん",
+        "占い女"
+      ]
+    },
+    {
+      "label": "★第2幕 森の中（ジュリエッタとミシェルの二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリエッタ",
+        "ミシェル"
+      ]
+    },
+    {
+      "label": "★第2幕 ピストルの音（ジュリエッタは消える）",
+      "group_label": "第2幕",
+      "roles": [
+        "ミシェル",
+        "ジュリエッタ"
+      ]
+    },
+    {
+      "label": "第2幕 記憶のない男たちの中で",
+      "group_label": "第2幕",
+      "roles": [
+        "ミシェル",
+        "記憶のない男",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 中央夢想事務所（夢を配る役所）",
+      "group_label": "第3幕",
+      "roles": [
+        "ミシェル",
+        "中央事務所の役人"
+      ]
+    },
+    {
+      "label": "★終曲（ジュリエッタの声・ミシェルは夢に留まる）",
+      "group_label": "第3幕",
+      "roles": [
+        "ミシェル",
+        "ジュリエッタ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

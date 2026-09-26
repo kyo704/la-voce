@@ -1,0 +1,164 @@
+{
+  "title": "エツィオ",
+  "title_original": "Ezio",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1732,
+  "duration_min": 170,
+  "language": "it",
+  "source": "hand",
+  "source_id": "ezio",
+  "roles": [
+    {
+      "label": "エツィオ"
+    },
+    {
+      "label": "フルヴィア"
+    },
+    {
+      "label": "オノーリア"
+    },
+    {
+      "label": "ヴァレンティニアーノ"
+    },
+    {
+      "label": "マッシモ"
+    },
+    {
+      "label": "ヴァーロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ローマの凱旋（アッティラを退けたエツィオ）",
+      "group_label": "第1幕",
+      "roles": [
+        "エツィオ",
+        "ヴァレンティニアーノ",
+        "マッシモ"
+      ]
+    },
+    {
+      "label": "★第1幕 フルヴィアとエツィオの愛と父の企み",
+      "group_label": "第1幕",
+      "roles": [
+        "フルヴィア",
+        "エツィオ",
+        "マッシモ"
+      ]
+    },
+    {
+      "label": "第1幕 オノーリアの秘めた恋",
+      "group_label": "第1幕",
+      "roles": [
+        "オノーリア",
+        "ヴァーロ"
+      ]
+    },
+    {
+      "label": "★第2幕 皇帝暗殺の企てとエツィオへの嫌疑",
+      "group_label": "第2幕",
+      "roles": [
+        "マッシモ",
+        "ヴァレンティニアーノ",
+        "エツィオ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★フルヴィアの狂乱に近いアリア",
+      "group_label": "第2幕",
+      "roles": [
+        "フルヴィア",
+        "オノーリア"
+      ]
+    },
+    {
+      "label": "★第3幕 牢のエツィオ",
+      "group_label": "第3幕",
+      "roles": [
+        "エツィオ",
+        "フルヴィア"
+      ]
+    },
+    {
+      "label": "★終曲（マッシモの罪の露見と赦し）",
+      "group_label": "第3幕",
+      "roles": [
+        "エツィオ",
+        "フルヴィア",
+        "オノーリア",
+        "ヴァレンティニアーノ",
+        "マッシモ",
+        "ヴァーロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

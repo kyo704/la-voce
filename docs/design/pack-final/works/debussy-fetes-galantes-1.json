@@ -1,0 +1,54 @@
+{
+  "title": "艶なる宴 第1集",
+  "title_original": "Fêtes galantes I",
+  "composer": "ドビュッシー",
+  "composer_sort": "Debussy, Claude",
+  "kind": "song_cycle",
+  "year_written": 1891,
+  "duration_min": 9,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "debussy-fetes-1",
+  "note": "★作詩 ヴェルレーヌ ／  ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. ひそやかに（En sourdine）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 操り人形（Fantoches）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 月の光（Clair de lune）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

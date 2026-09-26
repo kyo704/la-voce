@@ -1,0 +1,307 @@
+{
+  "title": "カンパニー",
+  "title_original": "Company",
+  "composer": "ソンドハイム",
+  "composer_sort": "Sondheim, Stephen",
+  "kind": "musical",
+  "year_written": 1970,
+  "duration_min": 140,
+  "edition": "★★1970 ブロードウェイ初演版（★主人公ボビーは男性。★『マリー・ミー・ア・リトル』『ハッピリー・エヴァー・アフター』は差し替えられた曲）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "company",
+  "note": "★作詞 ソンドハイム ／ 脚本 ジョージ・ファース ／ ★★『コンセプト・ミュージカル』の始まり（筋ではなく主題で並ぶ）。★2018 マリアンヌ・エリオット版は主人公を女性ボビーに替えた別の版",
+  "roles": [
+    {
+      "label": "ロバート（ボビー）"
+    },
+    {
+      "label": "サラ"
+    },
+    {
+      "label": "ハリー"
+    },
+    {
+      "label": "スーザン"
+    },
+    {
+      "label": "ピーター"
+    },
+    {
+      "label": "ジェニー"
+    },
+    {
+      "label": "デイヴィッド"
+    },
+    {
+      "label": "エイミー"
+    },
+    {
+      "label": "ポール"
+    },
+    {
+      "label": "ジョアン"
+    },
+    {
+      "label": "ラリー"
+    },
+    {
+      "label": "エイプリル"
+    },
+    {
+      "label": "キャシー"
+    },
+    {
+      "label": "マルタ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★カンパニー（35歳の誕生日）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロバート（ボビー）",
+        "サラ",
+        "ハリー",
+        "スーザン",
+        "ピーター",
+        "ジェニー",
+        "デイヴィッド",
+        "エイミー",
+        "ポール",
+        "ジョアン",
+        "ラリー"
+      ]
+    },
+    {
+      "label": "M2 ★★ザ・リトル・シングス・ユー・ドゥ・トゥゲザー",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョアン",
+        "サラ",
+        "ハリー"
+      ]
+    },
+    {
+      "label": "M3 ★★ソーリー＝グレイトフル",
+      "group_label": "第1幕",
+      "roles": [
+        "ハリー",
+        "デイヴィッド",
+        "ラリー"
+      ]
+    },
+    {
+      "label": "M4 ★ユー・クッド・ドライヴ・ア・パーソン・クレイジー",
+      "group_label": "第1幕",
+      "roles": [
+        "エイプリル",
+        "キャシー",
+        "マルタ"
+      ]
+    },
+    {
+      "label": "M5 ★★ハヴ・アイ・ガット・ア・ガール・フォー・ユー",
+      "group_label": "第1幕",
+      "roles": [
+        "ハリー",
+        "デイヴィッド",
+        "ピーター",
+        "ポール",
+        "ラリー"
+      ]
+    },
+    {
+      "label": "M6 ★★サムワン・イズ・ウェイティング",
+      "group_label": "第1幕",
+      "roles": [
+        "ロバート（ボビー）"
+      ]
+    },
+    {
+      "label": "M7 ★★アナザー・ハンドレッド・ピープル",
+      "group_label": "第1幕",
+      "roles": [
+        "マルタ"
+      ]
+    },
+    {
+      "label": "M8 ★★ゲッティング・マリード・トゥデイ（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "エイミー",
+        "ポール",
+        "ジョアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★サイド・バイ・サイド・バイ・サイド／ホワット・ウッド・ウィー・ドゥ・ウィズアウト・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "ロバート（ボビー）",
+        "サラ",
+        "ハリー",
+        "スーザン",
+        "ピーター",
+        "ジェニー",
+        "デイヴィッド",
+        "エイミー",
+        "ポール",
+        "ジョアン",
+        "ラリー"
+      ]
+    },
+    {
+      "label": "M10 ★★プア・ベイビー",
+      "group_label": "第2幕",
+      "roles": [
+        "サラ",
+        "ジェニー",
+        "スーザン",
+        "エイミー",
+        "ジョアン"
+      ]
+    },
+    {
+      "label": "M11 ★★バーセルナ（Tick-Tock の踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "キャシー"
+      ]
+    },
+    {
+      "label": "M12 ★★バルセロナ",
+      "group_label": "第2幕",
+      "roles": [
+        "ロバート（ボビー）",
+        "エイプリル"
+      ]
+    },
+    {
+      "label": "M13 ★★ザ・レディーズ・フー・ランチ",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョアン"
+      ]
+    },
+    {
+      "label": "M14 ★★★ビーイング・アライヴ（終曲）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロバート（ボビー）",
+        "サラ",
+        "ハリー",
+        "ジョアン",
+        "ラリー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

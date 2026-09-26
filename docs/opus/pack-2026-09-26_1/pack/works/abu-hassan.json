@@ -1,0 +1,164 @@
+{
+  "title": "アブ・ハッサン",
+  "title_original": "Abu Hassan",
+  "composer": "ウェーバー",
+  "composer_sort": "Weber, Carl Maria von",
+  "kind": "opera",
+  "year_written": 1811,
+  "duration_min": 60,
+  "language": "de",
+  "source": "hand",
+  "source_id": "abu-hassan",
+  "roles": [
+    {
+      "label": "ファーティメ"
+    },
+    {
+      "label": "アブ・ハッサン"
+    },
+    {
+      "label": "オマール"
+    },
+    {
+      "label": "ハールーン・アッ＝ラシード"
+    },
+    {
+      "label": "ズバイダ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★借金だらけの夫婦（二重唱）",
+      "group_label": "第1場",
+      "roles": [
+        "アブ・ハッサン",
+        "ファーティメ"
+      ]
+    },
+    {
+      "label": "高利貸しオマールの催促",
+      "group_label": "第2場",
+      "roles": [
+        "オマール",
+        "アブ・ハッサン",
+        "ファーティメ"
+      ]
+    },
+    {
+      "label": "★死んだふりの計（2人で交互に）",
+      "group_label": "第3場",
+      "roles": [
+        "アブ・ハッサン",
+        "ファーティメ"
+      ]
+    },
+    {
+      "label": "カリフと妃の弔いの金",
+      "group_label": "第4場",
+      "roles": [
+        "ハールーン・アッ＝ラシード",
+        "ズバイダ",
+        "アブ・ハッサン",
+        "ファーティメ"
+      ]
+    },
+    {
+      "label": "★終曲（種明かしと赦し）",
+      "group_label": "終場",
+      "roles": [
+        "アブ・ハッサン",
+        "ファーティメ",
+        "オマール",
+        "ハールーン・アッ＝ラシード",
+        "ズバイダ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

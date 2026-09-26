@@ -1,0 +1,199 @@
+{
+  "title": "いたずら農民",
+  "title_original": "Šelma sedlák",
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvořák, Antonín",
+  "kind": "opera",
+  "year_written": 1878,
+  "duration_min": 120,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "cunning-peasant",
+  "roles": [
+    {
+      "label": "ベトゥシュカ"
+    },
+    {
+      "label": "イェニーク"
+    },
+    {
+      "label": "マルティン"
+    },
+    {
+      "label": "ヴァーツラフ"
+    },
+    {
+      "label": "公爵"
+    },
+    {
+      "label": "公爵夫人"
+    },
+    {
+      "label": "ベルタ"
+    },
+    {
+      "label": "ジャン"
+    },
+    {
+      "label": "ヴェロニカ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 村（ベトゥシュカとイェニークの恋）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベトゥシュカ",
+        "イェニーク",
+        "マルティン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 公爵の狩りの一行",
+      "group_label": "第1幕",
+      "roles": [
+        "公爵",
+        "ジャン",
+        "ベルタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 公爵のベトゥシュカへの気まぐれ",
+      "group_label": "第1幕",
+      "roles": [
+        "公爵",
+        "ベトゥシュカ"
+      ]
+    },
+    {
+      "label": "★第2幕 夜の庭（取り違えの場）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベトゥシュカ",
+        "公爵",
+        "公爵夫人",
+        "ヴェロニカ",
+        "ジャン"
+      ]
+    },
+    {
+      "label": "★第2幕 公爵夫人が夫を捕まえる",
+      "group_label": "第2幕",
+      "roles": [
+        "公爵夫人",
+        "公爵",
+        "ベルタ"
+      ]
+    },
+    {
+      "label": "終曲（ベトゥシュカとイェニークの婚礼）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベトゥシュカ",
+        "イェニーク",
+        "マルティン",
+        "公爵",
+        "公爵夫人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

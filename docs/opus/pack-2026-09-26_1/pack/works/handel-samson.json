@@ -1,0 +1,194 @@
+{
+  "title": "サムソン（ヘンデル）",
+  "title_original": "Samson",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "chorus",
+  "year_written": 1743,
+  "duration_min": 165,
+  "language": "en",
+  "source": "hand",
+  "source_id": "handel-samson",
+  "note": "★オラトリオ。★サン＝サーンスの『サムソンとデリラ』とは別の作",
+  "roles": [
+    {
+      "label": "サムソン"
+    },
+    {
+      "label": "ダリラ"
+    },
+    {
+      "label": "ミカ"
+    },
+    {
+      "label": "マノア"
+    },
+    {
+      "label": "ハラファ"
+    },
+    {
+      "label": "イスラエルの女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★ダゴンの祭り（ペリシテ人の合唱）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★サムソンの嘆き（Total eclipse ─ 全き暗黒）",
+      "group_label": "第1部",
+      "roles": [
+        "サムソン"
+      ]
+    },
+    {
+      "label": "★父マノアの来訪",
+      "group_label": "第1部",
+      "roles": [
+        "マノア",
+        "サムソン",
+        "ミカ"
+      ]
+    },
+    {
+      "label": "★★ダリラの登場（With plaintive notes）",
+      "group_label": "第2部",
+      "roles": [
+        "ダリラ",
+        "イスラエルの女"
+      ]
+    },
+    {
+      "label": "★★サムソンの拒絶と2人の二重唱",
+      "group_label": "第2部",
+      "roles": [
+        "サムソン",
+        "ダリラ"
+      ]
+    },
+    {
+      "label": "★ハラファの挑み",
+      "group_label": "第2部",
+      "roles": [
+        "ハラファ",
+        "サムソン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★神殿へ引かれるサムソン",
+      "group_label": "第3部",
+      "roles": [
+        "サムソン",
+        "ミカ",
+        "ハラファ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★神殿の崩壊（舞台裏の叫び）",
+      "group_label": "第3部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★死の行進（葬送行進曲）",
+      "group_label": "第3部",
+      "roles": []
+    },
+    {
+      "label": "★★輝かしいセラフィムに（Let the bright Seraphim）",
+      "group_label": "第3部",
+      "roles": [
+        "イスラエルの女",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

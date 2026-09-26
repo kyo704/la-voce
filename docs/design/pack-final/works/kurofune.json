@@ -1,0 +1,187 @@
+{
+  "title": "黒船（夜明け）",
+  "title_original": "黒船",
+  "aliases": [
+    "夜明け"
+  ],
+  "composer": "山田耕筰",
+  "composer_sort": "Yamada, Kosaku",
+  "kind": "opera",
+  "year_written": 1940,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kurofune",
+  "note": "★★日本で書かれた最初の本格的なグランド・オペラとされる。1929年に第1幕のみ『黒船』として、1940年に全曲『夜明け』として初演",
+  "roles": [
+    {
+      "label": "お吉"
+    },
+    {
+      "label": "吉田"
+    },
+    {
+      "label": "ハリス"
+    },
+    {
+      "label": "ヒュースケン"
+    },
+    {
+      "label": "お松"
+    },
+    {
+      "label": "町人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 下田の港（黒船の来航と町の騒ぎ）",
+      "group_label": "第1幕",
+      "roles": [
+        "町人",
+        "お吉",
+        "吉田",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 お吉と吉田の別れ",
+      "group_label": "第1幕",
+      "roles": [
+        "お吉",
+        "吉田"
+      ]
+    },
+    {
+      "label": "★第2幕 領事館（ハリスとヒュースケン）",
+      "group_label": "第2幕",
+      "roles": [
+        "ハリス",
+        "ヒュースケン",
+        "お吉"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★お吉のアリア（夜明けを待つ）",
+      "group_label": "第2幕",
+      "roles": [
+        "お吉"
+      ]
+    },
+    {
+      "label": "★第3幕 町の白眼（唐人お吉と呼ばれる）",
+      "group_label": "第3幕",
+      "roles": [
+        "お吉",
+        "お松",
+        "町人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（お吉の孤独と夜明けの合唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "お吉",
+        "吉田",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

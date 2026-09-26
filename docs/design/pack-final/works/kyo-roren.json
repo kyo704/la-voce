@@ -1,0 +1,61 @@
+{
+  "title": "呂蓮",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-roren",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（僧）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "小アド（妻）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "宿を借りた僧が出家を勧める",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "その場で髪を剃り呂蓮と名を付ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "妻が怒って追いかける",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（何某）",
+        "小アド（妻）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

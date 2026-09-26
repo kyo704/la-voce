@@ -1,0 +1,90 @@
+{
+  "title": "極付幡随長兵衛",
+  "aliases": [
+    "幡随長兵衛"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1881,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-banzui-chobei",
+  "note": "★歌舞伎 ／ 作者 河竹黙阿弥 ／ ★★★死ぬと知って 出て行く 男の 話 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "幡随院長兵衛"
+    },
+    {
+      "label": "坂田金左衛門"
+    },
+    {
+      "label": "唐犬権兵衛"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "お時"
+    },
+    {
+      "label": "長松"
+    },
+    {
+      "label": "水野十郎左衛門"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★村山座（★舞台の上の喧嘩）",
+      "group_label": "序幕",
+      "roles": [
+        "幡随院長兵衛",
+        "坂田金左衛門",
+        "唐犬権兵衛",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★長兵衛内（★子と妻への暇乞い）",
+      "group_label": "二幕",
+      "roles": [
+        "幡随院長兵衛",
+        "お時",
+        "長松",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★水野邸湯殿（★槍に貫かれる）",
+      "group_label": "三幕",
+      "roles": [
+        "幡随院長兵衛",
+        "水野十郎左衛門",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

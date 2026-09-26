@@ -1,0 +1,85 @@
+{
+  "title": "忠臣身替の巻",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1760,
+  "duration_min": 70,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-chushin-migawari",
+  "note": "★組踊（琉球の歌舞劇） ／ 作者 田里朝直 ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "若按司"
+    },
+    {
+      "label": "忠臣"
+    },
+    {
+      "label": "敵の武士"
+    },
+    {
+      "label": "乳母"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★若按司が狙われる",
+      "group_label": "段",
+      "roles": [
+        "若按司",
+        "乳母"
+      ]
+    },
+    {
+      "label": "★★忠臣が身替りに立つ",
+      "group_label": "段",
+      "roles": [
+        "忠臣",
+        "敵の武士"
+      ]
+    },
+    {
+      "label": "★若按司が助かる",
+      "group_label": "段",
+      "roles": [
+        "若按司",
+        "忠臣",
+        "乳母"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "title": "ミサ曲第3番 ヘ短調（ブルックナー）",
+  "aliases": [
+    "大ミサ曲"
+  ],
+  "composer": "ブルックナー",
+  "composer_sort": "Bruckner, Anton",
+  "kind": "chorus",
+  "year_written": 1868,
+  "duration_min": 58,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-bruckner-mass-3",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "キリエ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "グローリア",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★クレド",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "サンクトゥス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ベネディクトゥス",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★アニュス・デイ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

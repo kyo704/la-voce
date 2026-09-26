@@ -1,0 +1,59 @@
+{
+  "title": "岡太夫",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-okadayu",
+  "note": "★小名狂言 ／ ★『岡太夫』＝ くずきりの別の名 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "小アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主の使いで菓子の名を言いつけられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "名を忘れて途方に暮れる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）"
+      ]
+    },
+    {
+      "label": "人に尋ねて言い当てる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "小アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

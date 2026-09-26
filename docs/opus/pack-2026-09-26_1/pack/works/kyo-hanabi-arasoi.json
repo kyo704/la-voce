@@ -1,0 +1,60 @@
+{
+  "title": "花争",
+  "aliases": [
+    "花争"
+  ],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-hanabi-arasoi",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（主）"
+    },
+    {
+      "label": "アド（太郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "花見に出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（主）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "★『花』の歌と言葉で言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（主）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "★★歌の付け合いで決める",
+      "group_label": "段",
+      "roles": [
+        "シテ（主）",
+        "アド（太郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

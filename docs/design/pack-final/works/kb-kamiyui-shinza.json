@@ -1,0 +1,111 @@
+{
+  "title": "髪結新三",
+  "aliases": [
+    "梅雨小袖昔八丈"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1873,
+  "duration_min": 140,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kamiyui-shinza",
+  "note": "★歌舞伎 ／ 作者 二代目河竹新七（黙阿弥） ／ ★★世話物の代表。★『家主長兵衛』との掛け合いが見せ場 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "髪結新三"
+    },
+    {
+      "label": "白子屋お熊"
+    },
+    {
+      "label": "手代忠七"
+    },
+    {
+      "label": "家主長兵衛"
+    },
+    {
+      "label": "弥太五郎源七"
+    },
+    {
+      "label": "下剃勝奴"
+    },
+    {
+      "label": "車力善八"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 白子屋見世先",
+      "group_label": "序幕",
+      "roles": [
+        "髪結新三",
+        "白子屋お熊",
+        "手代忠七",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★★第2幕 永代橋（★雨の中の誘拐）",
+      "group_label": "第2幕",
+      "roles": [
+        "髪結新三",
+        "手代忠七",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★★第3幕 新三内（★家主長兵衛との掛け合い・初鰹）",
+      "group_label": "第3幕",
+      "roles": [
+        "髪結新三",
+        "家主長兵衛",
+        "下剃勝奴",
+        "白子屋お熊",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★第4幕 深川閻魔堂橋（★源七との決着）",
+      "group_label": "第4幕",
+      "roles": [
+        "髪結新三",
+        "弥太五郎源七",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

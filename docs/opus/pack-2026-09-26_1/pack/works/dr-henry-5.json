@@ -1,0 +1,75 @@
+{
+  "title": "ヘンリー五世",
+  "title_original": "Henry V",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1599,
+  "duration_min": 180,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dr-henry-5",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ヘンリー五世"
+    },
+    {
+      "label": "コーラス（語り手）"
+    },
+    {
+      "label": "キャサリン"
+    },
+    {
+      "label": "フルーエリン"
+    },
+    {
+      "label": "ピストル"
+    },
+    {
+      "label": "兵士",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★コーラスの語り",
+      "group_label": "序",
+      "roles": [
+        "コーラス（語り手）"
+      ]
+    },
+    {
+      "label": "★ハーフラーの攻城（『もう一度、突撃だ』）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヘンリー五世",
+        "兵士"
+      ]
+    },
+    {
+      "label": "★★アジンコートの前夜と聖クリスピンの演説",
+      "group_label": "第4幕",
+      "roles": [
+        "ヘンリー五世",
+        "兵士"
+      ]
+    },
+    {
+      "label": "★キャサリンへの求婚",
+      "group_label": "第5幕",
+      "roles": [
+        "ヘンリー五世",
+        "キャサリン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

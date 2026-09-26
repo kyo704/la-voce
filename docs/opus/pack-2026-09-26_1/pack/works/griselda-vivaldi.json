@@ -1,0 +1,175 @@
+{
+  "title": "グリゼルダ",
+  "title_original": "Griselda",
+  "composer": "ヴィヴァルディ",
+  "composer_sort": "Vivaldi, Antonio",
+  "kind": "opera",
+  "year_written": 1735,
+  "duration_min": 175,
+  "language": "it",
+  "source": "hand",
+  "source_id": "griselda-vivaldi",
+  "note": "★台本はゴルドーニによる改作",
+  "roles": [
+    {
+      "label": "グリゼルダ"
+    },
+    {
+      "label": "グアルティエーロ"
+    },
+    {
+      "label": "コスタンツァ"
+    },
+    {
+      "label": "ロベルト"
+    },
+    {
+      "label": "オットーネ"
+    },
+    {
+      "label": "コッラード"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 グアルティエーロの試み（グリゼルダを追い出す）",
+      "group_label": "第1幕",
+      "roles": [
+        "グアルティエーロ",
+        "グリゼルダ",
+        "オットーネ"
+      ]
+    },
+    {
+      "label": "★第1幕 コスタンツァとロベルトの愛",
+      "group_label": "第1幕",
+      "roles": [
+        "コスタンツァ",
+        "ロベルト",
+        "コッラード"
+      ]
+    },
+    {
+      "label": "★★第2幕 グリゼルダの牧場（★Agitata da due venti）",
+      "group_label": "第2幕",
+      "roles": [
+        "グリゼルダ",
+        "オットーネ"
+      ]
+    },
+    {
+      "label": "★第2幕 コスタンツァとグリゼルダの出会い（母娘と知らず）",
+      "group_label": "第2幕",
+      "roles": [
+        "コスタンツァ",
+        "グリゼルダ"
+      ]
+    },
+    {
+      "label": "★第2幕 オットーネの迫り",
+      "group_label": "第2幕",
+      "roles": [
+        "オットーネ",
+        "グリゼルダ",
+        "グアルティエーロ"
+      ]
+    },
+    {
+      "label": "★第3幕 最後の試み（婚礼の席の召使いに）",
+      "group_label": "第3幕",
+      "roles": [
+        "グアルティエーロ",
+        "グリゼルダ",
+        "コスタンツァ"
+      ]
+    },
+    {
+      "label": "★終曲（真相の明かしと母娘の再会）",
+      "group_label": "第3幕",
+      "roles": [
+        "グリゼルダ",
+        "グアルティエーロ",
+        "コスタンツァ",
+        "ロベルト",
+        "コッラード"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "title": "パリジーナ",
+  "title_original": "Parisina",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1833,
+  "duration_min": 135,
+  "language": "it",
+  "source": "hand",
+  "source_id": "parisina",
+  "roles": [
+    {
+      "label": "パリジーナ"
+    },
+    {
+      "label": "ウーゴ"
+    },
+    {
+      "label": "アッツォ"
+    },
+    {
+      "label": "エルネスト"
+    },
+    {
+      "label": "イメルダ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 フェッラーラの庭（パリジーナの眠りごと）",
+      "group_label": "第1幕",
+      "roles": [
+        "パリジーナ",
+        "イメルダ",
+        "アッツォ"
+      ]
+    },
+    {
+      "label": "第1幕 ウーゴの帰還と勝利の祝い",
+      "group_label": "第1幕",
+      "roles": [
+        "ウーゴ",
+        "アッツォ",
+        "エルネスト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 パリジーナとウーゴの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "パリジーナ",
+        "ウーゴ"
+      ]
+    },
+    {
+      "label": "第2幕 アッツォの発見（夢のうちの名）",
+      "group_label": "第2幕",
+      "roles": [
+        "アッツォ",
+        "パリジーナ",
+        "ウーゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 エルネストの嘆願（ウーゴは実の子）",
+      "group_label": "第3幕",
+      "roles": [
+        "エルネスト",
+        "アッツォ"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（処刑とパリジーナの死）",
+      "group_label": "第3幕",
+      "roles": [
+        "パリジーナ",
+        "アッツォ",
+        "イメルダ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

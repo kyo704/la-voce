@@ -1,0 +1,166 @@
+{
+  "title": "アルミーニオ",
+  "title_original": "Arminio",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1737,
+  "duration_min": 160,
+  "language": "it",
+  "source": "hand",
+  "source_id": "arminio",
+  "roles": [
+    {
+      "label": "アルミーニオ"
+    },
+    {
+      "label": "トゥスネルダ"
+    },
+    {
+      "label": "ラミーゼ"
+    },
+    {
+      "label": "シギスモンド"
+    },
+    {
+      "label": "セジェステ"
+    },
+    {
+      "label": "ヴァロ"
+    },
+    {
+      "label": "トゥリオ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ゲルマニアの森（ローマ軍に追われるアルミーニオ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミーニオ",
+        "トゥスネルダ",
+        "セジェステ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★アルミーニオのアリア（Vado a morir）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミーニオ"
+      ]
+    },
+    {
+      "label": "第1幕 ラミーゼとシギスモンド",
+      "group_label": "第1幕",
+      "roles": [
+        "ラミーゼ",
+        "シギスモンド",
+        "トゥリオ"
+      ]
+    },
+    {
+      "label": "★第2幕 トゥスネルダの父への訴え",
+      "group_label": "第2幕",
+      "roles": [
+        "トゥスネルダ",
+        "セジェステ",
+        "ヴァロ"
+      ]
+    },
+    {
+      "label": "★第2幕 牢のアルミーニオと妻の別れ",
+      "group_label": "第2幕",
+      "roles": [
+        "アルミーニオ",
+        "トゥスネルダ"
+      ]
+    },
+    {
+      "label": "第3幕 シギスモンドの心変わりと救出",
+      "group_label": "第3幕",
+      "roles": [
+        "シギスモンド",
+        "ラミーゼ",
+        "アルミーニオ"
+      ]
+    },
+    {
+      "label": "★終曲（ローマ軍の敗走と再会）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルミーニオ",
+        "トゥスネルダ",
+        "ラミーゼ",
+        "シギスモンド",
+        "セジェステ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

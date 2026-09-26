@@ -1,0 +1,241 @@
+{
+  "title": "ヘアー",
+  "title_original": "Hair",
+  "composer": "ガルト・マクダーモット",
+  "kind": "musical",
+  "year_written": 1968,
+  "duration_min": 130,
+  "edition": "★★1967 オフ版／1968 ブロードウェイ版（曲が大きく違う）／★2009 リバイバル版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "hair",
+  "note": "★作詞 ジェローム・ラグニ／ジェームズ・ラド ／ 脚本 ジェローム・ラグニ／ジェームズ・ラド ／ ★★★『ロック・ミュージカル』の出発点。★★裸の場面があり、版と演出で扱いが変わる",
+  "roles": [
+    {
+      "label": "クロード"
+    },
+    {
+      "label": "バーガー"
+    },
+    {
+      "label": "シーラ"
+    },
+    {
+      "label": "ウーフ"
+    },
+    {
+      "label": "ハッド"
+    },
+    {
+      "label": "ジェニー"
+    },
+    {
+      "label": "クリシー"
+    },
+    {
+      "label": "ダイオン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★アクエリアス（水瓶座の時代）",
+      "group_label": "第1幕",
+      "roles": [
+        "ダイオン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★マニチェスター・イングランド",
+      "group_label": "第1幕",
+      "roles": [
+        "クロード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★アイ・ガット・ライフ",
+      "group_label": "第1幕",
+      "roles": [
+        "クロード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★エア",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェニー",
+        "シーラ",
+        "クリシー"
+      ]
+    },
+    {
+      "label": "M5 ★★★ヘアー",
+      "group_label": "第1幕",
+      "roles": [
+        "クロード",
+        "バーガー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ホエア・ドゥ・アイ・ゴー（第1幕終曲・★徴兵の通知）",
+      "group_label": "第1幕",
+      "roles": [
+        "クロード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★イージー・トゥ・ビー・ハード",
+      "group_label": "第2幕",
+      "roles": [
+        "シーラ"
+      ]
+    },
+    {
+      "label": "M8 ★★★グッド・モーニング・スターシャイン",
+      "group_label": "第2幕",
+      "roles": [
+        "シーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ブラック・ボーイズ／ホワイト・ボーイズ",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェニー",
+        "クリシー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★ウォーキング・イン・スペース（★幻覚の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★アビー・ベイビー（幻の南北戦争）",
+      "group_label": "第2幕",
+      "roles": [
+        "ハッド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★フラワー・チルドレンの集会",
+      "group_label": "第2幕",
+      "roles": [
+        "バーガー",
+        "ウーフ",
+        "クロード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（レット・ザ・サンシャイン・イン ─ クロードの死）",
+      "group_label": "第2幕",
+      "roles": [
+        "クロード",
+        "シーラ",
+        "バーガー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "title": "フェードル",
+  "composer": "ラシーヌ",
+  "composer_sort": "Racine, Jean",
+  "kind": "drama",
+  "year_written": 1677,
+  "duration_min": 120,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "dr-phedre",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "フェードル"
+    },
+    {
+      "label": "イポリット"
+    },
+    {
+      "label": "テゼー"
+    },
+    {
+      "label": "アリシー"
+    },
+    {
+      "label": "エノーヌ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "フェードルの告白",
+      "group_label": "第1幕",
+      "roles": [
+        "フェードル",
+        "エノーヌ"
+      ]
+    },
+    {
+      "label": "★イポリットへの告白",
+      "group_label": "第2幕",
+      "roles": [
+        "フェードル",
+        "イポリット"
+      ]
+    },
+    {
+      "label": "★テゼーの怒り",
+      "group_label": "第4幕",
+      "roles": [
+        "テゼー",
+        "イポリット",
+        "フェードル"
+      ]
+    },
+    {
+      "label": "★★イポリットの死とフェードルの毒",
+      "group_label": "第5幕",
+      "roles": [
+        "フェードル",
+        "テゼー",
+        "アリシー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

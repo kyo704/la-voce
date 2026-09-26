@@ -1,0 +1,69 @@
+{
+  "title": "鍋八撥",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 30,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-nabu-hachi",
+  "note": "★集狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（鞨鼓売り）"
+    },
+    {
+      "label": "アド（鍋売り）"
+    },
+    {
+      "label": "小アド（目代）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★市の場所争い",
+      "group_label": "段",
+      "roles": [
+        "シテ（鞨鼓売り）",
+        "アド（鍋売り）"
+      ]
+    },
+    {
+      "label": "目代が勝負で決めよと言う",
+      "group_label": "段",
+      "roles": [
+        "シテ（鞨鼓売り）",
+        "アド（鍋売り）",
+        "小アド（目代）"
+      ]
+    },
+    {
+      "label": "★鞨鼓の曲打ち",
+      "group_label": "段",
+      "roles": [
+        "シテ（鞨鼓売り）"
+      ]
+    },
+    {
+      "label": "★鍋売りが真似して壊す",
+      "group_label": "段",
+      "roles": [
+        "シテ（鞨鼓売り）",
+        "アド（鍋売り）",
+        "小アド（目代）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

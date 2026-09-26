@@ -1,0 +1,64 @@
+{
+  "title": "瓜盗人",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 30,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-uri-nusubito",
+  "note": "★雑狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（瓜畑の主）"
+    },
+    {
+      "label": "アド（盗人）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★主が案山子を立てて番をする",
+      "group_label": "段",
+      "roles": [
+        "シテ（瓜畑の主）"
+      ]
+    },
+    {
+      "label": "★盗人が来て瓜を取る",
+      "group_label": "段",
+      "roles": [
+        "シテ（瓜畑の主）",
+        "アド（盗人）"
+      ]
+    },
+    {
+      "label": "★主が案山子に化けて驚かす",
+      "group_label": "段",
+      "roles": [
+        "シテ（瓜畑の主）",
+        "アド（盗人）"
+      ]
+    },
+    {
+      "label": "★盗人が拍子に乗って踊り出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（瓜畑の主）",
+        "アド（盗人）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

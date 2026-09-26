@@ -1,0 +1,233 @@
+{
+  "title": "見えざる町キーテジの物語",
+  "title_original": "Сказание о невидимом граде Китеже и деве Февронии",
+  "composer": "リムスキー＝コルサコフ",
+  "composer_sort": "Rimsky-Korsakov, Nikolai",
+  "kind": "opera",
+  "year_written": 1905,
+  "duration_min": 205,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "kitezh",
+  "note": "★『ロシアのパルジファル』と呼ばれる",
+  "roles": [
+    {
+      "label": "フェヴローニヤ"
+    },
+    {
+      "label": "ウセヴォロド公子"
+    },
+    {
+      "label": "ユーリー公"
+    },
+    {
+      "label": "グリーシカ・クテリマ"
+    },
+    {
+      "label": "フョードル・ポヤルク"
+    },
+    {
+      "label": "ベディャイ"
+    },
+    {
+      "label": "ブルンダイ"
+    },
+    {
+      "label": "小姓"
+    },
+    {
+      "label": "熊使い"
+    },
+    {
+      "label": "乞食の歌い手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★前奏曲（森を讃える歌）",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ★森のフェヴローニヤ（鳥と獣と）",
+      "group_label": "第1幕",
+      "roles": [
+        "フェヴローニヤ",
+        "ウセヴォロド公子"
+      ]
+    },
+    {
+      "label": "第2幕 ★小キーテジの市（熊使いと乞食の歌い手）",
+      "group_label": "第2幕",
+      "roles": [
+        "熊使い",
+        "乞食の歌い手",
+        "グリーシカ・クテリマ",
+        "フョードル・ポヤルク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 タタールの襲来とクテリマの裏切り",
+      "group_label": "第2幕",
+      "roles": [
+        "グリーシカ・クテリマ",
+        "ベディャイ",
+        "ブルンダイ",
+        "フェヴローニヤ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★大キーテジの広場（ポヤルクの報せとユーリー公の祈り）",
+      "group_label": "第3幕",
+      "roles": [
+        "ユーリー公",
+        "フョードル・ポヤルク",
+        "小姓",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 町が霧に消える（鐘の音）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ケルジェネツの戦い（交響的間奏曲）",
+      "group_label": "第3幕",
+      "roles": []
+    },
+    {
+      "label": "第3幕 スヴェトリー湖のほとり（水面に映る町）",
+      "group_label": "第3幕",
+      "roles": [
+        "グリーシカ・クテリマ",
+        "ブルンダイ",
+        "ベディャイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 ★夜の森（クテリマの狂気とフェヴローニヤの赦し）",
+      "group_label": "第4幕",
+      "roles": [
+        "フェヴローニヤ",
+        "グリーシカ・クテリマ"
+      ]
+    },
+    {
+      "label": "★第4幕 フェヴローニヤの死と天上のキーテジ（終曲）",
+      "group_label": "第4幕",
+      "roles": [
+        "フェヴローニヤ",
+        "ウセヴォロド公子",
+        "ユーリー公",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

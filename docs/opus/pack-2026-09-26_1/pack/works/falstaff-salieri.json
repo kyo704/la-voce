@@ -1,0 +1,166 @@
+{
+  "title": "ファルスタッフ（サリエリ）",
+  "title_original": "Falstaff, o sia Le tre burle",
+  "composer": "サリエリ",
+  "composer_sort": "Salieri, Antonio",
+  "kind": "opera",
+  "year_written": 1799,
+  "duration_min": 140,
+  "language": "it",
+  "source": "hand",
+  "source_id": "falstaff-salieri",
+  "roles": [
+    {
+      "label": "ファルスタッフ"
+    },
+    {
+      "label": "スレンダー夫人"
+    },
+    {
+      "label": "フォード夫人"
+    },
+    {
+      "label": "フォード氏"
+    },
+    {
+      "label": "スレンダー氏"
+    },
+    {
+      "label": "ベティ"
+    },
+    {
+      "label": "バルドルフォ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ガーター亭（2通の同じ手紙）",
+      "group_label": "第1幕",
+      "roles": [
+        "ファルスタッフ",
+        "バルドルフォ"
+      ]
+    },
+    {
+      "label": "★第1幕 2人の夫人が手紙を見比べる",
+      "group_label": "第1幕",
+      "roles": [
+        "スレンダー夫人",
+        "フォード夫人",
+        "ベティ"
+      ]
+    },
+    {
+      "label": "★第2幕 洗濯籠の場（フォード氏の家捜し）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファルスタッフ",
+        "フォード夫人",
+        "スレンダー夫人",
+        "フォード氏"
+      ]
+    },
+    {
+      "label": "★第2幕 ドイツ人に変装したフォード",
+      "group_label": "第2幕",
+      "roles": [
+        "フォード氏",
+        "ファルスタッフ"
+      ]
+    },
+    {
+      "label": "★終曲（ウィンザーの森・妖精の脅かし）",
+      "group_label": "第3幕",
+      "roles": [
+        "ファルスタッフ",
+        "スレンダー夫人",
+        "フォード夫人",
+        "フォード氏",
+        "スレンダー氏",
+        "ベティ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "title": "萩大名",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-hagi-daimyo",
+  "note": "★大名狂言 ／ ★★歌を 知らない 大名の 笑い ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（大名）"
+    },
+    {
+      "label": "アド（太郎冠者）"
+    },
+    {
+      "label": "小アド（庭主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "庭を見に行く支度",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "★萩を詠む歌を冠者に教わる",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "★★庭主の前で歌を忘れる",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）",
+        "小アド（庭主）"
+      ]
+    },
+    {
+      "label": "★冠者の身ぶりの合図も通じず、恥をかく",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）",
+        "小アド（庭主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

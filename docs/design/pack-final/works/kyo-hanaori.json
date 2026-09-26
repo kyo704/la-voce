@@ -1,0 +1,72 @@
+{
+  "title": "花折",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-hanaori",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（新発意）"
+    },
+    {
+      "label": "アド（住持）"
+    },
+    {
+      "label": "小アド（花見の者）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "住持が桜の番を新発意に言いつけて出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "アド（住持）"
+      ]
+    },
+    {
+      "label": "花見の一行が来て、断りきれず入れる",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "小アド（花見の者）"
+      ]
+    },
+    {
+      "label": "酒宴になり共に舞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "小アド（花見の者）"
+      ]
+    },
+    {
+      "label": "住持が帰って来て叱られる",
+      "group_label": "段",
+      "roles": [
+        "シテ（新発意）",
+        "アド（住持）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

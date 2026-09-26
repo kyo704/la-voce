@@ -1,0 +1,99 @@
+{
+  "title": "六歌仙容彩",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1831,
+  "duration_min": 60,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-sagi-nashi",
+  "note": "★歌舞伎 ／ ★★★6人の歌人を1人の役者が次々に踊り分ける『変化舞踊』 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "小野小町"
+    },
+    {
+      "label": "在原業平"
+    },
+    {
+      "label": "文屋康秀"
+    },
+    {
+      "label": "喜撰法師"
+    },
+    {
+      "label": "大伴黒主"
+    },
+    {
+      "label": "僧正遍昭"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★僧正遍昭（清元）",
+      "group_label": "第1",
+      "roles": [
+        "僧正遍昭",
+        "小野小町",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★文屋康秀（長唄）",
+      "group_label": "第2",
+      "roles": [
+        "文屋康秀",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★在原業平（常磐津・小町との相舞）",
+      "group_label": "第3",
+      "roles": [
+        "在原業平",
+        "小野小町",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★喜撰法師（清元・お梶との掛け合い）",
+      "group_label": "第4",
+      "roles": [
+        "喜撰法師",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★大伴黒主（長唄・雪の場）",
+      "group_label": "第5",
+      "roles": [
+        "大伴黒主",
+        "小野小町",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

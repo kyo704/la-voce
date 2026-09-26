@@ -1,0 +1,186 @@
+{
+  "title": "ひかりごけ",
+  "title_original": "ひかりごけ",
+  "composer": "團伊玖磨",
+  "composer_sort": "Dan, Ikuma",
+  "kind": "opera",
+  "year_written": 1972,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "hikarigoke",
+  "note": "★武田泰淳の同名小説による",
+  "roles": [
+    {
+      "label": "船長"
+    },
+    {
+      "label": "西川"
+    },
+    {
+      "label": "五助"
+    },
+    {
+      "label": "八蔵"
+    },
+    {
+      "label": "裁判長"
+    },
+    {
+      "label": "検事"
+    },
+    {
+      "label": "弁護人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 知床の難破（4人の漂流）",
+      "group_label": "第1幕",
+      "roles": [
+        "船長",
+        "西川",
+        "五助",
+        "八蔵"
+      ]
+    },
+    {
+      "label": "★第1幕 洞窟の飢え（八蔵の死）",
+      "group_label": "第1幕",
+      "roles": [
+        "船長",
+        "西川",
+        "五助",
+        "八蔵"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★食べるか死ぬか（五助の死と船長の決断）",
+      "group_label": "第2幕",
+      "roles": [
+        "船長",
+        "西川",
+        "五助"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★西川の首のうしろの光（ひかりごけ）",
+      "group_label": "第2幕",
+      "roles": [
+        "船長",
+        "西川"
+      ]
+    },
+    {
+      "label": "★★第3幕 法廷（罪の名がない）",
+      "group_label": "第3幕",
+      "roles": [
+        "船長",
+        "裁判長",
+        "検事",
+        "弁護人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（★見ている者の首にも光が見える）",
+      "group_label": "第3幕",
+      "roles": [
+        "船長",
+        "裁判長",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

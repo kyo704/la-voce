@@ -1,0 +1,200 @@
+{
+  "title": "不思議な国のアリス",
+  "title_original": "不思議な国のアリス",
+  "composer": "木下牧子",
+  "composer_sort": "Kinoshita, Makiko",
+  "kind": "opera",
+  "year_written": 1996,
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "alice-kinoshita",
+  "note": "★キャロルの童話による。★子ども向けの上演が多い",
+  "roles": [
+    {
+      "label": "アリス"
+    },
+    {
+      "label": "白うさぎ"
+    },
+    {
+      "label": "帽子屋"
+    },
+    {
+      "label": "三月うさぎ"
+    },
+    {
+      "label": "眠りねずみ"
+    },
+    {
+      "label": "チェシャ猫"
+    },
+    {
+      "label": "ハートの女王"
+    },
+    {
+      "label": "ハートの王"
+    },
+    {
+      "label": "公爵夫人"
+    },
+    {
+      "label": "いも虫"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 ★うさぎ穴に落ちる",
+      "group_label": "第1場",
+      "roles": [
+        "アリス",
+        "白うさぎ"
+      ]
+    },
+    {
+      "label": "★★第2場 涙の池と体の大きさ",
+      "group_label": "第2場",
+      "roles": [
+        "アリス",
+        "白うさぎ",
+        "いも虫"
+      ]
+    },
+    {
+      "label": "★第3場 公爵夫人の家（胡椒とぶた）",
+      "group_label": "第3場",
+      "roles": [
+        "アリス",
+        "公爵夫人",
+        "チェシャ猫"
+      ]
+    },
+    {
+      "label": "★★第4場 ★狂ったお茶会",
+      "group_label": "第4場",
+      "roles": [
+        "アリス",
+        "帽子屋",
+        "三月うさぎ",
+        "眠りねずみ"
+      ]
+    },
+    {
+      "label": "★★第5場 女王のクロケー（首をはねよ）",
+      "group_label": "第5場",
+      "roles": [
+        "アリス",
+        "ハートの女王",
+        "ハートの王",
+        "白うさぎ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第6場 裁判（タルトを盗んだのは誰）",
+      "group_label": "第6場",
+      "roles": [
+        "アリス",
+        "ハートの女王",
+        "ハートの王",
+        "白うさぎ",
+        "帽子屋",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（目覚め）",
+      "group_label": "終場",
+      "roles": [
+        "アリス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

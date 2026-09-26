@@ -1,0 +1,201 @@
+{
+  "title": "モイーズとファラオン",
+  "title_original": "Moïse et Pharaon",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1827,
+  "duration_min": 190,
+  "edition": "1827 パリ・オペラ座（『エジプトのモーゼ』の仏語改作・4幕）",
+  "language": "fr",
+  "source": "hand",
+  "source_id": "moise-pharaon",
+  "roles": [
+    {
+      "label": "アナイ"
+    },
+    {
+      "label": "アメノフィス"
+    },
+    {
+      "label": "モイーズ"
+    },
+    {
+      "label": "ファラオン"
+    },
+    {
+      "label": "シナイード"
+    },
+    {
+      "label": "エリゼール"
+    },
+    {
+      "label": "マリー"
+    },
+    {
+      "label": "オシリデ"
+    },
+    {
+      "label": "オフィド"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ヘブライ人の野営（アナイとアメノフィス）",
+      "group_label": "第1幕",
+      "roles": [
+        "アナイ",
+        "マリー",
+        "エリゼール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 モイーズの祈りと闇の奇跡",
+      "group_label": "第1幕",
+      "roles": [
+        "モイーズ",
+        "ファラオン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 王宮（シナイードの取りなし）",
+      "group_label": "第2幕",
+      "roles": [
+        "シナイード",
+        "ファラオン",
+        "アメノフィス"
+      ]
+    },
+    {
+      "label": "第2幕 アメノフィスとアナイの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "アメノフィス",
+        "アナイ"
+      ]
+    },
+    {
+      "label": "第3幕 イシスの神殿（バレエと対決）",
+      "group_label": "第3幕",
+      "roles": [
+        "モイーズ",
+        "ファラオン",
+        "オシリデ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 アナイの選び（民を取る）",
+      "group_label": "第4幕",
+      "roles": [
+        "アナイ",
+        "アメノフィス",
+        "モイーズ"
+      ]
+    },
+    {
+      "label": "第4幕 ★祈り（紅海の場）と終曲",
+      "group_label": "第4幕",
+      "roles": [
+        "モイーズ",
+        "アナイ",
+        "エリゼール",
+        "マリー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

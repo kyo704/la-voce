@@ -1,0 +1,38 @@
+{
+  "title": "ジプシーの歌 作品103",
+  "title_original": "Zigeunerlieder op.103",
+  "composer": "ブラームス",
+  "composer_sort": "Brahms, Johannes",
+  "kind": "song_cycle",
+  "year_written": 1888,
+  "duration_min": 20,
+  "language": "de",
+  "source": "hand",
+  "source_id": "brahms-op103",
+  "note": "★四重唱（S・A・T・B とピアノ）が もとの 形。★独唱版も あります ／ ★★曲名を 全部 確かめられなかったので ★曲数（11曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全11曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

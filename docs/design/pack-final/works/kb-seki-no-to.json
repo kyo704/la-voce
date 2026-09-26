@@ -1,0 +1,78 @@
+{
+  "title": "積恋雪関扉",
+  "aliases": [
+    "関の扉"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1784,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-seki-no-to",
+  "note": "★歌舞伎 ／ ★★★常磐津の 大曲。★女形と 立役の どちらも 大役 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "関守関兵衛（大伴黒主）"
+    },
+    {
+      "label": "小野小町姫"
+    },
+    {
+      "label": "良峰少将宗貞"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "墨染桜の精（傾城墨染）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★逢坂の関（★関兵衛と小町姫）",
+      "group_label": "一幕",
+      "roles": [
+        "関守関兵衛（大伴黒主）",
+        "小野小町姫",
+        "良峰少将宗貞",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★墨染桜の精（★桜が女に変わる）",
+      "group_label": "一幕",
+      "roles": [
+        "墨染桜の精（傾城墨染）",
+        "関守関兵衛（大伴黒主）",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★黒主の正体と幕切れ",
+      "group_label": "一幕",
+      "roles": [
+        "関守関兵衛（大伴黒主）",
+        "墨染桜の精（傾城墨染）",
+        "良峰少将宗貞",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

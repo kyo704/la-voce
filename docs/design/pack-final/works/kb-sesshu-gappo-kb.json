@@ -1,0 +1,81 @@
+{
+  "title": "摂州合邦辻（歌舞伎）",
+  "aliases": [
+    "合邦"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1773,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-sesshu-gappo-kb",
+  "note": "★歌舞伎 ／ 作者 菅専助・若竹笛躬 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "玉手御前"
+    },
+    {
+      "label": "俊徳丸"
+    },
+    {
+      "label": "浅香姫"
+    },
+    {
+      "label": "合邦道心"
+    },
+    {
+      "label": "おとく"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★合邦庵室（★玉手御前の告白）",
+      "group_label": "下",
+      "roles": [
+        "玉手御前",
+        "俊徳丸",
+        "浅香姫",
+        "合邦道心",
+        "おとく",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★合邦庵室 玉手の死と真意",
+      "group_label": "下",
+      "roles": [
+        "玉手御前",
+        "合邦道心",
+        "俊徳丸",
+        "浅香姫",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "title": "セロ弾きのゴーシュ",
+  "title_original": "セロ弾きのゴーシュ",
+  "composer": "林光",
+  "composer_sort": "Hayashi, Hikaru",
+  "kind": "opera",
+  "year_written": 1986,
+  "duration_min": 80,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "sero-hiki-no-gauche",
+  "note": "★宮沢賢治の同名童話による。★小編成で上演できる作",
+  "roles": [
+    {
+      "label": "ゴーシュ"
+    },
+    {
+      "label": "楽長"
+    },
+    {
+      "label": "三毛猫"
+    },
+    {
+      "label": "かっこう"
+    },
+    {
+      "label": "狸の子"
+    },
+    {
+      "label": "野ねずみの母"
+    },
+    {
+      "label": "野ねずみの子"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 楽団の稽古（ゴーシュが叱られる）",
+      "group_label": "第1場",
+      "roles": [
+        "ゴーシュ",
+        "楽長",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2場 ★三毛猫の来訪（トロイメライを）",
+      "group_label": "第2場",
+      "roles": [
+        "ゴーシュ",
+        "三毛猫"
+      ]
+    },
+    {
+      "label": "★★第3場 ★かっこうの音階の稽古",
+      "group_label": "第3場",
+      "roles": [
+        "ゴーシュ",
+        "かっこう"
+      ]
+    },
+    {
+      "label": "★★第4場 狸の子と小太鼓の合わせ",
+      "group_label": "第4場",
+      "roles": [
+        "ゴーシュ",
+        "狸の子"
+      ]
+    },
+    {
+      "label": "★★第5場 野ねずみの母と子（病を治す音）",
+      "group_label": "第5場",
+      "roles": [
+        "ゴーシュ",
+        "野ねずみの母",
+        "野ねずみの子"
+      ]
+    },
+    {
+      "label": "★★終曲（音楽会でのアンコールとゴーシュの気づき）",
+      "group_label": "終場",
+      "roles": [
+        "ゴーシュ",
+        "楽長",
+        "かっこう",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

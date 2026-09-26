@@ -1,0 +1,99 @@
+{
+  "title": "傾城阿波の鳴門",
+  "aliases": [
+    "阿波の鳴門"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1768,
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bun-keisei-awa",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松半二ほか ／ ★★★『巡礼歌の段』が名高い。★名乗れない母の場 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "お弓"
+    },
+    {
+      "label": "おつる"
+    },
+    {
+      "label": "十郎兵衛"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★八段目 順礼歌の段（★母と娘の名乗り合えぬ対面）",
+      "group_label": "八段目",
+      "roles": [
+        "お弓",
+        "おつる",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★娘を帰したあとの母の嘆き",
+      "group_label": "八段目",
+      "roles": [
+        "お弓",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★九段目 十郎兵衛の殺し",
+      "group_label": "九段目",
+      "roles": [
+        "十郎兵衛",
+        "おつる",
+        "お弓",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

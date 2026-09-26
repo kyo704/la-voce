@@ -1,0 +1,103 @@
+{
+  "title": "一谷嫩軍記（文楽）",
+  "aliases": [
+    "熊谷陣屋"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1751,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-ichinotani-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 並木宗輔 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "熊谷次郎直実"
+    },
+    {
+      "label": "平敦盛"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    },
+    {
+      "label": "相模"
+    },
+    {
+      "label": "藤の方"
+    },
+    {
+      "label": "源義経"
+    },
+    {
+      "label": "白毫弥陀六"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★陣門・組打",
+      "group_label": "二段目",
+      "roles": [
+        "熊谷次郎直実",
+        "平敦盛",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★熊谷陣屋（★制札・首実検）",
+      "group_label": "三段目",
+      "roles": [
+        "熊谷次郎直実",
+        "相模",
+        "藤の方",
+        "源義経",
+        "白毫弥陀六",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

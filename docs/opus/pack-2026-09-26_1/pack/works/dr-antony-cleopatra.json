@@ -1,0 +1,79 @@
+{
+  "title": "アントニーとクレオパトラ",
+  "title_original": "Antony and Cleopatra",
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1607,
+  "duration_min": 190,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dr-antony-cleopatra",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "アントニー"
+    },
+    {
+      "label": "クレオパトラ"
+    },
+    {
+      "label": "オクテイヴィアス"
+    },
+    {
+      "label": "エノバーバス"
+    },
+    {
+      "label": "チャーミアン"
+    },
+    {
+      "label": "侍臣",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "アレクサンドリアの宮廷",
+      "group_label": "第1幕",
+      "roles": [
+        "アントニー",
+        "クレオパトラ",
+        "チャーミアン"
+      ]
+    },
+    {
+      "label": "★アクティウムの海戦",
+      "group_label": "第3幕",
+      "roles": [
+        "アントニー",
+        "オクテイヴィアス",
+        "エノバーバス"
+      ]
+    },
+    {
+      "label": "★アントニーの死",
+      "group_label": "第4幕",
+      "roles": [
+        "アントニー",
+        "クレオパトラ"
+      ]
+    },
+    {
+      "label": "★★クレオパトラの死",
+      "group_label": "第5幕",
+      "roles": [
+        "クレオパトラ",
+        "チャーミアン",
+        "オクテイヴィアス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "title": "キス・ミー・ケイト",
+  "title_original": "Kiss Me, Kate",
+  "composer": "コール・ポーター",
+  "kind": "musical",
+  "year_written": 1948,
+  "duration_min": 165,
+  "edition": "1948 ブロードウェイ初演版（★1999 リバイバル版・2019 リバイバル版で台詞に手が入る）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "kiss-me-kate",
+  "note": "★作詞 コール・ポーター ／ 脚本 サム＆ベラ・スペワック ／ ★『じゃじゃ馬ならし』の上演を描く劇中劇の構造。★役名が『素の役／劇中の役』の2重になる",
+  "roles": [
+    {
+      "label": "リリ・ヴァネッシ／キャタリン"
+    },
+    {
+      "label": "フレッド・グレアム／ペトルーチオ"
+    },
+    {
+      "label": "ロイス・レイン／ビアンカ"
+    },
+    {
+      "label": "ビル・カルホーン／ルーセンショー"
+    },
+    {
+      "label": "第1のギャング"
+    },
+    {
+      "label": "第2のギャング"
+    },
+    {
+      "label": "ハリソン・ハウエル"
+    },
+    {
+      "label": "ハティ"
+    },
+    {
+      "label": "ポール"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★アナザー・オープニン、アナザー・ショウ",
+      "group_label": "第1幕",
+      "roles": [
+        "ハティ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★ホワイ・キャント・ユー・ビヘイヴ",
+      "group_label": "第1幕",
+      "roles": [
+        "ロイス・レイン／ビアンカ",
+        "ビル・カルホーン／ルーセンショー"
+      ]
+    },
+    {
+      "label": "M3 ★★ウンダバー（Wunderbar）",
+      "group_label": "第1幕",
+      "roles": [
+        "リリ・ヴァネッシ／キャタリン",
+        "フレッド・グレアム／ペトルーチオ"
+      ]
+    },
+    {
+      "label": "M4 ★ソー・イン・ラヴ",
+      "group_label": "第1幕",
+      "roles": [
+        "リリ・ヴァネッシ／キャタリン"
+      ]
+    },
+    {
+      "label": "M5 ★劇中劇の開幕（We Open in Venice）",
+      "group_label": "第1幕",
+      "roles": [
+        "フレッド・グレアム／ペトルーチオ",
+        "リリ・ヴァネッシ／キャタリン",
+        "ロイス・レイン／ビアンカ",
+        "ビル・カルホーン／ルーセンショー"
+      ]
+    },
+    {
+      "label": "M6 ★トム、ディック・オア・ハリー",
+      "group_label": "第1幕",
+      "roles": [
+        "ロイス・レイン／ビアンカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★アイヴ・カム・トゥ・ワイヴ・イット・ウェルシリー",
+      "group_label": "第1幕",
+      "roles": [
+        "フレッド・グレアム／ペトルーチオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★アイ・ヘイト・メン",
+      "group_label": "第1幕",
+      "roles": [
+        "リリ・ヴァネッシ／キャタリン"
+      ]
+    },
+    {
+      "label": "M9 ★第1幕終曲（鞭打ちの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "フレッド・グレアム／ペトルーチオ",
+        "リリ・ヴァネッシ／キャタリン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★トゥー・ダーン・ホット",
+      "group_label": "第2幕",
+      "roles": [
+        "ポール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★ホエア・イズ・ザ・ライフ・ザット・レイト・アイ・レッド",
+      "group_label": "第2幕",
+      "roles": [
+        "フレッド・グレアム／ペトルーチオ"
+      ]
+    },
+    {
+      "label": "M12 ★オールウェイズ・トゥルー・トゥ・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "ロイス・レイン／ビアンカ"
+      ]
+    },
+    {
+      "label": "M13 ★★ブラッシュ・アップ・ユア・シェイクスピア（2人のギャング）",
+      "group_label": "第2幕",
+      "roles": [
+        "第1のギャング",
+        "第2のギャング"
+      ]
+    },
+    {
+      "label": "M14 ★終曲（キス・ミー・ケイト）",
+      "group_label": "第2幕",
+      "roles": [
+        "リリ・ヴァネッシ／キャタリン",
+        "フレッド・グレアム／ペトルーチオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

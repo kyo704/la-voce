@@ -1,0 +1,155 @@
+{
+  "title": "トッツィー",
+  "title_original": "Tootsie",
+  "composer": "デイヴィッド・ヤズベック",
+  "kind": "musical",
+  "year_written": 2019,
+  "duration_min": 145,
+  "edition": "★ブロードウェイ版（2019）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-tootsie",
+  "note": "★作詞 デイヴィッド・ヤズベック ／ 脚本 ロバート・ホーン",
+  "roles": [
+    {
+      "label": "マイケル・ドーシー／ドロシー・マイケルズ"
+    },
+    {
+      "label": "ジュリー"
+    },
+    {
+      "label": "サンディ"
+    },
+    {
+      "label": "マックス"
+    },
+    {
+      "label": "ジェフ"
+    },
+    {
+      "label": "ロン"
+    },
+    {
+      "label": "リタ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "仕事のない役者",
+      "group_label": "第1幕",
+      "roles": [
+        "マイケル・ドーシー／ドロシー・マイケルズ",
+        "ジェフ",
+        "サンディ"
+      ]
+    },
+    {
+      "label": "★女性として役を得る",
+      "group_label": "第1幕",
+      "roles": [
+        "マイケル・ドーシー／ドロシー・マイケルズ",
+        "ロン",
+        "リタ"
+      ]
+    },
+    {
+      "label": "稽古場",
+      "group_label": "第2幕",
+      "roles": [
+        "マイケル・ドーシー／ドロシー・マイケルズ",
+        "ジュリー",
+        "マックス"
+      ]
+    },
+    {
+      "label": "★正体を明かす",
+      "group_label": "第2幕",
+      "roles": [
+        "マイケル・ドーシー／ドロシー・マイケルズ",
+        "ジュリー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

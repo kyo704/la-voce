@@ -1,0 +1,129 @@
+{
+  "title": "通盛",
+  "composer": "能（二番目物（修羅））",
+  "composer_sort": "Noh",
+  "kind": "noh",
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "noh-michimori",
+  "note": "★二番目物（修羅） ／ ★謡（うたい）の文は 入れていません",
+  "roles": [
+    {
+      "label": "前シテ（漁翁）"
+    },
+    {
+      "label": "後シテ（平通盛の霊）"
+    },
+    {
+      "label": "シテツレ（漁女）"
+    },
+    {
+      "label": "シテツレ（小宰相の霊）"
+    },
+    {
+      "label": "ワキ（阿波の僧）"
+    },
+    {
+      "label": "アイ（間狂言）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "次第・ワキの道行（摂津・一の谷）",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（阿波の僧）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "一声・前シテの登場（漁翁）",
+      "group_label": "前段",
+      "roles": [
+        "前シテ（漁翁）",
+        "シテツレ（漁女）",
+        "シテツレ（小宰相の霊）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "ワキとの問答・クセ（いわれを語る）",
+      "group_label": "前段",
+      "roles": [
+        "前シテ（漁翁）",
+        "シテツレ（漁女）",
+        "シテツレ（小宰相の霊）",
+        "ワキ（阿波の僧）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "中入・アイの語り（間狂言）",
+      "group_label": "中入",
+      "roles": [
+        "アイ（間狂言）",
+        "ワキ（阿波の僧）"
+      ]
+    },
+    {
+      "label": "出端・後シテの出（平通盛の霊）",
+      "group_label": "後段",
+      "roles": [
+        "後シテ（平通盛の霊）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "カケリ",
+      "group_label": "後段",
+      "roles": [
+        "後シテ（平通盛の霊）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "キリ（終曲）",
+      "group_label": "後段",
+      "roles": [
+        "後シテ（平通盛の霊）",
+        "ワキ（阿波の僧）",
+        "地謡",
+        "囃子方"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛（能管）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

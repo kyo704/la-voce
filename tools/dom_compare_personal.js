@@ -35,8 +35,18 @@ const 元 = fs.readFileSync(path.join(__dirname, "dom_compare.js"), "utf8").spli
 const 始 = 元.findIndex((l) => l.startsWith("const HONE = `"));
 const 終 = 元.findIndex((l, n) => n > 始 && l.trim() === "}`;");
 if (始 < 0 || 終 < 0) { console.log("★骨組みの 式を 読めません"); process.exit(2); }
-const HONE = 元[始].slice("const HONE = `".length) + "\n"
+const 生 = 元[始].slice("const HONE = `".length) + "\n"
   + 元.slice(始 + 1, 終).join("\n") + "\n}";
+// ★★★逃がし字を 戻します（★2026-09-26 に 見つけた 大きな 抜け）。
+//   ★★あちらでは `HONE` は **字の 型（テンプレート）** です。
+//     ★★JS が 読む とき `\\b` は `\b` に なります。
+//   ★★★こちらは 紙を **そのまま** 読んで いました。★`\\b` の まま 渡して いました。
+//     ★★だから `/\\bnote\\b/` は ★「¥b note ¥b」という 字 を 探し、★1つも 当たりません。
+//     ★★★注（約束の 文）・題の class・札の class・文 ── ★**4つ とも 死んで いました**。
+//       ★★見本の `div.note` `div.usu` が 1つも 注に なって いません でした。
+//       ★★実機の `<button>` だけが 札に なり、★見本の `div.back` は 何にも なりません でした。
+//   ★★だから 字の 型 として **一度 読ませて** から 渡します。★あちらと 同じ 字に なります。
+const HONE = new Function("return `" + 生 + "`")();
 // ★★★字の まま 渡すと Playwright は `undefined` を 返します
 //   （★`tools/dom_compare.js` の 註・2026-09-20）。★本当の 関数に して から 渡します。
 //   ★★2026-09-26 に ここで つまずきました ── ★あちらの 註を 読んで いれば 1度で 済みました。
@@ -51,6 +61,28 @@ fs.readFileSync(path.join(ROOT, ".env.e2e"), "utf8").split("\n").forEach((l) => 
 // ★★★`HONE` が 返すのは **字の 並び** です（★「題｜…」「約｜…」の 形）。
 //   ★★はじめ `{kind, text}` の 物だと 思い込み、★`undefined` を 並べて いました
 //     （★2026-09-26）。★あちらの 中身を 読んで から 直しました。
+// ★★★どの 画面にも 付いて 回る もの（★見本には 無い・2026-09-26）。
+//   ★★★黙って 落としません ── ★落とした ものは 下に **必ず** 並べます
+//     （★台帳「黙って 落とさない」・裁定 その124）。
+//   ★★ここに 足すのは「画面の 中身では ない もの」だけ です。
+//     ★★画面の 中身の 差を ここに 入れたら、★見張りの 意味が 無くなります。
+const 共通に付くもの = [
+  {
+    型: /^注｜バージョン/,
+    なぜ: "★版と 最終更新の 字。★どの 画面の 下にも 出ます。"
+      + "★見本の html は 版を 持ちません（★1つの 紙 だから）。"
+  }
+];
+
+function 除く(列) {
+  const 残 = [], 落 = [];
+  列.forEach((x) => {
+    const 当 = 共通に付くもの.find((k) => k.型.test(x));
+    if (当) 落.push({ x, なぜ: 当.なぜ }); else 残.push(x);
+  });
+  return { 残, 落 };
+}
+
 function 差(a, b) {
   const 無 = a.filter((x) => !b.includes(x));
   const 余 = b.filter((x) => !a.includes(x));
@@ -136,7 +168,16 @@ function 差(a, b) {
   await 押す(道.row);
   await p2.waitForTimeout(1500);
   // ★★★先に 絵を 撮ります ── ★絵は **見た まま** で なければ 意味が ありません。
-  await p2.screenshot({ path: path.join(OUT, `${名}-実機.png`), fullPage: true });
+  //   ★★★撮る ところを 狭めました（★2026-09-26・坂本さんの ご指示）。
+  //     ★★前は `fullPage` で 紙 ぜんたい を 撮って いました。
+  //       ★★見本は `#bd`（枠の 中）だけ です ── ★大きさが 揃わず、
+  //         ★★`tools/pixel_lint.py` が 1枚目で 止まって いました。
+  //     ★★だから 実機も **同じ ところ**（`main`）だけ を 撮ります。
+  //   ★★★`fullPage` の 絵も 残します（`-実機-全体.png`）── ★見落としを 防ぐ ため。
+  const 本体 = await p2.$("main");
+  if (本体) await 本体.screenshot({ path: path.join(OUT, `${名}-実機.png`) });
+  else await p2.screenshot({ path: path.join(OUT, `${名}-実機.png`) });
+  await p2.screenshot({ path: path.join(OUT, `${名}-実機-全体.png`), fullPage: true });
   // ★★★`main` の 中には もっとの 行が **残って います**（★`display:none` で 隠すだけ）。
   //   ★★`inMore(節)` が そう して います ── ★書きかけを 残す ため の 作り です
   //     （★`components/VocalTracker.jsx`「消しません。隠すだけです」）。
@@ -164,13 +205,22 @@ function 差(a, b) {
     console.log("--- 見本 ---"); 見本.forEach((x) => console.log("   ", x));
     console.log("--- 実機 ---"); 実機.forEach((x) => console.log("   ", x));
   }
-  const d = 差(見本, 実機);
+  const d0 = 差(見本, 実機);
+  const 無 = 除く(d0.無), 余 = 除く(d0.余);
+  const d = { 無: 無.残, 余: 余.残 };
+  const 落ちた = 無.落.concat(余.落);
   console.log(`DOM_PERSONAL  ${名}`);
   console.log(`  見本 …… ${見本.length} 塊 ／ 実機 …… ${実機.length} 塊`);
   console.log(`\n■ ① 見本に あって 実機に 無い（${d.無.length}）`);
   d.無.forEach((x) => console.log(`    ${x}`));
   console.log(`\n■ ② 実機に あって 見本に 無い（${d.余.length}）`);
   d.余.forEach((x) => console.log(`    ${x}`));
+  console.log(`\n■ ★共通に 付く もの として 落としました（${落ちた.length}）`);
+  落ちた.forEach((k) => console.log(`    ${k.x}\n      ${k.なぜ}`));
   console.log(`\n★絵 …… ${path.relative(ROOT, OUT)}/${名}-{見本,実機}.png`);
-  console.log(`RESULT: ${d.無.length === 0 ? "OK" : `DIFF（${d.無.length}件）`}`);
+  // ★★★①と② の **両方** を 見ます（★2026-09-26）。
+  //   ★★前は ① だけ を 見て いました。★②に 1件 あっても「OK」と 出て いました。
+  //     ★★較正で それを 見ました ── ★故意の 差が ②に 出たのに RESULT は OK でした。
+  const 計 = d.無.length + d.余.length;
+  console.log(`RESULT: ${計 === 0 ? "OK" : `DIFF（①${d.無.length}・②${d.余.length}）`}`);
 })();

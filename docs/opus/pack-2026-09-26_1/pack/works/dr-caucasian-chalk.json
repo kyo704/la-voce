@@ -1,0 +1,73 @@
+{
+  "title": "コーカサスの白墨の輪",
+  "composer": "ブレヒト",
+  "composer_sort": "Brecht, Bertolt",
+  "kind": "drama",
+  "year_written": 1948,
+  "duration_min": 180,
+  "language": "de",
+  "source": "hand",
+  "source_id": "dr-caucasian-chalk",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "グルーシェ"
+    },
+    {
+      "label": "アツダク"
+    },
+    {
+      "label": "ナターシャ・アバシヴィリ"
+    },
+    {
+      "label": "シモン"
+    },
+    {
+      "label": "語り手・合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "谷の争い",
+      "group_label": "序",
+      "roles": [
+        "語り手・合唱"
+      ]
+    },
+    {
+      "label": "★グルーシェが子を連れて逃げる",
+      "group_label": "第1部",
+      "roles": [
+        "グルーシェ",
+        "ナターシャ・アバシヴィリ"
+      ]
+    },
+    {
+      "label": "★アツダクの裁き",
+      "group_label": "第2部",
+      "roles": [
+        "アツダク",
+        "語り手・合唱"
+      ]
+    },
+    {
+      "label": "★★白墨の輪の裁判",
+      "group_label": "第3部",
+      "roles": [
+        "アツダク",
+        "グルーシェ",
+        "ナターシャ・アバシヴィリ",
+        "シモン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

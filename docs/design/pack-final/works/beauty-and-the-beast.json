@@ -1,0 +1,296 @@
+{
+  "title": "美女と野獣",
+  "title_original": "Beauty and the Beast",
+  "composer": "アラン・メンケン",
+  "kind": "musical",
+  "year_written": 1994,
+  "duration_min": 150,
+  "edition": "1994 ブロードウェイ初演版（★1991 映画版に7曲を追加。★日本版〈劇団四季〉は日本語訳詞。★2021 ロンドン新演出版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "beauty-and-the-beast",
+  "note": "★作詞 ハワード・アシュマン／ティム・ライス ／ 脚本 リンダ・ウルヴァートン ／ ★★ディズニーの舞台化の第1作。★『Human Again』は映画版から外され舞台で復活した曲",
+  "roles": [
+    {
+      "label": "ベル"
+    },
+    {
+      "label": "ビースト（野獣）"
+    },
+    {
+      "label": "ガストン"
+    },
+    {
+      "label": "ルフウ"
+    },
+    {
+      "label": "モーリス"
+    },
+    {
+      "label": "ルミエール"
+    },
+    {
+      "label": "コッグスワース"
+    },
+    {
+      "label": "ポット夫人"
+    },
+    {
+      "label": "チップ"
+    },
+    {
+      "label": "バベット"
+    },
+    {
+      "label": "マダム・ド・ラ・グランド・ブーシュ"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★プロローグ（薔薇と呪い）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★★ベル（朝の街）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベル",
+        "ガストン",
+        "ルフウ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★ミー（ガストンの求婚）",
+      "group_label": "第1幕",
+      "roles": [
+        "ガストン",
+        "ベル"
+      ]
+    },
+    {
+      "label": "M4 ★★ホーム（ベルの囚われ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベル",
+        "ポット夫人",
+        "マダム・ド・ラ・グランド・ブーシュ"
+      ]
+    },
+    {
+      "label": "M5 ★★★ガストン（酒場の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルフウ",
+        "ガストン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★ビー・アワ・ゲスト（ひとりぼっちの晩餐会）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルミエール",
+        "ポット夫人",
+        "コッグスワース",
+        "バベット",
+        "マダム・ド・ラ・グランド・ブーシュ",
+        "ベル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★★イフ・アイ・キャント・ラヴ・ハー（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビースト（野獣）"
+      ]
+    },
+    {
+      "label": "M8 ★★サムシング・ゼア",
+      "group_label": "第2幕",
+      "roles": [
+        "ベル",
+        "ビースト（野獣）",
+        "ルミエール",
+        "コッグスワース",
+        "ポット夫人"
+      ]
+    },
+    {
+      "label": "M9 ★★★ヒューマン・アゲイン",
+      "group_label": "第2幕",
+      "roles": [
+        "ルミエール",
+        "コッグスワース",
+        "ポット夫人",
+        "バベット",
+        "マダム・ド・ラ・グランド・ブーシュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★美女と野獣（Beauty and the Beast ─ 舞踏会）",
+      "group_label": "第2幕",
+      "roles": [
+        "ポット夫人",
+        "ベル",
+        "ビースト（野獣）"
+      ]
+    },
+    {
+      "label": "M11 ★★★イフ・アイ・キャント・ラヴ・ハー（再現）と鏡",
+      "group_label": "第2幕",
+      "roles": [
+        "ビースト（野獣）",
+        "ベル"
+      ]
+    },
+    {
+      "label": "M12 ★★★ザ・マブ・ソング（キル・ザ・ビースト）",
+      "group_label": "第2幕",
+      "roles": [
+        "ガストン",
+        "ルフウ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（ビーストの死と復活・呪いの解け）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベル",
+        "ビースト（野獣）",
+        "ガストン",
+        "ルミエール",
+        "コッグスワース",
+        "ポット夫人",
+        "チップ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

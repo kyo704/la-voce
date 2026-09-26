@@ -1,0 +1,183 @@
+{
+  "title": "タヒチ島の騒動",
+  "title_original": "Trouble in Tahiti",
+  "composer": "バーンスタイン",
+  "composer_sort": "Bernstein, Leonard",
+  "kind": "opera",
+  "year_written": 1952,
+  "duration_min": 45,
+  "language": "en",
+  "source": "hand",
+  "source_id": "trouble-in-tahiti",
+  "roles": [
+    {
+      "label": "ディナー"
+    },
+    {
+      "label": "サム"
+    },
+    {
+      "label": "3人組（トリオ）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（★3人組のスキャットの前口上・郊外の幸せ）",
+      "group_label": "序",
+      "roles": [
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★朝食の場（夫婦の言い争い）",
+      "group_label": "第1場",
+      "roles": [
+        "ディナー",
+        "サム",
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★サムの事務所（ハンドボールの試合）",
+      "group_label": "第2場",
+      "roles": [
+        "サム",
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★ディナーの精神分析（★庭の歌）",
+      "group_label": "第3場",
+      "roles": [
+        "ディナー",
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★昼どき（2人がすれ違う）",
+      "group_label": "第4場",
+      "roles": [
+        "ディナー",
+        "サム",
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★サムの勝利（トロフィー）",
+      "group_label": "第5場",
+      "roles": [
+        "サム",
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★★ディナーの語り（『タヒチ島の騒動』という映画の話）",
+      "group_label": "第6場",
+      "roles": [
+        "ディナー",
+        "3人組（トリオ）"
+      ]
+    },
+    {
+      "label": "★終曲（また映画に行こう・3人組の結び）",
+      "group_label": "第7場",
+      "roles": [
+        "ディナー",
+        "サム",
+        "3人組（トリオ）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

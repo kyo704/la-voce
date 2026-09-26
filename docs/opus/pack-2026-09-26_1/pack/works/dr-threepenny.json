@@ -1,0 +1,84 @@
+{
+  "title": "三文オペラ",
+  "aliases": [
+    "Die Dreigroschenoper"
+  ],
+  "composer": "ブレヒト／ヴァイル（音楽）",
+  "composer_sort": "Brecht, Bertolt",
+  "kind": "drama",
+  "year_written": 1928,
+  "duration_min": 150,
+  "language": "de",
+  "source": "hand",
+  "source_id": "dr-threepenny",
+  "note": "★★★音楽つきの 劇。★歌は 役者が 歌います（★声楽家では ありません） ／ ★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "メッキー・メッサー"
+    },
+    {
+      "label": "ポリー"
+    },
+    {
+      "label": "ピーチャム"
+    },
+    {
+      "label": "ピーチャム夫人"
+    },
+    {
+      "label": "ジェニー"
+    },
+    {
+      "label": "タイガー・ブラウン"
+    },
+    {
+      "label": "乞食・娼婦",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★『メッキー・メッサーのモリタート』",
+      "group_label": "序",
+      "roles": [
+        "乞食・娼婦"
+      ]
+    },
+    {
+      "label": "婚礼",
+      "group_label": "第1幕",
+      "roles": [
+        "メッキー・メッサー",
+        "ポリー",
+        "乞食・娼婦"
+      ]
+    },
+    {
+      "label": "★ジェニーの裏切り",
+      "group_label": "第2幕",
+      "roles": [
+        "メッキー・メッサー",
+        "ジェニー",
+        "タイガー・ブラウン"
+      ]
+    },
+    {
+      "label": "★★絞首台と思わぬ赦免",
+      "group_label": "第3幕",
+      "roles": [
+        "メッキー・メッサー",
+        "ピーチャム",
+        "ピーチャム夫人",
+        "乞食・娼婦"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

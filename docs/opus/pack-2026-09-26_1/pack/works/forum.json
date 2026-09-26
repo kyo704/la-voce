@@ -1,0 +1,272 @@
+{
+  "title": "ローマで起こった奇妙な出来事",
+  "title_original": "A Funny Thing Happened on the Way to the Forum",
+  "composer": "ソンドハイム",
+  "composer_sort": "Sondheim, Stephen",
+  "kind": "musical",
+  "year_written": 1962,
+  "duration_min": 120,
+  "edition": "1962 ブロードウェイ初演版（★1972／1996 リバイバル版。★『コメディ・トゥナイト』は稽古中に差し替えられた）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "forum",
+  "note": "★作詞 ソンドハイム ／ 脚本 バート・シェヴェラヴ／ラリー・ゲルバート ／ ★プラウトゥスの喜劇による。★ソンドハイムが作曲と作詞の両方を手がけた最初のヒット作",
+  "roles": [
+    {
+      "label": "プセウドルス"
+    },
+    {
+      "label": "ヒステリウム"
+    },
+    {
+      "label": "セネックス"
+    },
+    {
+      "label": "ドミナ"
+    },
+    {
+      "label": "ヒーロー"
+    },
+    {
+      "label": "フィリア"
+    },
+    {
+      "label": "マイルズ・グロリオスス"
+    },
+    {
+      "label": "エロニウス"
+    },
+    {
+      "label": "リュークス"
+    },
+    {
+      "label": "3人のプロテアン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★コメディ・トゥナイト",
+      "group_label": "第1幕",
+      "roles": [
+        "プセウドルス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★ラヴ、アイム・イン・ラヴ（Love, I Hear）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒーロー"
+      ]
+    },
+    {
+      "label": "M3 ★フリー",
+      "group_label": "第1幕",
+      "roles": [
+        "プセウドルス",
+        "ヒーロー"
+      ]
+    },
+    {
+      "label": "M4 ★ザ・ハウス・オブ・マーカス・リュークス",
+      "group_label": "第1幕",
+      "roles": [
+        "リュークス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★ラヴリー",
+      "group_label": "第1幕",
+      "roles": [
+        "フィリア",
+        "ヒーロー"
+      ]
+    },
+    {
+      "label": "M6 ★★エヴリバディ・オート・トゥ・ハヴ・ア・メイド",
+      "group_label": "第1幕",
+      "roles": [
+        "セネックス",
+        "プセウドルス",
+        "ヒステリウム",
+        "リュークス"
+      ]
+    },
+    {
+      "label": "M7 ★アイム・カーム",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒステリウム"
+      ]
+    },
+    {
+      "label": "M8 ★★インパッシブル",
+      "group_label": "第1幕",
+      "roles": [
+        "セネックス",
+        "ヒーロー"
+      ]
+    },
+    {
+      "label": "M9 ★ブラヴタ・アンド・ナーヴ（Bring Me My Bride ─ 第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "マイルズ・グロリオスス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★ザット・ダーティ・オールド・マン",
+      "group_label": "第2幕",
+      "roles": [
+        "ドミナ"
+      ]
+    },
+    {
+      "label": "M11 ★ザット'ル・ショウ・ヒム",
+      "group_label": "第2幕",
+      "roles": [
+        "フィリア"
+      ]
+    },
+    {
+      "label": "M12 ★★ラヴリー（再現・ヒステリウムの女装）",
+      "group_label": "第2幕",
+      "roles": [
+        "プセウドルス",
+        "ヒステリウム"
+      ]
+    },
+    {
+      "label": "M13 ★★偽の葬儀の場（追いかけ）",
+      "group_label": "第2幕",
+      "roles": [
+        "プセウドルス",
+        "ヒステリウム",
+        "マイルズ・グロリオスス",
+        "3人のプロテアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★終曲（エロニウスの子の発見・3組の結び）",
+      "group_label": "第2幕",
+      "roles": [
+        "プセウドルス",
+        "ヒーロー",
+        "フィリア",
+        "エロニウス",
+        "マイルズ・グロリオスス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

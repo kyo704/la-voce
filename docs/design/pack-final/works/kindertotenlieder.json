@@ -1,0 +1,94 @@
+{
+ "title": "亡き子をしのぶ歌",
+ "title_original": "Kindertotenlieder",
+ "composer": "マーラー",
+ "composer_sort": "Mahler, Gustav",
+ "kind": "song_cycle",
+ "year_written": 1904,
+ "duration_min": 25,
+ "language": "de",
+ "source_id": "mahler-kindertoten",
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "管弦楽"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "弦五部",
+   "count": 1,
+   "section": "strings"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. いま太陽はあんなに明るく昇る（Nun will die Sonn′）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "2. いまわかった、なぜあんなに暗い炎を（Nun seh′ ich wohl）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "3. お前のお母さんが（Wenn dein Mütterlein）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "4. よく思う、あの子たちはただ出かけただけだと（Oft denk′ ich）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "5. こんな天気に（In diesem Wetter）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  }
+ ],
+ "source": "hand"
+}

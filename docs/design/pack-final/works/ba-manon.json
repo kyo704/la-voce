@@ -1,0 +1,154 @@
+{
+  "title": "マノン",
+  "composer": "マスネ（マーティン・イエーツ編）",
+  "composer_sort": "Massenet, Jules",
+  "kind": "dance",
+  "year_written": 1974,
+  "duration_min": 130,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-manon",
+  "note": "★振付 マクミラン ／ ★★マスネの 歌劇とは 別。★他の 曲を 集めて 作った バレエ ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "マノン"
+    },
+    {
+      "label": "デ・グリュー"
+    },
+    {
+      "label": "レスコー"
+    },
+    {
+      "label": "ムッシューG.M."
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "宿場の中庭・出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "マノン",
+        "デ・グリュー",
+        "レスコー"
+      ]
+    },
+    {
+      "label": "★寝室のパ・ド・ドゥ",
+      "group_label": "第1幕",
+      "roles": [
+        "マノン",
+        "デ・グリュー"
+      ]
+    },
+    {
+      "label": "★娼館の場",
+      "group_label": "第2幕",
+      "roles": [
+        "マノン",
+        "レスコー",
+        "ムッシューG.M.",
+        "群舞"
+      ]
+    },
+    {
+      "label": "★★沼地での死",
+      "group_label": "第3幕",
+      "roles": [
+        "マノン",
+        "デ・グリュー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

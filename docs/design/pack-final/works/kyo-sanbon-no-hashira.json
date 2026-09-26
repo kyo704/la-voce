@@ -1,0 +1,77 @@
+{
+  "title": "三本柱",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-sanbon-no-hashira",
+  "note": "★脇狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "小アド（次郎冠者）"
+    },
+    {
+      "label": "小アド（三郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主が3本の柱を3人で持って帰れと言う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）",
+        "小アド（次郎冠者）",
+        "小アド（三郎冠者）"
+      ]
+    },
+    {
+      "label": "どう持つか思案する",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "小アド（次郎冠者）",
+        "小アド（三郎冠者）"
+      ]
+    },
+    {
+      "label": "★輪になって持つ工夫",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "小アド（次郎冠者）",
+        "小アド（三郎冠者）"
+      ]
+    },
+    {
+      "label": "主に褒められ祝う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）",
+        "小アド（次郎冠者）",
+        "小アド（三郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

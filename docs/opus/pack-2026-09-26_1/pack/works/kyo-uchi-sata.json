@@ -1,0 +1,61 @@
+{
+  "title": "内沙汰",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-uchi-sata",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "小アド（奉行）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "訴えの支度をする",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★妻を相手に稽古をする",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★★本番で妻の言葉が出てしまう",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（妻）",
+        "小アド（奉行）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "title": "ペリコール",
+  "title_original": "La Périchole",
+  "composer": "オッフェンバック",
+  "composer_sort": "Offenbach, Jacques",
+  "kind": "opera",
+  "year_written": 1868,
+  "duration_min": 130,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "perichole",
+  "roles": [
+    {
+      "label": "ペリコール"
+    },
+    {
+      "label": "ピキーヨ"
+    },
+    {
+      "label": "ドン・アンドレス・デ・リベイラ"
+    },
+    {
+      "label": "パナテラス伯爵"
+    },
+    {
+      "label": "ドン・ペドロ"
+    },
+    {
+      "label": "老囚人"
+    },
+    {
+      "label": "3人の従姉妹"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 リマの広場（総督の誕生日）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・アンドレス・デ・リベイラ",
+        "パナテラス伯爵",
+        "ドン・ペドロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ペリコールとピキーヨの路上の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "ペリコール",
+        "ピキーヨ"
+      ]
+    },
+    {
+      "label": "第1幕 ★手紙のアリアと酔いのアリエッタ",
+      "group_label": "第1幕",
+      "roles": [
+        "ペリコール"
+      ]
+    },
+    {
+      "label": "第1幕 酔ったままの婚礼（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ペリコール",
+        "ピキーヨ",
+        "パナテラス伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 宮廷（3人の従姉妹と嘲り）",
+      "group_label": "第2幕",
+      "roles": [
+        "ペリコール",
+        "3人の従姉妹",
+        "ドン・アンドレス・デ・リベイラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ピキーヨの怒りと投獄",
+      "group_label": "第2幕",
+      "roles": [
+        "ピキーヨ",
+        "ペリコール",
+        "ドン・アンドレス・デ・リベイラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 牢（老囚人の助けと脱走）",
+      "group_label": "第3幕",
+      "roles": [
+        "ピキーヨ",
+        "ペリコール",
+        "老囚人"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（総督の赦し）",
+      "group_label": "第3幕",
+      "roles": [
+        "ペリコール",
+        "ピキーヨ",
+        "ドン・アンドレス・デ・リベイラ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

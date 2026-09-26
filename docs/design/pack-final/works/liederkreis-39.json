@@ -1,0 +1,126 @@
+{
+ "title": "リーダークライス 作品39",
+ "title_original": "Liederkreis op.39",
+ "composer": "シューマン",
+ "composer_sort": "Schumann, Robert",
+ "kind": "song_cycle",
+ "year_written": 1840,
+ "duration_min": 28,
+ "language": "de",
+ "source_id": "schumann-liederkreis39",
+ "note": "アイヒェンドルフの 詩に よる",
+ "scenes": [
+  {
+   "label": "1. 異郷にて（In der Fremde）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. 間奏曲（Intermezzo）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. 語らい（Waldesgespräch）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 静けさ（Die Stille）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. 月の夜（Mondnacht）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. 美しい異郷（Schöne Fremde）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. 城の上で（Auf einer Burg）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. 異郷にて（In der Fremde）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "9. 悲しみ（Wehmut）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "10. 薄明（Zwielicht）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "11. 森の中で（Im Walde）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "12. 春の夜（Frühlingsnacht）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand",
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ]
+}

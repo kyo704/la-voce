@@ -1,0 +1,108 @@
+{
+  "title": "平家女護島（俊寛）",
+  "aliases": [
+    "俊寛"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1719,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-shunkan",
+  "note": "★歌舞伎 ／ 作者 近松門左衛門 ／ ★★★立役の大役。★幕切れの俊寛ひとりの姿が名高い ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "俊寛"
+    },
+    {
+      "label": "丹波少将成経"
+    },
+    {
+      "label": "平判官康頼"
+    },
+    {
+      "label": "海女千鳥"
+    },
+    {
+      "label": "瀬尾太郎兼康"
+    },
+    {
+      "label": "丹左衛門尉基康"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★二段目 鬼界ヶ島（3人の流人）",
+      "group_label": "二段目",
+      "roles": [
+        "俊寛",
+        "丹波少将成経",
+        "平判官康頼",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★千鳥と成経の婚礼",
+      "group_label": "二段目",
+      "roles": [
+        "海女千鳥",
+        "丹波少将成経",
+        "俊寛",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★赦免状（★千鳥の名がない）",
+      "group_label": "二段目",
+      "roles": [
+        "俊寛",
+        "瀬尾太郎兼康",
+        "丹左衛門尉基康",
+        "海女千鳥",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★★俊寛の残留（★岩に登って船を見送る）",
+      "group_label": "二段目",
+      "roles": [
+        "俊寛",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

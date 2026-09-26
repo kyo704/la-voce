@@ -1,0 +1,99 @@
+{
+  "title": "天衣紛上野初花",
+  "aliases": [
+    "河内山",
+    "直侍",
+    "雪暮夜入谷畦道"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1881,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-tenno-kamiko",
+  "note": "★歌舞伎 ／ 作者 河竹黙阿弥 ／ ★★★『直侍』は 雪の場。★清元の 名曲つき ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "河内山宗俊"
+    },
+    {
+      "label": "松江出雲守"
+    },
+    {
+      "label": "北村大膳"
+    },
+    {
+      "label": "浪路"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "片岡直次郎"
+    },
+    {
+      "label": "三千歳"
+    },
+    {
+      "label": "丈賀"
+    },
+    {
+      "label": "暁雨"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★河内山宗俊 松江邸（★『ばかめ』の捨て台詞）",
+      "group_label": "序幕",
+      "roles": [
+        "河内山宗俊",
+        "松江出雲守",
+        "北村大膳",
+        "浪路",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★直侍 入谷蕎麦屋（★片岡直次郎と三千歳）",
+      "group_label": "二幕",
+      "roles": [
+        "片岡直次郎",
+        "三千歳",
+        "丈賀",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★大口屋暁雨",
+      "group_label": "三幕",
+      "roles": [
+        "暁雨",
+        "河内山宗俊",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

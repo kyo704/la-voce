@@ -1,0 +1,242 @@
+{
+  "title": "ロッキー・ホラー・ショー",
+  "title_original": "The Rocky Horror Show",
+  "composer": "リチャード・オブライエン",
+  "kind": "musical",
+  "year_written": 1973,
+  "duration_min": 105,
+  "edition": "1973 ロンドン初演版（★1975 映画版『ロッキー・ホラー・ピクチャー・ショー』で曲順が違い『Super Heroes』が削られる）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "rocky-horror",
+  "note": "★作詞 リチャード・オブライエン ／ 脚本 リチャード・オブライエン ／ ★★★観客が声を出し物を投げる『参加型』の上演の習わしがある。★★休憩なし",
+  "roles": [
+    {
+      "label": "フランク・N・フルター"
+    },
+    {
+      "label": "ブラッド・マジャース"
+    },
+    {
+      "label": "ジャネット・ワイス"
+    },
+    {
+      "label": "リフラフ"
+    },
+    {
+      "label": "マジェンタ"
+    },
+    {
+      "label": "コロンビア"
+    },
+    {
+      "label": "ロッキー"
+    },
+    {
+      "label": "エディ／スコット博士"
+    },
+    {
+      "label": "語り手（犯罪学者）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★サイエンス・フィクション／ダブル・フィーチャー",
+      "group_label": "本編",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ダムイット、ジャネット",
+      "group_label": "本編",
+      "roles": [
+        "ブラッド・マジャース",
+        "ジャネット・ワイス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★オーヴァー・アット・ザ・フランケンシュタイン・プレイス",
+      "group_label": "本編",
+      "roles": [
+        "ブラッド・マジャース",
+        "ジャネット・ワイス",
+        "リフラフ"
+      ]
+    },
+    {
+      "label": "M4 ★★★タイム・ワープ",
+      "group_label": "本編",
+      "roles": [
+        "語り手（犯罪学者）",
+        "リフラフ",
+        "マジェンタ",
+        "コロンビア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★スウィート・トランスヴェスタイト（フランクの登場）",
+      "group_label": "本編",
+      "roles": [
+        "フランク・N・フルター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ザ・スウォード・オブ・ダモクレス（ロッキーの誕生）",
+      "group_label": "本編",
+      "roles": [
+        "ロッキー",
+        "フランク・N・フルター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★アイ・キャン・メイク・ユー・ア・マン",
+      "group_label": "本編",
+      "roles": [
+        "フランク・N・フルター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★ホット・パトゥーティ（エディの登場と死）",
+      "group_label": "本編",
+      "roles": [
+        "エディ／スコット博士",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★タッチ・ミー（ジャネットの目覚め）",
+      "group_label": "本編",
+      "roles": [
+        "ジャネット・ワイス",
+        "ロッキー"
+      ]
+    },
+    {
+      "label": "M10 ★★★アイム・ゴーイング・ホーム",
+      "group_label": "本編",
+      "roles": [
+        "フランク・N・フルター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★フロア・ショー（Rose Tint My World）",
+      "group_label": "本編",
+      "roles": [
+        "コロンビア",
+        "ロッキー",
+        "ブラッド・マジャース",
+        "ジャネット・ワイス",
+        "フランク・N・フルター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★終曲（スーパーヒーローズ／リフラフの反乱）",
+      "group_label": "本編",
+      "roles": [
+        "リフラフ",
+        "マジェンタ",
+        "語り手（犯罪学者）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

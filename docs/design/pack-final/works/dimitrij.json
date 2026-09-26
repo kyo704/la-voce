@@ -1,0 +1,202 @@
+{
+  "title": "ディミトリー",
+  "title_original": "Dimitrij",
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvořák, Antonín",
+  "kind": "opera",
+  "year_written": 1882,
+  "duration_min": 180,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "dimitrij",
+  "note": "★『ボリス・ゴドゥノフ』の後の物語にあたる",
+  "roles": [
+    {
+      "label": "ディミトリー"
+    },
+    {
+      "label": "クセニヤ"
+    },
+    {
+      "label": "マリナ・ムニーシェク"
+    },
+    {
+      "label": "マルファ"
+    },
+    {
+      "label": "シュイスキー"
+    },
+    {
+      "label": "バスマノフ"
+    },
+    {
+      "label": "ネボルスキー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 クレムリンの広場（偽ディミトリーの入城）",
+      "group_label": "第1幕",
+      "roles": [
+        "ディミトリー",
+        "マルファ",
+        "シュイスキー",
+        "バスマノフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 マルファが「わが子」と認める",
+      "group_label": "第1幕",
+      "roles": [
+        "マルファ",
+        "ディミトリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★ポーランド人の宴（ポロネーズ）",
+      "group_label": "第2幕",
+      "roles": [
+        "マリナ・ムニーシェク",
+        "ディミトリー",
+        "ネボルスキー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ディミトリーとクセニヤの出会い",
+      "group_label": "第2幕",
+      "roles": [
+        "ディミトリー",
+        "クセニヤ"
+      ]
+    },
+    {
+      "label": "第3幕 大聖堂（マリナの嫉妬とクセニヤの訴え）",
+      "group_label": "第3幕",
+      "roles": [
+        "マリナ・ムニーシェク",
+        "クセニヤ",
+        "ディミトリー",
+        "シュイスキー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 マリナの告白（あなたは偽り）とクセニヤの死",
+      "group_label": "第4幕",
+      "roles": [
+        "マリナ・ムニーシェク",
+        "ディミトリー",
+        "クセニヤ"
+      ]
+    },
+    {
+      "label": "★終曲（マルファへの問いとディミトリーの死）",
+      "group_label": "第4幕",
+      "roles": [
+        "ディミトリー",
+        "マルファ",
+        "シュイスキー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

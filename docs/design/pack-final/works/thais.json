@@ -1,0 +1,215 @@
+{
+  "title": "タイス",
+  "title_original": "Thaïs",
+  "composer": "マスネ",
+  "composer_sort": "Massenet, Jules",
+  "kind": "opera",
+  "year_written": 1894,
+  "duration_min": 130,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "thais",
+  "roles": [
+    {
+      "label": "タイス"
+    },
+    {
+      "label": "アタナエル"
+    },
+    {
+      "label": "ニシアス"
+    },
+    {
+      "label": "パレモン"
+    },
+    {
+      "label": "クロビール"
+    },
+    {
+      "label": "ミルタール"
+    },
+    {
+      "label": "アルビーヌ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 テーバイドの隠者たち",
+      "group_label": "第1幕",
+      "roles": [
+        "アタナエル",
+        "パレモン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ニシアスの館（アレクサンドリア）",
+      "group_label": "第1幕",
+      "roles": [
+        "アタナエル",
+        "ニシアス",
+        "クロビール",
+        "ミルタール"
+      ]
+    },
+    {
+      "label": "第1幕 タイスの登場（誘いと拒み）",
+      "group_label": "第1幕",
+      "roles": [
+        "タイス",
+        "アタナエル",
+        "ニシアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 タイスの鏡の歌（われは美しきか）",
+      "group_label": "第2幕",
+      "roles": [
+        "タイス"
+      ]
+    },
+    {
+      "label": "第2幕 アタナエルの説きと改心",
+      "group_label": "第2幕",
+      "roles": [
+        "タイス",
+        "アタナエル"
+      ]
+    },
+    {
+      "label": "★タイスの瞑想曲（間奏曲）",
+      "group_label": "第2幕",
+      "roles": []
+    },
+    {
+      "label": "第2幕 館を焼く（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "タイス",
+        "アタナエル",
+        "ニシアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 砂漠の道（オアシス）",
+      "group_label": "第3幕",
+      "roles": [
+        "タイス",
+        "アタナエル",
+        "アルビーヌ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 アタナエルの夢と苦しみ",
+      "group_label": "第3幕",
+      "roles": [
+        "アタナエル",
+        "パレモン"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（タイスの死・立場の逆転）",
+      "group_label": "第3幕",
+      "roles": [
+        "タイス",
+        "アタナエル",
+        "アルビーヌ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

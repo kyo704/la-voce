@@ -1,0 +1,159 @@
+{
+  "title": "ペーター・シュモルとその隣人たち",
+  "title_original": "Peter Schmoll und seine Nachbarn",
+  "composer": "ウェーバー",
+  "composer_sort": "Weber, Carl Maria von",
+  "kind": "opera",
+  "year_written": 1803,
+  "duration_min": 100,
+  "language": "de",
+  "source": "hand",
+  "source_id": "peter-schmoll",
+  "note": "★台詞は失われ、序曲と音楽だけが残る（15歳の作）",
+  "roles": [
+    {
+      "label": "ミンヘン"
+    },
+    {
+      "label": "カール"
+    },
+    {
+      "label": "ペーター・シュモル"
+    },
+    {
+      "label": "マルティン・シュモル"
+    },
+    {
+      "label": "ハンス・バスト"
+    },
+    {
+      "label": "ニクラス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 隠れ住むペーター・シュモルと娘",
+      "group_label": "第1幕",
+      "roles": [
+        "ペーター・シュモル",
+        "ミンヘン",
+        "ハンス・バスト"
+      ]
+    },
+    {
+      "label": "第1幕 教師に変装したカールの来訪",
+      "group_label": "第1幕",
+      "roles": [
+        "カール",
+        "ミンヘン",
+        "ペーター・シュモル"
+      ]
+    },
+    {
+      "label": "第2幕 兄マルティンの訪れと取り違え",
+      "group_label": "第2幕",
+      "roles": [
+        "マルティン・シュモル",
+        "ペーター・シュモル",
+        "ニクラス"
+      ]
+    },
+    {
+      "label": "★終曲（和解と婚礼）",
+      "group_label": "第2幕",
+      "roles": [
+        "ミンヘン",
+        "カール",
+        "ペーター・シュモル",
+        "マルティン・シュモル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

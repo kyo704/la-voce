@@ -1,0 +1,212 @@
+{
+  "title": "ドクター・アトミック",
+  "title_original": "Doctor Atomic",
+  "composer": "アダムズ",
+  "composer_sort": "Adams, John",
+  "kind": "opera",
+  "year_written": 2005,
+  "duration_min": 180,
+  "language": "en",
+  "source": "hand",
+  "source_id": "doctor-atomic",
+  "note": "★★台本は実際の文書・詩（ダン、ボードレール、バガヴァッド・ギーター）の引用で作られている。★終曲に日本語の声が入る",
+  "roles": [
+    {
+      "label": "J・ロバート・オッペンハイマー"
+    },
+    {
+      "label": "キティ・オッペンハイマー"
+    },
+    {
+      "label": "エドワード・テラー"
+    },
+    {
+      "label": "ロバート・ウィルソン"
+    },
+    {
+      "label": "レズリー・グローヴス将軍"
+    },
+    {
+      "label": "ジャック・フックス"
+    },
+    {
+      "label": "パーシャ（ナヴァホ人の乳母）"
+    },
+    {
+      "label": "フランク・ハバード"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ★ロスアラモス（科学者たちの合唱：物質は…）",
+      "group_label": "第1幕",
+      "roles": [
+        "J・ロバート・オッペンハイマー",
+        "エドワード・テラー",
+        "ロバート・ウィルソン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 請願（ウィルソンの異議）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロバート・ウィルソン",
+        "J・ロバート・オッペンハイマー",
+        "エドワード・テラー"
+      ]
+    },
+    {
+      "label": "★第1幕 オッペンハイマー夫妻の寝室（ボードレールの詩）",
+      "group_label": "第1幕",
+      "roles": [
+        "J・ロバート・オッペンハイマー",
+        "キティ・オッペンハイマー"
+      ]
+    },
+    {
+      "label": "★第1幕 ★トリニティ実験場（装置の吊り上げ・嵐）",
+      "group_label": "第1幕",
+      "roles": [
+        "レズリー・グローヴス将軍",
+        "フランク・ハバード",
+        "J・ロバート・オッペンハイマー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第1幕の終曲：★ジョン・ダンのソネット「Batter my heart」",
+      "group_label": "第1幕",
+      "roles": [
+        "J・ロバート・オッペンハイマー"
+      ]
+    },
+    {
+      "label": "★第2幕 ★夜（キティとパーシャ・ナヴァホの子守歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "キティ・オッペンハイマー",
+        "パーシャ（ナヴァホ人の乳母）"
+      ]
+    },
+    {
+      "label": "★第2幕 ★カウントダウンの前（グローヴスとハバードの天気の言い争い）",
+      "group_label": "第2幕",
+      "roles": [
+        "レズリー・グローヴス将軍",
+        "フランク・ハバード",
+        "J・ロバート・オッペンハイマー"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ジャック・フックスと科学者たちの待ち",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャック・フックス",
+        "エドワード・テラー",
+        "ロバート・ウィルソン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（カウントダウンと閃光・★日本語の女の声）",
+      "group_label": "第2幕",
+      "roles": [
+        "J・ロバート・オッペンハイマー",
+        "キティ・オッペンハイマー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

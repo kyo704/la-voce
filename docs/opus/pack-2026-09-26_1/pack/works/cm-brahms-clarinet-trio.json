@@ -1,0 +1,77 @@
+{
+  "title": "クラリネット三重奏曲 イ短調 作品114",
+  "composer": "ブラームス",
+  "composer_sort": "Brahms, Johannes",
+  "kind": "chamber",
+  "year_written": 1891,
+  "duration_min": 25,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-brahms-clarinet-trio",
+  "roles": [
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "チェロ"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ",
+      "group_label": "楽章",
+      "roles": [
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "楽章",
+      "roles": [
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第3楽章 アンダンティーノ・グラツィオーソ",
+      "group_label": "楽章",
+      "roles": [
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第4楽章 アレグロ",
+      "group_label": "楽章",
+      "roles": [
+        "クラリネット",
+        "チェロ",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

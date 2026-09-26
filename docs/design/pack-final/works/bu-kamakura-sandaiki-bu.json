@@ -1,0 +1,82 @@
+{
+  "title": "鎌倉三代記（文楽）",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1781,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-kamakura-sandaiki-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松半二 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "三浦之助義村"
+    },
+    {
+      "label": "時姫"
+    },
+    {
+      "label": "母長門"
+    },
+    {
+      "label": "佐々木高綱"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★絹川村",
+      "group_label": "七段目",
+      "roles": [
+        "三浦之助義村",
+        "時姫",
+        "母長門",
+        "佐々木高綱",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

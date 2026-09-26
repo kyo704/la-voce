@@ -288,7 +288,45 @@ function libUrl(name, 見た) {
 //       （「同じ 名前の 関数を 2つ 置く（後が 勝つ）」）。★同じ 穴に 落ちました。
 //   ★★足すのは `libUrl` **だけ** に します。★読み込みは 前から ある `loadLib` で。
 
+
+// ---------------------------------------------------------------------------
+// ★見本の 字（★2026-09-26）
+//
+//   ★★★見張りが 見本の 字を **写して 持つ** のを やめます。
+//     ★★2026-09-26 に 3つの 見張りが、★空きが 1つ 多い 写しを 守って いました
+//       （★「受け付けない ことも」／★見本は「受け付けないことも」）。
+//     ★★★見張りが 間違った 字を 守る ── ★いちばん 悪い 形 です。
+//   ★★台帳「見張りは 測る。覚えない」。★だから 見本から 読みます。
+//
+//   ★★見本の html は 字を つなぎ合わせて 組み立てて います ──
+//     ★`'置くのは <b>日だけ</b>です。'` の 形 です。
+//     ★★だから 太字の 印と、★つなぎ目（`' + '`）を 外して から 見ます。
+//
+//   ★★★これが 見つけられる もの ── ★出して いる 字が 見本に 無い こと。
+//   ★★★見つけられない もの ── ★見本に あって 出して いない 字
+//     （★それは `tools/dom_compare_personal.js` が 見ます）。★並びの 違い。
+// ---------------------------------------------------------------------------
+
+const MIHON_PATHS = {
+  iphone: ["docs", "design", "pack-final", "00-動く見本-iPhoneで開く用.html"],
+  unei: ["docs", "design", "pack-final", "00-動く見本-PC・iPad（運営）.html"]
+};
+
+/** ★見本の 字（★印と つなぎ目を 外した もの）。 */
+function mihonText(which) {
+  const parts = MIHON_PATHS[which || "iphone"];
+  if (!parts) throw new Error("★その 見本を 知りません …… " + which);
+  return readRaw(...parts)
+    .replace(/<\/?b>|<br>/g, "")
+    .replace(/'\s*\+\s*'/g, "");
+}
+
+/** ★その 字が 見本の 中に あるか。 */
+function inMihon(sentence, which) {
+  return mihonText(which).includes(String(sentence));
+}
+
 module.exports = {
-  libUrl,
+  libUrl, mihonText, inMihon,
   assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib,
   packParts, readPack, stripCode, stripSqlCode, stripCounts, readsTable };

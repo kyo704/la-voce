@@ -1,0 +1,82 @@
+{
+  "title": "ミサ曲（ストラヴィンスキー）",
+  "composer": "ストラヴィンスキー",
+  "composer_sort": "Stravinsky, Igor",
+  "kind": "chorus",
+  "year_written": 1948,
+  "duration_min": 17,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-stravinsky-mass",
+  "note": "★★管楽器 10本だけの 伴奏。★児童合唱を 用いる 指定が あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "キリエ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "グローリア",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "クレド",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "サンクトゥス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "アニュス・デイ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "イングリッシュホルン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "title": "バンズ・ヴィジット",
+  "title_original": "The Band's Visit",
+  "composer": "デイヴィッド・ヤズベック",
+  "kind": "musical",
+  "year_written": 2017,
+  "duration_min": 95,
+  "edition": "★ブロードウェイ版（2017）── ★休憩なしの一幕物",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-band-visit",
+  "note": "★作詞 デイヴィッド・ヤズベック ／ 脚本 イタマール・モーゼス ／ ★★中東の 楽器（ウード・ダルブッカ・カヌーン）が 入ります",
+  "roles": [
+    {
+      "label": "ディナ"
+    },
+    {
+      "label": "トゥフィーク"
+    },
+    {
+      "label": "ハーレド"
+    },
+    {
+      "label": "パピ"
+    },
+    {
+      "label": "イツィク"
+    },
+    {
+      "label": "アヴラム"
+    },
+    {
+      "label": "テルフォン・ガイ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "バスを乗り違えて町に着く",
+      "group_label": "一幕物",
+      "roles": [
+        "トゥフィーク",
+        "ハーレド",
+        "ディナ"
+      ]
+    },
+    {
+      "label": "★夜の町",
+      "group_label": "一幕物",
+      "roles": [
+        "ディナ",
+        "トゥフィーク"
+      ]
+    },
+    {
+      "label": "★★公衆電話の男",
+      "group_label": "一幕物",
+      "roles": [
+        "テルフォン・ガイ"
+      ]
+    },
+    {
+      "label": "朝、バスが来る",
+      "group_label": "一幕物",
+      "roles": [
+        "トゥフィーク",
+        "ディナ",
+        "ハーレド",
+        "パピ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

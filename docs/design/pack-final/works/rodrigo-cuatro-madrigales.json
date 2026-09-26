@@ -1,0 +1,62 @@
+{
+  "title": "4つの愛のマドリガル",
+  "title_original": "Cuatro madrigales amatorios",
+  "composer": "ロドリーゴ",
+  "composer_sort": "Rodrigo, Joaquín",
+  "kind": "song_cycle",
+  "year_written": 1948,
+  "duration_min": 8,
+  "language": "es",
+  "source": "hand",
+  "source_id": "rodrigo-madrigales",
+  "note": "★★16世紀の 歌を もとに した 曲 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. あの娘は金髪（¿Con qué la lavaré?）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 白い雪から生まれた人（Vos me matásteis）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. お母さん、わたしは（De los álamos vengo, madre）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. あなたはわたしを殺した（De dónde venís, amore?）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

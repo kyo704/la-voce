@@ -1,0 +1,75 @@
+{
+  "title": "欲望という名の電車",
+  "composer": "テネシー・ウィリアムズ",
+  "composer_sort": "Williams, Tennessee",
+  "kind": "drama",
+  "year_written": 1947,
+  "duration_min": 170,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dr-streetcar",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ブランチ・デュボワ"
+    },
+    {
+      "label": "スタンリー・コワルスキー"
+    },
+    {
+      "label": "ステラ"
+    },
+    {
+      "label": "ミッチ"
+    },
+    {
+      "label": "隣人",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ブランチの到来",
+      "group_label": "第1場",
+      "roles": [
+        "ブランチ・デュボワ",
+        "ステラ",
+        "スタンリー・コワルスキー"
+      ]
+    },
+    {
+      "label": "★ミッチへの告白",
+      "group_label": "第6場",
+      "roles": [
+        "ブランチ・デュボワ",
+        "ミッチ"
+      ]
+    },
+    {
+      "label": "★★スタンリーとの対決",
+      "group_label": "第10場",
+      "roles": [
+        "ブランチ・デュボワ",
+        "スタンリー・コワルスキー"
+      ]
+    },
+    {
+      "label": "★★連れられて行く（『見知らぬ人の親切』）",
+      "group_label": "第11場",
+      "roles": [
+        "ブランチ・デュボワ",
+        "ステラ",
+        "スタンリー・コワルスキー",
+        "隣人"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

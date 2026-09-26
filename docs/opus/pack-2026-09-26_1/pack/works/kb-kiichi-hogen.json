@@ -1,0 +1,80 @@
+{
+  "title": "鬼一法眼三略巻",
+  "aliases": [
+    "菊畑"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1731,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kiichi-hogen",
+  "note": "★歌舞伎 ／ 作者 文耕堂・長谷川千四 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "吉岡鬼一法眼"
+    },
+    {
+      "label": "皆鶴姫"
+    },
+    {
+      "label": "虎蔵（牛若丸）"
+    },
+    {
+      "label": "智恵内（鬼三太）"
+    },
+    {
+      "label": "湛海"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★三段目 菊畑（★智恵内と虎蔵）",
+      "group_label": "三段目",
+      "roles": [
+        "吉岡鬼一法眼",
+        "皆鶴姫",
+        "虎蔵（牛若丸）",
+        "智恵内（鬼三太）",
+        "湛海",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★菊畑 兵法の巻を奪う",
+      "group_label": "三段目",
+      "roles": [
+        "虎蔵（牛若丸）",
+        "智恵内（鬼三太）",
+        "皆鶴姫",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "title": "はだかの王様",
+  "composer": "いずみたく",
+  "composer_sort": "Shiki",
+  "kind": "musical",
+  "year_written": 1964,
+  "duration_min": 70,
+  "edition": "★劇団四季『こころの劇場』の 作品",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "mu-shiki-kaze-no-ko",
+  "note": "★作詞 ― ／ 脚本 浅利慶太（演出） ／ ★★子どもに 見せる ために 作られた 作品",
+  "roles": [
+    {
+      "label": "王様"
+    },
+    {
+      "label": "仕立屋"
+    },
+    {
+      "label": "大臣"
+    },
+    {
+      "label": "子ども"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "王様の新しい服",
+      "group_label": "一幕物",
+      "roles": [
+        "王様",
+        "大臣",
+        "仕立屋"
+      ]
+    },
+    {
+      "label": "★行列",
+      "group_label": "一幕物",
+      "roles": [
+        "王様",
+        "大臣",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★子どもの一言",
+      "group_label": "一幕物",
+      "roles": [
+        "子ども",
+        "王様",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

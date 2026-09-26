@@ -1,0 +1,174 @@
+{
+  "title": "ウンディーナ（チャイコフスキー）",
+  "title_original": "Ундина",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr Ilyich",
+  "kind": "opera",
+  "year_written": 1869,
+  "duration_min": 100,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "undina",
+  "note": "★楽譜は作曲者が破棄。残るのは3曲のみ（『白鳥の湖』等に転用された部分がある）",
+  "roles": [
+    {
+      "label": "ウンディーナ"
+    },
+    {
+      "label": "フルトブラント"
+    },
+    {
+      "label": "ベルタルダ"
+    },
+    {
+      "label": "キューレボルン"
+    },
+    {
+      "label": "隠者"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 漁師の小屋（水の精の娘）",
+      "group_label": "第1幕",
+      "roles": [
+        "ウンディーナ",
+        "キューレボルン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 騎士フルトブラントの訪れ",
+      "group_label": "第1幕",
+      "roles": [
+        "フルトブラント",
+        "ウンディーナ"
+      ]
+    },
+    {
+      "label": "第2幕 婚礼（隠者の祝福）",
+      "group_label": "第2幕",
+      "roles": [
+        "ウンディーナ",
+        "フルトブラント",
+        "隠者",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ベルタルダの登場と心変わり",
+      "group_label": "第2幕",
+      "roles": [
+        "ベルタルダ",
+        "フルトブラント",
+        "ウンディーナ"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（ウンディーナの水への帰りと騎士の死）",
+      "group_label": "第3幕",
+      "roles": [
+        "ウンディーナ",
+        "フルトブラント",
+        "キューレボルン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

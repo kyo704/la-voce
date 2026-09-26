@@ -1,0 +1,34 @@
+{
+  "title": "吹雪の街を",
+  "composer": "高嶋みどり",
+  "composer_sort": "Takashima, Midori",
+  "kind": "chorus",
+  "duration_min": 20,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "ch-takata-hotaru",
+  "note": "★★曲数（5曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全5曲（★曲名は 入れて いません）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

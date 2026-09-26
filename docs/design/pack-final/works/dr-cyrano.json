@@ -1,0 +1,87 @@
+{
+  "title": "シラノ・ド・ベルジュラック",
+  "composer": "ロスタン",
+  "composer_sort": "Rostand, Edmond",
+  "kind": "drama",
+  "year_written": 1897,
+  "duration_min": 170,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "dr-cyrano",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "シラノ"
+    },
+    {
+      "label": "ロクサーヌ"
+    },
+    {
+      "label": "クリスチャン"
+    },
+    {
+      "label": "ド・ギッシュ伯"
+    },
+    {
+      "label": "ラグノー"
+    },
+    {
+      "label": "兵士・町の者",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "劇場での騒ぎと鼻の即興詩",
+      "group_label": "第1幕",
+      "roles": [
+        "シラノ",
+        "兵士・町の者"
+      ]
+    },
+    {
+      "label": "★クリスチャンへの助け",
+      "group_label": "第2幕",
+      "roles": [
+        "シラノ",
+        "クリスチャン",
+        "ラグノー"
+      ]
+    },
+    {
+      "label": "★★バルコニーの場（声だけの恋）",
+      "group_label": "第3幕",
+      "roles": [
+        "シラノ",
+        "ロクサーヌ",
+        "クリスチャン"
+      ]
+    },
+    {
+      "label": "★アラスの戦い",
+      "group_label": "第4幕",
+      "roles": [
+        "シラノ",
+        "クリスチャン",
+        "ド・ギッシュ伯",
+        "兵士・町の者"
+      ]
+    },
+    {
+      "label": "★★十五年後・最後の言葉",
+      "group_label": "第5幕",
+      "roles": [
+        "シラノ",
+        "ロクサーヌ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "title": "狐塚",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kitsunezuka",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "小アド（次郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "田の鳥を追いに行く",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）",
+        "小アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "狐塚で心細くなる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "小アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "主を狐と思い込んで縛る",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）",
+        "小アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "酒宴になり小舞を舞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）",
+        "小アド（次郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

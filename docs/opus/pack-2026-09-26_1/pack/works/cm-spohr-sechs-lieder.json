@@ -1,0 +1,51 @@
+{
+  "title": "6つのドイツ歌曲 作品103",
+  "composer": "シュポーア",
+  "composer_sort": "Spohr, Louis",
+  "kind": "chamber",
+  "year_written": 1837,
+  "duration_min": 20,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-spohr-sechs-lieder",
+  "note": "★★声・クラリネット・ピアノ",
+  "roles": [
+    {
+      "label": "声（ソプラノまたはテノール）"
+    },
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全6曲",
+      "group_label": "楽章",
+      "roles": [
+        "声（ソプラノまたはテノール）",
+        "クラリネット",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "声（ソプラノまたはテノール）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

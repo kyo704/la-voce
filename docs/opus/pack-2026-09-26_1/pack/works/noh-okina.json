@@ -1,0 +1,82 @@
+{
+  "title": "翁",
+  "composer": "能（例式）",
+  "composer_sort": "Noh",
+  "kind": "noh",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "noh-okina",
+  "note": "★★★能にして能にあらず ── ★儀式の 曲。★開催の いちばん 初めに 出します。★小鼓が 3人に なるのは この曲だけ。★楽屋での 作法も 特別です",
+  "roles": [
+    {
+      "label": "翁"
+    },
+    {
+      "label": "千歳"
+    },
+    {
+      "label": "三番叟"
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★露払い（千歳の舞）",
+      "group_label": "式",
+      "roles": [
+        "千歳",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "★★翁の舞（★面をつけて天下泰平を祈る）",
+      "group_label": "式",
+      "roles": [
+        "翁",
+        "千歳",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "★★三番叟（揉ノ段・鈴ノ段）",
+      "group_label": "式",
+      "roles": [
+        "三番叟",
+        "囃子方",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛（能管）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "小鼓",
+      "count": 3,
+      "section": "percussion",
+      "note": "★★翁だけは 小鼓が 3人"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

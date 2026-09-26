@@ -1,0 +1,243 @@
+{
+  "title": "エディプ",
+  "title_original": "Œdipe",
+  "composer": "エネスク",
+  "composer_sort": "Enescu, George",
+  "kind": "opera",
+  "year_written": 1936,
+  "duration_min": 140,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "oedipe",
+  "roles": [
+    {
+      "label": "エディプ"
+    },
+    {
+      "label": "ティレジアス"
+    },
+    {
+      "label": "クレオン"
+    },
+    {
+      "label": "羊飼い"
+    },
+    {
+      "label": "大司祭"
+    },
+    {
+      "label": "フォルバス"
+    },
+    {
+      "label": "テセウス"
+    },
+    {
+      "label": "ライオス"
+    },
+    {
+      "label": "イオカステ"
+    },
+    {
+      "label": "スフィンクス"
+    },
+    {
+      "label": "アンティゴネ"
+    },
+    {
+      "label": "メロペ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 テーバイの宮殿（エディプの誕生と予言）",
+      "group_label": "序幕",
+      "roles": [
+        "ライオス",
+        "イオカステ",
+        "ティレジアス",
+        "大司祭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 コリントスの祭り（エディプの旅立ち）",
+      "group_label": "第1幕",
+      "roles": [
+        "エディプ",
+        "メロペ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 三叉路（ライオスの殺害）",
+      "group_label": "第1幕",
+      "roles": [
+        "エディプ",
+        "ライオス"
+      ]
+    },
+    {
+      "label": "★第2幕 スフィンクスの謎（★人間は運命より強い）",
+      "group_label": "第2幕",
+      "roles": [
+        "エディプ",
+        "スフィンクス"
+      ]
+    },
+    {
+      "label": "第2幕 テーバイの歓呼と婚礼",
+      "group_label": "第2幕",
+      "roles": [
+        "エディプ",
+        "イオカステ",
+        "クレオン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 疫病とティレジアスの告発",
+      "group_label": "第3幕",
+      "roles": [
+        "エディプ",
+        "ティレジアス",
+        "クレオン",
+        "イオカステ",
+        "羊飼い",
+        "フォルバス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 真相とエディプの自ら目を潰す",
+      "group_label": "第3幕",
+      "roles": [
+        "エディプ",
+        "イオカステ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 コロノス（アンティゴネとテセウス・昇天）",
+      "group_label": "第4幕",
+      "roles": [
+        "エディプ",
+        "アンティゴネ",
+        "テセウス",
+        "クレオン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 6,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュージカルソー（のこぎり）",
+      "count": 1,
+      "section": "percussion",
+      "note": "スフィンクスの場"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

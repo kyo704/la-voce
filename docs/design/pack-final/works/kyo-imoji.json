@@ -1,0 +1,55 @@
+{
+  "title": "伊文字",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-imoji",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（女）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "妻を得たいと清水に願う",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）"
+      ]
+    },
+    {
+      "label": "★『い』の文字の歌を告げられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）"
+      ]
+    },
+    {
+      "label": "★★歌を頼りに女を探して連れ帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（女）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

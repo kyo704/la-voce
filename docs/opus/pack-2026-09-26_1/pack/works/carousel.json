@@ -1,0 +1,263 @@
+{
+  "title": "回転木馬",
+  "title_original": "Carousel",
+  "composer": "リチャード・ロジャーズ",
+  "kind": "musical",
+  "year_written": 1945,
+  "duration_min": 165,
+  "edition": "1945 ブロードウェイ初演版（★1992 ニコラス・ハイトナー版・2018 リバイバル版で台本に手が入る）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "carousel",
+  "note": "★作詞 オスカー・ハマースタイン2世 ／ 脚本 オスカー・ハマースタイン2世",
+  "roles": [
+    {
+      "label": "ジュリー・ジョーダン"
+    },
+    {
+      "label": "ビリー・ビゲロウ"
+    },
+    {
+      "label": "キャリー・パイパリッジ"
+    },
+    {
+      "label": "エノック・スノウ"
+    },
+    {
+      "label": "ネティ・ファウラー"
+    },
+    {
+      "label": "ジガー・クレイギン"
+    },
+    {
+      "label": "ルイーズ"
+    },
+    {
+      "label": "ミセス・マリン"
+    },
+    {
+      "label": "スターキーパー"
+    },
+    {
+      "label": "校長"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★回転木馬のワルツ（The Carousel Waltz ─ 序曲の代わりの無言劇）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★ミスター・スノウ",
+      "group_label": "第1幕",
+      "roles": [
+        "キャリー・パイパリッジ",
+        "ジュリー・ジョーダン"
+      ]
+    },
+    {
+      "label": "M3 ★★イフ・アイ・ラヴド・ユー（ベンチ・シーン）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュリー・ジョーダン",
+        "ビリー・ビゲロウ"
+      ]
+    },
+    {
+      "label": "M4 ★ジューン・イズ・バスティン・アウト・オール・オーヴァー",
+      "group_label": "第1幕",
+      "roles": [
+        "ネティ・ファウラー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★ホエン・ザ・チルドレン・アー・アスリープ",
+      "group_label": "第1幕",
+      "roles": [
+        "エノック・スノウ",
+        "キャリー・パイパリッジ"
+      ]
+    },
+    {
+      "label": "M6 ★ブロウ・ハイ、ブロウ・ロウ（ジガーの誘い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジガー・クレイギン",
+        "ビリー・ビゲロウ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ソリロクィ（My Boy Bill ─ 独白）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビリー・ビゲロウ"
+      ]
+    },
+    {
+      "label": "M8 ★浜辺の宴（A Real Nice Clambake）",
+      "group_label": "第2幕",
+      "roles": [
+        "ネティ・ファウラー",
+        "キャリー・パイパリッジ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★強盗の失敗とビリーの死",
+      "group_label": "第2幕",
+      "roles": [
+        "ビリー・ビゲロウ",
+        "ジガー・クレイギン",
+        "ジュリー・ジョーダン"
+      ]
+    },
+    {
+      "label": "M10 ★★ユール・ネヴァー・ウォーク・アローン",
+      "group_label": "第2幕",
+      "roles": [
+        "ネティ・ファウラー",
+        "ジュリー・ジョーダン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★天上（スターキーパーとの対話）",
+      "group_label": "第2幕",
+      "roles": [
+        "ビリー・ビゲロウ",
+        "スターキーパー"
+      ]
+    },
+    {
+      "label": "M12 ★★ルイーズのバレエ",
+      "group_label": "第2幕",
+      "roles": [
+        "ルイーズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★終曲（卒業式・ユール・ネヴァー・ウォーク・アローンの再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "ビリー・ビゲロウ",
+        "ルイーズ",
+        "ジュリー・ジョーダン",
+        "校長",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

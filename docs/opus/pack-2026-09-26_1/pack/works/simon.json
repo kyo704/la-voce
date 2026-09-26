@@ -1,0 +1,181 @@
+{
+  "title": "シモン・ボッカネグラ",
+  "title_original": "Simon Boccanegra",
+  "aliases": [],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1857,
+  "source": "hand",
+  "source_id": "verdi-simon",
+  "duration_min": 150,
+  "language": "it",
+  "roles": [
+    {
+      "label": "シモン・ボッカネグラ"
+    },
+    {
+      "label": "アメーリア（マリア）"
+    },
+    {
+      "label": "ガブリエーレ"
+    },
+    {
+      "label": "フィエスコ"
+    },
+    {
+      "label": "パオロ"
+    },
+    {
+      "label": "ピエトロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "プロローグ ジェノヴァの広場",
+      "group_label": "プロローグ",
+      "roles": [
+        "シモン・ボッカネグラ",
+        "フィエスコ",
+        "パオロ",
+        "ピエトロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 海辺の庭（父娘の再会）",
+      "group_label": "第1幕",
+      "roles": [
+        "アメーリア（マリア）",
+        "ガブリエーレ",
+        "シモン・ボッカネグラ",
+        "フィエスコ"
+      ]
+    },
+    {
+      "label": "第1幕 議事堂の場（平和を！）",
+      "group_label": "第1幕",
+      "roles": [
+        "シモン・ボッカネグラ",
+        "アメーリア（マリア）",
+        "ガブリエーレ",
+        "パオロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 毒と嫉妬",
+      "group_label": "第2幕",
+      "roles": [
+        "パオロ",
+        "ガブリエーレ",
+        "アメーリア（マリア）",
+        "シモン・ボッカネグラ"
+      ]
+    },
+    {
+      "label": "第3幕 和解と死",
+      "group_label": "第3幕",
+      "roles": [
+        "シモン・ボッカネグラ",
+        "フィエスコ",
+        "アメーリア（マリア）",
+        "ガブリエーレ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チンバッソ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

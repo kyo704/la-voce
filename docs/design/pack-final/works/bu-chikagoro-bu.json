@@ -1,0 +1,98 @@
+{
+  "title": "近頃河原の達引（文楽）",
+  "aliases": [
+    "堀川"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1785,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-chikagoro-bu",
+  "note": "★文楽（人形浄瑠璃） ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "井筒屋伝兵衛"
+    },
+    {
+      "label": "横淵官左衛門"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    },
+    {
+      "label": "猿廻し与次郎"
+    },
+    {
+      "label": "おしゅん"
+    },
+    {
+      "label": "母"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★四条河原",
+      "group_label": "上",
+      "roles": [
+        "井筒屋伝兵衛",
+        "横淵官左衛門",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★堀川猿廻し",
+      "group_label": "中",
+      "roles": [
+        "猿廻し与次郎",
+        "おしゅん",
+        "母",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

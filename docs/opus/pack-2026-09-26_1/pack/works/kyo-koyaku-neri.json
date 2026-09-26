@@ -1,0 +1,57 @@
+{
+  "title": "膏薬練",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-koyaku-neri",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（都の男）"
+    },
+    {
+      "label": "アド（田舎の男）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "互いに膏薬の効きを自慢する",
+      "group_label": "段",
+      "roles": [
+        "シテ（都の男）",
+        "アド（田舎の男）"
+      ]
+    },
+    {
+      "label": "★★引き合わせて力を競う",
+      "group_label": "段",
+      "roles": [
+        "シテ（都の男）",
+        "アド（田舎の男）"
+      ]
+    },
+    {
+      "label": "★顔にくっついて離れなくなる",
+      "group_label": "段",
+      "roles": [
+        "シテ（都の男）",
+        "アド（田舎の男）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

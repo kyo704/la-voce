@@ -1,0 +1,184 @@
+{
+  "title": "ベルシャザル",
+  "title_original": "Belshazzar",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "chorus",
+  "year_written": 1745,
+  "duration_min": 175,
+  "language": "en",
+  "source": "hand",
+  "source_id": "handel-belshazzar",
+  "note": "★オラトリオ。★台本はジェネンズ",
+  "roles": [
+    {
+      "label": "ベルシャザル"
+    },
+    {
+      "label": "ニトクリス"
+    },
+    {
+      "label": "キュロス"
+    },
+    {
+      "label": "ダニエル"
+    },
+    {
+      "label": "ゴブリアス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★★ニトクリスのアリア（帝国の興亡を思う）",
+      "group_label": "第1部",
+      "roles": [
+        "ニトクリス"
+      ]
+    },
+    {
+      "label": "★キュロスの陣営（ユーフラテス川を干す計）",
+      "group_label": "第1部",
+      "roles": [
+        "キュロス",
+        "ゴブリアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ダニエルの預言",
+      "group_label": "第1部",
+      "roles": [
+        "ダニエル",
+        "ニトクリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★ベルシャザルの宴（神殿の器を使う）",
+      "group_label": "第2部",
+      "roles": [
+        "ベルシャザル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★壁の手（メネ・テケル・ウパルシン）",
+      "group_label": "第2部",
+      "roles": [
+        "ベルシャザル",
+        "ニトクリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★ダニエルの解き明かし",
+      "group_label": "第2部",
+      "roles": [
+        "ダニエル",
+        "ベルシャザル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★都の陥落とベルシャザルの死",
+      "group_label": "第3部",
+      "roles": [
+        "ベルシャザル",
+        "キュロス",
+        "ゴブリアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（キュロスの勅令とユダヤ人の帰還）",
+      "group_label": "第3部",
+      "roles": [
+        "キュロス",
+        "ニトクリス",
+        "ダニエル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

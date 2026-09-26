@@ -1,0 +1,56 @@
+{
+  "title": "花盗人",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-hana-nusubito",
+  "note": "★盗人狂言 ／ ★『瓜盗人』と同じ 歌で許される形 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "桜の枝を折りに忍び込む",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）"
+      ]
+    },
+    {
+      "label": "主に見つかり縛られる",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "歌を詠んで許される",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

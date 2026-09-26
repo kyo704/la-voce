@@ -1,0 +1,184 @@
+{
+  "title": "天守物語",
+  "title_original": "天守物語",
+  "composer": "水野修孝",
+  "composer_sort": "Mizuno, Shuko",
+  "kind": "opera",
+  "year_written": 1979,
+  "duration_min": 130,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "tenshu-monogatari",
+  "note": "★泉鏡花の同名戯曲による",
+  "roles": [
+    {
+      "label": "富姫"
+    },
+    {
+      "label": "図書之助"
+    },
+    {
+      "label": "亀姫"
+    },
+    {
+      "label": "舌長姥"
+    },
+    {
+      "label": "朱の盤坊"
+    },
+    {
+      "label": "近江之丞桃六"
+    },
+    {
+      "label": "薄"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 天守閣の五重（釣燈籠と侍女たち）",
+      "group_label": "第1幕",
+      "roles": [
+        "富姫",
+        "薄",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第1幕 亀姫の来訪（生首の土産）",
+      "group_label": "第1幕",
+      "roles": [
+        "亀姫",
+        "富姫",
+        "舌長姥"
+      ]
+    },
+    {
+      "label": "★★第2幕 図書之助の登場（鷹を探して）",
+      "group_label": "第2幕",
+      "roles": [
+        "図書之助",
+        "富姫",
+        "薄"
+      ]
+    },
+    {
+      "label": "★★第2幕 富姫と図書之助（★人と魔のあいだの恋）",
+      "group_label": "第2幕",
+      "roles": [
+        "富姫",
+        "図書之助"
+      ]
+    },
+    {
+      "label": "★★第3幕 武士たちの襲撃と2人の失明",
+      "group_label": "第3幕",
+      "roles": [
+        "富姫",
+        "図書之助",
+        "朱の盤坊",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（★桃六が獅子頭の目を彫り直し、2人の目が開く）",
+      "group_label": "終幕",
+      "roles": [
+        "近江之丞桃六",
+        "富姫",
+        "図書之助",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "title": "浜辺のアインシュタイン",
+  "title_original": "Einstein on the Beach",
+  "composer": "グラス",
+  "composer_sort": "Glass, Philip",
+  "kind": "opera",
+  "year_written": 1976,
+  "duration_min": 290,
+  "language": "en",
+  "source": "hand",
+  "source_id": "einstein-on-beach",
+  "note": "★★休憩なしで約5時間。観客は自由に出入りする。★歌詞は数と階名（ドレミ）のみ。★演出はロバート・ウィルソン",
+  "roles": [
+    {
+      "label": "独唱者（数を数える声）"
+    },
+    {
+      "label": "俳優（語り）"
+    },
+    {
+      "label": "ヴァイオリン独奏者（アインシュタイン）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★Knee Play 1（1・2・3・4… 数を数える）",
+      "group_label": "膝の間奏1",
+      "roles": [
+        "独唱者（数を数える声）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 A：★列車（Train 1）",
+      "group_label": "第1幕",
+      "roles": [
+        "俳優（語り）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 B：★裁判（Trial 1）",
+      "group_label": "第1幕",
+      "roles": [
+        "俳優（語り）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★Knee Play 2（ヴァイオリン独奏）",
+      "group_label": "膝の間奏2",
+      "roles": [
+        "ヴァイオリン独奏者（アインシュタイン）"
+      ]
+    },
+    {
+      "label": "★第2幕 C：★宇宙船（Dance 1 ─ 野原）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 A：★夜の列車",
+      "group_label": "第2幕",
+      "roles": [
+        "独唱者（数を数える声）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★Knee Play 3",
+      "group_label": "膝の間奏3",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 B：★裁判／監獄",
+      "group_label": "第3幕",
+      "roles": [
+        "俳優（語り）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 C：★宇宙船（Dance 2）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★Knee Play 4",
+      "group_label": "膝の間奏4",
+      "roles": [
+        "ヴァイオリン独奏者（アインシュタイン）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 A：★建物と列車（Building/Train）",
+      "group_label": "第4幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 C：★宇宙船（Spaceship）",
+      "group_label": "第4幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★Knee Play 5（★バスの中の恋人たちの語り）",
+      "group_label": "膝の間奏5",
+      "roles": [
+        "俳優（語り）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート／ピッコロ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ソプラノ・サクソフォン",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "バス・クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "電子オルガン",
+      "count": 3,
+      "section": "keyboard"
+    },
+    {
+      "part": "独奏ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

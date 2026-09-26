@@ -1,0 +1,195 @@
+{
+  "title": "シバの女王（ゴルトマルク）",
+  "title_original": "Die Königin von Saba",
+  "composer": "ゴルトマルク",
+  "composer_sort": "Goldmark, Karl",
+  "kind": "opera",
+  "year_written": 1875,
+  "duration_min": 175,
+  "language": "de",
+  "source": "hand",
+  "source_id": "konigin-von-saba",
+  "roles": [
+    {
+      "label": "スラミート"
+    },
+    {
+      "label": "シバの女王"
+    },
+    {
+      "label": "アサド"
+    },
+    {
+      "label": "ソロモン王"
+    },
+    {
+      "label": "大祭司"
+    },
+    {
+      "label": "アスタロト"
+    },
+    {
+      "label": "神殿の番人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ★ソロモンの宮廷（婚礼の支度）",
+      "group_label": "第1幕",
+      "roles": [
+        "ソロモン王",
+        "スラミート",
+        "大祭司",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 シバの女王の入場とアサドの動揺",
+      "group_label": "第1幕",
+      "roles": [
+        "シバの女王",
+        "アサド",
+        "ソロモン王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 夜の庭（女王とアサドの二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "シバの女王",
+        "アサド",
+        "アスタロト"
+      ]
+    },
+    {
+      "label": "★第2幕 神殿での婚礼の中断（アサドの叫び）",
+      "group_label": "第2幕",
+      "roles": [
+        "アサド",
+        "スラミート",
+        "シバの女王",
+        "ソロモン王",
+        "大祭司",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 バレエ（レバノンの広間の踊り）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 女王の嘆願と王の裁き",
+      "group_label": "第3幕",
+      "roles": [
+        "シバの女王",
+        "ソロモン王",
+        "アサド"
+      ]
+    },
+    {
+      "label": "★終曲（砂漠・アサドの死とスラミートの許し）",
+      "group_label": "第4幕",
+      "roles": [
+        "アサド",
+        "スラミート",
+        "シバの女王",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

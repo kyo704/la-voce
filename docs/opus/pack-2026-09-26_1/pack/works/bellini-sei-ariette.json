@@ -1,0 +1,78 @@
+{
+  "title": "6つのアリエッタ",
+  "title_original": "Sei ariette",
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "song_cycle",
+  "year_written": 1829,
+  "duration_min": 15,
+  "language": "it",
+  "source": "hand",
+  "source_id": "bellini-sei-ariette",
+  "note": "★★★声楽の 学びで 広く 使われます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. マリンコニーア（Malinconia, Ninfa gentile）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. わたしの偶像であるあの人（Vanne, o rosa fortunata）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 喜ばせてあげて（Bella Nice, che d’amore）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 優雅な月よ（Ma rendi pur contento）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 激しい希求（Dolente immagine di Fille mia）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. お行き、幸せなバラよ（Per pietà, bell’idol mio）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

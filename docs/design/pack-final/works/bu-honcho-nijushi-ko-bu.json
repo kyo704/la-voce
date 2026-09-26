@@ -1,0 +1,92 @@
+{
+  "title": "本朝廿四孝（文楽）",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1766,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-honcho-nijushi-ko-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松半二 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "八重垣姫"
+    },
+    {
+      "label": "濡衣"
+    },
+    {
+      "label": "武田勝頼"
+    },
+    {
+      "label": "長尾謙信"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★十種香",
+      "group_label": "四段目",
+      "roles": [
+        "八重垣姫",
+        "濡衣",
+        "武田勝頼",
+        "長尾謙信",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★狐火（★諏訪湖を渡る）",
+      "group_label": "四段目",
+      "roles": [
+        "八重垣姫",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

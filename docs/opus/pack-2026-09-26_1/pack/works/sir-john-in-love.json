@@ -1,0 +1,225 @@
+{
+  "title": "恋するサー・ジョン",
+  "title_original": "Sir John in Love",
+  "composer": "ヴォーン・ウィリアムズ",
+  "composer_sort": "Vaughan Williams, Ralph",
+  "kind": "opera",
+  "year_written": 1929,
+  "duration_min": 150,
+  "language": "en",
+  "source": "hand",
+  "source_id": "sir-john-in-love",
+  "roles": [
+    {
+      "label": "サー・ジョン・フォルスタッフ"
+    },
+    {
+      "label": "アン・ページ"
+    },
+    {
+      "label": "フェントン"
+    },
+    {
+      "label": "フォード夫人"
+    },
+    {
+      "label": "ページ夫人"
+    },
+    {
+      "label": "フォード氏"
+    },
+    {
+      "label": "ページ氏"
+    },
+    {
+      "label": "クイックリー夫人"
+    },
+    {
+      "label": "スレンダー"
+    },
+    {
+      "label": "カイウス博士"
+    },
+    {
+      "label": "サー・ヒュー・エヴァンズ"
+    },
+    {
+      "label": "バードルフ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ページ家の前（3人の求婚者）",
+      "group_label": "第1幕",
+      "roles": [
+        "アン・ページ",
+        "フェントン",
+        "スレンダー",
+        "カイウス博士",
+        "ページ氏",
+        "サー・ヒュー・エヴァンズ"
+      ]
+    },
+    {
+      "label": "★第1幕 フォルスタッフの2通の手紙",
+      "group_label": "第1幕",
+      "roles": [
+        "サー・ジョン・フォルスタッフ",
+        "バードルフ"
+      ]
+    },
+    {
+      "label": "★第2幕 2人の夫人の手紙の見比べ",
+      "group_label": "第2幕",
+      "roles": [
+        "フォード夫人",
+        "ページ夫人",
+        "クイックリー夫人"
+      ]
+    },
+    {
+      "label": "★第2幕 ★グリーンスリーヴズの歌（フェントンとアン）",
+      "group_label": "第2幕",
+      "roles": [
+        "フェントン",
+        "アン・ページ"
+      ]
+    },
+    {
+      "label": "★第2幕 ブルック氏に変装したフォード",
+      "group_label": "第2幕",
+      "roles": [
+        "フォード氏",
+        "サー・ジョン・フォルスタッフ"
+      ]
+    },
+    {
+      "label": "★第3幕 洗濯籠の場（テムズに投げ込まれる）",
+      "group_label": "第3幕",
+      "roles": [
+        "サー・ジョン・フォルスタッフ",
+        "フォード夫人",
+        "ページ夫人",
+        "フォード氏",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 ★ウィンザーの森（ハーンの樫・妖精たちの脅かし）",
+      "group_label": "第4幕",
+      "roles": [
+        "サー・ジョン・フォルスタッフ",
+        "フォード夫人",
+        "ページ夫人",
+        "アン・ページ",
+        "フェントン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（アンとフェントンの結婚と一同の和解）",
+      "group_label": "第4幕",
+      "roles": [
+        "サー・ジョン・フォルスタッフ",
+        "アン・ページ",
+        "フェントン",
+        "フォード氏",
+        "ページ氏",
+        "フォード夫人",
+        "ページ夫人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

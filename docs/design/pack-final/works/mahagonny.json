@@ -1,0 +1,233 @@
+{
+  "title": "マハゴニー市の興亡",
+  "title_original": "Aufstieg und Fall der Stadt Mahagonny",
+  "composer": "ヴァイル",
+  "composer_sort": "Weill, Kurt",
+  "kind": "opera",
+  "year_written": 1930,
+  "duration_min": 150,
+  "language": "de",
+  "source": "hand",
+  "source_id": "mahagonny",
+  "note": "★台本はブレヒト",
+  "roles": [
+    {
+      "label": "ジェニー・ヒル"
+    },
+    {
+      "label": "ジミー・マホーニー"
+    },
+    {
+      "label": "レオカディア・ベグビック"
+    },
+    {
+      "label": "ファッティ"
+    },
+    {
+      "label": "トリニティ・モーゼス"
+    },
+    {
+      "label": "ジャック・オブライエン"
+    },
+    {
+      "label": "ビル"
+    },
+    {
+      "label": "ジョー（アラスカ・ウルフ・ジョー）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 マハゴニー市の創設（網の町）",
+      "group_label": "第1幕",
+      "roles": [
+        "レオカディア・ベグビック",
+        "ファッティ",
+        "トリニティ・モーゼス"
+      ]
+    },
+    {
+      "label": "★第1幕 ★アラバマ・ソング（月のアラバマ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェニー・ヒル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 4人の男の到着",
+      "group_label": "第1幕",
+      "roles": [
+        "ジミー・マホーニー",
+        "ジャック・オブライエン",
+        "ビル",
+        "ジョー（アラスカ・ウルフ・ジョー）"
+      ]
+    },
+    {
+      "label": "★第1幕 ジェニーとジミーの値段の交渉",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェニー・ヒル",
+        "ジミー・マホーニー"
+      ]
+    },
+    {
+      "label": "★第1幕 ジミーの反乱（何かが足りない・台風が来る）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジミー・マホーニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 台風は町をよける（4つの掟：食う・愛する・戦う・飲む）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 大食いのジャックの死／ボクシングでジョーの死",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャック・オブライエン",
+        "ジョー（アラスカ・ウルフ・ジョー）",
+        "トリニティ・モーゼス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ベナレス・ソング（払えないジミー）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジミー・マホーニー",
+        "ジェニー・ヒル",
+        "ビル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 裁判（金がないことが最大の罪）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジミー・マホーニー",
+        "トリニティ・モーゼス",
+        "レオカディア・ベグビック",
+        "ファッティ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 死刑と★神がマハゴニーに来る",
+      "group_label": "第3幕",
+      "roles": [
+        "ジミー・マホーニー",
+        "ジェニー・ヒル",
+        "トリニティ・モーゼス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（誰も助けられない）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジェニー・ヒル",
+        "レオカディア・ベグビック",
+        "ファッティ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

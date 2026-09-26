@@ -1,0 +1,196 @@
+{
+  "title": "森は生きている",
+  "title_original": "森は生きている",
+  "composer": "林光",
+  "composer_sort": "Hayashi, Hikaru",
+  "kind": "opera",
+  "year_written": 1971,
+  "duration_min": 130,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "mori-wa-ikiteiru",
+  "note": "★マルシャークの戯曲による。★オペラシアターこんにゃく座の代表作",
+  "roles": [
+    {
+      "label": "娘"
+    },
+    {
+      "label": "継母"
+    },
+    {
+      "label": "姉娘"
+    },
+    {
+      "label": "女王"
+    },
+    {
+      "label": "博士"
+    },
+    {
+      "label": "兵士"
+    },
+    {
+      "label": "1月〜12月の12の月の精"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 森の小屋（継母と姉娘のいじめ）",
+      "group_label": "第1幕",
+      "roles": [
+        "娘",
+        "継母",
+        "姉娘"
+      ]
+    },
+    {
+      "label": "★★第1幕 大晦日に★まつゆき草を摘んでこいと言われる",
+      "group_label": "第1幕",
+      "roles": [
+        "娘",
+        "継母",
+        "姉娘",
+        "女王",
+        "博士",
+        "兵士"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★森の焚き火（12の月の精の集い）",
+      "group_label": "第2幕",
+      "roles": [
+        "娘",
+        "1月〜12月の12の月の精",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★4月が1時間だけ春にする（まつゆき草）",
+      "group_label": "第2幕",
+      "roles": [
+        "娘",
+        "1月〜12月の12の月の精"
+      ]
+    },
+    {
+      "label": "★第3幕 宮廷（花の出所を問われる）",
+      "group_label": "第3幕",
+      "roles": [
+        "女王",
+        "娘",
+        "継母",
+        "姉娘",
+        "博士",
+        "兵士",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 森での一行の遭難（欲の罰）",
+      "group_label": "第3幕",
+      "roles": [
+        "女王",
+        "継母",
+        "姉娘",
+        "1月〜12月の12の月の精",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（娘の赦しと春の到来）",
+      "group_label": "終幕",
+      "roles": [
+        "娘",
+        "女王",
+        "1月〜12月の12の月の精",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

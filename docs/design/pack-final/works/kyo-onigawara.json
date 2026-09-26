@@ -1,0 +1,65 @@
+{
+  "title": "鬼瓦",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-onigawara",
+  "note": "★大名狂言 ／ ★★短いが人情の曲 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（大名）"
+    },
+    {
+      "label": "アド（太郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "訴訟が済んで国へ帰る前に寺を見る",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "屋根の鬼瓦を見上げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "妻の顔に似ていると泣き出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "笑いに変わって帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（太郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

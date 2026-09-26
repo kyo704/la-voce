@@ -1,0 +1,36 @@
+{
+  "title": "古典イタリア歌曲集",
+  "title_original": "Arie antiche",
+  "composer": "17〜18世紀の作曲家（カッチーニ・カルダーラ・スカルラッティ ほか）",
+  "composer_sort": "Arie antiche",
+  "kind": "song_cycle",
+  "language": "it",
+  "source": "hand",
+  "source_id": "arie-antiche",
+  "note": "★★★声楽を 学ぶ 人が 最初に 歌う 曲集（★パリゾッティ編・ペーターズ版ほか）。★『カロ・ミオ・ベン』『ラスシャ・キオ・ピアンガ』『オンブラ・マイ・フ』などを 含みます。★★編者によって 中身が 違います ／ ★★1つの 曲集では ないので ★曲の 数と 並びは 公演ごとに 決めます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★選んで 組みます（★曲は 公演ごと）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

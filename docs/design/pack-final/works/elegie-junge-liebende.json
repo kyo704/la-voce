@@ -1,0 +1,201 @@
+{
+  "title": "若い恋人たちのためのエレジー",
+  "title_original": "Elegie für junge Liebende",
+  "composer": "ヘンツェ",
+  "composer_sort": "Henze, Hans Werner",
+  "kind": "opera",
+  "year_written": 1961,
+  "duration_min": 140,
+  "language": "de",
+  "source": "hand",
+  "source_id": "elegie-junge-liebende",
+  "note": "★室内楽編成（独奏者のアンサンブル）。★台本はオーデンとカルマン",
+  "roles": [
+    {
+      "label": "グレゴール・ミッテンホーファー"
+    },
+    {
+      "label": "ヒルダ・マック"
+    },
+    {
+      "label": "トーニ・ライシュマン"
+    },
+    {
+      "label": "エリーザベト・ツィマー"
+    },
+    {
+      "label": "ヴィルヘルム・ライシュマン博士"
+    },
+    {
+      "label": "カロリーナ・フォン・キルヒシュテッテン伯爵夫人"
+    },
+    {
+      "label": "ヨーゼフ・マウアー"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1部 山のホテル（40年待つヒルダ・マックの幻視）",
+      "group_label": "第1部",
+      "roles": [
+        "ヒルダ・マック",
+        "カロリーナ・フォン・キルヒシュテッテン伯爵夫人"
+      ]
+    },
+    {
+      "label": "★第1部 詩人ミッテンホーファーの朝（他人の幻を詩に使う）",
+      "group_label": "第1部",
+      "roles": [
+        "グレゴール・ミッテンホーファー",
+        "カロリーナ・フォン・キルヒシュテッテン伯爵夫人",
+        "ヴィルヘルム・ライシュマン博士"
+      ]
+    },
+    {
+      "label": "第1部 エリーザベトとトーニの出会い",
+      "group_label": "第1部",
+      "roles": [
+        "エリーザベト・ツィマー",
+        "トーニ・ライシュマン"
+      ]
+    },
+    {
+      "label": "★第2部 氷河の遺体が見つかる（ヒルダの夫）",
+      "group_label": "第2部",
+      "roles": [
+        "ヨーゼフ・マウアー",
+        "ヒルダ・マック",
+        "グレゴール・ミッテンホーファー"
+      ]
+    },
+    {
+      "label": "★第2部 ヒルダの正気の戻りと詩人の当てはずれ",
+      "group_label": "第2部",
+      "roles": [
+        "ヒルダ・マック",
+        "グレゴール・ミッテンホーファー"
+      ]
+    },
+    {
+      "label": "第2部 2人の若者の愛と詩人の許し",
+      "group_label": "第2部",
+      "roles": [
+        "エリーザベト・ツィマー",
+        "トーニ・ライシュマン",
+        "グレゴール・ミッテンホーファー"
+      ]
+    },
+    {
+      "label": "★第3部 ★詩人が2人を山へ行かせる（吹雪を知りながら）",
+      "group_label": "第3部",
+      "roles": [
+        "グレゴール・ミッテンホーファー",
+        "ヨーゼフ・マウアー",
+        "エリーザベト・ツィマー",
+        "トーニ・ライシュマン"
+      ]
+    },
+    {
+      "label": "★終曲（2人の死とミッテンホーファーの朗読『若い恋人たちのためのエレジー』）",
+      "group_label": "第3部",
+      "roles": [
+        "グレゴール・ミッテンホーファー",
+        "エリーザベト・ツィマー",
+        "トーニ・ライシュマン",
+        "ヒルダ・マック"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴィブラフォン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

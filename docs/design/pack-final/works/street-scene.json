@@ -1,0 +1,238 @@
+{
+  "title": "ストリート・シーン",
+  "title_original": "Street Scene",
+  "composer": "ヴァイル",
+  "composer_sort": "Weill, Kurt",
+  "kind": "opera",
+  "year_written": 1947,
+  "duration_min": 150,
+  "language": "en",
+  "source": "hand",
+  "source_id": "street-scene",
+  "note": "★★ヴァイルが『アメリカのオペラ』として書いた作。ブロードウェイとオペラの境にある",
+  "roles": [
+    {
+      "label": "アンナ・マウラント"
+    },
+    {
+      "label": "フランク・マウラント"
+    },
+    {
+      "label": "ローズ・マウラント"
+    },
+    {
+      "label": "サム・カプラン"
+    },
+    {
+      "label": "ハリー・イージター"
+    },
+    {
+      "label": "エイブラハム・カプラン"
+    },
+    {
+      "label": "ジョーンズ夫人"
+    },
+    {
+      "label": "フィオレンティーノ夫人"
+    },
+    {
+      "label": "オルセン夫人"
+    },
+    {
+      "label": "ウィリー"
+    },
+    {
+      "label": "守衛"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ★暑い夏の夜（★アンナのアリア：Somehow I Never Could Believe）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ・マウラント",
+        "ジョーンズ夫人",
+        "フィオレンティーノ夫人",
+        "オルセン夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★アイスクリームの六重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョーンズ夫人",
+        "フィオレンティーノ夫人",
+        "オルセン夫人",
+        "エイブラハム・カプラン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 フランクの帰宅と夫婦の緊張",
+      "group_label": "第1幕",
+      "roles": [
+        "フランク・マウラント",
+        "アンナ・マウラント",
+        "ウィリー"
+      ]
+    },
+    {
+      "label": "★第1幕 ★サムとローズ（★Lonely House）",
+      "group_label": "第1幕",
+      "roles": [
+        "サム・カプラン",
+        "ローズ・マウラント"
+      ]
+    },
+    {
+      "label": "★第2幕 ★子どもたちの遊び歌と朝",
+      "group_label": "第2幕",
+      "roles": [
+        "守衛",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ローズとハリーの申し出（囚われの身）",
+      "group_label": "第2幕",
+      "roles": [
+        "ローズ・マウラント",
+        "ハリー・イージター"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ローズとサムの二重唱（We'll Go Away Together）",
+      "group_label": "第2幕",
+      "roles": [
+        "ローズ・マウラント",
+        "サム・カプラン"
+      ]
+    },
+    {
+      "label": "★★第2幕 フランクが妻と間男を撃つ",
+      "group_label": "第2幕",
+      "roles": [
+        "フランク・マウラント",
+        "アンナ・マウラント",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★野次馬の場と連行",
+      "group_label": "第2幕",
+      "roles": [
+        "フランク・マウラント",
+        "ローズ・マウラント",
+        "ジョーンズ夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（★ローズの去りと、また新しい住人が来る）",
+      "group_label": "第2幕",
+      "roles": [
+        "ローズ・マウラント",
+        "サム・カプラン",
+        "守衛",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

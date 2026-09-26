@@ -1,0 +1,52 @@
+{
+  "title": "岩上の羊飼い D.965",
+  "title_original": "Der Hirt auf dem Felsen D.965",
+  "composer": "シューベルト",
+  "composer_sort": "Schubert, Franz",
+  "kind": "chamber",
+  "year_written": 1828,
+  "duration_min": 12,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-schubert-hirt",
+  "note": "★★★ソプラノ・クラリネット・ピアノ。★声楽の 名曲だが 室内楽としても 扱われます",
+  "roles": [
+    {
+      "label": "ソプラノ"
+    },
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★一曲（ゆるやか〜快活）",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ",
+        "クラリネット",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ソプラノ",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

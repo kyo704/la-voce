@@ -1,0 +1,55 @@
+{
+  "title": "チチェスター詩篇",
+  "title_original": "Chichester Psalms",
+  "composer": "バーンスタイン",
+  "composer_sort": "Bernstein, Leonard",
+  "kind": "chorus",
+  "year_written": 1965,
+  "duration_min": 20,
+  "language": "he",
+  "source": "hand",
+  "source_id": "ch-bernstein-chichester",
+  "note": "★★★ヘブライ語で 歌います。★第2楽章の 独唱は ★少年（変声前）または カウンターテナー ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "少年独唱（またはカウンターテナー）",
+      "is_group": true
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "詩篇108・100",
+      "group_label": "第1楽章",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★詩篇23（少年独唱）・詩篇2",
+      "group_label": "第2楽章",
+      "roles": [
+        "少年独唱（またはカウンターテナー）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★詩篇131・133",
+      "group_label": "第3楽章",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "title": "スペインの時",
+  "title_original": "L'heure espagnole",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "opera",
+  "year_written": 1911,
+  "duration_min": 50,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "heure-espagnole",
+  "roles": [
+    {
+      "label": "コンセプシオン"
+    },
+    {
+      "label": "ゴンザルヴェ"
+    },
+    {
+      "label": "トルケマダ"
+    },
+    {
+      "label": "ラミロ"
+    },
+    {
+      "label": "ドン・イニーゴ・ゴメス"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★前奏曲（時計の音）",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "時計屋（トルケマダの仕事）",
+      "group_label": "第1場",
+      "roles": [
+        "トルケマダ",
+        "ラミロ"
+      ]
+    },
+    {
+      "label": "コンセプシオンとゴンザルヴェ（詩人の恋）",
+      "group_label": "第2場",
+      "roles": [
+        "コンセプシオン",
+        "ゴンザルヴェ"
+      ]
+    },
+    {
+      "label": "★時計の中に隠す（ラミロが運ぶ）",
+      "group_label": "第3場",
+      "roles": [
+        "コンセプシオン",
+        "ラミロ",
+        "ゴンザルヴェ"
+      ]
+    },
+    {
+      "label": "ドン・イニーゴも時計に入る",
+      "group_label": "第4場",
+      "roles": [
+        "コンセプシオン",
+        "ドン・イニーゴ・ゴメス",
+        "ラミロ"
+      ]
+    },
+    {
+      "label": "コンセプシオンの選び（力持ちのラミロ）",
+      "group_label": "第5場",
+      "roles": [
+        "コンセプシオン",
+        "ラミロ"
+      ]
+    },
+    {
+      "label": "★五重唱（ボレロのハバネラ）",
+      "group_label": "終場",
+      "roles": [
+        "コンセプシオン",
+        "ゴンザルヴェ",
+        "トルケマダ",
+        "ラミロ",
+        "ドン・イニーゴ・ゴメス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サリュソフォーン",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

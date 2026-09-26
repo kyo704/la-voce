@@ -1,0 +1,62 @@
+{
+  "title": "蜘蛛拍子舞（長唄）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1781,
+  "duration_min": 45,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kumo-no-hyoshimai",
+  "note": "★歌舞伎舞踊（所作事） ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "白拍子妻菊（蜘蛛の精）"
+    },
+    {
+      "label": "源頼光"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "四天王"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★白拍子として舞う",
+      "group_label": "一段",
+      "roles": [
+        "白拍子妻菊（蜘蛛の精）",
+        "源頼光",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★蜘蛛の精の正体（★千筋の糸）",
+      "group_label": "一段",
+      "roles": [
+        "白拍子妻菊（蜘蛛の精）",
+        "源頼光",
+        "四天王",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

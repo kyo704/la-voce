@@ -1,0 +1,230 @@
+{
+  "title": "ユグノー教徒",
+  "title_original": "Les Huguenots",
+  "composer": "マイアベーア",
+  "composer_sort": "Meyerbeer, Giacomo",
+  "kind": "opera",
+  "year_written": 1836,
+  "duration_min": 240,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "huguenots",
+  "note": "★『7つの星の夜』── 大歌手7人を要する作として知られる",
+  "roles": [
+    {
+      "label": "ヴァランティーヌ"
+    },
+    {
+      "label": "マルグリット・ド・ヴァロワ"
+    },
+    {
+      "label": "ラウル・ド・ナンジス"
+    },
+    {
+      "label": "マルセル"
+    },
+    {
+      "label": "ヌヴェール伯爵"
+    },
+    {
+      "label": "サン＝ブリ伯爵"
+    },
+    {
+      "label": "ユルバン"
+    },
+    {
+      "label": "タヴァンヌ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ヌヴェール邸の宴（ラウルの物語）",
+      "group_label": "第1幕",
+      "roles": [
+        "ラウル・ド・ナンジス",
+        "ヌヴェール伯爵",
+        "タヴァンヌ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 マルセルのユグノーの歌（ラ・ロシェル）",
+      "group_label": "第1幕",
+      "roles": [
+        "マルセル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ユルバンのロンドと王妃の召し",
+      "group_label": "第1幕",
+      "roles": [
+        "ユルバン",
+        "ラウル・ド・ナンジス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 シュノンソーの庭（王妃のアリア）",
+      "group_label": "第2幕",
+      "roles": [
+        "マルグリット・ド・ヴァロワ",
+        "ユルバン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 和解の誓いとラウルの拒み（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ラウル・ド・ナンジス",
+        "ヴァランティーヌ",
+        "サン＝ブリ伯爵",
+        "マルグリット・ド・ヴァロワ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 プレ・オ・クレール（ラタプランの合唱と喧嘩）",
+      "group_label": "第3幕",
+      "roles": [
+        "マルセル",
+        "サン＝ブリ伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ヴァランティーヌとマルセルの二重唱（策の知らせ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァランティーヌ",
+        "マルセル"
+      ]
+    },
+    {
+      "label": "第4幕 ★剣の祝別（サン＝ブリと貴族たち）",
+      "group_label": "第4幕",
+      "roles": [
+        "サン＝ブリ伯爵",
+        "ヌヴェール伯爵",
+        "ヴァランティーヌ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 ★ラウルとヴァランティーヌの大二重唱",
+      "group_label": "第4幕",
+      "roles": [
+        "ラウル・ド・ナンジス",
+        "ヴァランティーヌ"
+      ]
+    },
+    {
+      "label": "第5幕 虐殺の夜（三重唱と死）",
+      "group_label": "第5幕",
+      "roles": [
+        "ラウル・ド・ナンジス",
+        "ヴァランティーヌ",
+        "マルセル",
+        "サン＝ブリ伯爵",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

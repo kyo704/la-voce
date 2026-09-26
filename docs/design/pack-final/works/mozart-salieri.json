@@ -1,0 +1,161 @@
+{
+  "title": "モーツァルトとサリエリ",
+  "title_original": "Моцарт и Сальери",
+  "composer": "リムスキー＝コルサコフ",
+  "composer_sort": "Rimsky-Korsakov, Nikolai",
+  "kind": "opera",
+  "year_written": 1897,
+  "duration_min": 45,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "mozart-salieri",
+  "note": "★プーシキンの戯曲をそのまま作曲。★劇中でモーツァルトの実作が引かれる",
+  "roles": [
+    {
+      "label": "モーツァルト"
+    },
+    {
+      "label": "サリエリ"
+    },
+    {
+      "label": "盲目のヴァイオリン弾き"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 サリエリの独白（正義はない）",
+      "group_label": "第1場",
+      "roles": [
+        "サリエリ"
+      ]
+    },
+    {
+      "label": "モーツァルトと盲目の楽士",
+      "group_label": "第1場",
+      "roles": [
+        "モーツァルト",
+        "サリエリ",
+        "盲目のヴァイオリン弾き"
+      ]
+    },
+    {
+      "label": "モーツァルトがピアノで弾く（幻想曲）",
+      "group_label": "第1場",
+      "roles": [
+        "モーツァルト",
+        "サリエリ"
+      ]
+    },
+    {
+      "label": "第2場 居酒屋（黒衣の男とレクイエムの話）",
+      "group_label": "第2場",
+      "roles": [
+        "モーツァルト",
+        "サリエリ"
+      ]
+    },
+    {
+      "label": "★毒を入れる",
+      "group_label": "第2場",
+      "roles": [
+        "サリエリ",
+        "モーツァルト"
+      ]
+    },
+    {
+      "label": "★終曲（レクイエムを弾き、去る・サリエリの疑い）",
+      "group_label": "第2場",
+      "roles": [
+        "モーツァルト",
+        "サリエリ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

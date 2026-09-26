@@ -1,0 +1,114 @@
+{
+  "title": "絵本太功記（尼ヶ崎）",
+  "aliases": [
+    "太功記十段目",
+    "尼ヶ崎"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1799,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bun-ehon-taikoki",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松柳・近松湖水軒ほか ／ ★★明智光秀を武智光秀として描く。★★『十段目』が単独で出る ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "武智十次郎"
+    },
+    {
+      "label": "初菊"
+    },
+    {
+      "label": "武智光秀"
+    },
+    {
+      "label": "操"
+    },
+    {
+      "label": "皐月"
+    },
+    {
+      "label": "真柴久吉"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★十段目 尼ヶ崎（★光秀の母を誤って突く）",
+      "group_label": "十段目",
+      "roles": [
+        "武智光秀",
+        "皐月",
+        "操",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★十次郎の帰陣と初菊の祝言",
+      "group_label": "十段目",
+      "roles": [
+        "武智十次郎",
+        "初菊",
+        "操",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★★十次郎の死と光秀の嘆き",
+      "group_label": "十段目",
+      "roles": [
+        "武智光秀",
+        "武智十次郎",
+        "初菊",
+        "皐月",
+        "操",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

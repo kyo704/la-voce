@@ -1,0 +1,57 @@
+{
+  "title": "魚説経",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-uo-zekkyo",
+  "note": "★出家狂言 ／ ★★魚の名を 経のように 並べます ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（にせ僧）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "漁師が僧に化けて寺を預かる",
+      "group_label": "段",
+      "roles": [
+        "シテ（にせ僧）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "経を知らず、魚の名を並べて読む",
+      "group_label": "段",
+      "roles": [
+        "シテ（にせ僧）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "露見して追われる",
+      "group_label": "段",
+      "roles": [
+        "シテ（にせ僧）",
+        "アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

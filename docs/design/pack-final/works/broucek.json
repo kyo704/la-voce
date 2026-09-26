@@ -1,0 +1,194 @@
+{
+  "title": "ブロウチェク氏の旅行",
+  "title_original": "Výlety páně Broučkovy",
+  "composer": "ヤナーチェク",
+  "composer_sort": "Janáček, Leoš",
+  "kind": "opera",
+  "year_written": 1920,
+  "duration_min": 140,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "broucek",
+  "note": "★多くの歌手が月／15世紀／現代の3役を兼ねる",
+  "roles": [
+    {
+      "label": "マテイ・ブロウチェク"
+    },
+    {
+      "label": "マーリンカ／エーテレア／クンカ"
+    },
+    {
+      "label": "マーザル／ブランクィトゥス／ペトジーク"
+    },
+    {
+      "label": "サクリスタン／ルナボル／ドムシーク"
+    },
+    {
+      "label": "ヴュルフル／チャロヴニーク／市参事会員"
+    },
+    {
+      "label": "詩人"
+    },
+    {
+      "label": "スヴァトプルク・チェフ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1部 プラハの居酒屋（月へ）",
+      "group_label": "第1部",
+      "roles": [
+        "マテイ・ブロウチェク",
+        "マーリンカ／エーテレア／クンカ",
+        "マーザル／ブランクィトゥス／ペトジーク",
+        "サクリスタン／ルナボル／ドムシーク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1部 月の世界（芸術しか食べない住人たち）",
+      "group_label": "第1部",
+      "roles": [
+        "マテイ・ブロウチェク",
+        "マーリンカ／エーテレア／クンカ",
+        "ヴュルフル／チャロヴニーク／市参事会員",
+        "詩人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1部 ソーセージを見せて月人が気絶する",
+      "group_label": "第1部",
+      "roles": [
+        "マテイ・ブロウチェク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1部 地球への帰還",
+      "group_label": "第1部",
+      "roles": [
+        "マテイ・ブロウチェク",
+        "サクリスタン／ルナボル／ドムシーク"
+      ]
+    },
+    {
+      "label": "★第2部 15世紀のプラハ（フス戦争の時代へ）",
+      "group_label": "第2部",
+      "roles": [
+        "マテイ・ブロウチェク",
+        "サクリスタン／ルナボル／ドムシーク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2部 ヴィートコフの戦い（ブロウチェクの逃亡）",
+      "group_label": "第2部",
+      "roles": [
+        "マテイ・ブロウチェク",
+        "マーザル／ブランクィトゥス／ペトジーク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（樽の中から見つかる）",
+      "group_label": "第2部",
+      "roles": [
+        "マテイ・ブロウチェク",
+        "ヴュルフル／チャロヴニーク／市参事会員",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+{
+  "title": "ルイーズ",
+  "title_original": "Louise",
+  "composer": "シャルパンティエ",
+  "composer_sort": "Charpentier, Gustave",
+  "kind": "opera",
+  "year_written": 1900,
+  "duration_min": 165,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "louise",
+  "roles": [
+    {
+      "label": "ルイーズ"
+    },
+    {
+      "label": "ジュリアン"
+    },
+    {
+      "label": "母"
+    },
+    {
+      "label": "父"
+    },
+    {
+      "label": "イルマ"
+    },
+    {
+      "label": "屑屋"
+    },
+    {
+      "label": "夜の王"
+    },
+    {
+      "label": "牛乳売り"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 パリの屋根裏（ルイーズとジュリアンの手紙）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルイーズ",
+        "ジュリアン",
+        "母"
+      ]
+    },
+    {
+      "label": "第1幕 父の帰宅と家族の食卓",
+      "group_label": "第1幕",
+      "roles": [
+        "ルイーズ",
+        "父",
+        "母"
+      ]
+    },
+    {
+      "label": "第2幕 夜明けのモンマルトル（街の人々）",
+      "group_label": "第2幕",
+      "roles": [
+        "屑屋",
+        "牛乳売り",
+        "夜の王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 仕立て工場（娘たちの噂とジュリアンのセレナード）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルイーズ",
+        "イルマ",
+        "ジュリアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★モンマルトルの小さな家（その日から）",
+      "group_label": "第3幕",
+      "roles": [
+        "ルイーズ",
+        "ジュリアン"
+      ]
+    },
+    {
+      "label": "第3幕 ★パリの戴冠（ボヘミアンの祭り）",
+      "group_label": "第3幕",
+      "roles": [
+        "ルイーズ",
+        "ジュリアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 母の来訪（父が病だという）",
+      "group_label": "第3幕",
+      "roles": [
+        "母",
+        "ルイーズ",
+        "ジュリアン"
+      ]
+    },
+    {
+      "label": "第4幕 家の中（父の膝の上）",
+      "group_label": "第4幕",
+      "roles": [
+        "ルイーズ",
+        "父",
+        "母"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（ルイーズの家出と父の叫び「おおパリ！」）",
+      "group_label": "第4幕",
+      "roles": [
+        "ルイーズ",
+        "父",
+        "母"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

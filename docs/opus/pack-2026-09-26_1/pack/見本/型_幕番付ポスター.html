@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woolsong ホームページの型 ― 幕／番付／ポスター（t16〜t18）</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=BIZ+UDPGothic:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Yuji+Syuku&family=Archivo:wght@400;700;900&family=Zen+Old+Mincho:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--accent:#7A1F2E;--radius:12px;--space:1;--head:"Shippori Mincho",serif;--body:"BIZ UDPGothic",system-ui,sans-serif;--lat:"Cormorant Garamond",serif}
+  body[data-font="old"]{--head:"Zen Old Mincho",serif;--body:"Zen Old Mincho",serif}
+  body[data-font="gothic"]{--head:"BIZ UDPGothic",sans-serif;--body:"BIZ UDPGothic",sans-serif}
+  body[data-photo="square"]{--radius:0}
+  body[data-density="airy"]{--space:1.3}
+  *{box-sizing:border-box} html,body{margin:0;background:#DAD4C8;font-family:var(--body);-webkit-font-smoothing:antialiased}
+  body[data-headshot="off"] .headshot{display:none!important}
+  .headshot{background:linear-gradient(160deg,#8b7a72,#3b3230);position:relative;overflow:hidden;border-radius:var(--radius)}
+  .headshot::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 35%,rgba(255,255,255,.35),transparent 42%)}
+  article{display:none} article.on{display:block}
+  [data-sec][hidden]{display:none!important}
+  .ph{background:linear-gradient(160deg,#8b7a72,#3b3230);position:relative;overflow:hidden;border-radius:var(--radius)}
+  .ph::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 35%,rgba(255,255,255,.35),transparent 42%)}
+  .auto{display:inline-block;font-size:10px;border:1px solid currentColor;opacity:.55;border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+  /* 操作 */
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:98;background:rgba(20,18,16,.92);color:#fff;padding:8px 12px;display:flex;gap:6px;align-items:center;font-size:12px}
+  .topbar b{opacity:.7;margin-right:4px;font-weight:500}
+  .topbar button{border:0;background:transparent;color:#fff;padding:5px 10px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:12px}
+  .topbar button[aria-pressed="true"]{background:#fff;color:#111}
+  .topbar .toggle{margin-left:auto;background:#7A1F2E}
+  .spacer{height:44px}
+  .panel{position:fixed;top:44px;left:0;bottom:0;width:280px;background:#1b1917;color:#eee;z-index:99;padding:16px;overflow:auto;font-size:12px;transform:translateX(-100%);transition:.25s}
+  .panel.open{transform:none}
+  .panel h3{font-size:12px;letter-spacing:.14em;margin:16px 0 8px;color:#bbb;font-weight:500}.panel h3:first-child{margin-top:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{border:1px solid #444;background:transparent;color:#eee;border-radius:999px;padding:5px 10px;cursor:pointer;font-family:inherit;font-size:12px}
+  .chips button[aria-pressed="true"]{background:#eee;color:#111;border-color:#eee}
+  .sw{display:flex;gap:6px;flex-wrap:wrap}.sw button{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer}.sw button[aria-pressed="true"]{border-color:#fff}
+  .secs div{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #2a2725}.secs label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer}.secs input{accent-color:#eee}
+  .secs button{border:1px solid #444;background:transparent;color:#eee;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:11px}
+  .hint{color:#8a8580;line-height:1.6;margin-top:14px}
+
+  /* ================= t16 幕 ================= */
+  .t16{background:#F7F2EA;color:#1B1614;font-family:var(--body)}
+  .t16 .theatre{position:relative;height:88vh;min-height:560px;background:#2E0A11;overflow:hidden;color:#F7F2EA}
+  .t16 .curtain{position:absolute;inset:0;background-color:var(--accent);background-image:repeating-linear-gradient(90deg,color-mix(in srgb,var(--accent) 70%,#000 30%) 0 22px,color-mix(in srgb,var(--accent) 92%,#fff 8%) 22px 44px,color-mix(in srgb,var(--accent) 55%,#000 45%) 44px 62px,color-mix(in srgb,var(--accent) 100%,#000 0%) 62px 84px);box-shadow:inset 0 -120px 160px -60px rgba(0,0,0,.55);transition:transform .1s linear}
+  .t16 .curtain::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 70%,rgba(0,0,0,.5))}
+  .t16 .valance{position:absolute;left:0;right:0;top:0;height:54px;background:#2E0A11;border-bottom:5px double #B8933F;z-index:3}
+  .t16 .foot{position:absolute;left:0;right:0;bottom:0;height:46px;background:radial-gradient(60% 100% at 50% 100%,rgba(232,195,111,.55),transparent 70%);z-index:3;pointer-events:none}
+  .t16 .stage{position:absolute;inset:0;background:#F7F2EA;color:#1B1614;display:grid;grid-template-columns:1fr 1fr;align-items:end;padding:0 8vw 110px}
+  .t16 .stage .headshot{width:min(34vw,320px);aspect-ratio:3/4;justify-self:end}
+  .t16 .stage h2{font-family:var(--head);font-weight:600;font-size:clamp(26px,3.4vw,40px);margin:0 0 8px}
+  .t16 .stage p{margin:0;max-width:26em;line-height:1.9}
+  .t16 .hero{position:absolute;left:8vw;bottom:96px;z-index:4}
+  .t16 .hero .brand{font-family:var(--lat);letter-spacing:.34em;text-transform:uppercase;color:#E8C36F;font-size:14px;margin-bottom:12px}
+  .t16 .hero h1{font-family:var(--head);font-weight:600;font-size:clamp(40px,7vw,92px);line-height:1.1;margin:0;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+  .t16 .hero h1 small{display:block;font-family:var(--lat);font-weight:400;font-size:clamp(16px,2vw,24px);letter-spacing:.2em;margin-top:10px;color:#F1E6D6}
+  .t16 .hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:4;font-family:var(--lat);letter-spacing:.3em;font-size:12px;color:#E8C36F;text-transform:uppercase}
+  .t16 .prog{position:sticky;top:44px;z-index:5;background:rgba(247,242,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid #D8CFC1}
+  .t16 .prog .in{max-width:1080px;margin:0 auto;padding:12px 24px;display:flex;gap:22px;align-items:center;font-size:13.5px}
+  .t16 .prog .in b{font-family:var(--head);font-weight:600;color:var(--accent);margin-right:auto;font-size:16px}
+  .t16 .prog .in a{color:#5E554D;text-decoration:none}
+  .t16 section{max-width:1080px;margin:0 auto;padding:calc(70px*var(--space)) 24px 20px}
+  .t16 .head{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:end;margin-bottom:26px}
+  .t16 .head .no{font-family:var(--lat);font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);border-top:2px solid var(--accent);padding-top:10px}
+  .t16 .head .no span{display:block;font-family:var(--head);font-weight:600;font-size:clamp(24px,3vw,36px);letter-spacing:.06em;text-transform:none;color:#1B1614;margin-top:6px;white-space:nowrap}
+  .t16 .head .no span .auto{font-size:10px;font-family:var(--body);font-weight:400;letter-spacing:0;vertical-align:middle;position:relative;top:-6px}
+  .t16 .head h2{font-family:var(--head);font-weight:600;font-size:clamp(26px,3.2vw,40px);margin:0}
+  .t16 .ev{display:grid;grid-template-columns:140px 1fr 1fr;gap:18px;padding:18px 0;border-top:1px solid #1B1614;align-items:baseline}
+  .t16 .ev:last-child{border-bottom:1px solid #1B1614}
+  .t16 .ev .d{font-family:var(--lat);font-size:26px}
+  .t16 .ev .d small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.14em;color:#5E554D}
+  .t16 .ev .w{font-family:var(--head);font-weight:600;font-size:18px}
+  .t16 .ev .w small{display:block;font-family:var(--body);font-weight:400;font-size:13px;color:#5E554D;margin-top:4px}
+  .t16 .ev .v{font-size:14px;color:#3d3631;line-height:1.7}
+  .t16 .cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;line-height:1.9}
+  .t16 .cols p{margin:0 0 14px}
+  .t16 .rep{columns:2;column-gap:40px;font-size:15px;line-height:2}
+  .t16 .rep b{font-family:var(--head);font-weight:600}
+  .t16 .rep i{font-style:normal;color:#5E554D;font-size:12px;margin-left:6px}
+  .t16 .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .t16 blockquote{margin:0;font-family:var(--head);font-size:17px;line-height:1.9;border-top:3px solid var(--accent);padding-top:12px}
+  .t16 blockquote cite{display:block;font-family:var(--body);font-style:normal;font-size:12px;color:#5E554D;margin-top:8px}
+  .t16 .video{aspect-ratio:21/9;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;border-radius:var(--radius)}
+  .t16 .contact{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;background:#2E0A11;color:#F1E6D6;padding:24px 26px;border-radius:var(--radius)}
+  .t16 .contact a{color:#F1E6D6;border:1px solid #E8C36F;border-radius:999px;padding:11px 20px;text-decoration:none;white-space:nowrap;font-family:var(--head)}
+  .t16 footer{max-width:1080px;margin:0 auto;padding:40px 24px 70px;font-size:12px;color:#9A9087;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:800px){.t16 .stage{grid-template-columns:1fr;padding:0 6vw 120px}.t16 .stage .ph{display:none}.t16 .hero{left:6vw;bottom:80px}.t16 .head{grid-template-columns:1fr;gap:8px}.t16 .ev{grid-template-columns:1fr;gap:4px}.t16 .cols,.t16 .quotes{grid-template-columns:1fr}.t16 .rep{columns:1}.t16 .contact{grid-template-columns:1fr}.t16 .prog .in{overflow:auto}}
+
+  /* ================= t17 番付 ================= */
+  .t17{background:#F3ECDD;color:#151311;font-family:var(--body);background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:6px 6px}
+  .t17 .frame{max-width:1180px;margin:0 auto;padding:44px 24px 80px}
+  .t17 .board{border:3px solid #151311;padding:10px;background:#F7F1E3}
+  .t17 .inner{border:1px solid #151311;padding:28px 24px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:26px}
+  /* 縦組み：1文字ずつ積む（フォントの縦metricsに依存しない） */
+  .t17 .cols{display:flex;flex-direction:row-reverse;justify-content:flex-start;gap:30px;align-items:flex-start;min-height:560px;overflow-x:auto;padding-bottom:6px}
+  .t17 .v{display:flex;flex-direction:column;align-items:center;line-height:1.2;font-size:15px}
+  .t17 .v span{display:block;height:1.2em;text-align:center}
+  .t17 .v span.r{transform:rotate(90deg)}
+  .t17 .v span.sm{height:1.05em;transform:scale(.9)}
+  .t17 .colgroup{display:flex;flex-direction:row-reverse;gap:14px;align-items:flex-start;padding-right:20px;border-right:2px solid var(--accent)}
+  .t17 .colgroup h2{margin:0;padding:0}
+  .t17 .colgroup h2 .v{font-family:var(--head);font-weight:800;font-size:19px;letter-spacing:0;color:var(--accent)}
+  .t17 .entry .v.t{font-family:var(--head);font-weight:600;font-size:17px}
+  .t17 .entry{display:flex;flex-direction:row-reverse;gap:6px;align-items:flex-start}
+  .t17 .entry .v.sub{font-size:12px;color:#5b534a}
+  .t17 .name .v{font-family:"Yuji Syuku",var(--head),serif;font-size:clamp(54px,6vw,84px);line-height:1.02}
+  .t17 .name .v span{height:1.02em}
+  .t17 .name{display:flex;flex-direction:row-reverse;gap:14px;align-items:flex-start}
+  .t17 .name .v.kana{font-family:var(--body);font-size:13px;letter-spacing:0;color:#5b534a;padding-top:6px}
+  .t17 .seal{width:52px;height:52px;border:2.5px solid var(--accent);color:var(--accent);font-family:var(--head);font-weight:800;font-size:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;transform:rotate(-3deg);margin-top:14px}
+  .t17 .side{border-left:1px solid #151311;padding-left:22px;display:flex;flex-direction:column;gap:18px;font-size:13.5px}
+  .t17 .side h3{font-family:var(--head);font-weight:800;font-size:14px;letter-spacing:.2em;margin:0 0 6px;color:var(--accent)}
+  .t17 .side .headshot{aspect-ratio:3/4;border-radius:0;filter:sepia(.2)}
+  .t17 .side ul{list-style:none;margin:0;padding:0}
+  .t17 .side li{padding:6px 0;border-bottom:1px dotted #a99e8f}
+  .t17 .side a{color:#151311;text-decoration:none;border-bottom:1px solid #151311}
+  .t17 .band{margin:14px 0 0;background:#151311;color:#F7F1E3;padding:10px 16px;font-family:var(--head);font-size:14px;letter-spacing:.3em;display:flex;justify-content:space-between}
+  @media (max-width:860px){.t17 .inner{grid-template-columns:1fr}.t17 .cols{flex-direction:column;gap:22px;min-height:0}.t17 .colgroup{flex-direction:column;border-right:0;border-left:3px solid var(--accent);padding:0 0 0 12px;gap:8px}.t17 .v,.t17 .entry,.t17 .name{flex-direction:row;flex-wrap:wrap;align-items:baseline}.t17 .v span{display:inline;height:auto}.t17 .v span.r{transform:none}.t17 .name .v{font-size:54px}.t17 .name{flex-direction:column-reverse;align-items:flex-start}.t17 .seal{margin-top:6px}.t17 .side{border-left:0;padding-left:0;border-top:1px solid #151311;padding-top:18px}}
+
+  /* ================= t18 ポスター ================= */
+  .t18{background:#F2F0EA;color:#111;font-family:"Archivo",var(--body),sans-serif;--g:1px solid rgba(17,17,17,.18)}
+  .t18 .sheet{max-width:1180px;margin:0 auto;padding:24px;}
+  .t18 .poster{position:relative;background:#F2F0EA;border:1px solid #111;min-height:760px;display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:minmax(60px,auto);overflow:hidden;
+    background-image:linear-gradient(to right,rgba(17,17,17,.08) 1px,transparent 1px);background-size:calc(100%/12) 100%}
+  .t18 .big{grid-column:1/9;grid-row:1/4;padding:26px 24px 0;font-weight:900;font-size:clamp(64px,12vw,164px);line-height:.86;letter-spacing:-.04em;text-transform:uppercase;color:#111;white-space:nowrap}
+  .t18 .big span{display:block;color:var(--accent)}
+  .t18 .jp{grid-column:1/6;grid-row:4/5;padding:0 24px;font-family:var(--head);font-weight:600;font-size:clamp(22px,2.6vw,34px);letter-spacing:.06em;align-self:end}
+  .t18 .jp small{display:block;font-family:"Archivo",sans-serif;font-weight:700;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#555;margin-top:6px}
+  .t18 .headshot{grid-column:9/13;grid-row:1/4;margin:24px 24px 0 0;border-radius:0}
+  .t18 .block{grid-column:9/13;grid-row:4/7;background:var(--accent);color:#F2F0EA;padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+  .t18 .block .d{font-weight:900;font-size:clamp(40px,5vw,72px);line-height:.9;letter-spacing:-.03em}
+  .t18 .block .d small{display:block;font-weight:700;font-size:12px;letter-spacing:.3em;margin-top:8px}
+  .t18 .block .w{font-family:var(--head);font-size:18px;line-height:1.5;margin-top:14px}
+  .t18 .block .w small{display:block;font-family:"Archivo";font-size:12px;opacity:.85;margin-top:4px}
+  .t18 .list{grid-column:1/9;grid-row:5/8;padding:18px 24px 24px;border-top:1px solid #111;margin-top:14px}
+  .t18 .list h2,.t18 .low h2{font-weight:700;font-size:11px;letter-spacing:.34em;text-transform:uppercase;margin:0 0 14px;color:#555}
+  .t18 .row{display:grid;grid-template-columns:110px 1fr 1fr;gap:16px;padding:10px 0;border-bottom:var(--g);align-items:baseline}
+  .t18 .row .d{font-weight:900;font-size:22px;letter-spacing:-.02em}
+  .t18 .row .w{font-family:var(--head);font-weight:600;font-size:16px}
+  .t18 .row .w small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:#555}
+  .t18 .row .v{font-size:13px;color:#333;line-height:1.6}
+  .t18 .low{grid-column:1/13;grid-row:8/10;display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px;padding:22px 24px;border-top:1px solid #111}
+  .t18 .low p{margin:0 0 10px;font-size:14px;line-height:1.85;font-family:var(--body)}
+  .t18 .low .rep li{list-style:none;padding:5px 0;border-bottom:var(--g);font-size:14px;font-family:var(--body)}
+  .t18 .low .rep ul{margin:0;padding:0}
+  .t18 .low .rep b{font-family:var(--head);font-weight:600}
+  .t18 .low .press p{font-family:var(--head);font-size:15px;border-left:3px solid var(--accent);padding-left:10px}
+  .t18 .low .press cite{font-style:normal;font-family:var(--body);font-size:12px;color:#555}
+  .t18 .strip{grid-column:1/13;grid-row:10/11;display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #111}
+  .t18 .strip .video{background:#111;color:#fff;display:flex;align-items:center;justify-content:center;min-height:180px;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+  .t18 .strip .contact{padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;font-family:var(--body);font-size:14px}
+  .t18 .strip .contact a{align-self:flex-start;background:#111;color:#F2F0EA;text-decoration:none;padding:12px 18px;font-weight:700;letter-spacing:.14em;font-size:12px;text-transform:uppercase}
+  .t18 .foot{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#555;padding:12px 4px 0}
+  @media (max-width:860px){.t18 .headshot{margin:16px;aspect-ratio:3/4;max-width:220px}.t18 .poster{display:block;background-size:calc(100%/4) 100%}.t18 .big{padding:22px 16px 0;font-size:clamp(52px,17vw,110px);white-space:normal}.t18 .jp{padding:12px 16px 0}.t18 .block{margin:16px}.t18 .list{padding:16px;margin:0}.t18 .row{grid-template-columns:70px 1fr;gap:8px}.t18 .row .v{grid-column:2}.t18 .low{grid-template-columns:1fr;padding:16px}.t18 .strip{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-font="mincho" data-photo="round" data-density="normal" data-headshot="on">
+
+<div class="topbar" role="group" aria-label="型"><b>型</b>
+  <button data-t="t16" aria-pressed="true">16 幕</button><button data-t="t17">17 番付</button><button data-t="t18">18 ポスター</button>
+  <button class="toggle" onclick="document.getElementById('panel').classList.toggle('open')">カスタマイズ</button>
+</div>
+<div class="spacer"></div>
+<aside class="panel" id="panel">
+  <h3>色（8色から）</h3><div class="sw" id="colors"></div>
+  <h3>宣材写真</h3><div class="chips" id="headshot"><button aria-pressed="true" data-v="on">置く</button><button aria-pressed="false" data-v="off">置かない</button></div>
+  <h3>書体</h3><div class="chips" id="fonts"><button aria-pressed="true" data-v="mincho">明朝＋ゴシック</button><button aria-pressed="false" data-v="old">明朝だけ</button><button aria-pressed="false" data-v="gothic">ゴシックだけ</button></div>
+  <h3>写真の形</h3><div class="chips" id="photo"><button aria-pressed="true" data-v="round">角丸</button><button aria-pressed="false" data-v="square">四角</button></div>
+  <h3>余白</h3><div class="chips" id="density"><button aria-pressed="true" data-v="normal">ふつう</button><button aria-pressed="false" data-v="airy">ゆったり</button></div>
+  <h3>節の表示と順番</h3><p class="hint" style="margin:0 0 6px">並べ替えるまでは、型が決めた順で出ます</p><div class="secs" id="secs"></div>
+  <p class="hint">色は8色に限ります。番付の朱印と、ポスターの色面は、選んだ色になります。</p>
+</aside>
+
+<!-- ================= t16 幕 ================= -->
+<article id="t16" class="t16 on">
+  <div class="theatre">
+    <div class="stage" aria-hidden="true">
+      <div><h2>ソプラノ。東京とバーリで歌う。</h2><p>2027年秋、『フィガロの結婚』スザンナ役で出演。歌曲ではR.シュトラウスと日本歌曲を中心に。</p></div>
+      <div class="headshot"></div>
+    </div>
+    <div class="curtain" data-curtain></div><div class="valance"></div><div class="foot"></div>
+    <div class="hero"><div class="brand">Soprano</div><h1>白石 澪<small>MIO SHIRAISHI</small></h1></div>
+    <div class="hint">Scroll</div>
+  </div>
+  <div class="prog"><div class="in"><b>白石 澪</b><a href="#s16-1">出演予定</a><a href="#s16-2">プロフィール</a><a href="#s16-3">レパートリー</a><a href="#s16-4">批評</a><a href="#s16-5">お問い合わせ</a></div></div>
+
+  <section data-sec="events" id="s16-1"><div class="head"><div class="no">Act I<span>出演予定<span class="auto">自動</span></span></div></div>
+    <div class="ev"><div class="d">11 Oct<small>2026</small></div><div class="w">秋のコンサート<small>歌曲とオペラ・アリア</small></div><div class="v">千葉県文化会館 小ホール<br>14:00　共演：○○（Pf）</div></div>
+    <div class="ev"><div class="d">20 Dec<small>2026</small></div><div class="w">クリスマス・チャリティ<small>ソプラノ独唱</small></div><div class="v">サントリーホール ブルーローズ<br>18:00</div></div>
+    <div class="ev"><div class="d">19 Sep<small>2027</small></div><div class="w">Le nozze di Figaro<small>Susanna</small></div><div class="v">サントリーホール<br>17:00　指揮：○○　演出：○○</div></div>
+  </section>
+  <section data-sec="profile" id="s16-2"><div class="head"><div class="no">Act II<span>プロフィール</span></div></div>
+    <div class="cols"><div><p>東京音楽大学声楽科卒業、同大学院修了。2026年よりイタリア・バーリ音楽院に留学。第○回日本声楽コンクール入選。</p><p>モーツァルト『魔笛』パミーナ、プッチーニ『ラ・ボエーム』ムゼッタ、ヘンデル『リナルド』アルミレーナなどを歌う。</p></div><div><p>歌曲ではR.シュトラウスと日本歌曲を中心に、ピアニスト○○と定期的にリサイタルを行う。これまでに高橋○○、Maestra ○○の各氏に師事。二期会準会員。</p></div></div>
+  </section>
+  <section data-sec="rep" id="s16-3"><div class="head"><div class="no">Act III<span>レパートリー<span class="auto">自動</span></span></div></div>
+    <div class="rep"><b>魔笛</b> パミーナ<i>Mozart</i><br><b>フィガロの結婚</b> スザンナ<i>Mozart</i><br><b>ラ・ボエーム</b> ムゼッタ<i>Puccini</i><br><b>リナルド</b> アルミレーナ<i>Händel</i><br><b>献呈・明日</b><i>R. Strauss</i><br><b>さくら横ちょう</b><i>中田喜直</i></div>
+  </section>
+  <section data-sec="press" id="s16-4"><div class="head"><div class="no">Act IV<span>批評</span></div></div>
+    <div class="quotes"><blockquote>「軽やかで、言葉が立つソプラノ」<cite>― ○○新聞　2026年7月</cite></blockquote><blockquote>「ムゼッタの登場で舞台の温度が変わった」<cite>― 音楽の友　2026年8月</cite></blockquote><blockquote>「高音の輝きと、レチタティーヴォの知性」<cite>― ○○評　2026年3月</cite></blockquote></div>
+  </section>
+  <section data-sec="video"><div class="head"><div class="no">Act V<span>動画</span></div></div><div class="video">▶ Lascia ch'io pianga（2026・ライブ）</div></section>
+  <section data-sec="contact" id="s16-5"><div class="contact"><div>出演依頼・レッスン・取材はフォームから。本人のメールへ転送されます。</div><a href="#" onclick="return false">お問い合わせ</a></div></section>
+  <footer><span>© 2026 Mio Shiraishi</span><span>このページは Woolsong で作られています</span></footer>
+</article>
+
+<!-- ================= t17 番付 ================= -->
+<article id="t17" class="t17"><div class="frame"><div class="board"><div class="inner">
+  <div class="cols">
+    <div class="name"><div class="v">柳家 小澪</div><div class="v kana">やなぎや こみお ― 落語家・二ツ目</div><div class="seal"><span>小</span><span>澪</span></div></div>
+    <div class="colgroup" data-sec="events"><h2><div class="v">出演</div></h2>
+      <div class="entry"><div class="v t">十月十一日 秋の落語会</div><div class="v sub">千葉県文化会館 小ホール 昼の部</div></div>
+      <div class="entry"><div class="v t">十月二十五日 二ツ目勉強会</div><div class="v sub">○○演芸場 夜</div></div>
+      <div class="entry"><div class="v t">十一月十五日 独演会「秋の夜の話」</div><div class="v sub">△△寄席 昼夜二回</div></div>
+    </div>
+    <div class="colgroup" data-sec="rep"><h2><div class="v">演目</div></h2>
+      <div class="v t">芝浜</div><div class="v t">時そば</div><div class="v t">寿限無</div><div class="v t">火焔太鼓</div><div class="v t">死神</div><div class="v t">井戸の茶碗</div>
+    </div>
+    <div class="colgroup" data-sec="profile"><h2><div class="v">経歴</div></h2>
+      <div class="v">平成十二年生まれ</div><div class="v">令和四年 ○○一門に入門 前座名「小まめ」</div><div class="v">令和八年 二ツ目昇進 「小澪」と改名</div><div class="v">古典を軸に 新作も手がける</div>
+    </div>
+    <div class="colgroup" data-sec="press"><h2><div class="v">評</div></h2>
+      <div class="v">「間の良さは 若手随一」（○○新聞）</div><div class="v">「芝浜の夜明けが見えた」（△△誌）</div>
+    </div>
+  </div>
+  <aside class="side">
+    <div class="headshot" aria-label="宣材写真"></div>
+    <div data-sec="video"><h3>動画</h3><ul><li><a href="#" onclick="return false">時そば（2026・寄席ライブ）</a></li><li><a href="#" onclick="return false">新作「駅の羊」</a></li></ul></div>
+    <div data-sec="contact"><h3>お問い合わせ</h3><p style="margin:0 0 6px">出演のご相談は所属先へ。本人へはフォームから（メールへ転送）。</p><ul><li>所属：○○一門</li><li>X：@komio</li></ul></div>
+    <div class="band"><span>柳家小澪</span><span>Woolsong</span></div>
+  </aside>
+</div></div></div></article>
+
+<!-- ================= t18 ポスター ================= -->
+<article id="t18" class="t18"><div class="sheet"><div class="poster">
+  <div class="big">Nagomi<span>Fujii</span></div>
+  <div class="headshot" aria-label="宣材写真"></div>
+  <div class="jp">藤井 和<small>Violin ・ Tokyo / Berlin</small></div>
+  <div class="block" data-sec="events"><div><div class="d">20.12<small>2026 ・ Sat</small></div><div class="w">ベートーヴェン：ヴァイオリン協奏曲<small>△△管弦楽団　指揮：□□□□<br>△△市民会館　18:00</small></div></div><div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.85">Next concert ・ 自動</div></div>
+  <div class="list" data-sec="events"><h2>Schedule</h2>
+    <div class="row"><div class="d">10.11</div><div class="w">秋のコンサート<small>共演：○○（Pf）</small></div><div class="v">千葉県文化会館 小ホール　14:00</div></div>
+    <div class="row"><div class="d">01.24</div><div class="w">シューベルト：弦楽五重奏曲<small>○○（Vn）・△△（Va）・□□（Vc）・◇◇（Vc）</small></div><div class="v">紀尾井ホール　19:00</div></div>
+    <div class="row"><div class="d">03.14</div><div class="w">バッハ：無伴奏パルティータ 第2番<small>リサイタル</small></div><div class="v">東京文化会館 小ホール　14:00</div></div>
+  </div>
+  <div class="low">
+    <div data-sec="profile"><h2>Biography</h2><p>東京藝術大学音楽学部器楽科卒業、ベルリン芸術大学修士課程修了。第○回日本音楽コンクール第2位。○○○○、△△△△の各氏に師事。2024年より○○財団の奨学生。使用楽器は G. B. Guadagnini 1750（○○財団より貸与）。</p></div>
+    <div class="rep" data-sec="rep"><h2>Repertoire</h2><ul><li><b>Brahms</b> 協奏曲</li><li><b>Mendelssohn</b> 協奏曲</li><li><b>Bach</b> 無伴奏</li><li><b>Ysaÿe</b> ソナタ</li><li><b>Schubert</b> 五重奏</li></ul></div>
+    <div class="press" data-sec="press"><h2>Press</h2><p>「ブラームスの緩徐楽章で、ホールの空気が一段静かになった」<br><cite>― ○○新聞　2026年5月</cite></p></div>
+  </div>
+  <div class="strip"><div class="video" data-sec="video">▶ Bach — Chaconne (live, 2026)</div><div class="contact" data-sec="contact"><div>出演のご相談は所属事務所へ。本人へはフォームから（メールへ転送）。所属：○○アーティスト・マネジメント</div><a href="#" onclick="return false">Contact</a></div></div>
+</div><div class="foot"><span>© 2026 Nagomi Fujii</span><span>Made with Woolsong</span></div></div></article>
+
+<script>
+/* 型の切替 */
+const btns=[...document.querySelectorAll('.topbar button[data-t]')];
+function show(id,btn){document.querySelectorAll('article').forEach(a=>a.classList.toggle('on',a.id===id));btns.forEach(b=>b.setAttribute('aria-pressed',b===btn));applySections();window.scrollTo(0,0);onScroll();}
+btns.forEach(b=>b.onclick=()=>show(b.dataset.t,b));
+/* 幕：スクロールで上がる */
+function onScroll(){const th=document.querySelector('#t16.on .theatre');if(!th)return;const c=th.querySelector('[data-curtain]');const h=th.offsetHeight;const p=Math.min(1,(window.scrollY-th.offsetTop)/h);const lift=Math.max(0,Math.min(1,p*1.6));c.style.transform=`translateY(${-lift*100}%)`;th.querySelector('.hero').style.opacity=Math.max(0,1-p*2.2);th.querySelector('.hint').style.opacity=Math.max(0,1-p*2.2);}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+/* カスタマイズ */
+const colors=[['臙脂','#7A1F2E'],['藍','#3E5C8C'],['墨','#2B2320'],['苔','#5C6B4A'],['葡萄','#5B3A5E'],['琥珀','#8C5A2B'],['鉄','#4A5560'],['朱','#B0342B']];
+const cw=document.getElementById('colors');
+colors.forEach(([n,c],i)=>{const b=document.createElement('button');b.style.background=c;b.title=n;b.setAttribute('aria-pressed',i===0);b.onclick=()=>{document.documentElement.style.setProperty('--accent',c);cw.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));};cw.appendChild(b);});
+[['fonts','data-font'],['photo','data-photo'],['density','data-density'],['headshot','data-headshot']].forEach(([id,attr])=>{const g=document.getElementById(id);g.querySelectorAll('button').forEach(b=>b.onclick=()=>{document.body.setAttribute(attr,b.dataset.v);g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));});});
+const secNames={profile:'プロフィール',events:'出演予定',rep:'レパートリー／演目',press:'批評',video:'動画',contact:'お問い合わせ'};
+let secState=Object.keys(secNames).map(k=>({k,on:true}));let reordered=false;
+const secs=document.getElementById('secs');
+function renderPanel(){secs.innerHTML='';secState.forEach((s,i)=>{const row=document.createElement('div');row.innerHTML=`<label><input type="checkbox" ${s.on?'checked':''}> ${secNames[s.k]}</label><button title="上へ">↑</button><button title="下へ">↓</button>`;row.querySelector('input').onchange=e=>{s.on=e.target.checked;applySections();};const [up,down]=row.querySelectorAll('button');up.onclick=()=>{if(i>0){reordered=true;[secState[i-1],secState[i]]=[secState[i],secState[i-1]];renderPanel();applySections();}};down.onclick=()=>{if(i<secState.length-1){reordered=true;[secState[i+1],secState[i]]=[secState[i],secState[i+1]];renderPanel();applySections();}};secs.appendChild(row);});}
+function applySections(){const art=document.querySelector('article.on');if(!art)return;secState.forEach(s=>{art.querySelectorAll(`[data-sec="${s.k}"]`).forEach(el=>{el.hidden=!s.on;});});if(!reordered)return;
+  const parents=new Set();art.querySelectorAll('[data-sec]').forEach(el=>parents.add(el.parentElement));
+  parents.forEach(p=>{const items=[...p.querySelectorAll(':scope > [data-sec]')];const order=secState.map(s=>s.k);items.sort((a,b)=>order.indexOf(a.dataset.sec)-order.indexOf(b.dataset.sec));const anchor=items.length?items[items.length-1].nextSibling:null;items.forEach(el=>p.insertBefore(el,anchor));});}
+renderPanel();applySections();
+/* 番付：縦組みを1文字ずつ積む */
+const ROT=new Set(['「','」','『','』','（','）','―','ー','〜','～','…','（','）']);
+document.querySelectorAll('#t17 .v').forEach(el=>{const txt=el.textContent.trim();el.textContent='';[...txt].forEach(ch=>{const sp=document.createElement('span');if(ch===' '){sp.className='sm';sp.textContent='\u3000';}else{sp.textContent=ch;if(ROT.has(ch))sp.className='r';}el.appendChild(sp);});});
+</script>
+<style id="wsedit-css">
+.topbar,.spacer{display:none!important}
+body{display:grid!important;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+#panel{position:sticky!important;top:0!important;left:auto!important;transform:none!important;height:100vh;overflow:auto;width:300px!important;box-shadow:none!important;border-right:1px solid #d8cfc1;z-index:5}
+article{display:none;min-width:0}article.on{display:block}
+.ws-head{padding:14px 16px;border-bottom:1px solid #d8cfc1;background:#1B1614;color:#fff;font-family:"BIZ UDPGothic",system-ui,sans-serif}
+.ws-head b{font-family:"Shippori Mincho",serif;color:#F2C97D;letter-spacing:.06em}
+.ws-head .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ws-head button{border:1px solid #666;background:transparent;color:#ddd;border-radius:999px;padding:6px 10px;font-family:inherit;font-size:12px;cursor:pointer}
+.ws-head button[aria-pressed="true"]{background:#fff;color:#111;border-color:#fff}
+.ws-head button.pub{background:#7A1F2E;color:#fff;border-color:#7A1F2E}
+.ws-head .st{font-size:11.5px;color:#9a9087;margin-top:8px}
+body.ws-edit [data-ws-e]{outline:1px dashed transparent;outline-offset:4px;border-radius:2px;transition:outline-color .15s;cursor:text}
+body.ws-edit [data-ws-e]:hover{outline-color:#8fb0c0}
+body.ws-edit [data-ws-e]:focus{outline:2px solid #7A1F2E;background:rgba(122,31,46,.05)}
+body.ws-edit .headshot{cursor:pointer;position:relative}
+body.ws-edit .headshot::before{content:"写真";position:absolute;left:8px;top:8px;background:#141210;color:#fff;font-size:11px;padding:2px 8px;border-radius:999px;z-index:2;font-family:"BIZ UDPGothic",sans-serif;opacity:0;transition:.15s}
+body.ws-edit .headshot:hover::before{opacity:1}
+.ws-menu{position:fixed;z-index:60;background:#141210;color:#fff;border-radius:10px;padding:6px;display:none;box-shadow:0 12px 30px rgba(0,0,0,.3);font-family:"BIZ UDPGothic",sans-serif}
+.ws-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;color:#fff;padding:8px 12px;font-size:12.5px;cursor:pointer;border-radius:6px;white-space:nowrap}
+.ws-menu button:hover{background:#333}.ws-menu.on{display:block}
+.ws-toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#141210;color:#fff;padding:10px 16px;border-radius:8px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none;z-index:70;font-family:"BIZ UDPGothic",sans-serif}
+.ws-toast.on{opacity:1}
+.ws-modal{position:fixed;inset:0;background:rgba(27,22,20,.5);display:none;align-items:center;justify-content:center;z-index:80;font-family:"BIZ UDPGothic",sans-serif}
+.ws-modal.on{display:flex}.ws-modal .box{background:#fff;color:#1B1614;border-radius:14px;padding:22px 24px;width:min(92vw,440px);font-size:14px;line-height:1.8}
+.ws-modal h4{font-family:"Shippori Mincho",serif;font-size:18px;margin:0 0 10px}
+.ws-modal button{border:0;background:#141210;color:#fff;border-radius:8px;padding:9px 16px;font-family:inherit;cursor:pointer;margin-right:8px}
+.ws-modal button.sec{background:#fff;color:#141210;border:1px solid #141210}
+
+.ws-vin{position:fixed;z-index:65;background:#141210;color:#fff;border-radius:10px;padding:10px;display:none;box-shadow:0 12px 30px rgba(0,0,0,.3);font-family:"BIZ UDPGothic",sans-serif;width:min(92vw,360px)}
+.ws-vin.on{display:block}.ws-vin textarea{width:100%;min-height:60px;border:1px solid #555;border-radius:6px;background:#1f1b18;color:#fff;font-family:inherit;font-size:14px;padding:8px}
+.ws-vin .row{display:flex;gap:6px;margin-top:8px}.ws-vin button{border:0;border-radius:6px;padding:7px 12px;font-family:inherit;font-size:12.5px;cursor:pointer;background:#fff;color:#111}.ws-vin button.sec{background:transparent;color:#ddd;border:1px solid #666}
+body.ws-edit .ws-vert{outline:1px dashed transparent;outline-offset:4px;cursor:pointer}body.ws-edit .ws-vert:hover{outline-color:#8fb0c0}
+.ws-repbtn{display:none;margin:0 0 10px;border:1px solid #1B1614;background:#fff;color:#1B1614;border-radius:999px;padding:6px 12px;font-family:"BIZ UDPGothic",sans-serif;font-size:12px;cursor:pointer}
+body.ws-edit .ws-repbtn{display:inline-block}
+.ws-picker{position:fixed;inset:0;background:rgba(27,22,20,.5);display:none;align-items:center;justify-content:center;z-index:85;font-family:"BIZ UDPGothic",sans-serif}
+.ws-picker.on{display:flex}.ws-picker .box{background:#fff;color:#1B1614;border-radius:14px;width:min(94vw,700px);max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+.ws-picker .hd{padding:16px 20px 10px;border-bottom:1px solid #d8cfc1;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.ws-picker h4{font-family:"Shippori Mincho",serif;font-size:17px;margin:0}
+.ws-picker .cnt{font-size:12.5px;color:#5E554D}.ws-picker input.q{margin-left:auto;border:1px solid #d8cfc1;border-radius:999px;padding:6px 12px;font-family:inherit;font-size:13px;width:200px}
+.ws-picker .body{overflow:auto;padding:6px 20px;display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.ws-picker .grp{font-size:11px;letter-spacing:.2em;color:#5E554D;margin:12px 0 4px;grid-column:1/-1}
+.ws-picker label{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #eee;font-size:13.5px;cursor:pointer}.ws-picker label.off{opacity:.45}.ws-picker label b{font-family:"Shippori Mincho",serif;font-weight:500}.ws-picker label i{font-style:normal;color:#5E554D;font-size:12px;margin-left:auto}
+.ws-picker .ft{padding:10px 20px 14px;border-top:1px solid #d8cfc1;display:flex;gap:8px;align-items:center;font-size:12.5px;color:#5E554D;flex-wrap:wrap}.ws-picker .ft button{border:0;background:#141210;color:#fff;border-radius:8px;padding:8px 14px;font-family:inherit;cursor:pointer}.ws-picker .ft button.sec{background:#fff;color:#141210;border:1px solid #141210}
+.ws-picker .ft .manual{margin-left:auto;display:flex;gap:6px}.ws-picker .ft .manual input{border:1px solid #d8cfc1;border-radius:6px;padding:6px 8px;font-family:inherit;font-size:12.5px;width:120px}
+.ws-crop{cursor:grab!important}
+@media (max-width:860px){body{grid-template-columns:1fr}#panel{position:static!important;height:auto;width:auto!important;border-right:0;border-bottom:1px solid #d8cfc1}}
+</style><script id="wsedit-js">
+(function(){
+const $=s=>document.querySelector(s);
+/* ヘッダー（見る/編集・戻す・公開） */
+const panel=$('#panel');const head=document.createElement('div');head.className='ws-head';
+head.innerHTML='<b>Woolsong</b> あなたのホームページ<div class="row"><button id="wsView" aria-pressed="false">見る</button><button id="wsEdit" aria-pressed="true">編集する</button><button id="wsUndo">1つ前に戻す</button><button id="wsPub" class="pub">公開する</button></div><div class="st" id="wsSt">下書き・非公開　― 文字は押して書き換え。写真は押して替える・動かす</div>';
+panel.prepend(head);
+const menu=document.createElement('div');menu.className='ws-menu';menu.id='wsMenu';menu.innerHTML='<button data-a="up">上げる／替える</button><button data-a="move">位置を直す（つかんで動かす）</button><button data-a="shape">形を変える</button><button data-a="off">外す</button>';document.body.appendChild(menu);
+const toast=document.createElement('div');toast.className='ws-toast';document.body.appendChild(toast);
+const modal=document.createElement('div');modal.className='ws-modal';modal.innerHTML='<div class="box"><h4>公開します</h4><p style="margin:0 0 14px">誰でも見られるようになり、Googleなどの検索にも出ます。あとから非公開に戻すことも、検索から外すこともできます。</p><button id="wsYes">はい</button><button class="sec" id="wsNo">いいえ</button></div>';document.body.appendChild(modal);
+const fileIn=document.createElement('input');fileIn.type='file';fileIn.accept='image/*';fileIn.style.display='none';document.body.appendChild(fileIn);
+function say(t){toast.textContent=t;toast.classList.add('on');setTimeout(()=>toast.classList.remove('on'),2200);}
+/* 履歴 */
+const hist=[];function art(){return document.querySelector('article.on');}
+function snap(){const a=art();if(a){hist.push(a.innerHTML);if(hist.length>30)hist.shift();}}
+function undo(){const a=art();if(!a||!hist.length){say('これより前はありません');return;}a.innerHTML=hist.pop();wire();say('1つ前に戻しました');}
+/* その場編集 */
+const INLINE=new Set(['B','I','EM','STRONG','SMALL','SPAN','BR','SUP','SUB','U','TIME','CITE','A']);
+function leaf(el){if(!el.textContent.trim())return false;for(const c of el.children){if(!INLINE.has(c.tagName))return false;}return true;}
+function wire(){const a=art();if(!a)return;const edit=document.body.classList.contains('ws-edit');
+ a.querySelectorAll('h1,h2,h3,h4,p,li,td,th,blockquote,dd,dt,figcaption,small,span,b,i,time,cite,a,div').forEach(el=>{if(el.closest('.headshot,.photo,svg,.pic,.ws-vert,.ws-repbtn'))return;if(el.classList.contains('ws-vert'))return;if(!leaf(el))return;const anc=el.parentElement&&el.parentElement.closest('[data-ws-e]');if(anc&&anc!==el)return;if(el.hasAttribute('data-ws-e')||!edit){el.contentEditable=edit;return;}el.setAttribute('data-ws-e','1');el.contentEditable=edit;el.addEventListener('focus',()=>snap());el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&['H1','H2','H3','H4','B','SPAN','TIME','CITE','A','SMALL'].includes(el.tagName)){e.preventDefault();el.blur();}});el.addEventListener('click',e=>{if(el.tagName==='A'&&edit)e.preventDefault();});});
+ a.querySelectorAll('.headshot').forEach(ph=>{if(ph._ws)return;ph._ws=true;ph.addEventListener('click',e=>{if(!document.body.classList.contains('ws-edit'))return;e.preventDefault();e.stopPropagation();if(ph._drag)return;target=ph;menu.style.left=Math.min(e.clientX,innerWidth-230)+'px';menu.style.top=Math.min(e.clientY,innerHeight-160)+'px';menu.classList.add('on');});});
+}
+let target=null;
+menu.addEventListener('click',e=>{const a=e.target.dataset.a;if(!a||!target)return;menu.classList.remove('on');
+ if(a==='up'){fileIn.onchange=()=>{const f=fileIn.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{snap();target.style.backgroundImage='url('+r.result+')';target.style.backgroundSize='cover';target.style.backgroundPosition='50% 30%';say('写真を替えました（実装では縮小し、位置情報を捨てます）');};r.readAsDataURL(f);fileIn.value='';};fileIn.click();}
+ if(a==='off'){snap();target.style.display='none';say('写真を外しました。「1つ前に戻す」で戻せます');}
+ if(a==='shape'){snap();const cur=target.style.borderRadius||'';const nx=cur==='50%'?'0':(cur==='16px'?'50%':'16px');target.style.borderRadius=nx;say('形：'+(nx==='0'?'四角':nx==='16px'?'角丸':'丸'));}
+ if(a==='move'){startDrag(target);}
+});
+function startDrag(ph){snap();ph.classList.add('ws-crop');say('つかんで動かします。離すと決まります');ph._drag=true;const pos=(ph.style.backgroundPosition||'50% 50%').split(' ').map(v=>parseFloat(v)||50);let sx,sy,ox=pos[0],oy=pos[1],on=false;
+ const mv=e=>{if(!on)return;const r=ph.getBoundingClientRect();ox=Math.max(0,Math.min(100,ox-(e.movementX/r.width)*100));oy=Math.max(0,Math.min(100,oy-(e.movementY/r.height)*100));ph.style.backgroundPosition=ox+'% '+oy+'%';};
+ const dn=e=>{on=true;ph.setPointerCapture(e.pointerId);};const up=e=>{on=false;ph.classList.remove('ws-crop');ph.removeEventListener('pointermove',mv);ph.removeEventListener('pointerdown',dn);ph.removeEventListener('pointerup',up);setTimeout(()=>{ph._drag=false},50);say('位置を決めました');};
+ ph.addEventListener('pointerdown',dn);ph.addEventListener('pointermove',mv);ph.addEventListener('pointerup',up);}
+document.addEventListener('click',e=>{if(!e.target.closest('#wsMenu'))menu.classList.remove('on');});
+$('#wsView').onclick=()=>setMode(false);$('#wsEdit').onclick=()=>setMode(true);$('#wsUndo').onclick=undo;
+$('#wsPub').onclick=()=>modal.classList.add('on');$('#wsNo').onclick=()=>modal.classList.remove('on');$('#wsYes').onclick=()=>{modal.classList.remove('on');$('#wsSt').textContent='公開中・誰でも・検索に出る';say('公開しました');};
+function setMode(edit){document.body.classList.toggle('ws-edit',edit);$('#wsView').setAttribute('aria-pressed',!edit);$('#wsEdit').setAttribute('aria-pressed',edit);wire();window.__wsAfterWire&&window.__wsAfterWire();}
+window.__wsSnap=snap;window.__wsWire=function(){wire();window.__wsAfterWire&&window.__wsAfterWire();};
+/* 型の切替（親から） */
+window.__sel=function(t){const b=document.querySelector('.topbar button[data-t="'+t+'"]');if(b)b.click();hist.length=0;setMode(true);};
+window.addEventListener('message',e=>{if(e.data&&e.data.t)window.__sel(e.data.t);});
+window.addEventListener('load',()=>{const m=location.hash.replace('#','');if(m)window.__sel(m);else setMode(true);panel.classList.add('open');});
+})();
+</script><script id="wsedit-js2">
+(function(){
+const ROT=new Set(['「','」','『','』','（','）','―','ー','〜','～','…','。','、','ｰ','-']);
+/* ===== 縦組み：まとまりで直す ===== */
+const vin=document.createElement('div');vin.className='ws-vin';vin.innerHTML='<div style="font-size:12px;color:#bbb;margin-bottom:6px">縦組みの文字 ― まとめて書き換え</div><textarea></textarea><div class="row"><button id="wsVok">決める</button><button class="sec" id="wsVno">やめる</button></div>';document.body.appendChild(vin);
+let vt=null;
+function isVert(el){const k=[...el.children];return k.length>=2&&k.every(c=>c.tagName==='SPAN'&&c.textContent.length<=1&&c.children.length===0);}
+function rebuild(el,txt){el.innerHTML='';[...txt].forEach(ch=>{const s=document.createElement('span');s.textContent=ch;if(ROT.has(ch))s.className='r';el.appendChild(s);});}
+function wireVert(){const a=document.querySelector('article.on');if(!a)return;a.querySelectorAll('*').forEach(el=>{if(el._wsv||el.closest('svg'))return;if(!isVert(el))return;el._wsv=true;el.classList.add('ws-vert');el.removeAttribute('data-ws-e');el.contentEditable=false;[...el.children].forEach(c=>{c.contentEditable=false;c.removeAttribute('data-ws-e')});
+ el.addEventListener('click',e=>{if(!document.body.classList.contains('ws-edit'))return;e.preventDefault();e.stopPropagation();vt=el;vin.querySelector('textarea').value=[...el.children].map(c=>c.textContent).join('');vin.style.left=Math.min(e.clientX,innerWidth-380)+'px';vin.style.top=Math.min(e.clientY,innerHeight-160)+'px';vin.classList.add('on');vin.querySelector('textarea').focus();});});}
+document.getElementById('wsVok').onclick=()=>{if(vt){window.__wsSnap&&window.__wsSnap();rebuild(vt,vin.querySelector('textarea').value.replace(/\n/g,''));}vin.classList.remove('on');};
+document.getElementById('wsVno').onclick=()=>vin.classList.remove('on');
+/* ===== レパートリー：アプリの作品から選ぶ（手入力も可） ===== */
+const WORKS=[['魔笛','パミーナ','Mozart',2023],['フィガロの結婚','スザンナ','Mozart',2027],['ドン・ジョヴァンニ','ツェルリーナ','Mozart',2024],['コジ・ファン・トゥッテ','デスピーナ','Mozart',2022],['ラ・ボエーム','ムゼッタ','Puccini',2026],['ジャンニ・スキッキ','ラウレッタ','Puccini',2023],['トゥーランドット','リュー','Puccini',2025],['リナルド','アルミレーナ','Händel',2024],['メサイア','ソプラノ独唱','Händel',2026],['ジュリオ・チェーザレ','クレオパトラ','Händel',2025],['献呈','歌曲','R. Strauss',2024],['明日','歌曲','R. Strauss',2024],['四つの最後の歌','歌曲','R. Strauss',2026],['さくら横ちょう','歌曲','中田喜直',2023],['初恋','歌曲','越谷達之助',2023],['からたちの花','歌曲','山田耕筰',2022],['落葉松','歌曲','小林秀雄',2025],['Après un rêve','歌曲','Fauré',2025],['Beau soir','歌曲','Debussy',2025],['椿姫','ヴィオレッタ（抜粋）','Verdi',2026],['夕鶴','つう','團伊玖磨',2024],['蝶々夫人','ケイト','Puccini',2022],['ブラームス ヴァイオリン協奏曲','独奏','Brahms',2026],['バッハ 無伴奏パルティータ第2番','独奏','Bach',2027]].map((w,i)=>({id:i,t:w[0],r:w[1],c:w[2],y:w[3],manual:false}));
+const CAP=12;let sel=null,tmp=[],sortKey='manual';
+const pk=document.createElement('div');pk.className='ws-picker';pk.innerHTML='<div class="box"><div class="hd"><h4>レパートリー ― アプリの作品から、見せるものを選ぶ</h4><span class="cnt"></span><input class="q" placeholder="題名・作曲家・役で探す"></div><div class="body"></div><div class="ft"><button id="wsPok">この選択で表示</button><button class="sec" id="wsPauto">自動に戻す</button><span>12件まで。手で足すこともできます（右）</span><div class="manual"><input placeholder="題名" id="wsMt"><input placeholder="役・曲" id="wsMr" style="width:90px"><button class="sec" id="wsMadd">足す</button></div></div></div>';document.body.appendChild(pk);
+function cur(){return sel||WORKS.slice().sort((a,b)=>b.y-a.y).slice(0,CAP).map(w=>w.id);}
+function renderP(){const q=pk.querySelector('.q').value.trim();const g={};WORKS.filter(w=>!q||(w.t+w.r+w.c).includes(q)).forEach(w=>{(g[w.c]=g[w.c]||[]).push(w)});const full=tmp.length>=CAP;let h='';Object.keys(g).sort().forEach(c=>{h+='<div class="grp">'+c+'</div>';g[c].forEach(w=>{const on=tmp.includes(w.id);h+='<label class="'+((!on&&full)?'off':'')+'"><input type="checkbox" '+(on?'checked':'')+' '+((!on&&full)?'disabled':'')+' data-id="'+w.id+'"><b>'+w.t+'</b> '+w.r+'<i>'+(w.manual?'手入力':w.y)+'</i></label>'})});pk.querySelector('.body').innerHTML=h;pk.querySelector('.cnt').textContent=tmp.length+' ／ '+CAP+' 件を表示'+(full?'（上限）':'');
+ pk.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.onchange=()=>{const id=+cb.dataset.id;if(cb.checked){if(tmp.length>=CAP){renderP();return}tmp.push(id)}else tmp=tmp.filter(x=>x!==id);renderP();});}
+pk.querySelector('.q').oninput=renderP;
+document.getElementById('wsMadd').onclick=()=>{const t=document.getElementById('wsMt').value.trim(),r=document.getElementById('wsMr').value.trim();if(!t)return;const w={id:WORKS.length,t:t,r:r,c:'手入力',y:0,manual:true};WORKS.push(w);if(tmp.length<CAP)tmp.push(w.id);document.getElementById('wsMt').value='';document.getElementById('wsMr').value='';renderP();};
+function openPicker(){tmp=cur().slice();pk.querySelector('.q').value='';renderP();pk.classList.add('on');}
+function applyRep(){const a=document.querySelector('article.on');if(!a)return;const sec=a.querySelector('[data-sec="rep"]');if(!sec)return;
+ /* 同じ形の子が2つ以上ある入れ物を探し、1つ目を雛形にして作り直す */
+ let box=null;const walk=el=>{for(const c of el.children){const k=[...c.children];if(k.length>=2&&k.every(x=>x.tagName===k[0].tagName&&!x.classList.contains('ws-repbtn'))){box=c;return}walk(c);if(box)return}};walk(sec);
+ const items=cur().map(i=>WORKS[i]);
+ if(!box){return}
+ const proto=box.children[0];box.innerHTML='';items.forEach(w=>{const it=proto.cloneNode(true);const leaves=[];const dig=el=>{for(const c of el.children){if(c.children.length===0||[...c.children].every(x=>['B','I','SPAN','SMALL','EM'].includes(x.tagName)&&x.children.length===0)){if(c.textContent.trim())leaves.push(c)}else dig(c)}};dig(it);
+  const vals=[w.t,w.r,w.c];if(leaves.length===0){it.textContent=w.t+'　'+w.r;}else if(leaves.length===1){leaves[0].textContent=w.t+'　'+w.r+(w.c!=='手入力'?'　'+w.c:'');}else{leaves.forEach((l,i)=>{l.textContent=i<vals.length?vals[i]:'';});if(leaves.length===2&&w.c!=='手入力')leaves[1].textContent=w.r+'　'+w.c;}
+  [...it.querySelectorAll('[data-ws-e]')].forEach(x=>{x.removeAttribute('data-ws-e');x.contentEditable=false});it.removeAttribute('data-ws-e');it.contentEditable=false;box.appendChild(it);});
+ window.__wsWire&&window.__wsWire();}
+document.getElementById('wsPok').onclick=()=>{window.__wsSnap&&window.__wsSnap();sel=tmp.slice();applyRep();pk.classList.remove('on');};
+document.getElementById('wsPauto').onclick=()=>{window.__wsSnap&&window.__wsSnap();sel=null;applyRep();pk.classList.remove('on');};
+function wireRep(){const a=document.querySelector('article.on');if(!a)return;a.querySelectorAll('[data-sec="rep"]').forEach(sec=>{if(sec.querySelector('.ws-repbtn'))return;const b=document.createElement('button');b.className='ws-repbtn';b.textContent='レパートリーを選ぶ（アプリの作品 '+WORKS.length+'件 → 12件まで）';b.onclick=e=>{e.preventDefault();e.stopPropagation();openPicker();};sec.prepend(b);});}
+window.__wsAfterWire=function(){wireVert();wireRep();};
+window.__wsAfterWire();
+})();
+</script></body>
+</html>

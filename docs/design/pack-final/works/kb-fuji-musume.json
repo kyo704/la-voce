@@ -1,0 +1,74 @@
+{
+  "title": "藤娘（長唄）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1826,
+  "duration_min": 20,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-fuji-musume",
+  "note": "★歌舞伎 ／ ★★女方の代表的な舞踊。★もと『大津絵』五変化の1つ ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "藤の精（藤娘）"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★出（大津絵から抜け出た藤娘）",
+      "group_label": "一幕",
+      "roles": [
+        "藤の精（藤娘）",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★藤音頭",
+      "group_label": "一幕",
+      "roles": [
+        "藤の精（藤娘）",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★酔いの手",
+      "group_label": "一幕",
+      "roles": [
+        "藤の精（藤娘）",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★幕切れ",
+      "group_label": "一幕",
+      "roles": [
+        "藤の精（藤娘）",
+        "長唄囃子連中",
+        "後見"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

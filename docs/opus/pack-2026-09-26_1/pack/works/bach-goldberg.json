@@ -1,0 +1,54 @@
+{
+  "title": "ゴルトベルク変奏曲",
+  "title_original": "Goldberg-Variationen BWV 988",
+  "aliases": [],
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chamber",
+  "year_written": 1741,
+  "source": "hand",
+  "source_id": "bach-goldberg",
+  "duration_min": 75,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "アリア",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第1〜15変奏",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第16変奏（序曲）〜第30変奏（クォドリベット）",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "アリア・ダ・カーポ",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

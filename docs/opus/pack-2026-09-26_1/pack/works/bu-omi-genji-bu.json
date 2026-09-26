@@ -1,0 +1,85 @@
+{
+  "title": "近江源氏先陣館（文楽）",
+  "aliases": [
+    "盛綱陣屋"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1769,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-omi-genji-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松半二 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "佐々木盛綱"
+    },
+    {
+      "label": "微妙"
+    },
+    {
+      "label": "篝火"
+    },
+    {
+      "label": "小四郎"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★盛綱陣屋（★偽首の首実検）",
+      "group_label": "八段目",
+      "roles": [
+        "佐々木盛綱",
+        "微妙",
+        "篝火",
+        "小四郎",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

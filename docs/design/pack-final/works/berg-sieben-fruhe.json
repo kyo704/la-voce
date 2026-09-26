@@ -1,0 +1,86 @@
+{
+  "title": "7つの初期の歌",
+  "title_original": "Sieben frühe Lieder",
+  "composer": "ベルク",
+  "composer_sort": "Berg, Alban",
+  "kind": "song_cycle",
+  "year_written": 1908,
+  "duration_min": 15,
+  "language": "de",
+  "source": "hand",
+  "source_id": "berg-sieben",
+  "note": "★★管弦楽版も あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 夜（Nacht）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 葦の歌（Schilflied）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. ナイチンゲール（Die Nachtigall）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 夢に見た栄光（Traumgekrönt）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 部屋で（Im Zimmer）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. 愛の讃歌（Liebesode）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "7. 夏の日（Sommertage）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

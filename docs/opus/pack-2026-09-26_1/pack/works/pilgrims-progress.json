@@ -1,0 +1,225 @@
+{
+  "title": "天路歴程",
+  "title_original": "The Pilgrim's Progress",
+  "composer": "ヴォーン・ウィリアムズ",
+  "composer_sort": "Vaughan Williams, Ralph",
+  "kind": "opera",
+  "year_written": 1951,
+  "duration_min": 125,
+  "language": "en",
+  "source": "hand",
+  "source_id": "pilgrims-progress",
+  "note": "★『道徳劇（モラリティ）』と副題される",
+  "roles": [
+    {
+      "label": "巡礼者（クリスチャン）"
+    },
+    {
+      "label": "福音史家"
+    },
+    {
+      "label": "ジョン・バニヤン"
+    },
+    {
+      "label": "解説者"
+    },
+    {
+      "label": "見張りの番人"
+    },
+    {
+      "label": "使徒"
+    },
+    {
+      "label": "アポリオン"
+    },
+    {
+      "label": "虚栄の市の人々"
+    },
+    {
+      "label": "ロード・ヘイト＝グッド"
+    },
+    {
+      "label": "マダム・バブル"
+    },
+    {
+      "label": "羊飼いたち"
+    },
+    {
+      "label": "天使たち"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（牢のジョン・バニヤン）",
+      "group_label": "序",
+      "roles": [
+        "ジョン・バニヤン"
+      ]
+    },
+    {
+      "label": "★第1幕 ★重荷を背負って（十字架で重荷が落ちる）",
+      "group_label": "第1幕",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "福音史家",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 解説者の家（美しい門）",
+      "group_label": "第1幕",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "解説者",
+        "見張りの番人",
+        "使徒"
+      ]
+    },
+    {
+      "label": "★第2幕 ★死の陰の谷とアポリオンとの戦い",
+      "group_label": "第2幕",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "アポリオン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★虚栄の市（裁判とロード・ヘイト＝グッド）",
+      "group_label": "第3幕",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "虚栄の市の人々",
+        "ロード・ヘイト＝グッド",
+        "マダム・バブル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 牢の中の歌（★詩篇）",
+      "group_label": "第3幕",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 ★喜びの山（羊飼いたち）",
+      "group_label": "第4幕",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "羊飼いたち",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 ★死の川を渡る",
+      "group_label": "第4幕",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（天の都・天使たちの合唱とバニヤンの結び）",
+      "group_label": "終",
+      "roles": [
+        "巡礼者（クリスチャン）",
+        "天使たち",
+        "ジョン・バニヤン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

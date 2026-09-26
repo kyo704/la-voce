@@ -1,0 +1,101 @@
+{
+  "title": "ひらかな盛衰記",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1739,
+  "duration_min": 170,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bun-hirakana-seisuiki",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 文耕堂・三好松洛ほか ／ ★★『逆櫓』『神崎揚屋』が名高い。★梅ヶ枝の『無間の鐘』は手水鉢を叩く ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "樋口次郎兼光（船頭松右衛門）"
+    },
+    {
+      "label": "お筒（腰元千鳥）"
+    },
+    {
+      "label": "梅ヶ枝"
+    },
+    {
+      "label": "駒若丸"
+    },
+    {
+      "label": "無筆の権四郎"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★二段目 笹引",
+      "group_label": "二段目",
+      "roles": [
+        "お筒（腰元千鳥）",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★三段目 逆櫓（★松右衛門の正体）",
+      "group_label": "三段目",
+      "roles": [
+        "樋口次郎兼光（船頭松右衛門）",
+        "無筆の権四郎",
+        "駒若丸",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★四段目 神崎揚屋（★梅ヶ枝の無間の鐘）",
+      "group_label": "四段目",
+      "roles": [
+        "梅ヶ枝",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

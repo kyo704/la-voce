@@ -1,0 +1,178 @@
+{
+  "title": "村のロメオとジュリエット",
+  "title_original": "A Village Romeo and Juliet",
+  "composer": "ディーリアス",
+  "composer_sort": "Delius, Frederick",
+  "kind": "opera",
+  "year_written": 1907,
+  "duration_min": 95,
+  "language": "en",
+  "source": "hand",
+  "source_id": "village-romeo-juliet",
+  "note": "★★間奏曲『楽園への歩み』が有名",
+  "roles": [
+    {
+      "label": "ヴレーリ"
+    },
+    {
+      "label": "サリ"
+    },
+    {
+      "label": "マンツ"
+    },
+    {
+      "label": "マルティ"
+    },
+    {
+      "label": "黒いヴァイオリン弾き"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 2つの畑（境の土地をめぐる争い）",
+      "group_label": "第1場",
+      "roles": [
+        "マンツ",
+        "マルティ",
+        "サリ",
+        "ヴレーリ"
+      ]
+    },
+    {
+      "label": "★第2場 6年後の荒れた畑（2人の再会）",
+      "group_label": "第2場",
+      "roles": [
+        "サリ",
+        "ヴレーリ"
+      ]
+    },
+    {
+      "label": "★第3場 ★黒いヴァイオリン弾きの警告",
+      "group_label": "第3場",
+      "roles": [
+        "黒いヴァイオリン弾き",
+        "サリ",
+        "ヴレーリ"
+      ]
+    },
+    {
+      "label": "★第4場 ヴレーリの家（父マルティを打ってしまう）",
+      "group_label": "第4場",
+      "roles": [
+        "サリ",
+        "ヴレーリ",
+        "マルティ"
+      ]
+    },
+    {
+      "label": "★第5場 ★楽園の庭（幻の婚礼）",
+      "group_label": "第5場",
+      "roles": [
+        "サリ",
+        "ヴレーリ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第6場 ★河（干し草の船・沈めて行く）",
+      "group_label": "第6場",
+      "roles": [
+        "サリ",
+        "ヴレーリ",
+        "黒いヴァイオリン弾き",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

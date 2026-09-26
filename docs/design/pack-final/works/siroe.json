@@ -1,0 +1,166 @@
+{
+  "title": "シローエ",
+  "title_original": "Siroe, re di Persia",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1728,
+  "duration_min": 170,
+  "language": "it",
+  "source": "hand",
+  "source_id": "siroe",
+  "note": "★メタスタージオの台本による",
+  "roles": [
+    {
+      "label": "シローエ"
+    },
+    {
+      "label": "エミーラ"
+    },
+    {
+      "label": "ラオディーチェ"
+    },
+    {
+      "label": "コスローエ"
+    },
+    {
+      "label": "メダルセ"
+    },
+    {
+      "label": "アラッセ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ペルシアの宮廷（王の後継の宣言）",
+      "group_label": "第1幕",
+      "roles": [
+        "コスローエ",
+        "シローエ",
+        "メダルセ",
+        "アラッセ"
+      ]
+    },
+    {
+      "label": "★第1幕 男装のエミーラ（父の仇を討つため）",
+      "group_label": "第1幕",
+      "roles": [
+        "エミーラ",
+        "シローエ"
+      ]
+    },
+    {
+      "label": "第1幕 ラオディーチェの片恋",
+      "group_label": "第1幕",
+      "roles": [
+        "ラオディーチェ",
+        "シローエ",
+        "メダルセ"
+      ]
+    },
+    {
+      "label": "★第2幕 破られた手紙（シローエの沈黙）",
+      "group_label": "第2幕",
+      "roles": [
+        "シローエ",
+        "コスローエ",
+        "メダルセ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★シローエの牢のアリア（Deggio morire, o stelle）",
+      "group_label": "第2幕",
+      "roles": [
+        "シローエ"
+      ]
+    },
+    {
+      "label": "第3幕 エミーラの告白とアラッセの反乱",
+      "group_label": "第3幕",
+      "roles": [
+        "エミーラ",
+        "アラッセ",
+        "コスローエ"
+      ]
+    },
+    {
+      "label": "★終曲（シローエの即位と赦し）",
+      "group_label": "第3幕",
+      "roles": [
+        "シローエ",
+        "エミーラ",
+        "ラオディーチェ",
+        "コスローエ",
+        "メダルセ",
+        "アラッセ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

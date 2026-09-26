@@ -1,0 +1,267 @@
+{
+  "title": "夏の夜の夢（ブリテン）",
+  "title_original": "A Midsummer Night's Dream",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1960,
+  "duration_min": 150,
+  "language": "en",
+  "source": "hand",
+  "source_id": "midsummer-nights-dream",
+  "note": "★オベロンはカウンターテナー、パックは語り（歌わない少年役）",
+  "roles": [
+    {
+      "label": "オベロン"
+    },
+    {
+      "label": "タイターニア"
+    },
+    {
+      "label": "パック"
+    },
+    {
+      "label": "ライサンダー"
+    },
+    {
+      "label": "ディミートリアス"
+    },
+    {
+      "label": "ハーミア"
+    },
+    {
+      "label": "ヘレナ"
+    },
+    {
+      "label": "ボトム"
+    },
+    {
+      "label": "クインス"
+    },
+    {
+      "label": "フルート"
+    },
+    {
+      "label": "スナッグ"
+    },
+    {
+      "label": "スナウト"
+    },
+    {
+      "label": "スターヴリング"
+    },
+    {
+      "label": "シーシアス"
+    },
+    {
+      "label": "ヒポリタ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 森（★妖精たちの合唱と弦のグリッサンド）",
+      "group_label": "第1幕",
+      "roles": [
+        "パック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 オベロンとタイターニアの争い（取り替え子）",
+      "group_label": "第1幕",
+      "roles": [
+        "オベロン",
+        "タイターニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★わたしは知っている、野の花の咲く土手を",
+      "group_label": "第1幕",
+      "roles": [
+        "オベロン",
+        "パック"
+      ]
+    },
+    {
+      "label": "第1幕 4人の若者の行き違い",
+      "group_label": "第1幕",
+      "roles": [
+        "ライサンダー",
+        "ハーミア",
+        "ディミートリアス",
+        "ヘレナ"
+      ]
+    },
+    {
+      "label": "★第1幕 職人たちの芝居の割り振り",
+      "group_label": "第1幕",
+      "roles": [
+        "ボトム",
+        "クインス",
+        "フルート",
+        "スナッグ",
+        "スナウト",
+        "スターヴリング"
+      ]
+    },
+    {
+      "label": "★第2幕 タイターニアの眠り（★子守歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "タイターニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ボトムのろばの頭とタイターニアの恋",
+      "group_label": "第2幕",
+      "roles": [
+        "ボトム",
+        "タイターニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 4人の取り違えと夜の追いかけ",
+      "group_label": "第2幕",
+      "roles": [
+        "ライサンダー",
+        "ハーミア",
+        "ディミートリアス",
+        "ヘレナ",
+        "パック",
+        "オベロン"
+      ]
+    },
+    {
+      "label": "★第3幕 目覚め（4人の和解とタイターニアの解け）",
+      "group_label": "第3幕",
+      "roles": [
+        "オベロン",
+        "タイターニア",
+        "ライサンダー",
+        "ハーミア",
+        "ディミートリアス",
+        "ヘレナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★ピラマスとシスビーの芝居（劇中劇）",
+      "group_label": "第3幕",
+      "roles": [
+        "ボトム",
+        "フルート",
+        "クインス",
+        "スナッグ",
+        "スナウト",
+        "スターヴリング",
+        "シーシアス",
+        "ヒポリタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（妖精たちの祝福とパックの口上）",
+      "group_label": "第3幕",
+      "roles": [
+        "オベロン",
+        "タイターニア",
+        "パック",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

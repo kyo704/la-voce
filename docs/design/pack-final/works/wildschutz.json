@@ -1,0 +1,189 @@
+{
+  "title": "密猟者",
+  "title_original": "Der Wildschütz",
+  "composer": "ロルツィング",
+  "composer_sort": "Lortzing, Albert",
+  "kind": "opera",
+  "year_written": 1842,
+  "duration_min": 150,
+  "language": "de",
+  "source": "hand",
+  "source_id": "wildschutz",
+  "roles": [
+    {
+      "label": "バクラウス（小学校長）"
+    },
+    {
+      "label": "グレートヒェン"
+    },
+    {
+      "label": "エーベルバッハ伯爵"
+    },
+    {
+      "label": "伯爵夫人"
+    },
+    {
+      "label": "ナンネッテ男爵令嬢"
+    },
+    {
+      "label": "クロノタール男爵"
+    },
+    {
+      "label": "パンクラティウス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ★学校長の婚礼の祝い（村人の合唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "バクラウス（小学校長）",
+        "グレートヒェン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 鹿を撃ってしまう（密猟の罪）",
+      "group_label": "第1幕",
+      "roles": [
+        "バクラウス（小学校長）",
+        "グレートヒェン"
+      ]
+    },
+    {
+      "label": "第1幕 男装のナンネッテの助け",
+      "group_label": "第1幕",
+      "roles": [
+        "ナンネッテ男爵令嬢",
+        "バクラウス（小学校長）",
+        "グレートヒェン"
+      ]
+    },
+    {
+      "label": "★第2幕 伯爵の館（ビリヤードの五重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "エーベルバッハ伯爵",
+        "伯爵夫人",
+        "クロノタール男爵",
+        "グレートヒェン",
+        "バクラウス（小学校長）"
+      ]
+    },
+    {
+      "label": "第2幕 伯爵のグレートヒェンへの気まぐれ",
+      "group_label": "第2幕",
+      "roles": [
+        "エーベルバッハ伯爵",
+        "グレートヒェン",
+        "パンクラティウス"
+      ]
+    },
+    {
+      "label": "★第3幕 取り違えの解け",
+      "group_label": "第3幕",
+      "roles": [
+        "エーベルバッハ伯爵",
+        "伯爵夫人",
+        "ナンネッテ男爵令嬢",
+        "クロノタール男爵"
+      ]
+    },
+    {
+      "label": "★終曲（5,000ターラーの祝儀）",
+      "group_label": "第3幕",
+      "roles": [
+        "バクラウス（小学校長）",
+        "グレートヒェン",
+        "エーベルバッハ伯爵",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "title": "リータ",
+  "title_original": "Rita, ou Le mari battu",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1860,
+  "duration_min": 55,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "rita",
+  "note": "★作曲1841・初演1860（作曲家の没後）",
+  "roles": [
+    {
+      "label": "リータ"
+    },
+    {
+      "label": "ベッペ"
+    },
+    {
+      "label": "ガスパーロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "リータの朝（宿の女主人）",
+      "group_label": "第1場",
+      "roles": [
+        "リータ",
+        "ベッペ"
+      ]
+    },
+    {
+      "label": "ガスパーロの登場（死んだはずの前の夫）",
+      "group_label": "第2場",
+      "roles": [
+        "ガスパーロ",
+        "リータ"
+      ]
+    },
+    {
+      "label": "2人の夫の相談（どちらが引き取るか）",
+      "group_label": "第3場",
+      "roles": [
+        "ベッペ",
+        "ガスパーロ"
+      ]
+    },
+    {
+      "label": "カルタでの決め",
+      "group_label": "第4場",
+      "roles": [
+        "ベッペ",
+        "ガスパーロ"
+      ]
+    },
+    {
+      "label": "終曲（ベッペが残る）",
+      "group_label": "終場",
+      "roles": [
+        "リータ",
+        "ベッペ",
+        "ガスパーロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

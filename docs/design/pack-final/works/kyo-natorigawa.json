@@ -1,0 +1,63 @@
+{
+  "title": "名取川",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-natorigawa",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（僧）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "授かった名を書いた紙を持って帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）"
+      ]
+    },
+    {
+      "label": "名取川で渡る折に名を取られたと思い込む",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）"
+      ]
+    },
+    {
+      "label": "通りの者に名を探させる",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "紙が出て来て思い出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

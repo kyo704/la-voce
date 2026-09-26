@@ -1,0 +1,70 @@
+{
+  "title": "水掛聟",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-mizukake-muko",
+  "note": "★聟狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（聟）"
+    },
+    {
+      "label": "アド（舅）"
+    },
+    {
+      "label": "小アド（妻）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★旱で田の水を争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（舅）"
+      ]
+    },
+    {
+      "label": "互いに水を掛け合う",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（舅）"
+      ]
+    },
+    {
+      "label": "★娘（妻）が来て仲裁する",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（舅）",
+        "小アド（妻）"
+      ]
+    },
+    {
+      "label": "★★妻が父ではなく夫の側につく",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（舅）",
+        "小アド（妻）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

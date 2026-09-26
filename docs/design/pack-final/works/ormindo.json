@@ -1,0 +1,155 @@
+{
+  "title": "オルミンド",
+  "title_original": "L'Ormindo",
+  "composer": "カヴァッリ",
+  "composer_sort": "Cavalli, Francesco",
+  "kind": "opera",
+  "year_written": 1644,
+  "duration_min": 165,
+  "language": "it",
+  "source": "hand",
+  "source_id": "ormindo",
+  "roles": [
+    {
+      "label": "オルミンド"
+    },
+    {
+      "label": "エリカ"
+    },
+    {
+      "label": "アミーダ"
+    },
+    {
+      "label": "アリアデーノ"
+    },
+    {
+      "label": "ネリッロ"
+    },
+    {
+      "label": "シーチェ"
+    },
+    {
+      "label": "メリデ"
+    },
+    {
+      "label": "オスマーノ"
+    },
+    {
+      "label": "ミラ"
+    },
+    {
+      "label": "アルモニア"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕（★アルモニア＝調和の女神の口上）",
+      "group_label": "序幕",
+      "roles": [
+        "アルモニア"
+      ]
+    },
+    {
+      "label": "★第1幕 2人の若者の打ち明け（同じ女を愛している）",
+      "group_label": "第1幕",
+      "roles": [
+        "オルミンド",
+        "アミーダ",
+        "ネリッロ"
+      ]
+    },
+    {
+      "label": "第1幕 エリカと老王アリアデーノ",
+      "group_label": "第1幕",
+      "roles": [
+        "エリカ",
+        "アリアデーノ",
+        "ミラ"
+      ]
+    },
+    {
+      "label": "★第1幕 シーチェの嘆き（捨てられた王女）",
+      "group_label": "第1幕",
+      "roles": [
+        "シーチェ",
+        "メリデ"
+      ]
+    },
+    {
+      "label": "★第2幕 男装のシーチェとアミーダの再会",
+      "group_label": "第2幕",
+      "roles": [
+        "シーチェ",
+        "アミーダ",
+        "メリデ"
+      ]
+    },
+    {
+      "label": "★第2幕 エリカとオルミンドの逃亡の約束",
+      "group_label": "第2幕",
+      "roles": [
+        "エリカ",
+        "オルミンド"
+      ]
+    },
+    {
+      "label": "★第3幕 嵐と捕縛",
+      "group_label": "第3幕",
+      "roles": [
+        "オルミンド",
+        "エリカ",
+        "オスマーノ",
+        "アリアデーノ"
+      ]
+    },
+    {
+      "label": "★★第3幕 毒杯の場（眠り薬だった）",
+      "group_label": "第3幕",
+      "roles": [
+        "アリアデーノ",
+        "オルミンド",
+        "エリカ",
+        "オスマーノ"
+      ]
+    },
+    {
+      "label": "★終曲（オルミンドは王の子と分かり、2組の婚礼）",
+      "group_label": "第3幕",
+      "roles": [
+        "オルミンド",
+        "エリカ",
+        "アミーダ",
+        "シーチェ",
+        "アリアデーノ",
+        "ネリッロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "通奏低音（チェロ・ヴィオローネ）",
+      "count": 2,
+      "section": "strings"
+    }
+  ]
+}

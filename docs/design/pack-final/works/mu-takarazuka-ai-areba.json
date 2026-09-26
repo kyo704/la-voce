@@ -1,0 +1,159 @@
+{
+  "title": "愛あれば命は永遠に",
+  "composer": "寺田瀧雄",
+  "composer_sort": "Takarazuka",
+  "kind": "musical",
+  "year_written": 1984,
+  "duration_min": 90,
+  "edition": "★宝塚版",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "mu-takarazuka-ai-chikyu",
+  "note": "★作詞 ― ／ 脚本 柴田侑宏（脚本・演出） ／ ★★役名は 版によって 変わるため ★場面の 名前で 持ちます",
+  "roles": [
+    {
+      "label": "主人公の男"
+    },
+    {
+      "label": "主人公の女"
+    },
+    {
+      "label": "友人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "出会い",
+      "group_label": "一幕物",
+      "roles": [
+        "主人公の男",
+        "主人公の女"
+      ]
+    },
+    {
+      "label": "★別れと再会",
+      "group_label": "一幕物",
+      "roles": [
+        "主人公の男",
+        "主人公の女",
+        "友人"
+      ]
+    },
+    {
+      "label": "★結末",
+      "group_label": "一幕物",
+      "roles": [
+        "主人公の男",
+        "主人公の女",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

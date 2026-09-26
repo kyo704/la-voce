@@ -1,0 +1,54 @@
+{
+  "title": "見物左衛門",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 20,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kenbutsu-zaemon",
+  "note": "★一人狂言 ／ ★★一人で 演じる 曲 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（見物左衛門）"
+    },
+    {
+      "label": "アド（（一人狂言））"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "祭の見物に出かける",
+      "group_label": "段",
+      "roles": [
+        "シテ（見物左衛門）"
+      ]
+    },
+    {
+      "label": "人混みの様子を一人で語り分ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（見物左衛門）"
+      ]
+    },
+    {
+      "label": "賑わいを写して帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（見物左衛門）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "title": "マゼッパ",
+  "title_original": "Мазепа",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr Ilyich",
+  "kind": "opera",
+  "year_written": 1883,
+  "duration_min": 185,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "mazeppa",
+  "roles": [
+    {
+      "label": "マゼッパ"
+    },
+    {
+      "label": "マリヤ"
+    },
+    {
+      "label": "コチュベイ"
+    },
+    {
+      "label": "リュボーフィ"
+    },
+    {
+      "label": "アンドレイ"
+    },
+    {
+      "label": "オルリク"
+    },
+    {
+      "label": "イスクラ"
+    },
+    {
+      "label": "酔った哥薩克"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 コチュベイの庭（娘たちの歌とゴパーク）",
+      "group_label": "第1幕",
+      "roles": [
+        "マリヤ",
+        "アンドレイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 マゼッパの求婚とコチュベイの拒み",
+      "group_label": "第1幕",
+      "roles": [
+        "マゼッパ",
+        "コチュベイ",
+        "マリヤ",
+        "リュボーフィ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 マリヤの出奔（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "マリヤ",
+        "マゼッパ",
+        "コチュベイ",
+        "リュボーフィ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 地下牢（コチュベイの独白）",
+      "group_label": "第2幕",
+      "roles": [
+        "コチュベイ",
+        "オルリク"
+      ]
+    },
+    {
+      "label": "第2幕 マゼッパの独白（おお、マリヤ）",
+      "group_label": "第2幕",
+      "roles": [
+        "マゼッパ"
+      ]
+    },
+    {
+      "label": "第2幕 マリヤと母の対面（父の処刑を知る）",
+      "group_label": "第2幕",
+      "roles": [
+        "マリヤ",
+        "リュボーフィ"
+      ]
+    },
+    {
+      "label": "第2幕 ★処刑の場（民衆と酔った哥薩克）",
+      "group_label": "第2幕",
+      "roles": [
+        "コチュベイ",
+        "イスクラ",
+        "酔った哥薩克",
+        "マリヤ",
+        "リュボーフィ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ポルタヴァの戦い（交響的間奏曲）",
+      "group_label": "第3幕",
+      "roles": []
+    },
+    {
+      "label": "第3幕 アンドレイの死とマリヤの狂乱",
+      "group_label": "第3幕",
+      "roles": [
+        "マリヤ",
+        "アンドレイ",
+        "マゼッパ",
+        "オルリク"
+      ]
+    },
+    {
+      "label": "第3幕 ★終曲（マリヤの子守歌）",
+      "group_label": "第3幕",
+      "roles": [
+        "マリヤ",
+        "アンドレイ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "title": "ヨセフと不思議なテクニカラーの夢のコート",
+  "title_original": "Joseph and the Amazing Technicolor Dreamcoat",
+  "composer": "ロイド・ウェッバー",
+  "composer_sort": "Lloyd Webber, Andrew",
+  "kind": "musical",
+  "year_written": 1968,
+  "duration_min": 100,
+  "edition": "★★1968 学校での15分の作から始まり、1973 ロンドン／1982 ブロードウェイへと曲を足しながら長くなった（★短縮版・学校版など上演時間の違う版が多数）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "joseph",
+  "note": "★作詞 ティム・ライス ／ 脚本 （通し歌の作） ／ ★★曲ごとに違う音楽の様式を当てる（カントリー・カリプソ・シャンソン・ロックンロール）。★語り手は女声で歌われることが多い",
+  "roles": [
+    {
+      "label": "ヨセフ"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "ファラオ"
+    },
+    {
+      "label": "ヤコブ"
+    },
+    {
+      "label": "ポティファル"
+    },
+    {
+      "label": "ポティファルの妻"
+    },
+    {
+      "label": "執事"
+    },
+    {
+      "label": "パン職人"
+    },
+    {
+      "label": "ルベン"
+    },
+    {
+      "label": "シメオン"
+    },
+    {
+      "label": "ユダ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★プロローグ（語り手の口上）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ヤコブと息子たち／ジョゼフのコート",
+      "group_label": "第1幕",
+      "roles": [
+        "ヤコブ",
+        "ヨセフ",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★ヨセフの夢",
+      "group_label": "第1幕",
+      "roles": [
+        "ヨセフ",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ポティファル",
+      "group_label": "第1幕",
+      "roles": [
+        "ポティファル",
+        "ポティファルの妻",
+        "ヨセフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★クローズ・エヴリ・ドア",
+      "group_label": "第1幕",
+      "roles": [
+        "ヨセフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ゴー、ゴー、ゴー・ジョゼフ（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り手",
+        "執事",
+        "パン職人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ファラオの物語",
+      "group_label": "第2幕",
+      "roles": [
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★ソング・オブ・ザ・キング（★エルヴィス風のファラオ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファラオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★プアー、プアー・ファラオ／夢の解き明かし",
+      "group_label": "第2幕",
+      "roles": [
+        "ヨセフ",
+        "ファラオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★ワン・モア・エンジェル・イン・ヘヴン（★カントリー風）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルベン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★ゼーズ・カナン・デイズ（★シャンソン風）",
+      "group_label": "第2幕",
+      "roles": [
+        "シメオン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★ベンジャミン・カリプソ（★カリプソ風）",
+      "group_label": "第2幕",
+      "roles": [
+        "ユダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★ジョゼフ・オール・ザ・タイム／兄弟の再会",
+      "group_label": "第2幕",
+      "roles": [
+        "ヨセフ",
+        "ヤコブ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★終曲（Any Dream Will Do の再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヨセフ",
+        "語り手",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

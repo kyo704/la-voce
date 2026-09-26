@@ -1,0 +1,348 @@
+{
+  "title": "イントゥ・ザ・ウッズ",
+  "title_original": "Into the Woods",
+  "composer": "ソンドハイム",
+  "composer_sort": "Sondheim, Stephen",
+  "kind": "musical",
+  "year_written": 1987,
+  "duration_min": 165,
+  "edition": "1987 ブロードウェイ初演版（★1990 ロンドン版で曲に手が入る／2002 リバイバル版／2022 リバイバル版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "into-the-woods",
+  "note": "★作詞 ソンドハイム ／ 脚本 ジェームズ・ラパイン ／ ★★グリム童話4つを1つに編み、★第2幕で『その後』を描く",
+  "roles": [
+    {
+      "label": "語り手／謎の男"
+    },
+    {
+      "label": "パン屋"
+    },
+    {
+      "label": "パン屋の妻"
+    },
+    {
+      "label": "魔女"
+    },
+    {
+      "label": "シンデレラ"
+    },
+    {
+      "label": "ジャック"
+    },
+    {
+      "label": "ジャックの母"
+    },
+    {
+      "label": "赤ずきん"
+    },
+    {
+      "label": "ラプンツェル"
+    },
+    {
+      "label": "狼／王子"
+    },
+    {
+      "label": "ラプンツェルの王子"
+    },
+    {
+      "label": "継母"
+    },
+    {
+      "label": "フロリンダ"
+    },
+    {
+      "label": "ルシンダ"
+    },
+    {
+      "label": "巨人の妻の声"
+    },
+    {
+      "label": "おばあさん"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★プロローグ（Into the Woods ─ 4つの願いが1つの曲に組まれる）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り手／謎の男",
+        "パン屋",
+        "パン屋の妻",
+        "魔女",
+        "シンデレラ",
+        "ジャック",
+        "ジャックの母",
+        "赤ずきん",
+        "継母",
+        "フロリンダ",
+        "ルシンダ"
+      ]
+    },
+    {
+      "label": "M2 ★★ヘロー、リトル・ガール（狼の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "狼／王子",
+        "赤ずきん"
+      ]
+    },
+    {
+      "label": "M3 ★★アイ・ガイズ・ジス・イズ・グッバイ／メイビー・ゼイアー・マジック",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャック",
+        "パン屋",
+        "パン屋の妻"
+      ]
+    },
+    {
+      "label": "M4 ★★アワ・リトル・ワールド（ラプンツェルと魔女）",
+      "group_label": "第1幕",
+      "roles": [
+        "魔女",
+        "ラプンツェル"
+      ]
+    },
+    {
+      "label": "M5 ★★ア・ヴェリー・ナイス・プリンス",
+      "group_label": "第1幕",
+      "roles": [
+        "シンデレラ",
+        "パン屋の妻"
+      ]
+    },
+    {
+      "label": "M6 ★★ギンツ（Giants in the Sky）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャック"
+      ]
+    },
+    {
+      "label": "M7 ★★★アゴニー（2人の王子の張り合い）",
+      "group_label": "第1幕",
+      "roles": [
+        "狼／王子",
+        "ラプンツェルの王子"
+      ]
+    },
+    {
+      "label": "M8 ★★イット・テイクス・トゥー",
+      "group_label": "第1幕",
+      "roles": [
+        "パン屋",
+        "パン屋の妻"
+      ]
+    },
+    {
+      "label": "M9 ★★ステイ・ウィズ・ミー",
+      "group_label": "第1幕",
+      "roles": [
+        "魔女",
+        "ラプンツェル"
+      ]
+    },
+    {
+      "label": "M10 ★★オン・ザ・ステップス・オブ・ザ・パレス",
+      "group_label": "第1幕",
+      "roles": [
+        "シンデレラ"
+      ]
+    },
+    {
+      "label": "M11 ★★第1幕終曲（Ever After ─ めでたしめでたし）",
+      "group_label": "第1幕",
+      "roles": [
+        "語り手／謎の男",
+        "パン屋",
+        "パン屋の妻",
+        "魔女",
+        "シンデレラ",
+        "ジャック",
+        "赤ずきん",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★プロローグ II（So Happy ─ その後）",
+      "group_label": "第2幕",
+      "roles": [
+        "パン屋",
+        "パン屋の妻",
+        "シンデレラ",
+        "ジャック",
+        "赤ずきん",
+        "魔女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★アゴニー（再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "狼／王子",
+        "ラプンツェルの王子"
+      ]
+    },
+    {
+      "label": "M14 ★★★エニー・モーメント／ムーメンツ・イン・ザ・ウッズ",
+      "group_label": "第2幕",
+      "roles": [
+        "狼／王子",
+        "パン屋の妻"
+      ]
+    },
+    {
+      "label": "M15 ★★★ユア・フォールト（責任のなすり合い・五重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャック",
+        "パン屋",
+        "赤ずきん",
+        "シンデレラ",
+        "魔女"
+      ]
+    },
+    {
+      "label": "M16 ★★★ラスト・ミッドナイト",
+      "group_label": "第2幕",
+      "roles": [
+        "魔女"
+      ]
+    },
+    {
+      "label": "M17 ★★★ノー・モア（父との対話）",
+      "group_label": "第2幕",
+      "roles": [
+        "パン屋",
+        "語り手／謎の男"
+      ]
+    },
+    {
+      "label": "M18 ★★★ノー・ワン・イズ・アローン",
+      "group_label": "第2幕",
+      "roles": [
+        "シンデレラ",
+        "赤ずきん",
+        "パン屋",
+        "ジャック"
+      ]
+    },
+    {
+      "label": "M19 ★★終曲（Children Will Listen）",
+      "group_label": "第2幕",
+      "roles": [
+        "魔女",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

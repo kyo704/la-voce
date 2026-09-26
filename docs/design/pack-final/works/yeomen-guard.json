@@ -1,0 +1,208 @@
+{
+  "title": "近衛兵",
+  "title_original": "The Yeomen of the Guard",
+  "composer": "サリヴァン",
+  "composer_sort": "Sullivan, Arthur",
+  "kind": "opera",
+  "year_written": 1888,
+  "duration_min": 140,
+  "language": "en",
+  "source": "hand",
+  "source_id": "yeomen-guard",
+  "note": "★サリヴァン作品の中で最も劇的な結末をもつ",
+  "roles": [
+    {
+      "label": "エルシー・メイナード"
+    },
+    {
+      "label": "コルネル・フェアファックス"
+    },
+    {
+      "label": "ジャック・ポイント"
+    },
+    {
+      "label": "フィービ・メリル"
+    },
+    {
+      "label": "ウィルフレッド・シャドボルト"
+    },
+    {
+      "label": "サージェント・メリル"
+    },
+    {
+      "label": "デイム・カルーサ"
+    },
+    {
+      "label": "サー・リチャード・チョムリー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 ロンドン塔（フィービの糸車の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "フィービ・メリル",
+        "ウィルフレッド・シャドボルト"
+      ]
+    },
+    {
+      "label": "★第1幕 近衛兵の合唱と処刑の告知",
+      "group_label": "第1幕",
+      "roles": [
+        "サージェント・メリル",
+        "デイム・カルーサ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★フェアファックスの願い（死ぬ前に結婚したい）",
+      "group_label": "第1幕",
+      "roles": [
+        "コルネル・フェアファックス",
+        "サー・リチャード・チョムリー"
+      ]
+    },
+    {
+      "label": "★第1幕 ジャック・ポイントとエルシーの旅芸人の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャック・ポイント",
+        "エルシー・メイナード",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 目隠しの結婚",
+      "group_label": "第1幕",
+      "roles": [
+        "エルシー・メイナード",
+        "コルネル・フェアファックス",
+        "ウィルフレッド・シャドボルト"
+      ]
+    },
+    {
+      "label": "★第1幕 フィナーレ（脱獄の報せ）",
+      "group_label": "第1幕",
+      "roles": [
+        "フィービ・メリル",
+        "サージェント・メリル",
+        "ウィルフレッド・シャドボルト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★道化の歌（道化の身はつらい）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャック・ポイント",
+        "ウィルフレッド・シャドボルト"
+      ]
+    },
+    {
+      "label": "★第2幕 レナードと偽るフェアファックスとエルシー",
+      "group_label": "第2幕",
+      "roles": [
+        "コルネル・フェアファックス",
+        "エルシー・メイナード"
+      ]
+    },
+    {
+      "label": "★終曲（恩赦・エルシーはフェアファックスの妻・★ポイントの倒れ）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルシー・メイナード",
+        "コルネル・フェアファックス",
+        "ジャック・ポイント",
+        "フィービ・メリル",
+        "ウィルフレッド・シャドボルト",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

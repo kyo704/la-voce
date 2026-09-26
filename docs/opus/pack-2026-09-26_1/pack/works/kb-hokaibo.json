@@ -1,0 +1,97 @@
+{
+  "title": "隅田川続俤",
+  "aliases": [
+    "法界坊"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1784,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-hokaibo",
+  "note": "★歌舞伎 ／ 作者 奈河七五三助 ／ ★★笑いと 凄みが 入れ替わる 役 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "聖天町法界坊"
+    },
+    {
+      "label": "野分姫"
+    },
+    {
+      "label": "松若丸"
+    },
+    {
+      "label": "永楽屋おくみ"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "要助（松若丸）"
+    },
+    {
+      "label": "法界坊と野分姫の霊"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★木母寺（★法界坊の悪事）",
+      "group_label": "序幕",
+      "roles": [
+        "聖天町法界坊",
+        "野分姫",
+        "松若丸",
+        "永楽屋おくみ",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★法界坊の道行（★おどけと凄み）",
+      "group_label": "二幕",
+      "roles": [
+        "聖天町法界坊",
+        "永楽屋おくみ",
+        "要助（松若丸）",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★双面（★法界坊と野分姫の合体霊）",
+      "group_label": "三幕",
+      "roles": [
+        "法界坊と野分姫の霊",
+        "要助（松若丸）",
+        "永楽屋おくみ",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "title": "二日間（水運び人）",
+  "title_original": "Les deux journées",
+  "aliases": [
+    "水運び人"
+  ],
+  "composer": "ケルビーニ",
+  "composer_sort": "Cherubini, Luigi",
+  "kind": "opera",
+  "year_written": 1800,
+  "duration_min": 140,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "deux-journees",
+  "roles": [
+    {
+      "label": "アンジェリーナ"
+    },
+    {
+      "label": "アルマン伯爵"
+    },
+    {
+      "label": "コンスタンス伯爵夫人"
+    },
+    {
+      "label": "ミケリ（水運び人）"
+    },
+    {
+      "label": "アントニオ"
+    },
+    {
+      "label": "マルチェリーナ"
+    },
+    {
+      "label": "軍曹"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ミケリの家（かくまわれた伯爵夫妻）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミケリ（水運び人）",
+        "アルマン伯爵",
+        "コンスタンス伯爵夫人",
+        "アントニオ",
+        "マルチェリーナ"
+      ]
+    },
+    {
+      "label": "★第1幕 水桶に隠して城門を抜ける計",
+      "group_label": "第1幕",
+      "roles": [
+        "ミケリ（水運び人）",
+        "アルマン伯爵"
+      ]
+    },
+    {
+      "label": "第2幕 村の婚礼の支度（アントニオとアンジェリーナ）",
+      "group_label": "第2幕",
+      "roles": [
+        "アントニオ",
+        "アンジェリーナ",
+        "マルチェリーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 兵士たちの検問と伯爵夫人の変装",
+      "group_label": "第2幕",
+      "roles": [
+        "コンスタンス伯爵夫人",
+        "軍曹",
+        "ミケリ（水運び人）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 森（伯爵の隠れ場所と兵士の捜索）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルマン伯爵",
+        "軍曹",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（恩赦の知らせと一同の喜び）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルマン伯爵",
+        "コンスタンス伯爵夫人",
+        "ミケリ（水運び人）",
+        "アンジェリーナ",
+        "アントニオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

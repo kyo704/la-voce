@@ -1,0 +1,269 @@
+{
+  "title": "ミュージック・マン",
+  "title_original": "The Music Man",
+  "composer": "メレディス・ウィルソン",
+  "kind": "musical",
+  "year_written": 1957,
+  "duration_min": 165,
+  "edition": "1957 ブロードウェイ初演版（★1962 映画版・2000 リバイバル版・2022 リバイバル版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "music-man",
+  "note": "★作詞 メレディス・ウィルソン ／ 脚本 メレディス・ウィルソン ／ ★★『トラブル』『76本のトロンボーン』は台詞のリズムだけで歌う『パターソング』の代表",
+  "roles": [
+    {
+      "label": "ハロルド・ヒル"
+    },
+    {
+      "label": "マリアン・パルー"
+    },
+    {
+      "label": "マーセラス・ワシュバーン"
+    },
+    {
+      "label": "ウィンスロップ・パルー"
+    },
+    {
+      "label": "シン市長"
+    },
+    {
+      "label": "ユーラリー・マッケックニー・シン"
+    },
+    {
+      "label": "パルー夫人"
+    },
+    {
+      "label": "チャーリー・コーウェル"
+    },
+    {
+      "label": "ザネータ・シン"
+    },
+    {
+      "label": "トミー・ジラス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★列車の場（Rock Island ─ 台詞のリズムだけの曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "チャーリー・コーウェル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★アイオワの意地（Iowa Stubborn）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★トラブル（Ya Got Trouble）",
+      "group_label": "第1幕",
+      "roles": [
+        "ハロルド・ヒル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★ピアノの稽古とグッドナイト・マイ・サムワン",
+      "group_label": "第1幕",
+      "roles": [
+        "マリアン・パルー",
+        "パルー夫人",
+        "ザネータ・シン"
+      ]
+    },
+    {
+      "label": "M5 ★★セヴンティシックス・トロンボーンズ（76本のトロンボーン）",
+      "group_label": "第1幕",
+      "roles": [
+        "ハロルド・ヒル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★シップープィ",
+      "group_label": "第1幕",
+      "roles": [
+        "マーセラス・ワシュバーン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ピック・ア・リトル、トーク・ア・リトル／グッドナイト・レディーズ（★2曲の対位法）",
+      "group_label": "第1幕",
+      "roles": [
+        "ユーラリー・マッケックニー・シン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★ウェルズ・ファーゴ・ワゴン（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ウィンスロップ・パルー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★イット・ズ・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★シップープィ（納屋の踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "ハロルド・ヒル",
+        "マリアン・パルー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★マリアン・ザ・ライブラリアン",
+      "group_label": "第2幕",
+      "roles": [
+        "ハロルド・ヒル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★ジル・アイ・メット・ユー（Till There Was You）",
+      "group_label": "第2幕",
+      "roles": [
+        "マリアン・パルー",
+        "ハロルド・ヒル"
+      ]
+    },
+    {
+      "label": "M13 ★ゲイリー、インディアナ",
+      "group_label": "第2幕",
+      "roles": [
+        "ウィンスロップ・パルー",
+        "ハロルド・ヒル"
+      ]
+    },
+    {
+      "label": "M14 ★★終曲（少年楽団の演奏・親たちには名演に聞こえる）",
+      "group_label": "第2幕",
+      "roles": [
+        "ハロルド・ヒル",
+        "マリアン・パルー",
+        "ウィンスロップ・パルー",
+        "シン市長",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

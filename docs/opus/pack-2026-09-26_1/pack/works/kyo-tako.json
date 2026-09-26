@@ -1,0 +1,64 @@
+{
+  "title": "蛸",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-tako",
+  "note": "★精類狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（蛸の精）"
+    },
+    {
+      "label": "アド（旅僧）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "旅僧が回向していると",
+      "group_label": "段",
+      "roles": [
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "蛸の精が現れて弔いを願う",
+      "group_label": "段",
+      "roles": [
+        "シテ（蛸の精）",
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "蛸の料理の数々を語る",
+      "group_label": "段",
+      "roles": [
+        "シテ（蛸の精）",
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "成仏して去る",
+      "group_label": "段",
+      "roles": [
+        "シテ（蛸の精）",
+        "アド（旅僧）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

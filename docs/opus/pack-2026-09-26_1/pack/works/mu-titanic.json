@@ -1,0 +1,202 @@
+{
+  "title": "タイタニック",
+  "title_original": "Titanic",
+  "composer": "モーリー・イェストン",
+  "kind": "musical",
+  "year_written": 1997,
+  "duration_min": 145,
+  "edition": "★ブロードウェイ版（1997）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-titanic",
+  "note": "★作詞 モーリー・イェストン ／ 脚本 ピーター・ストーン ／ ★★合唱の 分量が 多い 作品。★『沈没』は 舞台が 傾く 仕掛け",
+  "roles": [
+    {
+      "label": "トーマス・アンドリュース"
+    },
+    {
+      "label": "イズメイ"
+    },
+    {
+      "label": "スミス船長"
+    },
+    {
+      "label": "バレット"
+    },
+    {
+      "label": "ベル"
+    },
+    {
+      "label": "アリス・ビーン"
+    },
+    {
+      "label": "エドガー・ビーン"
+    },
+    {
+      "label": "イジドール・ストラウス"
+    },
+    {
+      "label": "アイダ・ストラウス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "出航",
+      "group_label": "第1幕",
+      "roles": [
+        "トーマス・アンドリュース",
+        "イズメイ",
+        "スミス船長",
+        "バレット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "三つの等級の船客",
+      "group_label": "第1幕",
+      "roles": [
+        "アリス・ビーン",
+        "エドガー・ビーン",
+        "イジドール・ストラウス",
+        "アイダ・ストラウス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★氷山",
+      "group_label": "第1幕",
+      "roles": [
+        "バレット",
+        "ベル",
+        "スミス船長",
+        "トーマス・アンドリュース"
+      ]
+    },
+    {
+      "label": "★★救命艇",
+      "group_label": "第2幕",
+      "roles": [
+        "イズメイ",
+        "スミス船長",
+        "アイダ・ストラウス",
+        "イジドール・ストラウス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★沈没",
+      "group_label": "第2幕",
+      "roles": [
+        "トーマス・アンドリュース",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

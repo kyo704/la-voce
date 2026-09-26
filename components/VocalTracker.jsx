@@ -156,6 +156,7 @@ import { mayUseMatching } from "@/lib/matchingGate";
 // ★★束の 入口 7つ（★2026-09-25・D群）と、★お仕事を選ぶ（★裁定202）。
 import MoreBundle from "@/components/MoreBundle";
 import { isBundle, entrancesOf, ENTRANCE_NOTES } from "@/lib/moreBundles";
+import { showCrumb } from "@/lib/moreCrumb";
 import WorkField from "@/components/WorkField";
 import Kugiri from "@/components/Kugiri";
 import DayPick from "@/components/DayPick";
@@ -27969,8 +27970,12 @@ export default function VocalTracker({
                       ★★撮って、★はじめて 見えました。★字だけでは 分かりません。
                       ★★どちらを 押せば よいか、★読む 方が 迷います。
                     ★★だから、★奥の 1枚を 開いて いる あいだは 出しません。 */}
-                {layoutV2 && moreSection !== null && !attendingOrgId
-                  && moreSection !== "合言葉で入る" ? (
+                {/* ★★★2026-09-26・坂本さんの お決め ── ★見本に パンくずは ありません。
+                    ★★自分の 戻る 札を 持つ 画面の あいだは 出しません（★2つ 並べない）。
+                    ★★どの 画面が 持つ かは `lib/moreCrumb.js` が 持ちます。
+                      ★★★名を ここに 書きません ── ★足し忘れが 起きます。
+                        ★見張りが 実際の 部品と 突き合わせます。 */}
+                {layoutV2 && showCrumb(moreSection) && !attendingOrgId ? (
                   <Back onClick={() => setMoreSection(null)}>もっと　／　{moreSection}</Back>
                 ) : null}
                 {/* ★★もっと 自身の 戻る 道（★2026-09-16・坂本さんの お決め）。

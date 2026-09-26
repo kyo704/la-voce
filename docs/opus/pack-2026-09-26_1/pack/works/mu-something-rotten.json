@@ -1,0 +1,162 @@
+{
+  "title": "サムシング・ロッテン！",
+  "title_original": "Something Rotten!",
+  "composer": "ウェイン・カークパトリック／カリー・カークパトリック",
+  "kind": "musical",
+  "year_written": 2015,
+  "duration_min": 145,
+  "edition": "★ブロードウェイ版（2015）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-something-rotten",
+  "note": "★作詞 同 ／ 脚本 カリー・カークパトリック／ジョン・オファレル",
+  "roles": [
+    {
+      "label": "ニック・ボトム"
+    },
+    {
+      "label": "ナイジェル・ボトム"
+    },
+    {
+      "label": "ビーア"
+    },
+    {
+      "label": "シェイクスピア"
+    },
+    {
+      "label": "ポーシャ"
+    },
+    {
+      "label": "ノストラダムス"
+    },
+    {
+      "label": "ブラザー・ジェレミアー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "シェイクスピアの影で",
+      "group_label": "第1幕",
+      "roles": [
+        "ニック・ボトム",
+        "ナイジェル・ボトム",
+        "ビーア"
+      ]
+    },
+    {
+      "label": "★★『ミュージカル』の予言（★大きな群舞）",
+      "group_label": "第1幕",
+      "roles": [
+        "ノストラダムス",
+        "ニック・ボトム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "オムレツの劇",
+      "group_label": "第2幕",
+      "roles": [
+        "ニック・ボトム",
+        "ナイジェル・ボトム",
+        "ポーシャ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★決着",
+      "group_label": "第2幕",
+      "roles": [
+        "ニック・ボトム",
+        "シェイクスピア",
+        "ビーア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

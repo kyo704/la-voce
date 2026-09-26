@@ -1,0 +1,35 @@
+{
+  "title": "聖ヨハネス・クリソストモスの典礼 作品41",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr",
+  "kind": "chorus",
+  "year_written": 1878,
+  "duration_min": 55,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "ch-tchaikovsky-liturgy",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全15曲（★曲名は 入れて いません）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "title": "沈鐘",
+  "title_original": "La campana sommersa",
+  "composer": "レスピーギ",
+  "composer_sort": "Respighi, Ottorino",
+  "kind": "opera",
+  "year_written": 1927,
+  "duration_min": 140,
+  "language": "it",
+  "source": "hand",
+  "source_id": "campana-sommersa",
+  "note": "★ハウプトマンの『沈鐘』による",
+  "roles": [
+    {
+      "label": "ラウテンデライン"
+    },
+    {
+      "label": "エンリコ"
+    },
+    {
+      "label": "マグダ"
+    },
+    {
+      "label": "老婆ヴィッティケ"
+    },
+    {
+      "label": "ニッケルマン"
+    },
+    {
+      "label": "牧師"
+    },
+    {
+      "label": "校長"
+    },
+    {
+      "label": "床屋"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 山の泉（ラウテンデラインとニッケルマン）",
+      "group_label": "第1幕",
+      "roles": [
+        "ラウテンデライン",
+        "ニッケルマン",
+        "老婆ヴィッティケ"
+      ]
+    },
+    {
+      "label": "★第1幕 傷ついたエンリコ（鐘を沈められた鋳物師）",
+      "group_label": "第1幕",
+      "roles": [
+        "エンリコ",
+        "ラウテンデライン",
+        "牧師",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 エンリコの家（マグダと子どもたち）",
+      "group_label": "第2幕",
+      "roles": [
+        "マグダ",
+        "エンリコ",
+        "牧師",
+        "校長",
+        "床屋"
+      ]
+    },
+    {
+      "label": "★第2幕 ラウテンデラインの誘いとエンリコの出奔",
+      "group_label": "第2幕",
+      "roles": [
+        "ラウテンデライン",
+        "エンリコ",
+        "マグダ"
+      ]
+    },
+    {
+      "label": "★第3幕 山の工房（新しい鐘を鋳る）",
+      "group_label": "第3幕",
+      "roles": [
+        "エンリコ",
+        "ラウテンデライン",
+        "老婆ヴィッティケ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 子どもたちが来る（マグダの投身の報せ）",
+      "group_label": "第3幕",
+      "roles": [
+        "エンリコ",
+        "ラウテンデライン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 ★沈んだ鐘が鳴る（エンリコの崩れ）",
+      "group_label": "第4幕",
+      "roles": [
+        "エンリコ",
+        "ニッケルマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（ラウテンデラインの接吻とエンリコの死）",
+      "group_label": "第4幕",
+      "roles": [
+        "エンリコ",
+        "ラウテンデライン"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

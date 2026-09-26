@@ -1,0 +1,170 @@
+{
+  "title": "あだ",
+  "title_original": "あだ",
+  "composer": "三木稔",
+  "composer_sort": "Miki, Minoru",
+  "kind": "opera",
+  "year_written": 1979,
+  "duration_min": 110,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "ada",
+  "roles": [
+    {
+      "label": "お梅"
+    },
+    {
+      "label": "藤兵衛"
+    },
+    {
+      "label": "おきん"
+    },
+    {
+      "label": "六助"
+    },
+    {
+      "label": "庄屋"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 村の祭り（お梅と藤兵衛）",
+      "group_label": "第1幕",
+      "roles": [
+        "お梅",
+        "藤兵衛",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 おきんの横やり",
+      "group_label": "第1幕",
+      "roles": [
+        "おきん",
+        "六助",
+        "お梅"
+      ]
+    },
+    {
+      "label": "★★第2幕 讒言と藤兵衛の追放",
+      "group_label": "第2幕",
+      "roles": [
+        "庄屋",
+        "おきん",
+        "藤兵衛",
+        "お梅",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 お梅の嘆き",
+      "group_label": "第2幕",
+      "roles": [
+        "お梅"
+      ]
+    },
+    {
+      "label": "★★終曲（仇の連鎖の断ち切り）",
+      "group_label": "第3幕",
+      "roles": [
+        "お梅",
+        "藤兵衛",
+        "おきん",
+        "庄屋",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "邦楽器（尺八・箏・三味線など）",
+      "count": 3,
+      "section": "other",
+      "note": "編成は作品ごと"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

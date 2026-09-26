@@ -1,0 +1,110 @@
+{
+  "title": "枕慈童",
+  "aliases": [
+    "菊慈童"
+  ],
+  "composer": "能（初番目物（脇能・神））",
+  "composer_sort": "Noh",
+  "kind": "noh",
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "noh-kaido-hongan",
+  "note": "★初番目物（脇能・神） ／ ★★菊の露で不老となった童。★『菊慈童』の名でも上演される ／ ★謡（うたい）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（慈童）"
+    },
+    {
+      "label": "ワキ（魏の文帝の臣）"
+    },
+    {
+      "label": "アイ（間狂言）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ワキの登場（唐土・酈県山）",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（魏の文帝の臣）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "シテの登場（慈童）",
+      "group_label": "前段",
+      "roles": [
+        "シテ（慈童）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "問答・いわれ",
+      "group_label": "前段",
+      "roles": [
+        "シテ（慈童）",
+        "ワキ（魏の文帝の臣）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "アイ（間狂言）",
+      "group_label": "中",
+      "roles": [
+        "アイ（間狂言）",
+        "ワキ（魏の文帝の臣）"
+      ]
+    },
+    {
+      "label": "楽",
+      "group_label": "後段",
+      "roles": [
+        "シテ（慈童）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "キリ（終曲）",
+      "group_label": "後段",
+      "roles": [
+        "シテ（慈童）",
+        "ワキ（魏の文帝の臣）",
+        "地謡",
+        "囃子方"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛（能管）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

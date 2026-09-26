@@ -1,0 +1,77 @@
+{
+  "title": "ピアノ三重奏曲第2番 ホ短調 作品67",
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "chamber",
+  "year_written": 1944,
+  "duration_min": 27,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-shostakovich-trio-2",
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アンダンテ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 アレグロ・コン・ブリオ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 ラルゴ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 アレグレット",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

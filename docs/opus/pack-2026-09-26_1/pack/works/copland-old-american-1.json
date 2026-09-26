@@ -1,0 +1,70 @@
+{
+  "title": "古いアメリカの歌 第1集",
+  "title_original": "Old American Songs, Set 1",
+  "composer": "コープランド",
+  "composer_sort": "Copland, Aaron",
+  "kind": "song_cycle",
+  "year_written": 1950,
+  "duration_min": 13,
+  "language": "en",
+  "source": "hand",
+  "source_id": "copland-old-1",
+  "note": "★★管弦楽版も あります。★『Simple Gifts』は シェーカー教徒の 歌 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 大統領のボート（The Boatmen’s Dance）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 猫と鼠（The Dodger）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 長い川（Long Time Ago）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 小さなロバ（Simple Gifts）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. わたしは買った（I Bought Me a Cat）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ（または管弦楽）",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

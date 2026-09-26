@@ -1,0 +1,95 @@
+{
+  "title": "元禄忠臣蔵",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1934,
+  "duration_min": 180,
+  "edition": "★全十篇。★通しは稀で、★『御浜御殿』『大石最後の一日』が多い",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-genroku-chushingura",
+  "note": "★新歌舞伎 ／ 作者 真山青果 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "浅野内匠頭"
+    },
+    {
+      "label": "吉良上野介"
+    },
+    {
+      "label": "梶川与惣兵衛"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "大石内蔵助"
+    },
+    {
+      "label": "磯貝十郎左衛門"
+    },
+    {
+      "label": "おみの"
+    },
+    {
+      "label": "瑤泉院"
+    },
+    {
+      "label": "戸田局"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★江戸城の刃傷",
+      "group_label": "一幕",
+      "roles": [
+        "浅野内匠頭",
+        "吉良上野介",
+        "梶川与惣兵衛",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★大石最後の一日",
+      "group_label": "二幕",
+      "roles": [
+        "大石内蔵助",
+        "磯貝十郎左衛門",
+        "おみの",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★南部坂雪の別れ",
+      "group_label": "三幕",
+      "roles": [
+        "大石内蔵助",
+        "瑤泉院",
+        "戸田局",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

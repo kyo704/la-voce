@@ -1,0 +1,172 @@
+{
+  "title": "アタランタ",
+  "title_original": "Atalanta",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1736,
+  "duration_min": 155,
+  "language": "it",
+  "source": "hand",
+  "source_id": "atalanta",
+  "note": "★英国王太子の婚礼のために書かれ、終幕に花火の場面がある",
+  "roles": [
+    {
+      "label": "アタランタ"
+    },
+    {
+      "label": "メレアグロ"
+    },
+    {
+      "label": "イレーネ"
+    },
+    {
+      "label": "アミンタ"
+    },
+    {
+      "label": "ニカンドロ"
+    },
+    {
+      "label": "メルクーリオ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 羊飼いに身を変えた2人（アタランタとメレアグロ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アタランタ",
+        "メレアグロ"
+      ]
+    },
+    {
+      "label": "第1幕 イレーネとアミンタの恋",
+      "group_label": "第1幕",
+      "roles": [
+        "イレーネ",
+        "アミンタ",
+        "ニカンドロ"
+      ]
+    },
+    {
+      "label": "★第2幕 狩り（互いに気づかぬまま）",
+      "group_label": "第2幕",
+      "roles": [
+        "アタランタ",
+        "メレアグロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★アタランタのアリア（Ben mio, vedrai）",
+      "group_label": "第2幕",
+      "roles": [
+        "アタランタ"
+      ]
+    },
+    {
+      "label": "★第3幕 正体の明かし",
+      "group_label": "第3幕",
+      "roles": [
+        "アタランタ",
+        "メレアグロ",
+        "イレーネ",
+        "アミンタ"
+      ]
+    },
+    {
+      "label": "★終曲（★メルクーリオの降臨と花火の音楽）",
+      "group_label": "第3幕",
+      "roles": [
+        "メルクーリオ",
+        "アタランタ",
+        "メレアグロ",
+        "イレーネ",
+        "アミンタ",
+        "ニカンドロ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

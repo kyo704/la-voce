@@ -1,0 +1,209 @@
+{
+  "title": "アルミダ（ドヴォルザーク）",
+  "title_original": "Armida",
+  "composer": "ドヴォルザーク",
+  "composer_sort": "Dvořák, Antonín",
+  "kind": "opera",
+  "year_written": 1904,
+  "duration_min": 165,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "armida-dvorak",
+  "note": "★最後のオペラ",
+  "roles": [
+    {
+      "label": "アルミダ"
+    },
+    {
+      "label": "リナルド"
+    },
+    {
+      "label": "イスメン"
+    },
+    {
+      "label": "ヒドラオト"
+    },
+    {
+      "label": "ボフミール"
+    },
+    {
+      "label": "ペトル"
+    },
+    {
+      "label": "ゲルノート"
+    },
+    {
+      "label": "シヴァルツ"
+    },
+    {
+      "label": "ドゥドー"
+    },
+    {
+      "label": "ムイリン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ダマスクスの宮殿（ヒドラオトとイスメン）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒドラオト",
+        "イスメン",
+        "ムイリン"
+      ]
+    },
+    {
+      "label": "★第1幕 アルミダのアリア（夢に見た騎士）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミダ",
+        "ヒドラオト"
+      ]
+    },
+    {
+      "label": "第2幕 十字軍の陣営（アルミダの訴え）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルミダ",
+        "ボフミール",
+        "ペトル",
+        "リナルド",
+        "ゲルノート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 リナルドの出奔",
+      "group_label": "第2幕",
+      "roles": [
+        "リナルド",
+        "アルミダ",
+        "イスメン"
+      ]
+    },
+    {
+      "label": "★第3幕 魔法の庭（愛の二重唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルミダ",
+        "リナルド"
+      ]
+    },
+    {
+      "label": "第3幕 ゲルノートとシヴァルツの探索（盾）",
+      "group_label": "第3幕",
+      "roles": [
+        "ゲルノート",
+        "シヴァルツ",
+        "リナルド"
+      ]
+    },
+    {
+      "label": "★第4幕 終曲（決闘・リナルドが気づかずアルミダを刺す・洗礼）",
+      "group_label": "第4幕",
+      "roles": [
+        "アルミダ",
+        "リナルド",
+        "イスメン",
+        "ボフミール",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

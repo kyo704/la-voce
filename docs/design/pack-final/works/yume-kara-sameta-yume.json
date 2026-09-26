@@ -1,0 +1,234 @@
+{
+  "title": "夢から醒めた夢",
+  "composer": "三木たかし",
+  "composer_sort": "Miki, Takashi",
+  "kind": "musical",
+  "year_written": 1987,
+  "duration_min": 140,
+  "edition": "1987 劇団四季初演版（★何度も再演され、版によって場面が整理される）",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "yume-kara-sameta-yume",
+  "note": "★作詞 岡田冨美子 ／ 脚本・演出 浅利慶太（劇団四季） ／ ★赤川次郎の小説『夢から醒めた夢』による。★★劇団四季のファミリーミュージカルの代表作。★★曲名は確かなものだけを書き、場面の名前で持っています",
+  "roles": [
+    {
+      "label": "ピコ"
+    },
+    {
+      "label": "マコ"
+    },
+    {
+      "label": "デビル"
+    },
+    {
+      "label": "ママ"
+    },
+    {
+      "label": "マコの母"
+    },
+    {
+      "label": "叔母"
+    },
+    {
+      "label": "夢の配達人"
+    },
+    {
+      "label": "警備員"
+    },
+    {
+      "label": "子どもたち"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ★★遊園地の夜（ピコと幽霊のマコの出会い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピコ",
+        "マコ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ★1日だけ入れ替わる取り決め",
+      "group_label": "第1幕",
+      "roles": [
+        "ピコ",
+        "マコ",
+        "デビル"
+      ]
+    },
+    {
+      "label": "第1幕 ★★夢の配達人の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "夢の配達人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕終曲（マコの体でマコの母に会う）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピコ",
+        "マコの母",
+        "マコ"
+      ]
+    },
+    {
+      "label": "第2幕 ★死者の世界（デビルの案内）",
+      "group_label": "第2幕",
+      "roles": [
+        "ピコ",
+        "デビル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★マコの母の悲しみを知る",
+      "group_label": "第2幕",
+      "roles": [
+        "ピコ",
+        "マコの母",
+        "マコ"
+      ]
+    },
+    {
+      "label": "第2幕 ★入れ替わりの期限",
+      "group_label": "第2幕",
+      "roles": [
+        "ピコ",
+        "マコ",
+        "デビル",
+        "夢の配達人"
+      ]
+    },
+    {
+      "label": "★終曲（元に戻り、ピコが母の元へ帰る）",
+      "group_label": "第2幕",
+      "roles": [
+        "ピコ",
+        "ママ",
+        "マコ",
+        "デビル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

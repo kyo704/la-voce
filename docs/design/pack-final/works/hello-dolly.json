@@ -1,0 +1,264 @@
+{
+  "title": "ハロー・ドーリー！",
+  "title_original": "Hello, Dolly!",
+  "composer": "ジェリー・ハーマン",
+  "kind": "musical",
+  "year_written": 1964,
+  "duration_min": 155,
+  "edition": "1964 ブロードウェイ初演版（★1969 映画版・2017 リバイバル版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "hello-dolly",
+  "note": "★作詞 ジェリー・ハーマン ／ 脚本 マイケル・スチュワート ／ ★ソーントン・ワイルダー『結婚仲介人』による",
+  "roles": [
+    {
+      "label": "ドーリー・レヴァイ"
+    },
+    {
+      "label": "ホーレス・ヴァンダーゲルダー"
+    },
+    {
+      "label": "アイリーン・モロイ夫人"
+    },
+    {
+      "label": "コーネリアス・ハックル"
+    },
+    {
+      "label": "バーナビー・タッカー"
+    },
+    {
+      "label": "ミニー・フェイ"
+    },
+    {
+      "label": "アーメンガード"
+    },
+    {
+      "label": "アンブローズ・ケンパー"
+    },
+    {
+      "label": "ルドルフ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★アイ・プット・マイ・ハンド・イン",
+      "group_label": "第1幕",
+      "roles": [
+        "ドーリー・レヴァイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★イット・テイクス・ア・ウーマン",
+      "group_label": "第1幕",
+      "roles": [
+        "ホーレス・ヴァンダーゲルダー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★プット・オン・ユア・サンデー・クローズ",
+      "group_label": "第1幕",
+      "roles": [
+        "コーネリアス・ハックル",
+        "バーナビー・タッカー",
+        "ドーリー・レヴァイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★リボンズ・ダウン・マイ・バック",
+      "group_label": "第1幕",
+      "roles": [
+        "アイリーン・モロイ夫人"
+      ]
+    },
+    {
+      "label": "M5 ★★マザーフッド・マーチ",
+      "group_label": "第1幕",
+      "roles": [
+        "ドーリー・レヴァイ",
+        "アイリーン・モロイ夫人",
+        "ミニー・フェイ"
+      ]
+    },
+    {
+      "label": "M6 ★ダンシング",
+      "group_label": "第1幕",
+      "roles": [
+        "ドーリー・レヴァイ",
+        "コーネリアス・ハックル",
+        "バーナビー・タッカー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ビフォア・ザ・パレード・パセズ・バイ（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドーリー・レヴァイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★エレガンス",
+      "group_label": "第2幕",
+      "roles": [
+        "アイリーン・モロイ夫人",
+        "コーネリアス・ハックル",
+        "バーナビー・タッカー",
+        "ミニー・フェイ"
+      ]
+    },
+    {
+      "label": "M9 ★★ワイターズ・ギャロップ（給仕たちの疾走）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルドルフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★ハロー・ドーリー！",
+      "group_label": "第2幕",
+      "roles": [
+        "ドーリー・レヴァイ",
+        "ルドルフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★イット・オンリー・テイクス・ア・モーメント",
+      "group_label": "第2幕",
+      "roles": [
+        "コーネリアス・ハックル",
+        "アイリーン・モロイ夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★ソー・ロング・ディアリー",
+      "group_label": "第2幕",
+      "roles": [
+        "ドーリー・レヴァイ",
+        "ホーレス・ヴァンダーゲルダー"
+      ]
+    },
+    {
+      "label": "M13 ★終曲（2組の婚礼とドーリーの再婚）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドーリー・レヴァイ",
+        "ホーレス・ヴァンダーゲルダー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

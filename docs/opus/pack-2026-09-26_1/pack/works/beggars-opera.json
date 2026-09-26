@@ -1,0 +1,207 @@
+{
+  "title": "乞食オペラ",
+  "title_original": "The Beggar's Opera",
+  "composer": "ペープシュ／ゲイ",
+  "composer_sort": "Pepusch, Johann Christoph",
+  "kind": "opera",
+  "year_written": 1728,
+  "duration_min": 150,
+  "edition": "1728 原典／ブリテン編（1948）／ボノンチーニ以来の各種編曲",
+  "language": "en",
+  "source": "hand",
+  "source_id": "beggars-opera",
+  "note": "★69曲の当時の流行歌と民謡による『バラッド・オペラ』。★ブリテン編曲版（1948）も広く上演される",
+  "roles": [
+    {
+      "label": "マクヒース"
+    },
+    {
+      "label": "ポリー・ピーチャム"
+    },
+    {
+      "label": "ルーシー・ロキット"
+    },
+    {
+      "label": "ピーチャム"
+    },
+    {
+      "label": "ピーチャム夫人"
+    },
+    {
+      "label": "ロキット"
+    },
+    {
+      "label": "ダイヴァー夫人"
+    },
+    {
+      "label": "フィルチ"
+    },
+    {
+      "label": "乞食（口上）"
+    },
+    {
+      "label": "役者"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★口上（乞食と役者）",
+      "group_label": "序",
+      "roles": [
+        "乞食（口上）",
+        "役者"
+      ]
+    },
+    {
+      "label": "★第1幕 ピーチャムの帳簿（盗品と密告）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピーチャム",
+        "フィルチ",
+        "ピーチャム夫人"
+      ]
+    },
+    {
+      "label": "★第1幕 ポリーの秘密の結婚が知れる",
+      "group_label": "第1幕",
+      "roles": [
+        "ポリー・ピーチャム",
+        "ピーチャム",
+        "ピーチャム夫人"
+      ]
+    },
+    {
+      "label": "★第1幕 ポリーとマクヒースの別れ",
+      "group_label": "第1幕",
+      "roles": [
+        "ポリー・ピーチャム",
+        "マクヒース"
+      ]
+    },
+    {
+      "label": "★第2幕 居酒屋（仲間たちと女たちの踊り）",
+      "group_label": "第2幕",
+      "roles": [
+        "マクヒース",
+        "ダイヴァー夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 逮捕とニューゲート牢",
+      "group_label": "第2幕",
+      "roles": [
+        "マクヒース",
+        "ロキット",
+        "ルーシー・ロキット"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ポリーとルーシーの言い争い（2人の妻）",
+      "group_label": "第2幕",
+      "roles": [
+        "ポリー・ピーチャム",
+        "ルーシー・ロキット",
+        "マクヒース"
+      ]
+    },
+    {
+      "label": "★第3幕 再逮捕と処刑の支度",
+      "group_label": "第3幕",
+      "roles": [
+        "マクヒース",
+        "ロキット",
+        "ピーチャム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（乞食の口上による恩赦・踊り）",
+      "group_label": "第3幕",
+      "roles": [
+        "乞食（口上）",
+        "役者",
+        "マクヒース",
+        "ポリー・ピーチャム",
+        "ルーシー・ロキット",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

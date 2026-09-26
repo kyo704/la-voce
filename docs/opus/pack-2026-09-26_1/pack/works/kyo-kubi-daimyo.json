@@ -1,0 +1,65 @@
+{
+  "title": "太刀奪",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kubi-daimyo",
+  "note": "★集狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（すっぱ（詐欺師））"
+    },
+    {
+      "label": "アド（参詣の男）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★清水詣りの男から太刀を奪おうとする",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（参詣の男）"
+      ]
+    },
+    {
+      "label": "組み合って奪われる",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（参詣の男）"
+      ]
+    },
+    {
+      "label": "★逆に脇差まで取られる",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（参詣の男）"
+      ]
+    },
+    {
+      "label": "追われて逃げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ（詐欺師））",
+        "アド（参詣の男）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "title": "節分",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-setsubun",
+  "note": "★鬼狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（蓬莱の島の鬼）"
+    },
+    {
+      "label": "アド（女）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★節分の夜、留守の家に鬼が来る",
+      "group_label": "段",
+      "roles": [
+        "シテ（蓬莱の島の鬼）",
+        "アド（女）"
+      ]
+    },
+    {
+      "label": "鬼が女に惚れる",
+      "group_label": "段",
+      "roles": [
+        "シテ（蓬莱の島の鬼）",
+        "アド（女）"
+      ]
+    },
+    {
+      "label": "★女が偽って鬼の宝を取る（隠れ蓑・打出の小槌）",
+      "group_label": "段",
+      "roles": [
+        "シテ（蓬莱の島の鬼）",
+        "アド（女）"
+      ]
+    },
+    {
+      "label": "★豆を投げて追い出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（蓬莱の島の鬼）",
+        "アド（女）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

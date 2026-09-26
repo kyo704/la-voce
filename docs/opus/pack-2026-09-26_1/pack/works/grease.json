@@ -1,0 +1,251 @@
+{
+  "title": "グリース",
+  "title_original": "Grease",
+  "composer": "ジム・ジェイコブス／ウォーレン・ケイシー",
+  "kind": "musical",
+  "year_written": 1972,
+  "duration_min": 140,
+  "edition": "★★1972 ブロードウェイ初演版／★1978 映画版で『You're the One That I Want』『Hopelessly Devoted to You』『Grease』が加わり、以後の舞台上演でもこれらを入れる版が多い／★1994／2007 リバイバル版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "grease",
+  "note": "★作詞 同 ／ 脚本 同 ／ ★★どの曲を入れるかが版で大きく違う代表例。★上演権の契約で決まるので先に確かめること",
+  "roles": [
+    {
+      "label": "ダニー・ズーコ"
+    },
+    {
+      "label": "サンディ・ダンブロウスキー"
+    },
+    {
+      "label": "ベティ・リゾ"
+    },
+    {
+      "label": "ケニッキー"
+    },
+    {
+      "label": "フレンチー"
+    },
+    {
+      "label": "マーティ"
+    },
+    {
+      "label": "ジャン"
+    },
+    {
+      "label": "ドゥーディ"
+    },
+    {
+      "label": "ロジャー"
+    },
+    {
+      "label": "ソニー"
+    },
+    {
+      "label": "パティ・シムコックス"
+    },
+    {
+      "label": "テーン・エンジェル"
+    },
+    {
+      "label": "ヴィンス・フォンテイン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★アルマ・マーター／サマー・ナイツ",
+      "group_label": "第1幕",
+      "roles": [
+        "ダニー・ズーコ",
+        "サンディ・ダンブロウスキー",
+        "ベティ・リゾ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★グリースト・ライトニン",
+      "group_label": "第1幕",
+      "roles": [
+        "ケニッキー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★フレディ、マイ・ラヴ",
+      "group_label": "第1幕",
+      "roles": [
+        "マーティ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ルック・アット・ミー、アイム・サンドラ・ディー",
+      "group_label": "第1幕",
+      "roles": [
+        "ベティ・リゾ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ビューティ・スクール・ドロップアウト（テーン・エンジェルの登場）",
+      "group_label": "第1幕",
+      "roles": [
+        "テーン・エンジェル",
+        "フレンチー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★第1幕終曲（ダンス・パーティの支度）",
+      "group_label": "第1幕",
+      "roles": [
+        "ダニー・ズーコ",
+        "サンディ・ダンブロウスキー",
+        "パティ・シムコックス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★★ハンド・ジャイヴ（ダンス大会）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴィンス・フォンテイン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★ゼアー・アー・ワース・シングズ・アイ・クッド・ドゥ",
+      "group_label": "第2幕",
+      "roles": [
+        "ベティ・リゾ"
+      ]
+    },
+    {
+      "label": "M9 ★★ドライヴイン・シアター（Sandy）",
+      "group_label": "第2幕",
+      "roles": [
+        "ダニー・ズーコ"
+      ]
+    },
+    {
+      "label": "M10 ★★レーサーの決着（Rock 'n' Roll Party Queen）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドゥーディ",
+        "ロジャー",
+        "ソニー",
+        "ジャン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★ユーアー・ザ・ワン・ザット・アイ・ウォント（★1978 映画版の曲。舞台版でも歌われることが多い）",
+      "group_label": "第2幕",
+      "roles": [
+        "ダニー・ズーコ",
+        "サンディ・ダンブロウスキー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★終曲（ウィ・ゴー・トゥゲザー）",
+      "group_label": "第2幕",
+      "roles": [
+        "ダニー・ズーコ",
+        "サンディ・ダンブロウスキー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

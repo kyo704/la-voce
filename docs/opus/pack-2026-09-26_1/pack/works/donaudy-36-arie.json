@@ -1,0 +1,37 @@
+{
+  "title": "36のアリエ・ディ・スティーレ・アンティコ",
+  "title_original": "36 Arie di stile antico",
+  "composer": "ドナウディ",
+  "composer_sort": "Donaudy, Stefano",
+  "kind": "song_cycle",
+  "year_written": 1918,
+  "language": "it",
+  "source": "hand",
+  "source_id": "donaudy-36",
+  "note": "★★『おお わたしの愛する人の（O del mio amato ben）』『いつまた会えるのか』が 名高い ／ ★★曲名を 全部 確かめられなかったので ★曲数（36曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全36曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

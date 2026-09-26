@@ -1,0 +1,39 @@
+{
+  "title": "子供の不思議な角笛",
+  "title_original": "Des Knaben Wunderhorn",
+  "composer": "マーラー",
+  "composer_sort": "Mahler, Gustav",
+  "kind": "song_cycle",
+  "year_written": 1901,
+  "duration_min": 45,
+  "language": "de",
+  "source": "hand",
+  "source_id": "mahler-wunderhorn",
+  "note": "★作詩 ドイツ民謡詩集 ／ ★★管弦楽つきが もとの 形。★『魚に説教するパドヴァの聖アントニウス』『少年鼓手』『死んだ鼓手』などを 含みます ／ ★★曲名を 全部 確かめられなかったので ★曲数（12曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全12曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽（またはピアノ）",
+      "count": 0,
+      "section": "other",
+      "note": "★管弦楽版と ピアノ版が あります"
+    }
+  ]
+}

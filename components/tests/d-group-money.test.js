@@ -15,7 +15,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw, libUrl } = require("./_source");
+const { stripComments, readRaw, libUrl, inMihon } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -32,14 +32,11 @@ async function main() {
   const mCode = stripComments(mJsx);
 
   console.log("=== 一 ★お支払いの こと …… 下の 4行（★約束） ===");
-  const 約1 = [
-    "ほかの 出演者の 額は 出ません。あなたの ぶんだけです。",
-    "ここは 記録だけ です。お支払いは この アプリの 外で 行われます。",
-    "源泉徴収・消費税の 計算は しません。税の ことは、ご自分で お確かめください。",
-    "食い違うときは、制作の 方に おたずねください。"
-  ];
-  t(g.NOTES.length === 4, `★4行（いま ${g.NOTES.length}）`);
-  約1.forEach((l) => t(g.NOTES.includes(l), `★「${l.slice(0, 16)}…」`));
+  // ★★★覚えません ── ★見本から 数えます（★`_source.js` の `inMihon`・2026-09-26）。
+  //   ★★写して 持つと、★見張りが 間違った 字を 守ります。★実際に 起きました。
+  const 約1 = g.NOTES;
+  t(約1.length === 4, `★4行（いま ${約1.length}）`);
+  約1.forEach((l) => t(inMihon(l), `★見本に 同じ 字が ある …… 「${l.slice(0, 16)}…」`));
   t(g.TITLE === "お支払いの こと", "★題は「お支払いの こと」（★出演料 では ない）");
 
   console.log("=== 二 ★税の 式を 1つも 書いて いない（★裁定201） ===");
@@ -70,14 +67,16 @@ async function main() {
   t(!/<input|<textarea|onChange/.test(gCode), "★直す 口が 1つも 無い");
 
   console.log("=== 四 ★届いたもの …… 下の 4行（★約束） ===");
-  const 約2 = [
-    "お返しは ご自分の メールから お願いします。ここに 返信の 欄は ありません。",
-    "同じ方から たくさん 届くときは、その方からを 止められます（お名前は 相手に 伝わりません）。",
-    "受け付けない ことも できます（はじめは 受け付けません）。"
-  ];
+  // ★★★覚えません ── ★見本から 数えます（★2026-09-26）。
+  //   ★★ここには 前、★4行を 写して 置いて いました。
+  //     ★★その 写しに **空きが 1つ 多く** 入って いました
+  //       （★「受け付けない ことも」／★見本は「受け付けないことも」）。
+  //     ★★★見張りが 間違った 字を 守って いました ── ★台帳「見張りは 測る。覚えない」。
+  //   ★★だから 今は「出して いる 字が、★見本の 中に あるか」を 見ます。
   const 行 = m.noteLines();
   t(行.length === 4, `★4行（いま ${行.length}）`);
-  約2.forEach((l) => t(行.includes(l), `★「${l.slice(0, 16)}…」`));
+  行.forEach((l) => t(inMihon(l),
+    `★見本に 同じ 字が ある …… 「${l.slice(0, 16)}…」`));
 
   console.log("=== 五 ★返信の 欄が 無い ／ メールを 出さない ===");
   t(!/<textarea|<input/.test(mCode), "★返信の 欄が 1つも 無い");
@@ -94,7 +93,7 @@ async function main() {
   t(!/90/.test(mCode), "★画面にも 書いて いない");
 
   console.log("=== 七 ★字を 画面に 書き写して いない ===");
-  約1.concat(約2).forEach((l) => t(!(gJsx + mJsx).includes(l),
+  約1.concat(行).forEach((l) => t(!(gJsx + mJsx).includes(l),
     `★直書きして いない …… ${l.slice(0, 12)}…`));
   t(/from "@\/lib\/watashiNoGaku"/.test(gJsx) && /from "@\/lib\/todoitaMono"/.test(mJsx),
     "★字は lib から 受け取って いる");

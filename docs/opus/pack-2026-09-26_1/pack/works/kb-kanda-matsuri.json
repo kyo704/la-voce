@@ -1,0 +1,49 @@
+{
+  "title": "神田祭（清元）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1839,
+  "duration_min": 20,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kanda-matsuri",
+  "note": "★歌舞伎舞踊（所作事） ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "鳶の者"
+    },
+    {
+      "label": "芸者"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★祭の鯔背（いなせ）な男と芸者",
+      "group_label": "一段",
+      "roles": [
+        "鳶の者",
+        "芸者",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

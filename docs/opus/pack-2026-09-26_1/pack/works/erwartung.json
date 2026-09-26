@@ -1,0 +1,152 @@
+{
+  "title": "期待",
+  "title_original": "Erwartung",
+  "composer": "シェーンベルク",
+  "composer_sort": "Schoenberg, Arnold",
+  "kind": "opera",
+  "year_written": 1924,
+  "duration_min": 30,
+  "language": "de",
+  "source": "hand",
+  "source_id": "erwartung",
+  "note": "★モノドラマ（独唱1人）。作曲1909／初演1924",
+  "roles": [
+    {
+      "label": "女"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 森の入口（女がひとり）",
+      "group_label": "第1場",
+      "roles": [
+        "女"
+      ]
+    },
+    {
+      "label": "★第2場 森の中（暗闇と恐れ）",
+      "group_label": "第2場",
+      "roles": [
+        "女"
+      ]
+    },
+    {
+      "label": "★第3場 なお森の中（黄色い目、幻）",
+      "group_label": "第3場",
+      "roles": [
+        "女"
+      ]
+    },
+    {
+      "label": "★第4場 道に出る（夫の死体を見つける）",
+      "group_label": "第4場",
+      "roles": [
+        "女"
+      ]
+    },
+    {
+      "label": "★終曲（あの女はどこ・わたしはあなたを探していた）",
+      "group_label": "第4場",
+      "roles": [
+        "女"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

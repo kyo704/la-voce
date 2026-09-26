@@ -1,0 +1,70 @@
+{
+  "title": "リュッケルトの5つの歌",
+  "title_original": "Fünf Rückert-Lieder",
+  "composer": "マーラー",
+  "composer_sort": "Mahler, Gustav",
+  "kind": "song_cycle",
+  "year_written": 1902,
+  "duration_min": 22,
+  "language": "de",
+  "source": "hand",
+  "source_id": "mahler-ruckert",
+  "note": "★作詩 リュッケルト ／ ★★管弦楽つきの 版も あります。★曲の 順は 演奏者が 決めます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. わたしは仄かな香りを吸い込んだ（Ich atmet’ einen linden Duft）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. ごらん、あの優しい歌を（Blicke mir nicht in die Lieder）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. わたしは緑の野を歩いた（Liebst du um Schönheit）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 真夜中に（Um Mitternacht）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. わたしはこの世に忘れられ（Ich bin der Welt abhanden gekommen）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "title": "ブック・オブ・モルモン",
+  "title_original": "The Book of Mormon",
+  "composer": "トレイ・パーカー／ロバート・ロペス／マット・ストーン",
+  "kind": "musical",
+  "year_written": 2011,
+  "duration_min": 145,
+  "edition": "2011 ブロードウェイ初演版（★2013 ロンドン版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "book-of-mormon",
+  "note": "★作詞 同 ／ 脚本 同 ／ ★★★下品な言葉と宗教への皮肉が多い作。★★上演の際に観客の年齢を断る必要がある",
+  "roles": [
+    {
+      "label": "エルダー・プライス"
+    },
+    {
+      "label": "エルダー・カニンガム"
+    },
+    {
+      "label": "ナブルンガイ"
+    },
+    {
+      "label": "マファラ・ヘイティンビ"
+    },
+    {
+      "label": "将軍"
+    },
+    {
+      "label": "エルダー・マッキンリー"
+    },
+    {
+      "label": "宣教師団長"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★ハロー！（戸口の呼び鈴）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルダー・プライス",
+        "エルダー・カニンガム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★トゥー・バイ・トゥー（組分け）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルダー・プライス",
+        "エルダー・カニンガム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★ユー・アンド・ミー（バット・モストリー・ミー）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルダー・プライス",
+        "エルダー・カニンガム"
+      ]
+    },
+    {
+      "label": "M4 ★★★ハサ・ディガ・イーバワイ（ウガンダの村の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "マファラ・ヘイティンビ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ターン・イット・オフ（★タップの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルダー・マッキンリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★アイ・アム・ヒア・フォー・ユー",
+      "group_label": "第1幕",
+      "roles": [
+        "エルダー・カニンガム",
+        "エルダー・プライス"
+      ]
+    },
+    {
+      "label": "M7 ★★★マン・アップ（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "エルダー・カニンガム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★マキング・シングス・アップ・アゲイン（作り話の教義）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルダー・カニンガム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★★スポーキー・モルモン・ヘル・ドリーム（地獄の夢の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルダー・プライス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★アイ・ビリーヴ",
+      "group_label": "第2幕",
+      "roles": [
+        "エルダー・プライス"
+      ]
+    },
+    {
+      "label": "M11 ★★★バプタイズ・ミー",
+      "group_label": "第2幕",
+      "roles": [
+        "エルダー・カニンガム",
+        "ナブルンガイ"
+      ]
+    },
+    {
+      "label": "M12 ★★★ジョセフ・スミス・アメリカン・モーゼ（★村人による劇中劇）",
+      "group_label": "第2幕",
+      "roles": [
+        "ナブルンガイ",
+        "マファラ・ヘイティンビ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（トゥモロー・イズ・ア・ラテル・デイ）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルダー・プライス",
+        "エルダー・カニンガム",
+        "ナブルンガイ",
+        "エルダー・マッキンリー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

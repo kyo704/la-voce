@@ -1,0 +1,93 @@
+{
+  "title": "三十三間堂棟由来",
+  "aliases": [
+    "柳"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1760,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-sanjusangendo",
+  "note": "★文楽（人形浄瑠璃） ／ ★★木の精と 人の 子別れ ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "お柳（柳の精）"
+    },
+    {
+      "label": "横曽根平太郎"
+    },
+    {
+      "label": "みどり丸"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★平太郎住家（★柳の精お柳）",
+      "group_label": "上",
+      "roles": [
+        "お柳（柳の精）",
+        "横曽根平太郎",
+        "みどり丸",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★柳を切られて別れる",
+      "group_label": "上",
+      "roles": [
+        "お柳（柳の精）",
+        "みどり丸",
+        "横曽根平太郎",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

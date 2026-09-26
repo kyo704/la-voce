@@ -1,0 +1,264 @@
+{
+  "title": "ショウ・ボート",
+  "title_original": "Show Boat",
+  "composer": "ジェローム・カーン",
+  "kind": "musical",
+  "year_written": 1927,
+  "duration_min": 175,
+  "edition": "1927 ブロードウェイ初演版。★1946 改訂版・1951 映画版・1994 ハロルド・プリンス版で曲の出入りがある",
+  "language": "en",
+  "source": "hand",
+  "source_id": "show-boat",
+  "note": "★作詞 オスカー・ハマースタイン2世 ／ 脚本 オスカー・ハマースタイン2世 ／ ★★アメリカ・ミュージカルの出発点とされる。★人種と時代の描き方が版ごとに手直しされてきた",
+  "roles": [
+    {
+      "label": "マグノリア"
+    },
+    {
+      "label": "ゲイロード・レイヴナル"
+    },
+    {
+      "label": "ジュリー・ラヴァーン"
+    },
+    {
+      "label": "ジョー"
+    },
+    {
+      "label": "クイーニー"
+    },
+    {
+      "label": "キャプテン・アンディ"
+    },
+    {
+      "label": "パーシー"
+    },
+    {
+      "label": "エリー"
+    },
+    {
+      "label": "フランク"
+    },
+    {
+      "label": "スティーヴ"
+    },
+    {
+      "label": "キム"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★綿花の積み込み（Cotton Blossom）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョー",
+        "クイーニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★ただの流れ者（Only Make Believe）",
+      "group_label": "第1幕",
+      "roles": [
+        "マグノリア",
+        "ゲイロード・レイヴナル"
+      ]
+    },
+    {
+      "label": "M3 ★★オール・マン・リヴァー（Ol' Man River）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★あの人を愛さずにいられない（Can't Help Lovin' Dat Man）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュリー・ラヴァーン",
+        "クイーニー",
+        "マグノリア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★混血の発覚とジュリーの追放",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュリー・ラヴァーン",
+        "スティーヴ",
+        "パーシー",
+        "キャプテン・アンディ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★ライフ・アポン・ザ・ウィキッド・ステージ",
+      "group_label": "第1幕",
+      "roles": [
+        "エリー",
+        "フランク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★第1幕終曲（婚礼）",
+      "group_label": "第1幕",
+      "roles": [
+        "マグノリア",
+        "ゲイロード・レイヴナル",
+        "キャプテン・アンディ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★シカゴ万国博（1893年）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ビル（Bill）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリー・ラヴァーン"
+      ]
+    },
+    {
+      "label": "M10 ★ゲイロードの去りとマグノリアの一人立ち",
+      "group_label": "第2幕",
+      "roles": [
+        "マグノリア",
+        "ゲイロード・レイヴナル",
+        "ジュリー・ラヴァーン"
+      ]
+    },
+    {
+      "label": "M11 ★年月（オール・マン・リヴァーの再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★終曲（キムの成長と一家の再会）",
+      "group_label": "第2幕",
+      "roles": [
+        "マグノリア",
+        "ゲイロード・レイヴナル",
+        "キム",
+        "キャプテン・アンディ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

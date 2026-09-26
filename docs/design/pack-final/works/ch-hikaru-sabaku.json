@@ -1,0 +1,35 @@
+{
+  "title": "光る砂漠",
+  "composer": "萩原英彦",
+  "composer_sort": "Hagiwara, Hidehiko",
+  "kind": "chorus",
+  "year_written": 1961,
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "ch-takata-mizu-nashi",
+  "note": "★★無伴奏 混声合唱。★曲数（8曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全8曲（★曲名は 入れて いません）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

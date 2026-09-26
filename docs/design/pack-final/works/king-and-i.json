@@ -1,0 +1,258 @@
+{
+  "title": "王様と私",
+  "title_original": "The King and I",
+  "composer": "リチャード・ロジャーズ",
+  "kind": "musical",
+  "year_written": 1951,
+  "duration_min": 170,
+  "edition": "1951 ブロードウェイ初演版（★1996 リバイバル版・2015 リンカーン・センター版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "king-and-i",
+  "note": "★作詞 オスカー・ハマースタイン2世 ／ 脚本 オスカー・ハマースタイン2世 ／ ★★『小さな家』は『アンクル・トムの小屋』をシャムの舞踊劇に置き換えた劇中劇（振付ジェローム・ロビンズ）",
+  "roles": [
+    {
+      "label": "アンナ・レオノウェンス"
+    },
+    {
+      "label": "シャム王（モンクット）"
+    },
+    {
+      "label": "タプティム"
+    },
+    {
+      "label": "ルン・タ"
+    },
+    {
+      "label": "チャン夫人"
+    },
+    {
+      "label": "クララホーム"
+    },
+    {
+      "label": "ルイス・レオノウェンス"
+    },
+    {
+      "label": "チュラロンコーン王子"
+    },
+    {
+      "label": "エドワード・ラムゼイ卿"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★アイ・ウィッスル・ア・ハッピー・チューン",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ・レオノウェンス",
+        "ルイス・レオノウェンス"
+      ]
+    },
+    {
+      "label": "M2 ★マイ・ロード・アンド・マスター",
+      "group_label": "第1幕",
+      "roles": [
+        "タプティム"
+      ]
+    },
+    {
+      "label": "M3 ★★ハロー・ヤング・ラヴァーズ",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ・レオノウェンス"
+      ]
+    },
+    {
+      "label": "M4 ★★王子と王女の行進（March of the Siamese Children）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ・レオノウェンス",
+        "シャム王（モンクット）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★ア・パズルメント",
+      "group_label": "第1幕",
+      "roles": [
+        "シャム王（モンクット）"
+      ]
+    },
+    {
+      "label": "M6 ★ゲッティング・トゥ・ノウ・ユー",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ・レオノウェンス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★ウィ・キス・イン・ア・シャドウ",
+      "group_label": "第1幕",
+      "roles": [
+        "タプティム",
+        "ルン・タ"
+      ]
+    },
+    {
+      "label": "M8 ★★サムシング・ワンダフル",
+      "group_label": "第1幕",
+      "roles": [
+        "チャン夫人"
+      ]
+    },
+    {
+      "label": "M9 ★ウェスタン・ピープル・ファニー",
+      "group_label": "第2幕",
+      "roles": [
+        "チャン夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★シャル・ウィ・ダンス？（ポルカ）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ・レオノウェンス",
+        "シャム王（モンクット）"
+      ]
+    },
+    {
+      "label": "M11 ★★小さな家（The Small House of Uncle Thomas ─ 劇中舞踊劇）",
+      "group_label": "第2幕",
+      "roles": [
+        "タプティム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★タプティムの逃亡と捕縛",
+      "group_label": "第2幕",
+      "roles": [
+        "タプティム",
+        "ルン・タ",
+        "シャム王（モンクット）",
+        "クララホーム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★終曲（王の死と新王の即位）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ・レオノウェンス",
+        "シャム王（モンクット）",
+        "チュラロンコーン王子",
+        "チャン夫人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "title": "ピアノ五重奏曲 イ短調（エルガー）",
+  "composer": "エルガー",
+  "composer_sort": "Elgar, Edward",
+  "kind": "chamber",
+  "year_written": 1919,
+  "duration_min": 35,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-schnittke-nashi",
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 モデラート〜アレグロ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 アンダンテ〜アレグロ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

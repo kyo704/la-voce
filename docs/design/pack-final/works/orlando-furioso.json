@@ -1,0 +1,194 @@
+{
+  "title": "オルランド・フリオーソ",
+  "title_original": "Orlando furioso",
+  "composer": "ヴィヴァルディ",
+  "composer_sort": "Vivaldi, Antonio",
+  "kind": "opera",
+  "year_written": 1727,
+  "duration_min": 190,
+  "language": "it",
+  "source": "hand",
+  "source_id": "orlando-furioso",
+  "roles": [
+    {
+      "label": "オルランド"
+    },
+    {
+      "label": "アルチーナ"
+    },
+    {
+      "label": "アンジェリカ"
+    },
+    {
+      "label": "ブラダマンテ"
+    },
+    {
+      "label": "ルッジェーロ"
+    },
+    {
+      "label": "メドーロ"
+    },
+    {
+      "label": "アストルフォ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲（シンフォニア）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 アルチーナの魔法の島",
+      "group_label": "第1幕",
+      "roles": [
+        "アルチーナ",
+        "アストルフォ",
+        "オルランド"
+      ]
+    },
+    {
+      "label": "★第1幕 アンジェリカとメドーロの恋",
+      "group_label": "第1幕",
+      "roles": [
+        "アンジェリカ",
+        "メドーロ"
+      ]
+    },
+    {
+      "label": "★第1幕 ブラダマンテの捜索（ルッジェーロを探す）",
+      "group_label": "第1幕",
+      "roles": [
+        "ブラダマンテ",
+        "アストルフォ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ルッジェーロの忘却（アルチーナの魔法）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルッジェーロ",
+        "アルチーナ",
+        "ブラダマンテ"
+      ]
+    },
+    {
+      "label": "★★第2幕 オルランドの狂乱（Nel profondo cieco mondo）",
+      "group_label": "第2幕",
+      "roles": [
+        "オルランド"
+      ]
+    },
+    {
+      "label": "★第2幕 ★アンジェリカのアリア（Sol da te, mio dolce amore）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンジェリカ",
+        "メドーロ"
+      ]
+    },
+    {
+      "label": "★第3幕 アルチーナの墓所の場",
+      "group_label": "第3幕",
+      "roles": [
+        "アルチーナ",
+        "オルランド",
+        "アストルフォ"
+      ]
+    },
+    {
+      "label": "★★第3幕 オルランドの正気の回復と魔法の壺の破壊",
+      "group_label": "第3幕",
+      "roles": [
+        "オルランド",
+        "アルチーナ",
+        "ブラダマンテ",
+        "ルッジェーロ"
+      ]
+    },
+    {
+      "label": "★終曲（2組の婚礼）",
+      "group_label": "第3幕",
+      "roles": [
+        "オルランド",
+        "アンジェリカ",
+        "メドーロ",
+        "ブラダマンテ",
+        "ルッジェーロ",
+        "アストルフォ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

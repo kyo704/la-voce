@@ -1,0 +1,199 @@
+{
+  "title": "劇場の都合・不都合（ヴィヴァ・ラ・マンマ）",
+  "title_original": "Le convenienze ed inconvenienze teatrali",
+  "aliases": [
+    "ヴィヴァ・ラ・マンマ"
+  ],
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1827,
+  "duration_min": 110,
+  "language": "it",
+  "source": "hand",
+  "source_id": "convenienze",
+  "note": "★マンマ・アガタは男声（バス・バリトン）が女装で演じる",
+  "roles": [
+    {
+      "label": "マンマ・アガタ"
+    },
+    {
+      "label": "ルイジア・フィオリッラ"
+    },
+    {
+      "label": "コリッラ・スカピネッリ"
+    },
+    {
+      "label": "グリエルモ・アントリーニ"
+    },
+    {
+      "label": "プロクロ・ピッパット"
+    },
+    {
+      "label": "ビスクローマ・ストリンピリーニ"
+    },
+    {
+      "label": "チェーザレ・サルツァパーノ"
+    },
+    {
+      "label": "ヴィンチェンツォ・ビアンキ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 稽古の始まり（歌手たちの遅刻）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビスクローマ・ストリンピリーニ",
+        "チェーザレ・サルツァパーノ",
+        "ルイジア・フィオリッラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 プリマドンナ コリッラの気まぐれ",
+      "group_label": "第1幕",
+      "roles": [
+        "コリッラ・スカピネッリ",
+        "グリエルモ・アントリーニ",
+        "ビスクローマ・ストリンピリーニ"
+      ]
+    },
+    {
+      "label": "第1幕 ★マンマ・アガタの登場（娘の出番を増やせ）",
+      "group_label": "第1幕",
+      "roles": [
+        "マンマ・アガタ",
+        "ルイジア・フィオリッラ",
+        "ビスクローマ・ストリンピリーニ"
+      ]
+    },
+    {
+      "label": "第1幕 マンマ・アガタのアリア（自ら歌う）",
+      "group_label": "第1幕",
+      "roles": [
+        "マンマ・アガタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 テノールの逃亡と代役",
+      "group_label": "第2幕",
+      "roles": [
+        "ビスクローマ・ストリンピリーニ",
+        "チェーザレ・サルツァパーノ",
+        "プロクロ・ピッパット",
+        "ヴィンチェンツォ・ビアンキ"
+      ]
+    },
+    {
+      "label": "第2幕 マンマ・アガタが男役を歌う",
+      "group_label": "第2幕",
+      "roles": [
+        "マンマ・アガタ",
+        "コリッラ・スカピネッリ",
+        "ルイジア・フィオリッラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（総崩れ）",
+      "group_label": "第2幕",
+      "roles": [
+        "マンマ・アガタ",
+        "コリッラ・スカピネッリ",
+        "ルイジア・フィオリッラ",
+        "グリエルモ・アントリーニ",
+        "ビスクローマ・ストリンピリーニ",
+        "チェーザレ・サルツァパーノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

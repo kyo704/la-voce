@@ -1,0 +1,107 @@
+{
+  "title": "妹背山婦女庭訓（文楽）",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1771,
+  "duration_min": 170,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-imoseyama-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松半二 ／ ★★『妹山背山』は ★舞台を 左右に 分け ★太夫・三味線も 二組 出ます ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "雛鳥"
+    },
+    {
+      "label": "久我之助"
+    },
+    {
+      "label": "定高"
+    },
+    {
+      "label": "大判事清澄"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    },
+    {
+      "label": "お三輪"
+    },
+    {
+      "label": "求女（藤原淡海）"
+    },
+    {
+      "label": "橘姫"
+    },
+    {
+      "label": "鱶七"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★太宰館・妹山背山（★雛鳥と久我之助）",
+      "group_label": "三段目",
+      "roles": [
+        "雛鳥",
+        "久我之助",
+        "定高",
+        "大判事清澄",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★三笠山御殿（★お三輪の疑着の相）",
+      "group_label": "四段目",
+      "roles": [
+        "お三輪",
+        "求女（藤原淡海）",
+        "橘姫",
+        "鱶七",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

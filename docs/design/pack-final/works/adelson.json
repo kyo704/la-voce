@@ -1,0 +1,188 @@
+{
+  "title": "アデルソンとサルヴィーニ",
+  "title_original": "Adelson e Salvini",
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1825,
+  "duration_min": 130,
+  "edition": "1825 ナポリ 初版（3幕・セミセリア）",
+  "language": "it",
+  "source": "hand",
+  "source_id": "adelson",
+  "roles": [
+    {
+      "label": "アデルソン卿"
+    },
+    {
+      "label": "ネリー"
+    },
+    {
+      "label": "サルヴィーニ"
+    },
+    {
+      "label": "ボニファーチョ"
+    },
+    {
+      "label": "ストゥルレイ"
+    },
+    {
+      "label": "ファニー"
+    },
+    {
+      "label": "マダマ・リヴァース"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 アイルランドの城（ボニファーチョの語り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ボニファーチョ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 サルヴィーニの秘めた恋",
+      "group_label": "第1幕",
+      "roles": [
+        "サルヴィーニ",
+        "ボニファーチョ"
+      ]
+    },
+    {
+      "label": "第1幕 ネリーとファニー",
+      "group_label": "第1幕",
+      "roles": [
+        "ネリー",
+        "ファニー",
+        "マダマ・リヴァース"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（アデルソンの帰還）",
+      "group_label": "第1幕",
+      "roles": [
+        "アデルソン卿",
+        "ネリー",
+        "サルヴィーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ストゥルレイの企み",
+      "group_label": "第2幕",
+      "roles": [
+        "ストゥルレイ",
+        "サルヴィーニ"
+      ]
+    },
+    {
+      "label": "第2幕 ネリーの誘拐と取り違え",
+      "group_label": "第2幕",
+      "roles": [
+        "ネリー",
+        "サルヴィーニ",
+        "ストゥルレイ",
+        "ボニファーチョ"
+      ]
+    },
+    {
+      "label": "第3幕 サルヴィーニの悔いと和解",
+      "group_label": "第3幕",
+      "roles": [
+        "サルヴィーニ",
+        "アデルソン卿",
+        "ネリー",
+        "ボニファーチョ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

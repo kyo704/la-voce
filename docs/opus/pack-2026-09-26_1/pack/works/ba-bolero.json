@@ -1,0 +1,118 @@
+{
+  "title": "ボレロ（バレエ）",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "dance",
+  "year_written": 1928,
+  "duration_min": 16,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-bolero",
+  "note": "★振付 ルビンシュタイン初演／ベジャール版が名高い ／ ★★★ベジャール版は 中央の 1人と 取り巻く 群舞。★男女どちらでも 踊ります ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "メロディ（中央で踊る者）"
+    },
+    {
+      "label": "リズム（取り巻く群舞）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★1つの旋律の繰り返しと高まり",
+      "group_label": "一幕物",
+      "roles": [
+        "メロディ（中央で踊る者）",
+        "リズム（取り巻く群舞）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

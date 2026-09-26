@@ -1,0 +1,65 @@
+{
+  "title": "二人椀久（長唄）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1774,
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-futari-wankyu",
+  "note": "★歌舞伎舞踊（所作事） ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "椀屋久兵衛"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "松山太夫"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★椀屋久兵衛の夢",
+      "group_label": "一段",
+      "roles": [
+        "椀屋久兵衛",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★松山太夫が現れ、二人で舞う",
+      "group_label": "一段",
+      "roles": [
+        "椀屋久兵衛",
+        "松山太夫",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★夢が消えて一人残る",
+      "group_label": "一段",
+      "roles": [
+        "椀屋久兵衛",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

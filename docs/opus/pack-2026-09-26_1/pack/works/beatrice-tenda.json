@@ -1,0 +1,192 @@
+{
+  "title": "ベアトリーチェ・ディ・テンダ",
+  "title_original": "Beatrice di Tenda",
+  "composer": "ベッリーニ",
+  "composer_sort": "Bellini, Vincenzo",
+  "kind": "opera",
+  "year_written": 1833,
+  "duration_min": 150,
+  "language": "it",
+  "source": "hand",
+  "source_id": "beatrice-tenda",
+  "roles": [
+    {
+      "label": "ベアトリーチェ"
+    },
+    {
+      "label": "フィリッポ・マリーア・ヴィスコンティ"
+    },
+    {
+      "label": "アニェーゼ"
+    },
+    {
+      "label": "オロンベッロ"
+    },
+    {
+      "label": "アニキーノ"
+    },
+    {
+      "label": "リヴァローロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ビナスコ城の宴（フィリッポの倦み）",
+      "group_label": "第1幕",
+      "roles": [
+        "フィリッポ・マリーア・ヴィスコンティ",
+        "リヴァローロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アニェーゼの竪琴と誤解",
+      "group_label": "第1幕",
+      "roles": [
+        "アニェーゼ",
+        "オロンベッロ"
+      ]
+    },
+    {
+      "label": "第1幕 ベアトリーチェの嘆き",
+      "group_label": "第1幕",
+      "roles": [
+        "ベアトリーチェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（庭園での捕縛）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベアトリーチェ",
+        "オロンベッロ",
+        "フィリッポ・マリーア・ヴィスコンティ",
+        "アニェーゼ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 裁きの場（拷問の証言）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベアトリーチェ",
+        "オロンベッロ",
+        "フィリッポ・マリーア・ヴィスコンティ",
+        "アニキーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 フィリッポの躊躇と署名",
+      "group_label": "第2幕",
+      "roles": [
+        "フィリッポ・マリーア・ヴィスコンティ",
+        "アニキーノ"
+      ]
+    },
+    {
+      "label": "第3幕 アニェーゼの悔い",
+      "group_label": "第3幕",
+      "roles": [
+        "アニェーゼ",
+        "ベアトリーチェ"
+      ]
+    },
+    {
+      "label": "第3幕 フィナーレ（ベアトリーチェの祈りと処刑へ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ベアトリーチェ",
+        "アニェーゼ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

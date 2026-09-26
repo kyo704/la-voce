@@ -1,0 +1,273 @@
+{
+  "title": "42番街",
+  "title_original": "42nd Street",
+  "composer": "ハリー・ウォーレン",
+  "kind": "musical",
+  "year_written": 1980,
+  "duration_min": 150,
+  "edition": "1980 ブロードウェイ初演版（★2001 リバイバル版で曲が足される。★1933 の映画が原作）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "42nd-street",
+  "note": "★作詞 アル・ダビン ／ 脚本 マイケル・スチュワート／マーク・ブラムブル ／ ★★★タップが中心。★『代役が主役になる』話の型をつくった作",
+  "roles": [
+    {
+      "label": "ペギー・ソーヤー"
+    },
+    {
+      "label": "ジュリアン・マーシュ"
+    },
+    {
+      "label": "ドロシー・ブロック"
+    },
+    {
+      "label": "ビリー・ロウラー"
+    },
+    {
+      "label": "マギー・ジョーンズ"
+    },
+    {
+      "label": "バート・バリー"
+    },
+    {
+      "label": "アビナー・ディロン"
+    },
+    {
+      "label": "アニー"
+    },
+    {
+      "label": "フィリス"
+    },
+    {
+      "label": "ロレイン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★オーディション（★タップの足だけが見える幕開き）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ヤング・アンド・ヘルシー",
+      "group_label": "第1幕",
+      "roles": [
+        "ビリー・ロウラー",
+        "ペギー・ソーヤー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★シャッフル・オフ・トゥ・バッファロー",
+      "group_label": "第1幕",
+      "roles": [
+        "マギー・ジョーンズ",
+        "バート・バリー",
+        "アニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ゴー・イントゥ・ユア・ダンス",
+      "group_label": "第1幕",
+      "roles": [
+        "マギー・ジョーンズ",
+        "ペギー・ソーヤー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ユーアー・ゲッティング・トゥ・ビー・ア・ハビット・ウィズ・ミー",
+      "group_label": "第1幕",
+      "roles": [
+        "ドロシー・ブロック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ダメズ",
+      "group_label": "第1幕",
+      "roles": [
+        "ビリー・ロウラー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★アイ・オンリー・ハヴ・アイズ・フォー・ユー",
+      "group_label": "第1幕",
+      "roles": [
+        "ドロシー・ブロック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★ウィ・アー・イン・ザ・マネー（Money ─ 巨大コインのタップ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アニー",
+        "フィリス",
+        "ロレイン",
+        "ビリー・ロウラー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★第1幕終曲（ドロシーの足の骨折）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドロシー・ブロック",
+        "ジュリアン・マーシュ",
+        "ペギー・ソーヤー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★ゼアズ・ア・サニー・サイド・トゥ・エヴリ・シチュエーション",
+      "group_label": "第2幕",
+      "roles": [
+        "アニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★ジュリアンのペギーへの叱咤（Lullaby of Broadway）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリアン・マーシュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★アバウト・ア・クォーター・トゥ・ナイン",
+      "group_label": "第2幕",
+      "roles": [
+        "ドロシー・ブロック",
+        "ペギー・ソーヤー"
+      ]
+    },
+    {
+      "label": "M13 ★★★42番街（初日の舞台）",
+      "group_label": "第2幕",
+      "roles": [
+        "ペギー・ソーヤー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★終曲（ジュリアンひとりの舞台）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュリアン・マーシュ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

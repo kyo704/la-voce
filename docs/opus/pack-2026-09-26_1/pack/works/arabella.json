@@ -1,0 +1,238 @@
+{
+  "title": "アラベラ",
+  "title_original": "Arabella",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1933,
+  "duration_min": 155,
+  "language": "de",
+  "source": "hand",
+  "source_id": "arabella",
+  "roles": [
+    {
+      "label": "アラベラ"
+    },
+    {
+      "label": "ズデンカ"
+    },
+    {
+      "label": "マンドリカ"
+    },
+    {
+      "label": "マッテオ"
+    },
+    {
+      "label": "ヴァルトナー伯爵"
+    },
+    {
+      "label": "アデライーデ"
+    },
+    {
+      "label": "フィアカーミリ"
+    },
+    {
+      "label": "エレメル伯爵"
+    },
+    {
+      "label": "ドミニク伯爵"
+    },
+    {
+      "label": "ラモラル伯爵"
+    },
+    {
+      "label": "占い女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 占い女とアデライーデ",
+      "group_label": "第1幕",
+      "roles": [
+        "アデライーデ",
+        "占い女"
+      ]
+    },
+    {
+      "label": "第1幕 ズデンカとマッテオ（男装の秘密）",
+      "group_label": "第1幕",
+      "roles": [
+        "ズデンカ",
+        "マッテオ"
+      ]
+    },
+    {
+      "label": "第1幕 アラベラとズデンカの二重唱（そりの鈴）",
+      "group_label": "第1幕",
+      "roles": [
+        "アラベラ",
+        "ズデンカ"
+      ]
+    },
+    {
+      "label": "第1幕 ヴァルトナー伯爵とマンドリカの手紙",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴァルトナー伯爵",
+        "マンドリカ"
+      ]
+    },
+    {
+      "label": "第1幕 三人の伯爵の求愛",
+      "group_label": "第1幕",
+      "roles": [
+        "アラベラ",
+        "エレメル伯爵",
+        "ドミニク伯爵",
+        "ラモラル伯爵"
+      ]
+    },
+    {
+      "label": "第2幕 舞踏会（アラベラとマンドリカの出会い）",
+      "group_label": "第2幕",
+      "roles": [
+        "アラベラ",
+        "マンドリカ",
+        "ヴァルトナー伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 フィアカーミリの歌",
+      "group_label": "第2幕",
+      "roles": [
+        "フィアカーミリ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ズデンカの鍵（取り違え）",
+      "group_label": "第2幕",
+      "roles": [
+        "ズデンカ",
+        "マッテオ",
+        "マンドリカ"
+      ]
+    },
+    {
+      "label": "第3幕 宿の階段（マッテオとアラベラの行き違い）",
+      "group_label": "第3幕",
+      "roles": [
+        "マッテオ",
+        "アラベラ",
+        "マンドリカ"
+      ]
+    },
+    {
+      "label": "第3幕 ズデンカの告白",
+      "group_label": "第3幕",
+      "roles": [
+        "ズデンカ",
+        "マッテオ",
+        "アラベラ",
+        "マンドリカ",
+        "ヴァルトナー伯爵",
+        "アデライーデ"
+      ]
+    },
+    {
+      "label": "第3幕 終場（一杯の水）",
+      "group_label": "第3幕",
+      "roles": [
+        "アラベラ",
+        "マンドリカ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

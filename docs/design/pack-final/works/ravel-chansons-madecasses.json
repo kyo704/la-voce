@@ -1,0 +1,64 @@
+{
+  "title": "マダガスカル島民の歌",
+  "title_original": "Chansons madécasses",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "song_cycle",
+  "year_written": 1926,
+  "duration_min": 14,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "ravel-madecasses",
+  "note": "★作詩 パルニー ／ ★★第2曲は 植民地への 抗議の 歌 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. ナアンドーヴ（Nahandove）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 白い人を信ずるな（Aoua! Méfiez-vous des blancs）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 横になるのは快い（Il est doux）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

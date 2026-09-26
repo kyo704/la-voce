@@ -1,0 +1,244 @@
+{
+  "title": "マチルダ",
+  "title_original": "Matilda the Musical",
+  "composer": "ティム・ミンチン",
+  "kind": "musical",
+  "year_written": 2011,
+  "duration_min": 155,
+  "edition": "2011 ロンドン初演版（★2013 ブロードウェイ版・2022 映画版。★日本版は2023年以降）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "matilda",
+  "note": "★作詞 ティム・ミンチン ／ 脚本 デニス・ケリー ／ ★ロアルド・ダールの児童書による。★★マチルダ役は子どもが複数で交代する",
+  "roles": [
+    {
+      "label": "マチルダ・ワームウッド"
+    },
+    {
+      "label": "ミス・ハニー"
+    },
+    {
+      "label": "ミス・トランチブル"
+    },
+    {
+      "label": "ワームウッド氏"
+    },
+    {
+      "label": "ワームウッド夫人"
+    },
+    {
+      "label": "マイケル・ワームウッド"
+    },
+    {
+      "label": "ブルース"
+    },
+    {
+      "label": "ラベンダー"
+    },
+    {
+      "label": "ミス・フェルプス"
+    },
+    {
+      "label": "ルドルフォ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★ミラクル（誕生日会の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★★ノーティ（Naughty）",
+      "group_label": "第1幕",
+      "roles": [
+        "マチルダ・ワームウッド"
+      ]
+    },
+    {
+      "label": "M3 ★★★スクール・ソング（アルファベットが組まれる）",
+      "group_label": "第1幕",
+      "roles": [
+        "ブルース",
+        "ラベンダー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★パジェント（トランチブルの登場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミス・トランチブル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★ザ・ハンマー",
+      "group_label": "第1幕",
+      "roles": [
+        "ミス・トランチブル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★ブルース（★チョコレートケーキの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ブルース",
+        "ミス・トランチブル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★★クワイエット（第1幕終曲・★静かになる瞬間）",
+      "group_label": "第1幕",
+      "roles": [
+        "マチルダ・ワームウッド"
+      ]
+    },
+    {
+      "label": "M8 ★★★マイ・ハウス",
+      "group_label": "第2幕",
+      "roles": [
+        "ミス・ハニー"
+      ]
+    },
+    {
+      "label": "M9 ★★★ホエン・アイ・グロウ・アップ（★ブランコの場）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★ザ・スメル・オブ・リベリオン",
+      "group_label": "第2幕",
+      "roles": [
+        "ミス・トランチブル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★アクロバットとイリュージョニストの物語",
+      "group_label": "第2幕",
+      "roles": [
+        "マチルダ・ワームウッド",
+        "ミス・フェルプス"
+      ]
+    },
+    {
+      "label": "M12 ★★★チョークの奇跡（★超能力の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "マチルダ・ワームウッド",
+        "ミス・トランチブル",
+        "ミス・ハニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（リヴォルティング・チルドレン）",
+      "group_label": "第2幕",
+      "roles": [
+        "マチルダ・ワームウッド",
+        "ブルース",
+        "ラベンダー",
+        "ミス・ハニー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

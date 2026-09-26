@@ -1,0 +1,149 @@
+{
+  "title": "ドン・キホーテ（ミンクス）",
+  "composer": "ミンクス",
+  "composer_sort": "Minkus, Ludwig",
+  "kind": "dance",
+  "year_written": 1869,
+  "duration_min": 125,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-nutcracker-nashi",
+  "note": "★振付 プティパ ／ ★既にある『ドン・キホーテ（バレエ）』と 同じ 作品の 別の 記し方 ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "キトリ"
+    },
+    {
+      "label": "バジル"
+    },
+    {
+      "label": "ドン・キホーテ"
+    },
+    {
+      "label": "サンチョ・パンサ"
+    },
+    {
+      "label": "ガマーシュ"
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "バルセロナの広場",
+      "group_label": "第1幕",
+      "roles": [
+        "キトリ",
+        "バジル",
+        "群舞"
+      ]
+    },
+    {
+      "label": "★ジプシーの野営と風車",
+      "group_label": "第2幕",
+      "roles": [
+        "ドン・キホーテ",
+        "サンチョ・パンサ",
+        "群舞"
+      ]
+    },
+    {
+      "label": "★★婚礼のグラン・パ・ド・ドゥ",
+      "group_label": "第3幕",
+      "roles": [
+        "キトリ",
+        "バジル",
+        "群舞"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

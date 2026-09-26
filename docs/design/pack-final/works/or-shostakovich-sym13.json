@@ -1,0 +1,150 @@
+{
+  "title": "交響曲第13番「バビ・ヤール」作品113",
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "orchestra",
+  "year_written": 1962,
+  "duration_min": 60,
+  "language": "—",
+  "source": "hand",
+  "source_id": "or-shostakovich-sym13",
+  "note": "★★★バス独唱と 男声合唱。★エフトゥシェンコの 詩。★★発表に 圧力が かかりました",
+  "roles": [
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "男声合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. バビ・ヤール",
+      "group_label": "楽章",
+      "roles": [
+        "バス独唱",
+        "男声合唱"
+      ]
+    },
+    {
+      "label": "2. ユーモア",
+      "group_label": "楽章",
+      "roles": [
+        "バス独唱",
+        "男声合唱"
+      ]
+    },
+    {
+      "label": "3. 商店で",
+      "group_label": "楽章",
+      "roles": [
+        "バス独唱",
+        "男声合唱"
+      ]
+    },
+    {
+      "label": "4. 恐怖",
+      "group_label": "楽章",
+      "roles": [
+        "バス独唱",
+        "男声合唱"
+      ]
+    },
+    {
+      "label": "5. 出世",
+      "group_label": "楽章",
+      "roles": [
+        "バス独唱",
+        "男声合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

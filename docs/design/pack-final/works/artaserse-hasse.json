@@ -1,0 +1,176 @@
+{
+  "title": "アルタセルセ",
+  "title_original": "Artaserse",
+  "composer": "ハッセ",
+  "composer_sort": "Hasse, Johann Adolph",
+  "kind": "opera",
+  "year_written": 1730,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "artaserse-hasse",
+  "note": "★★ファリネッリがこの作のアリアを生涯歌い続けた。★ハッセ版とブロスキ版（ファリネッリの兄）がある",
+  "roles": [
+    {
+      "label": "アルタセルセ"
+    },
+    {
+      "label": "マンダーネ"
+    },
+    {
+      "label": "アルバーチェ"
+    },
+    {
+      "label": "アルタバーノ"
+    },
+    {
+      "label": "セミーラ"
+    },
+    {
+      "label": "メガビーゼ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 夜の庭（アルタバーノの王殺しと血の剣）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルタバーノ",
+        "アルバーチェ",
+        "マンダーネ"
+      ]
+    },
+    {
+      "label": "★★第1幕 ★アルバーチェの別れのアリア（Conservati fedele）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルバーチェ",
+        "マンダーネ"
+      ]
+    },
+    {
+      "label": "第1幕 セミーラとメガビーゼ",
+      "group_label": "第1幕",
+      "roles": [
+        "セミーラ",
+        "メガビーゼ",
+        "アルタセルセ"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★アルバーチェの牢のアリア（Per questo dolce amplesso）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルバーチェ",
+        "アルタバーノ"
+      ]
+    },
+    {
+      "label": "★第2幕 マンダーネの怒りと愛",
+      "group_label": "第2幕",
+      "roles": [
+        "マンダーネ",
+        "アルタセルセ",
+        "アルバーチェ"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★アルタセルセの裁き（友か法か）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルタセルセ",
+        "アルバーチェ",
+        "アルタバーノ"
+      ]
+    },
+    {
+      "label": "★終曲（アルタバーノの自白と2組の婚礼）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルタセルセ",
+        "マンダーネ",
+        "アルバーチェ",
+        "アルタバーノ",
+        "セミーラ",
+        "メガビーゼ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

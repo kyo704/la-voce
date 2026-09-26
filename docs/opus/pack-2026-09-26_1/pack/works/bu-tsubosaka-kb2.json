@@ -1,0 +1,81 @@
+{
+  "title": "傾城恋飛脚",
+  "aliases": [
+    "新口村"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1773,
+  "duration_min": 80,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-tsubosaka-kb2",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 菅専助・若竹笛躬 ／ ★近松『冥途の飛脚』を 書き替えた 形 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "亀屋忠兵衛"
+    },
+    {
+      "label": "梅川"
+    },
+    {
+      "label": "孫右衛門"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★新口村（★忠兵衛と梅川・親との別れ）",
+      "group_label": "中",
+      "roles": [
+        "亀屋忠兵衛",
+        "梅川",
+        "孫右衛門",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

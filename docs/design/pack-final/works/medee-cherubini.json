@@ -1,0 +1,192 @@
+{
+  "title": "メデ（メデア）",
+  "title_original": "Médée",
+  "composer": "ケルビーニ",
+  "composer_sort": "Cherubini, Luigi",
+  "kind": "opera",
+  "year_written": 1797,
+  "duration_min": 155,
+  "edition": "1797 パリ原典版（台詞つき）／ラハナー編 伊語版",
+  "language": "fr",
+  "source": "hand",
+  "source_id": "medee-cherubini",
+  "note": "★伊語訳『メデア』（レチタティーヴォをラハナーが作曲）も広く上演される",
+  "roles": [
+    {
+      "label": "メデ"
+    },
+    {
+      "label": "ジャゾン"
+    },
+    {
+      "label": "ディルセ"
+    },
+    {
+      "label": "クレオン"
+    },
+    {
+      "label": "ネリス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 コリントスの婚礼の支度（ディルセの不安）",
+      "group_label": "第1幕",
+      "roles": [
+        "ディルセ",
+        "クレオン",
+        "ジャゾン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 メデの登場（わたしはメデ）",
+      "group_label": "第1幕",
+      "roles": [
+        "メデ",
+        "ジャゾン",
+        "クレオン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 メデとクレオンの対決（1日の猶予）",
+      "group_label": "第2幕",
+      "roles": [
+        "メデ",
+        "クレオン"
+      ]
+    },
+    {
+      "label": "★第2幕 メデとジャゾンの二重唱（子どもたちを見せて）",
+      "group_label": "第2幕",
+      "roles": [
+        "メデ",
+        "ジャゾン"
+      ]
+    },
+    {
+      "label": "第2幕 ネリスのアリアと毒の衣",
+      "group_label": "第2幕",
+      "roles": [
+        "メデ",
+        "ネリス"
+      ]
+    },
+    {
+      "label": "★第3幕 神殿の前（メデの独白と迷い）",
+      "group_label": "第3幕",
+      "roles": [
+        "メデ",
+        "ネリス"
+      ]
+    },
+    {
+      "label": "★終曲（ディルセの死・子殺し・神殿の炎）",
+      "group_label": "第3幕",
+      "roles": [
+        "メデ",
+        "ジャゾン",
+        "ネリス",
+        "クレオン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

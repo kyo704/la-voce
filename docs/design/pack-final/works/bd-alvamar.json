@@ -1,0 +1,53 @@
+{
+  "title": "アルヴァマー序曲",
+  "composer": "ジェイムズ・バーンズ",
+  "composer_sort": "Barnes, James",
+  "kind": "band",
+  "year_written": 1981,
+  "duration_min": 9,
+  "language": "—",
+  "source": "hand",
+  "source_id": "bd-lincolnshire-nashi",
+  "note": "★★日本の 吹奏楽で 最も よく 演奏される 曲の 1つ ／ ★★吹奏楽。★人数は 団体ごとに 変わります",
+  "roles": [
+    {
+      "label": "吹奏楽（合奏）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★一曲（序奏・主題・展開・再現）",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "木管（フルート・オーボエ・クラリネット・サクソフォン・ファゴット）",
+      "count": 0,
+      "section": "woodwind",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "金管（ホルン・トランペット・トロンボーン・ユーフォニアム・チューバ）",
+      "count": 0,
+      "section": "brass",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "打楽器",
+      "count": 0,
+      "section": "percussion",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "入る団体のみ"
+    }
+  ]
+}

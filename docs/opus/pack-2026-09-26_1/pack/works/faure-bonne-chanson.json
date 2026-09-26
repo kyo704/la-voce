@@ -1,0 +1,102 @@
+{
+  "title": "優しい歌 作品61",
+  "title_original": "La bonne chanson op.61",
+  "composer": "フォーレ",
+  "composer_sort": "Fauré, Gabriel",
+  "kind": "song_cycle",
+  "year_written": 1894,
+  "duration_min": 25,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "faure-op61",
+  "note": "★作詩 ヴェルレーヌ ／ ★★弦楽五重奏とピアノの 版も あります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 聖なる後光（Une Sainte en son auréole）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 夜明けが広がるので（Puisque l’aube grandit）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 白い月（La lune blanche luit dans les bois）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 長く恐ろしい旅のあとで（J’allais par des chemins perfides）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. ぼくはほとんど恐い（J’ai presque peur, en vérité）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. きみが去る前に（Avant que tu ne t’en ailles）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "7. ぼくは奇妙な夢のなかを（Donc, ce sera par un clair jour d’été）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "8. これは気だるい恍惚（N’est-ce pas?）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "9. 冬は終わった（L’hiver a cessé）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

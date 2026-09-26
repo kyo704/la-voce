@@ -1,0 +1,69 @@
+{
+  "title": "船弁慶（歌舞伎）",
+  "aliases": [
+    "新歌舞伎十八番 船弁慶"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1885,
+  "duration_min": 50,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-ominameshi-kb",
+  "note": "★歌舞伎 ／ 作者 河竹黙阿弥 ／ ★★一人で 静と 知盛を 早替りで 演じます ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "静御前"
+    },
+    {
+      "label": "源義経"
+    },
+    {
+      "label": "武蔵坊弁慶"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "平知盛の霊"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★静との別れ",
+      "group_label": "一幕",
+      "roles": [
+        "静御前",
+        "源義経",
+        "武蔵坊弁慶",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★知盛の霊（★早替りと大立廻り）",
+      "group_label": "一幕",
+      "roles": [
+        "平知盛の霊",
+        "武蔵坊弁慶",
+        "源義経",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

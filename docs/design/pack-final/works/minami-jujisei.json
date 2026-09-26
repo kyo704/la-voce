@@ -1,0 +1,228 @@
+{
+  "title": "南十字星",
+  "composer": "三木たかし",
+  "composer_sort": "Miki, Takashi",
+  "kind": "musical",
+  "year_written": 2004,
+  "duration_min": 160,
+  "edition": "2004 劇団四季初演版（★『昭和の歴史3部作』の第3作。★2011／2018 再演）",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "minami-jujisei",
+  "note": "★作詞 浅利慶太 ／ 脚本・演出 浅利慶太（劇団四季） ／ ★★BC級戦犯を主題とする。★★曲名は確かなものだけを書き、場面の名前で持っています",
+  "roles": [
+    {
+      "label": "保科勲"
+    },
+    {
+      "label": "リナ"
+    },
+    {
+      "label": "ハッサン"
+    },
+    {
+      "label": "スカルノ"
+    },
+    {
+      "label": "石井中将"
+    },
+    {
+      "label": "オランダ人検事"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ★インドネシア（ジャワ）への赴任",
+      "group_label": "第1幕",
+      "roles": [
+        "保科勲",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ★リナとの出会いとイスラムへの改宗",
+      "group_label": "第1幕",
+      "roles": [
+        "保科勲",
+        "リナ",
+        "ハッサン"
+      ]
+    },
+    {
+      "label": "第1幕 ★独立運動とスカルノ",
+      "group_label": "第1幕",
+      "roles": [
+        "保科勲",
+        "スカルノ",
+        "ハッサン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕終曲（軍の方針との板挟み）",
+      "group_label": "第1幕",
+      "roles": [
+        "保科勲",
+        "石井中将",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★敗戦とBC級戦犯としての起訴",
+      "group_label": "第2幕",
+      "roles": [
+        "保科勲",
+        "オランダ人検事",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★軍事裁判（上官の責任を負う）",
+      "group_label": "第2幕",
+      "roles": [
+        "保科勲",
+        "石井中将",
+        "オランダ人検事",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ★リナとの最後の面会",
+      "group_label": "第2幕",
+      "roles": [
+        "保科勲",
+        "リナ"
+      ]
+    },
+    {
+      "label": "★終曲（★処刑・南十字星の下で）",
+      "group_label": "第2幕",
+      "roles": [
+        "保科勲",
+        "リナ",
+        "語り手",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

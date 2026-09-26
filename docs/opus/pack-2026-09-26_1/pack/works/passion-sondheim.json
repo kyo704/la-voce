@@ -1,0 +1,233 @@
+{
+  "title": "パッション",
+  "title_original": "Passion",
+  "composer": "ソンドハイム",
+  "composer_sort": "Sondheim, Stephen",
+  "kind": "musical",
+  "year_written": 1994,
+  "duration_min": 105,
+  "edition": "1994 ブロードウェイ初演版（★1996 ロンドン版・2013 CSC版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "passion-sondheim",
+  "note": "★作詞 ソンドハイム ／ 脚本 ジェームズ・ラパイン ／ ★★タルキーニオの『パッシオーネ・ダモーレ』（イジーノ・ウーゴ・タルケッティの小説による映画）から。★休憩なしの1幕物",
+  "roles": [
+    {
+      "label": "フォスカ"
+    },
+    {
+      "label": "ジョルジョ"
+    },
+    {
+      "label": "クララ"
+    },
+    {
+      "label": "リッツォ大佐"
+    },
+    {
+      "label": "ルドヴィク"
+    },
+    {
+      "label": "医師タンブーリ"
+    },
+    {
+      "label": "トーラシ中尉"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★ハッピネス（ジョルジョとクララの朝）",
+      "group_label": "本編",
+      "roles": [
+        "ジョルジョ",
+        "クララ"
+      ]
+    },
+    {
+      "label": "M2 ★★第一の手紙（転属）",
+      "group_label": "本編",
+      "roles": [
+        "ジョルジョ",
+        "クララ",
+        "リッツォ大佐",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★フォスカの初登場（★見えない叫び）",
+      "group_label": "本編",
+      "roles": [
+        "フォスカ",
+        "ジョルジョ",
+        "医師タンブーリ"
+      ]
+    },
+    {
+      "label": "M4 ★★アイ・リード（本を読むこと）",
+      "group_label": "本編",
+      "roles": [
+        "フォスカ",
+        "ジョルジョ"
+      ]
+    },
+    {
+      "label": "M5 ★★ガーデン・シーケンス",
+      "group_label": "本編",
+      "roles": [
+        "フォスカ",
+        "ジョルジョ",
+        "クララ"
+      ]
+    },
+    {
+      "label": "M6 ★★フォスカの過去（ルドヴィクの騙し）",
+      "group_label": "本編",
+      "roles": [
+        "フォスカ",
+        "ルドヴィク",
+        "医師タンブーリ"
+      ]
+    },
+    {
+      "label": "M7 ★★ラヴィング・ユー",
+      "group_label": "本編",
+      "roles": [
+        "フォスカ"
+      ]
+    },
+    {
+      "label": "M8 ★★列車の場（フォスカが追ってくる）",
+      "group_label": "本編",
+      "roles": [
+        "フォスカ",
+        "ジョルジョ"
+      ]
+    },
+    {
+      "label": "M9 ★★決闘（リッツォ大佐との）",
+      "group_label": "本編",
+      "roles": [
+        "ジョルジョ",
+        "リッツォ大佐",
+        "トーラシ中尉"
+      ]
+    },
+    {
+      "label": "M10 ★★★ノー・ワン・ハズ・エヴァー・ラヴド・ミー（終曲）",
+      "group_label": "本編",
+      "roles": [
+        "ジョルジョ",
+        "フォスカ",
+        "クララ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

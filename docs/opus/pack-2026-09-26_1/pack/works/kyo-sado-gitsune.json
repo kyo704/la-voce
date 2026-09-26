@@ -1,0 +1,70 @@
+{
+  "title": "佐渡狐",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-sado-gitsune",
+  "note": "★集狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（佐渡の百姓）"
+    },
+    {
+      "label": "アド（越後の百姓）"
+    },
+    {
+      "label": "小アド（奏者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★佐渡に狐がいるかで賭ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（佐渡の百姓）",
+        "アド（越後の百姓）"
+      ]
+    },
+    {
+      "label": "佐渡の男が奏者に賄賂を渡して答えを教わる",
+      "group_label": "段",
+      "roles": [
+        "シテ（佐渡の百姓）",
+        "小アド（奏者）"
+      ]
+    },
+    {
+      "label": "★問答（狐の姿を答える）",
+      "group_label": "段",
+      "roles": [
+        "シテ（佐渡の百姓）",
+        "アド（越後の百姓）",
+        "小アド（奏者）"
+      ]
+    },
+    {
+      "label": "★鳴き声を問われて答えられず露見する",
+      "group_label": "段",
+      "roles": [
+        "シテ（佐渡の百姓）",
+        "アド（越後の百姓）",
+        "小アド（奏者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

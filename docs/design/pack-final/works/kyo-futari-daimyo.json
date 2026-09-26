@@ -1,0 +1,68 @@
+{
+  "title": "二人大名",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-futari-daimyo",
+  "note": "★大名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（通りの者）"
+    },
+    {
+      "label": "アド（大名）"
+    },
+    {
+      "label": "小アド（大名）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "二人の大名が通りの者に太刀を持たせる",
+      "group_label": "段",
+      "roles": [
+        "シテ（通りの者）",
+        "小アド（大名）"
+      ]
+    },
+    {
+      "label": "逆に脅されて着物を脱がされる",
+      "group_label": "段",
+      "roles": [
+        "シテ（通りの者）",
+        "小アド（大名）"
+      ]
+    },
+    {
+      "label": "鶏や犬の真似をさせられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（通りの者）",
+        "小アド（大名）"
+      ]
+    },
+    {
+      "label": "起き上がり小法師の真似で転がる",
+      "group_label": "段",
+      "roles": [
+        "シテ（通りの者）",
+        "小アド（大名）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

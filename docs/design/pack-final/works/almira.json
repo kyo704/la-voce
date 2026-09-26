@@ -1,0 +1,195 @@
+{
+  "title": "アルミーラ",
+  "title_original": "Almira",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1705,
+  "duration_min": 190,
+  "language": "de",
+  "source": "hand",
+  "source_id": "almira",
+  "note": "★ヘンデル最初のオペラ（20歳・ハンブルク）。★ドイツ語とイタリア語が混じる",
+  "roles": [
+    {
+      "label": "アルミーラ"
+    },
+    {
+      "label": "エドィルマ"
+    },
+    {
+      "label": "フェルナンド"
+    },
+    {
+      "label": "オスマン"
+    },
+    {
+      "label": "コンサルヴォ"
+    },
+    {
+      "label": "ライモンド"
+    },
+    {
+      "label": "タベルコ"
+    },
+    {
+      "label": "ベッランテ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲（フランス風）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 カスティーリャの戴冠（アルミーラの即位）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミーラ",
+        "コンサルヴォ",
+        "オスマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アルミーラと秘書フェルナンドの秘めた恋",
+      "group_label": "第1幕",
+      "roles": [
+        "アルミーラ",
+        "フェルナンド"
+      ]
+    },
+    {
+      "label": "第1幕 エドィルマとオスマン",
+      "group_label": "第1幕",
+      "roles": [
+        "エドィルマ",
+        "オスマン",
+        "タベルコ"
+      ]
+    },
+    {
+      "label": "★第2幕 フェルナンドの投獄と嘆き",
+      "group_label": "第2幕",
+      "roles": [
+        "フェルナンド",
+        "アルミーラ"
+      ]
+    },
+    {
+      "label": "★第2幕 3つの大陸の踊り（★サラバンド ─ のちに『リナルド』に転用）",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ライモンドとベッランテの到着",
+      "group_label": "第2幕",
+      "roles": [
+        "ライモンド",
+        "ベッランテ",
+        "コンサルヴォ"
+      ]
+    },
+    {
+      "label": "★第3幕 フェルナンドの正体（コンサルヴォの息子）",
+      "group_label": "第3幕",
+      "roles": [
+        "フェルナンド",
+        "コンサルヴォ",
+        "アルミーラ"
+      ]
+    },
+    {
+      "label": "★終曲（3組の婚礼）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルミーラ",
+        "フェルナンド",
+        "エドィルマ",
+        "オスマン",
+        "ベッランテ",
+        "ライモンド",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

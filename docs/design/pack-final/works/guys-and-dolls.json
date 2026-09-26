@@ -1,0 +1,279 @@
+{
+  "title": "ガイズ＆ドールズ",
+  "title_original": "Guys and Dolls",
+  "composer": "フランク・レッサー",
+  "kind": "musical",
+  "year_written": 1950,
+  "duration_min": 165,
+  "edition": "1950 ブロードウェイ初演版（★1992 リバイバル版・2009 版。1955 映画版は曲が入れ替わる）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "guys-and-dolls",
+  "note": "★作詞 フランク・レッサー ／ 脚本 ジョー・スワーリング／エイブ・バロウズ ／ ★デイモン・ラニアンの短編による",
+  "roles": [
+    {
+      "label": "サラ・ブラウン"
+    },
+    {
+      "label": "スカイ・マスターソン"
+    },
+    {
+      "label": "アデレイド"
+    },
+    {
+      "label": "ネイサン・デトロイト"
+    },
+    {
+      "label": "ナイスリー＝ナイスリー・ジョンソン"
+    },
+    {
+      "label": "ベニー・サウスストリート"
+    },
+    {
+      "label": "ラスティ・チャーリー"
+    },
+    {
+      "label": "ビッグ・ジュール"
+    },
+    {
+      "label": "アーヴィド・アバナシー"
+    },
+    {
+      "label": "ブラニガン警部"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★フーガ・フォー・ティンホーンズ（競馬新聞の三重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "ナイスリー＝ナイスリー・ジョンソン",
+        "ベニー・サウスストリート",
+        "ラスティ・チャーリー"
+      ]
+    },
+    {
+      "label": "M2 ★フォロー・ザ・フォールド（救世軍の行進）",
+      "group_label": "第1幕",
+      "roles": [
+        "サラ・ブラウン",
+        "アーヴィド・アバナシー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★ザ・オールデスト・エスタブリッシュト（サイコロ賭博の場所探し）",
+      "group_label": "第1幕",
+      "roles": [
+        "ネイサン・デトロイト",
+        "ナイスリー＝ナイスリー・ジョンソン",
+        "ベニー・サウスストリート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★アイル・ノウ",
+      "group_label": "第1幕",
+      "roles": [
+        "サラ・ブラウン",
+        "スカイ・マスターソン"
+      ]
+    },
+    {
+      "label": "M5 ★★アデレイドの嘆き（Adelaide's Lament）",
+      "group_label": "第1幕",
+      "roles": [
+        "アデレイド"
+      ]
+    },
+    {
+      "label": "M6 ★ガイ・ズ・オンリー・ドゥー・ホワット",
+      "group_label": "第1幕",
+      "roles": [
+        "ネイサン・デトロイト",
+        "アデレイド"
+      ]
+    },
+    {
+      "label": "M7 ★★イフ・アイ・ワー・ア・ベル（ハバナの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "サラ・ブラウン"
+      ]
+    },
+    {
+      "label": "M8 ★マイ・タイム・オブ・デイ",
+      "group_label": "第1幕",
+      "roles": [
+        "スカイ・マスターソン"
+      ]
+    },
+    {
+      "label": "M9 ★アイヴ・ネヴァー・ビーン・イン・ラヴ・ビフォア（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "スカイ・マスターソン",
+        "サラ・ブラウン"
+      ]
+    },
+    {
+      "label": "M10 ★テイク・バック・ユア・ミンク",
+      "group_label": "第2幕",
+      "roles": [
+        "アデレイド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★モア・アイ・キャノット・ウィッシュ・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "アーヴィド・アバナシー"
+      ]
+    },
+    {
+      "label": "M12 ★★下水道の賭博（Luck Be a Lady）",
+      "group_label": "第2幕",
+      "roles": [
+        "スカイ・マスターソン",
+        "ビッグ・ジュール",
+        "ネイサン・デトロイト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★シット・ダウン、ユーアー・ロッキン・ザ・ボート",
+      "group_label": "第2幕",
+      "roles": [
+        "ナイスリー＝ナイスリー・ジョンソン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★マリー・ザ・マン・トゥデイ",
+      "group_label": "第2幕",
+      "roles": [
+        "アデレイド",
+        "サラ・ブラウン"
+      ]
+    },
+    {
+      "label": "M15 ★終曲（2組の婚礼）",
+      "group_label": "第2幕",
+      "roles": [
+        "サラ・ブラウン",
+        "スカイ・マスターソン",
+        "アデレイド",
+        "ネイサン・デトロイト",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

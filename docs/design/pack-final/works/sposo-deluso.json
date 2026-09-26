@@ -1,0 +1,171 @@
+{
+  "title": "だまされた花婿",
+  "title_original": "Lo sposo deluso",
+  "aliases": [
+    "K.430",
+    "だまされた花むこ"
+  ],
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1783,
+  "duration_min": 45,
+  "language": "it",
+  "source": "hand",
+  "source_id": "sposo-deluso",
+  "note": "★未完。残るのは序曲・四重唱・アリア2曲・三重唱。★上演は補筆または抜粋で",
+  "roles": [
+    {
+      "label": "ボッコーニオ"
+    },
+    {
+      "label": "エウジェニア"
+    },
+    {
+      "label": "ドン・アズドゥルバーレ"
+    },
+    {
+      "label": "ベッティーナ"
+    },
+    {
+      "label": "プルケーリオ"
+    },
+    {
+      "label": "ジェルヴァージオ"
+    },
+    {
+      "label": "メティルデ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 四重唱（花嫁を待つボッコーニオ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ボッコーニオ",
+        "プルケーリオ",
+        "ベッティーナ",
+        "ジェルヴァージオ"
+      ]
+    },
+    {
+      "label": "第1幕 エウジェニアの到着とアリア",
+      "group_label": "第1幕",
+      "roles": [
+        "エウジェニア",
+        "ボッコーニオ"
+      ]
+    },
+    {
+      "label": "第1幕 エウジェニアとアズドゥルバーレの再会",
+      "group_label": "第1幕",
+      "roles": [
+        "エウジェニア",
+        "ドン・アズドゥルバーレ"
+      ]
+    },
+    {
+      "label": "第1幕 ベッティーナのアリア",
+      "group_label": "第1幕",
+      "roles": [
+        "ベッティーナ"
+      ]
+    },
+    {
+      "label": "第1幕 四重唱（行き違い）",
+      "group_label": "第1幕",
+      "roles": [
+        "エウジェニア",
+        "ドン・アズドゥルバーレ",
+        "ベッティーナ",
+        "プルケーリオ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

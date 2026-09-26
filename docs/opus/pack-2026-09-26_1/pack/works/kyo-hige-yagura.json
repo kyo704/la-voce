@@ -1,0 +1,69 @@
+{
+  "title": "髭櫓",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-hige-yagura",
+  "note": "★雑狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（髭の男）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★長い髭を誇る男",
+      "group_label": "段",
+      "roles": [
+        "シテ（髭の男）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★女たちが髭を剃ろうと結束する",
+      "group_label": "段",
+      "roles": [
+        "アド（妻）",
+        "立衆"
+      ]
+    },
+    {
+      "label": "★男が櫓を組んで髭を守る",
+      "group_label": "段",
+      "roles": [
+        "シテ（髭の男）"
+      ]
+    },
+    {
+      "label": "★薙刀と熊手の合戦で髭を切られる",
+      "group_label": "段",
+      "roles": [
+        "シテ（髭の男）",
+        "アド（妻）",
+        "立衆"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

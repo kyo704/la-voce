@@ -1,0 +1,68 @@
+{
+  "title": "宗論",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-shuron",
+  "note": "★出家狂言 ／ ★★終わりは 二人で 舞います ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（浄土僧）"
+    },
+    {
+      "label": "アド（法華僧）"
+    },
+    {
+      "label": "小アド（宿の主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "二人の僧が道で出会う",
+      "group_label": "段",
+      "roles": [
+        "シテ（浄土僧）",
+        "アド（法華僧）"
+      ]
+    },
+    {
+      "label": "宗旨を言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（浄土僧）",
+        "アド（法華僧）"
+      ]
+    },
+    {
+      "label": "宿で念仏と題目を唱え合う",
+      "group_label": "段",
+      "roles": [
+        "シテ（浄土僧）",
+        "アド（法華僧）"
+      ]
+    },
+    {
+      "label": "入れ替わって唱えていると気づき、踊り出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（浄土僧）",
+        "アド（法華僧）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

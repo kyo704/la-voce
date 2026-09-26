@@ -1,0 +1,60 @@
+{
+  "title": "時致",
+  "aliases": [
+    "新歌舞伎十八番 時致"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1899,
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-tokimune",
+  "note": "★歌舞伎 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "曽我五郎時致"
+    },
+    {
+      "label": "曽我十郎祐成"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★曽我五郎時致の物語",
+      "group_label": "一幕",
+      "roles": [
+        "曽我五郎時致",
+        "曽我十郎祐成",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★荒事の引込み",
+      "group_label": "一幕",
+      "roles": [
+        "曽我五郎時致",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

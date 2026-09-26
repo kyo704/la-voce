@@ -1,0 +1,108 @@
+{
+  "title": "四千両小判梅葉",
+  "aliases": [
+    "四千両"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1885,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-shunkan-nashi",
+  "note": "★歌舞伎 ／ 作者 二代目河竹新七（黙阿弥） ／ ★★実際の事件による『散切物』。★牢内の場が名高い ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "野州無宿富蔵"
+    },
+    {
+      "label": "藤岡藤十郎"
+    },
+    {
+      "label": "女房おさよ"
+    },
+    {
+      "label": "浅草無宿才次郎"
+    },
+    {
+      "label": "生馬の眼八"
+    },
+    {
+      "label": "牢役人"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 御金蔵破り",
+      "group_label": "序幕",
+      "roles": [
+        "野州無宿富蔵",
+        "藤岡藤十郎",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★第2幕 富蔵の家（おさよとの別れ）",
+      "group_label": "第2幕",
+      "roles": [
+        "野州無宿富蔵",
+        "女房おさよ",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★第3幕 伝馬町の牢内（★牢内の序列と名主の場）",
+      "group_label": "第3幕",
+      "roles": [
+        "野州無宿富蔵",
+        "浅草無宿才次郎",
+        "生馬の眼八",
+        "牢役人",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★第4幕 刑場",
+      "group_label": "第4幕",
+      "roles": [
+        "野州無宿富蔵",
+        "藤岡藤十郎",
+        "牢役人",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

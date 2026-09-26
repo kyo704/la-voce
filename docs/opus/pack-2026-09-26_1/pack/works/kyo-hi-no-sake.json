@@ -1,0 +1,70 @@
+{
+  "title": "樋の酒",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-hi-no-sake",
+  "note": "★小名狂言 ／ ★★樋（竹の管）で 酒を 送る 仕掛け ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（次郎冠者）"
+    },
+    {
+      "label": "小アド（主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主が蔵と米蔵の番を言いつけて出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）",
+        "小アド（主）"
+      ]
+    },
+    {
+      "label": "★★樋を渡して酒を送り合う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "★酔って謡い舞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）"
+      ]
+    },
+    {
+      "label": "★主が帰って来て追われる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（次郎冠者）",
+        "小アド（主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

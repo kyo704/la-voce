@@ -1,0 +1,68 @@
+{
+  "title": "ゴースト・トレイン",
+  "title_original": "Ghost Train Triptych",
+  "composer": "エリック・ウィテカー",
+  "composer_sort": "Whitacre, Eric",
+  "kind": "band",
+  "year_written": 1994,
+  "duration_min": 13,
+  "language": "—",
+  "source": "hand",
+  "source_id": "bd-whitacre-ghost",
+  "note": "★★吹奏楽。★人数は 団体ごとに 変わります",
+  "roles": [
+    {
+      "label": "吹奏楽（合奏）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 ゴースト・トレイン",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "第2楽章 至る所の車輪",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "第3楽章 モーテル・カリフォルニア",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "木管（フルート・オーボエ・クラリネット・サクソフォン・ファゴット）",
+      "count": 0,
+      "section": "woodwind",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "金管（ホルン・トランペット・トロンボーン・ユーフォニアム・チューバ）",
+      "count": 0,
+      "section": "brass",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "打楽器",
+      "count": 0,
+      "section": "percussion",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "入る団体のみ"
+    }
+  ]
+}

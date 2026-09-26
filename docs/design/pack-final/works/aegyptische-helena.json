@@ -1,0 +1,209 @@
+{
+  "title": "エジプトのヘレナ",
+  "title_original": "Die ägyptische Helena",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1928,
+  "duration_min": 145,
+  "language": "de",
+  "source": "hand",
+  "source_id": "aegyptische-helena",
+  "roles": [
+    {
+      "label": "ヘレナ"
+    },
+    {
+      "label": "メネラス"
+    },
+    {
+      "label": "アイトラ"
+    },
+    {
+      "label": "アルタイル"
+    },
+    {
+      "label": "ダ＝ウド"
+    },
+    {
+      "label": "すべてを知る貝"
+    },
+    {
+      "label": "ヘルミオーネ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 アイトラの館（すべてを知る貝の知らせ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アイトラ",
+        "すべてを知る貝"
+      ]
+    },
+    {
+      "label": "第1幕 難破したメネラスとヘレナ",
+      "group_label": "第1幕",
+      "roles": [
+        "メネラス",
+        "ヘレナ",
+        "アイトラ"
+      ]
+    },
+    {
+      "label": "第1幕 忘れ水（記憶を消す）",
+      "group_label": "第1幕",
+      "roles": [
+        "アイトラ",
+        "メネラス",
+        "ヘレナ"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（アトラス山への旅）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘレナ",
+        "メネラス",
+        "アイトラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 砂漠の天幕（ヘレナの目覚めの歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘレナ"
+      ]
+    },
+    {
+      "label": "第2幕 アルタイルとダ＝ウドの求愛",
+      "group_label": "第2幕",
+      "roles": [
+        "アルタイル",
+        "ダ＝ウド",
+        "ヘレナ"
+      ]
+    },
+    {
+      "label": "第2幕 メネラスの狩りとダ＝ウドの死",
+      "group_label": "第2幕",
+      "roles": [
+        "メネラス",
+        "ダ＝ウド",
+        "ヘレナ"
+      ]
+    },
+    {
+      "label": "第2幕 記憶の水（真のヘレナ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘレナ",
+        "メネラス",
+        "アイトラ"
+      ]
+    },
+    {
+      "label": "第2幕 フィナーレ（ヘルミオーネの登場・和解）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘレナ",
+        "メネラス",
+        "ヘルミオーネ",
+        "アルタイル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "title": "ジキル＆ハイド",
+  "title_original": "Jekyll & Hyde",
+  "composer": "フランク・ワイルドホーン",
+  "kind": "musical",
+  "year_written": 1997,
+  "duration_min": 150,
+  "edition": "★★ブロードウェイ版（1997）。★コンセプト版（1990）・リヴァイヴァル版（2013）で曲が大きく違います",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-bandstand",
+  "note": "★作詞 レスリー・ブリッカス ／ 脚本 レスリー・ブリッカス ／ ★★★『対決』は 一人で 二つの 声を 使い分けます",
+  "roles": [
+    {
+      "label": "ヘンリー・ジキル／エドワード・ハイド"
+    },
+    {
+      "label": "エマ・カルー"
+    },
+    {
+      "label": "ルーシー・ハリス"
+    },
+    {
+      "label": "ジョン・アタスン"
+    },
+    {
+      "label": "ダンヴァース卿"
+    },
+    {
+      "label": "ビショップ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "理事会の拒絶",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘンリー・ジキル／エドワード・ハイド",
+        "ダンヴァース卿",
+        "ビショップ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★自分を実験に使う",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘンリー・ジキル／エドワード・ハイド"
+      ]
+    },
+    {
+      "label": "ルーシーとの出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘンリー・ジキル／エドワード・ハイド",
+        "ルーシー・ハリス"
+      ]
+    },
+    {
+      "label": "殺しの連なり",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘンリー・ジキル／エドワード・ハイド",
+        "ビショップ",
+        "ルーシー・ハリス"
+      ]
+    },
+    {
+      "label": "★★二人の対決（★一人で二役を歌い分ける）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘンリー・ジキル／エドワード・ハイド"
+      ]
+    },
+    {
+      "label": "★婚礼の場の結末",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘンリー・ジキル／エドワード・ハイド",
+        "エマ・カルー",
+        "ジョン・アタスン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

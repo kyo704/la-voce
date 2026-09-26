@@ -1,0 +1,225 @@
+{
+  "title": "ハムレット（トマ）",
+  "title_original": "Hamlet",
+  "composer": "トマ",
+  "composer_sort": "Thomas, Ambroise",
+  "kind": "opera",
+  "year_written": 1868,
+  "duration_min": 180,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "hamlet-thomas",
+  "roles": [
+    {
+      "label": "ハムレット"
+    },
+    {
+      "label": "オフェリー"
+    },
+    {
+      "label": "ガートルード"
+    },
+    {
+      "label": "クローディウス"
+    },
+    {
+      "label": "レアーテ"
+    },
+    {
+      "label": "亡霊"
+    },
+    {
+      "label": "マルセリュス"
+    },
+    {
+      "label": "オラース"
+    },
+    {
+      "label": "ポローニュス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 戴冠の祝い（クローディウスとガートルード）",
+      "group_label": "第1幕",
+      "roles": [
+        "クローディウス",
+        "ガートルード",
+        "ハムレット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ハムレットとオフェリーの二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "ハムレット",
+        "オフェリー",
+        "レアーテ"
+      ]
+    },
+    {
+      "label": "第1幕 城壁の亡霊",
+      "group_label": "第1幕",
+      "roles": [
+        "ハムレット",
+        "亡霊",
+        "マルセリュス",
+        "オラース"
+      ]
+    },
+    {
+      "label": "第2幕 オフェリーの嘆きとガートルードの問い",
+      "group_label": "第2幕",
+      "roles": [
+        "オフェリー",
+        "ガートルード",
+        "ハムレット"
+      ]
+    },
+    {
+      "label": "第2幕 ★ハムレットの酒の歌（乾杯の歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ハムレット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 劇中劇（王の良心）",
+      "group_label": "第2幕",
+      "roles": [
+        "ハムレット",
+        "クローディウス",
+        "ガートルード",
+        "ポローニュス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 王妃の部屋（ハムレットの責めと亡霊）",
+      "group_label": "第3幕",
+      "roles": [
+        "ハムレット",
+        "ガートルード",
+        "亡霊"
+      ]
+    },
+    {
+      "label": "第4幕 ★オフェリーの狂乱の場（バレエつき）",
+      "group_label": "第4幕",
+      "roles": [
+        "オフェリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5幕 終曲（墓地・ハムレットの復讐）",
+      "group_label": "第5幕",
+      "roles": [
+        "ハムレット",
+        "レアーテ",
+        "クローディウス",
+        "ガートルード",
+        "亡霊",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "title": "鎌腹",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kagyu",
+  "note": "★雑狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "小アド（仲裁の男）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "夫婦が言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★夫が死ぬと言って鎌を持つ",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★死に方を思案するが、どれも痛そうでできない",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）"
+      ]
+    },
+    {
+      "label": "仲裁の男が来て収まる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）",
+        "アド（妻）",
+        "小アド（仲裁の男）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

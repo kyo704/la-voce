@@ -1,0 +1,78 @@
+{
+  "title": "序奏とアレグロ",
+  "title_original": "Introduction et Allegro",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "chamber",
+  "year_written": 1905,
+  "duration_min": 11,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-ravel-introduction",
+  "roles": [
+    {
+      "label": "ハープ"
+    },
+    {
+      "label": "フルート"
+    },
+    {
+      "label": "クラリネット"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★一曲（序奏〜アレグロ）",
+      "group_label": "楽章",
+      "roles": [
+        "ハープ",
+        "フルート",
+        "クラリネット",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

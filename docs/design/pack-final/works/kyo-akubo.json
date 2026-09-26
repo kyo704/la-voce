@@ -1,0 +1,57 @@
+{
+  "title": "悪坊",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-akubo",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（悪坊）"
+    },
+    {
+      "label": "アド（旅僧）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "乱暴者の悪坊が旅僧を脅す",
+      "group_label": "段",
+      "roles": [
+        "シテ（悪坊）",
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "★酒を飲ませて眠らせる",
+      "group_label": "段",
+      "roles": [
+        "シテ（悪坊）",
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "★★僧が入れ替わって仕返しをする",
+      "group_label": "段",
+      "roles": [
+        "シテ（悪坊）",
+        "アド（旅僧）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

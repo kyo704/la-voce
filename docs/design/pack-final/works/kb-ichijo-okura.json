@@ -1,0 +1,77 @@
+{
+  "title": "一條大蔵譚",
+  "aliases": [
+    "鬼一法眼三略巻 檜垣・奥殿"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1731,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-ichijo-okura",
+  "note": "★歌舞伎 ／ 作者 文耕堂・長谷川千四 ／ ★★★阿呆の顔から 本心へ 変わる 一瞬が 見せ場 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "一條大蔵長成"
+    },
+    {
+      "label": "常盤御前"
+    },
+    {
+      "label": "鬼次郎"
+    },
+    {
+      "label": "お京"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★檜垣（★大蔵卿の作り阿呆）",
+      "group_label": "二段目",
+      "roles": [
+        "一條大蔵長成",
+        "常盤御前",
+        "鬼次郎",
+        "お京",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★奥殿（★阿呆から本心に変わる一瞬）",
+      "group_label": "二段目",
+      "roles": [
+        "一條大蔵長成",
+        "常盤御前",
+        "鬼次郎",
+        "お京",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

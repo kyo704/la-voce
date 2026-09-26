@@ -1,0 +1,95 @@
+{
+  "title": "奥州安達原",
+  "aliases": [
+    "袖萩祭文"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1762,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-oshu-adachigahara",
+  "note": "★歌舞伎 ／ 作者 近松半二 ／ ★★雪の中の 母と子 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "袖萩"
+    },
+    {
+      "label": "お君"
+    },
+    {
+      "label": "安倍貞任（桂中納言教氏）"
+    },
+    {
+      "label": "浜夕"
+    },
+    {
+      "label": "平傔仗直方"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "安倍宗任"
+    },
+    {
+      "label": "八幡太郎義家"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★三段目 環宮明御殿（袖萩祭文）",
+      "group_label": "三段目",
+      "roles": [
+        "袖萩",
+        "お君",
+        "安倍貞任（桂中納言教氏）",
+        "浜夕",
+        "平傔仗直方",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★袖萩祭文（★雪の中で三味線を弾き語る）",
+      "group_label": "三段目",
+      "roles": [
+        "袖萩",
+        "お君",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★貞任・宗任の正体と立廻り",
+      "group_label": "三段目",
+      "roles": [
+        "安倍貞任（桂中納言教氏）",
+        "安倍宗任",
+        "八幡太郎義家",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

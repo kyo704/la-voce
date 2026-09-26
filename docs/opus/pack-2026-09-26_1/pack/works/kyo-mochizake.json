@@ -1,0 +1,68 @@
+{
+  "title": "餅酒",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-mochizake",
+  "note": "★脇狂言（祝言物） ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（餅屋）"
+    },
+    {
+      "label": "アド（酒屋）"
+    },
+    {
+      "label": "小アド（大名）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "餅屋と酒屋が道で出会う",
+      "group_label": "段",
+      "roles": [
+        "シテ（餅屋）",
+        "アド（酒屋）"
+      ]
+    },
+    {
+      "label": "どちらが勝るかを言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（餅屋）",
+        "アド（酒屋）"
+      ]
+    },
+    {
+      "label": "大名の裁きで歌の問答になる",
+      "group_label": "段",
+      "roles": [
+        "シテ（餅屋）",
+        "アド（酒屋）"
+      ]
+    },
+    {
+      "label": "両方めでたいと収まる",
+      "group_label": "段",
+      "roles": [
+        "シテ（餅屋）",
+        "アド（酒屋）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

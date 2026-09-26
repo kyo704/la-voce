@@ -1,0 +1,80 @@
+{
+  "title": "瞼の母",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1931,
+  "duration_min": 110,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-mabuta-no-haha",
+  "note": "★新歌舞伎 ／ 作者 長谷川伸 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "番場の忠太郎"
+    },
+    {
+      "label": "半次郎"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "おはま"
+    },
+    {
+      "label": "お登世"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★番場の忠太郎の旅",
+      "group_label": "一幕",
+      "roles": [
+        "番場の忠太郎",
+        "半次郎",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★水熊の女将（★母と名乗れぬ再会）",
+      "group_label": "二幕",
+      "roles": [
+        "番場の忠太郎",
+        "おはま",
+        "お登世",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★荒川堤（★母を探して去る）",
+      "group_label": "三幕",
+      "roles": [
+        "番場の忠太郎",
+        "おはま",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

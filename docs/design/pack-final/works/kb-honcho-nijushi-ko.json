@@ -1,0 +1,95 @@
+{
+  "title": "本朝廿四孝",
+  "aliases": [
+    "十種香",
+    "狐火"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1766,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-honcho-nijushi-ko",
+  "note": "★歌舞伎 ／ 作者 近松半二 ／ ★★『狐火』は 人形振りで 出すこともあります ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "八重垣姫"
+    },
+    {
+      "label": "濡衣"
+    },
+    {
+      "label": "武田勝頼（蓑作）"
+    },
+    {
+      "label": "長尾謙信"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "山本勘助"
+    },
+    {
+      "label": "越名弾正"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★四段目 十種香（★八重垣姫の恋）",
+      "group_label": "四段目",
+      "roles": [
+        "八重垣姫",
+        "濡衣",
+        "武田勝頼（蓑作）",
+        "長尾謙信",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★狐火（★諏訪湖を渡る・狐の力）",
+      "group_label": "四段目",
+      "roles": [
+        "八重垣姫",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "三段目 勘助住家",
+      "group_label": "三段目",
+      "roles": [
+        "山本勘助",
+        "越名弾正",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

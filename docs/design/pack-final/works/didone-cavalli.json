@@ -1,0 +1,152 @@
+{
+  "title": "ディドーネ",
+  "title_original": "La Didone",
+  "composer": "カヴァッリ",
+  "composer_sort": "Cavalli, Francesco",
+  "kind": "opera",
+  "year_written": 1641,
+  "duration_min": 180,
+  "language": "it",
+  "source": "hand",
+  "source_id": "didone-cavalli",
+  "note": "★★ウェルギリウスと違い、ディドーネは死なずイアルバと結婚する（ハッピーエンド）",
+  "roles": [
+    {
+      "label": "ディドーネ"
+    },
+    {
+      "label": "エネア"
+    },
+    {
+      "label": "イアルバ"
+    },
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "カサンドラ"
+    },
+    {
+      "label": "クレウーサ"
+    },
+    {
+      "label": "エクバ"
+    },
+    {
+      "label": "ピッロ"
+    },
+    {
+      "label": "ヴェネレ"
+    },
+    {
+      "label": "アモーレ"
+    },
+    {
+      "label": "ジュノーネ"
+    },
+    {
+      "label": "メルクーリオ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★第1幕 トロイア陥落（★カサンドラの予言とクレウーサの死）",
+      "group_label": "第1幕",
+      "roles": [
+        "カサンドラ",
+        "クレウーサ",
+        "エクバ",
+        "ピッロ",
+        "エネア"
+      ]
+    },
+    {
+      "label": "★第1幕 エネアの脱出（父と子を連れて）",
+      "group_label": "第1幕",
+      "roles": [
+        "エネア",
+        "ヴェネレ",
+        "アモーレ"
+      ]
+    },
+    {
+      "label": "★第2幕 カルタゴ（ディドーネとイアルバの求婚）",
+      "group_label": "第2幕",
+      "roles": [
+        "ディドーネ",
+        "イアルバ",
+        "アンナ"
+      ]
+    },
+    {
+      "label": "★第2幕 エネアの漂着と歓待",
+      "group_label": "第2幕",
+      "roles": [
+        "エネア",
+        "ディドーネ",
+        "アンナ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★洞窟の場（ジュノーネの企み）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジュノーネ",
+        "ディドーネ",
+        "エネア"
+      ]
+    },
+    {
+      "label": "★第3幕 メルクーリオの催促（イタリアへ）",
+      "group_label": "第3幕",
+      "roles": [
+        "メルクーリオ",
+        "エネア"
+      ]
+    },
+    {
+      "label": "★★第3幕 ディドーネの嘆きと自害の企て",
+      "group_label": "第3幕",
+      "roles": [
+        "ディドーネ",
+        "アンナ"
+      ]
+    },
+    {
+      "label": "★★終曲（★ディドーネは死なず、イアルバと結ばれる）",
+      "group_label": "第3幕",
+      "roles": [
+        "ディドーネ",
+        "イアルバ",
+        "アンナ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "通奏低音（チェロ・ヴィオローネ）",
+      "count": 2,
+      "section": "strings"
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "title": "幸福な手",
+  "title_original": "Die glückliche Hand",
+  "composer": "シェーンベルク",
+  "composer_sort": "Schoenberg, Arnold",
+  "kind": "opera",
+  "year_written": 1924,
+  "duration_min": 20,
+  "language": "de",
+  "source": "hand",
+  "source_id": "gluckliche-hand",
+  "note": "★色と光を楽譜に書き込んだ『音と色のドラマ』",
+  "roles": [
+    {
+      "label": "男"
+    },
+    {
+      "label": "女"
+    },
+    {
+      "label": "紳士"
+    },
+    {
+      "label": "6人の男声"
+    },
+    {
+      "label": "6人の女声"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 男が地に伏す（12の顔が覗く）",
+      "group_label": "第1場",
+      "roles": [
+        "男",
+        "6人の男声",
+        "6人の女声"
+      ]
+    },
+    {
+      "label": "★第2場 女の登場と去り",
+      "group_label": "第2場",
+      "roles": [
+        "男",
+        "女",
+        "紳士"
+      ]
+    },
+    {
+      "label": "★第3場 ★色と光のクレッシェンド（作業場の場）",
+      "group_label": "第3場",
+      "roles": [
+        "男"
+      ]
+    },
+    {
+      "label": "★第3場 素手で宝冠を打ち出す",
+      "group_label": "第3場",
+      "roles": [
+        "男"
+      ]
+    },
+    {
+      "label": "★終曲（再び地に伏す・輪の閉じ）",
+      "group_label": "第4場",
+      "roles": [
+        "男",
+        "女",
+        "6人の男声",
+        "6人の女声"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

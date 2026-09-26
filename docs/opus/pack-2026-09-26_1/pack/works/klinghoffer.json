@@ -1,0 +1,225 @@
+{
+  "title": "クリングホファーの死",
+  "title_original": "The Death of Klinghoffer",
+  "composer": "アダムズ",
+  "composer_sort": "Adams, John",
+  "kind": "opera",
+  "year_written": 1991,
+  "duration_min": 145,
+  "language": "en",
+  "source": "hand",
+  "source_id": "klinghoffer",
+  "note": "★★実際の事件（1985年アキレ・ラウロ号）による。上演をめぐって論争がある作",
+  "roles": [
+    {
+      "label": "レオン・クリングホファー"
+    },
+    {
+      "label": "マリリン・クリングホファー"
+    },
+    {
+      "label": "船長"
+    },
+    {
+      "label": "モリー"
+    },
+    {
+      "label": "マムード"
+    },
+    {
+      "label": "オマル"
+    },
+    {
+      "label": "ラムボー"
+    },
+    {
+      "label": "スイス人の祖母"
+    },
+    {
+      "label": "オーストリア人の女"
+    },
+    {
+      "label": "英国人の踊り子"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★追放されたパレスチナ人の合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★追放されたユダヤ人の合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 船の乗っ取り（船長の語り）",
+      "group_label": "第1幕",
+      "roles": [
+        "船長",
+        "モリー",
+        "マムード",
+        "オマル",
+        "ラムボー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★海の合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 スイス人の祖母の語り",
+      "group_label": "第1幕",
+      "roles": [
+        "スイス人の祖母"
+      ]
+    },
+    {
+      "label": "★第1幕 ★夜の合唱とマムードのアリア（歌の話）",
+      "group_label": "第1幕",
+      "roles": [
+        "マムード",
+        "船長",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ハガルとイシマエルの合唱",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 オーストリア人の女の語り（隠れていた）",
+      "group_label": "第2幕",
+      "roles": [
+        "オーストリア人の女"
+      ]
+    },
+    {
+      "label": "★第2幕 ★クリングホファーのアリア（車椅子の男の言葉）",
+      "group_label": "第2幕",
+      "roles": [
+        "レオン・クリングホファー",
+        "ラムボー"
+      ]
+    },
+    {
+      "label": "★第2幕 ★砂漠の合唱／英国人の踊り子の語り",
+      "group_label": "第2幕",
+      "roles": [
+        "英国人の踊り子",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（★マリリンのアリア：夫の死を告げられる）",
+      "group_label": "第2幕",
+      "roles": [
+        "マリリン・クリングホファー",
+        "船長"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

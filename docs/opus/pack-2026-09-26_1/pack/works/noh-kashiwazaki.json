@@ -1,0 +1,114 @@
+{
+  "title": "柏崎",
+  "composer": "能（三番目物（鬘・女））",
+  "composer_sort": "Noh",
+  "kind": "noh",
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "noh-tamakazura",
+  "note": "★三番目物（鬘・女） ／ ★謡（うたい）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（母（柏崎の妻））"
+    },
+    {
+      "label": "シテツレ（花若（子））"
+    },
+    {
+      "label": "ワキ（旅僧）"
+    },
+    {
+      "label": "アイ（間狂言）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ワキの登場（越後・柏崎／信濃・善光寺）",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（旅僧）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "シテの登場（母（柏崎の妻））",
+      "group_label": "前段",
+      "roles": [
+        "シテ（母（柏崎の妻））",
+        "シテツレ（花若（子））",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "問答・いわれ",
+      "group_label": "前段",
+      "roles": [
+        "シテ（母（柏崎の妻））",
+        "シテツレ（花若（子））",
+        "ワキ（旅僧）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "アイ（間狂言）",
+      "group_label": "中",
+      "roles": [
+        "アイ（間狂言）",
+        "ワキ（旅僧）"
+      ]
+    },
+    {
+      "label": "物狂い・曲舞",
+      "group_label": "後段",
+      "roles": [
+        "シテ（母（柏崎の妻））",
+        "シテツレ（花若（子））",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "キリ（終曲）",
+      "group_label": "後段",
+      "roles": [
+        "シテ（母（柏崎の妻））",
+        "シテツレ（花若（子））",
+        "ワキ（旅僧）",
+        "地謡",
+        "囃子方"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛（能管）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

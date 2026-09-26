@@ -1,0 +1,240 @@
+{
+  "title": "兵士たち",
+  "title_original": "Die Soldaten",
+  "composer": "ツィンマーマン",
+  "composer_sort": "Zimmermann, Bernd Alois",
+  "kind": "opera",
+  "year_written": 1965,
+  "duration_min": 110,
+  "language": "de",
+  "source": "hand",
+  "source_id": "soldaten",
+  "note": "★複数の場が同時に進む『多元的』構成。★巨大な編成と電子音・映像を要する",
+  "roles": [
+    {
+      "label": "マリー"
+    },
+    {
+      "label": "シャルロッテ"
+    },
+    {
+      "label": "ヴェーゼナー"
+    },
+    {
+      "label": "デポルト"
+    },
+    {
+      "label": "シュトルツィウス"
+    },
+    {
+      "label": "シュトルツィウスの母"
+    },
+    {
+      "label": "伯爵夫人ド・ラ・ロシュ"
+    },
+    {
+      "label": "若い伯爵"
+    },
+    {
+      "label": "ヴェーゼナーの老母"
+    },
+    {
+      "label": "ピルツェル大尉"
+    },
+    {
+      "label": "アイゼンハルト"
+    },
+    {
+      "label": "オードブリュ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 リールのヴェーゼナー家（マリーの手紙）",
+      "group_label": "第1幕",
+      "roles": [
+        "マリー",
+        "シャルロッテ",
+        "ヴェーゼナー"
+      ]
+    },
+    {
+      "label": "★第1幕 アルマンティエール（シュトルツィウスと母）",
+      "group_label": "第1幕",
+      "roles": [
+        "シュトルツィウス",
+        "シュトルツィウスの母"
+      ]
+    },
+    {
+      "label": "★第1幕 デポルトの誘いとマリーの心変わり",
+      "group_label": "第1幕",
+      "roles": [
+        "マリー",
+        "デポルト",
+        "ヴェーゼナー"
+      ]
+    },
+    {
+      "label": "★第2幕 ★カフェ（12声のリチェルカーレ・同時進行の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "ピルツェル大尉",
+        "アイゼンハルト",
+        "オードブリュ",
+        "デポルト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 マリーの堕落（士官たちの間で）",
+      "group_label": "第2幕",
+      "roles": [
+        "マリー",
+        "デポルト",
+        "オードブリュ",
+        "シャルロッテ"
+      ]
+    },
+    {
+      "label": "★第3幕 伯爵夫人の憐れみ（若い伯爵との話）",
+      "group_label": "第3幕",
+      "roles": [
+        "伯爵夫人ド・ラ・ロシュ",
+        "若い伯爵"
+      ]
+    },
+    {
+      "label": "★第3幕 シュトルツィウスの毒（デポルトの死）",
+      "group_label": "第3幕",
+      "roles": [
+        "シュトルツィウス",
+        "デポルト"
+      ]
+    },
+    {
+      "label": "★第4幕 ★すべてが同時に起きる（映像・電子音・全管の総奏）",
+      "group_label": "第4幕",
+      "roles": [
+        "マリー",
+        "シュトルツィウス",
+        "デポルト",
+        "ヴェーゼナー",
+        "シャルロッテ",
+        "伯爵夫人ド・ラ・ロシュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（物乞いになったマリーと父の出会い・主の祈り）",
+      "group_label": "第4幕",
+      "roles": [
+        "マリー",
+        "ヴェーゼナー",
+        "ヴェーゼナーの老母",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

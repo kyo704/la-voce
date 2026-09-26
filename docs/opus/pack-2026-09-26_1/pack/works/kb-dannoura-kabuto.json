@@ -1,0 +1,76 @@
+{
+  "title": "壇浦兜軍記",
+  "aliases": [
+    "阿古屋",
+    "琴責"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1732,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-dannoura-kabuto",
+  "note": "★歌舞伎 ／ 作者 文耕堂・長谷川千四 ／ ★★★役者が 琴・三味線・胡弓を ★じっさいに 弾きます ── 最も 難しい 女形の 役 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "阿古屋"
+    },
+    {
+      "label": "秩父庄司重忠"
+    },
+    {
+      "label": "岩永左衛門"
+    },
+    {
+      "label": "榛沢六郎"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★阿古屋琴責（★琴・三味線・胡弓を弾いて心を調べる）",
+      "group_label": "三段目",
+      "roles": [
+        "阿古屋",
+        "秩父庄司重忠",
+        "岩永左衛門",
+        "榛沢六郎",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★阿古屋 三曲を弾き終える",
+      "group_label": "三段目",
+      "roles": [
+        "阿古屋",
+        "秩父庄司重忠",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

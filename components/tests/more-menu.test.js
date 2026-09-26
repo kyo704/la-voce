@@ -110,9 +110,19 @@ function ok(cond, label) {
   //   ★★2026-09-16、★もう 1つ 増えました ── `&& moreSection !== "合言葉で入る"`。
   //     ★★合言葉の 1枚も、★自分の 戻る 道（「‹ 通っている ところ」）を 持ちます。
   //     ★★「もっと ／ 合言葉で入る」と 2つ 並ぶと、★帰り先が 2つに なります。
-  ok(/layoutV2 && moreSection !== null && !attendingOrgId\s*\n?\s*&& moreSection !== "合言葉で入る" \?/.test(v),
-    "★開いている あいだ、★戻る 道が 出る（★奥の 1枚を 除く）");
-  ok(/moreSection === "合言葉で入る"/.test(v), "★合言葉の 1枚が ある");
+  //   ★★★2026-09-26、★形が 変わりました（★坂本さんの お決め・DECISION_1）──
+  //     ★★見本に パンくずは ありません。
+  //     ★★こちらが 作った 新しい 画面は、★見本の とおり **自分の 戻る 札**を 持ちます。
+  //       ★★パンくずも 出て いると、★また 2つ 並びます（★上の 2件と 同じ 形）。
+  //     ★★★だから 名を 並べるのを やめ、★`lib/moreCrumb.js` が 1つで 決めます。
+  //       ★★どの 画面が 自分の 札を 持つ かは `components/tests/more-crumb.test.js` が
+  //         ★実際の 部品と 突き合わせて 数えます（★覚えません）。
+  ok(/layoutV2 && showCrumb\(moreSection\) && !attendingOrgId \?/.test(v),
+    "★戻る 道は 1つ（★`lib/moreCrumb.js` が 決める）");
+  ok(/from "@\/lib\/moreCrumb"/.test(v), "★決めを `lib/moreCrumb.js` から 受け取って いる");
+  // ★★★「無いこと」は `vCode`（注記を 外した 本文）で 数えます ──
+  //   ★★上の 註が その 名を 引用して います。★生の 本文だと 自分の 註で 落ちます。
+  ok(!/moreSection !== "合言葉で入る"/.test(vCode), "★画面の 紙に 名を 並べて いない");
   ok(/setMoreSection\(null\)/.test(v), "★押すと 一覧へ 戻る");
 
   console.log("⑦ 教室の 行は、★入れる方だけ");

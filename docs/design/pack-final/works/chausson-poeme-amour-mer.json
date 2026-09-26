@@ -1,0 +1,55 @@
+{
+  "title": "愛と海の詩 作品19",
+  "title_original": "Poème de l’amour et de la mer op.19",
+  "composer": "ショーソン",
+  "composer_sort": "Chausson, Ernest",
+  "kind": "song_cycle",
+  "year_written": 1893,
+  "duration_min": 30,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "chausson-op19",
+  "note": "★作詩 ブショール ／ ★★管弦楽つき。★第3曲の 終わり『リラの花咲く頃』が 名高い ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 水の花（La fleur des eaux）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 間奏曲（Interlude）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 愛の死（La mort de l’amour）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽（またはピアノ）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

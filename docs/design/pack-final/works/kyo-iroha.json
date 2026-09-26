@@ -1,0 +1,65 @@
+{
+  "title": "いろは",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 15,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-iroha",
+  "note": "★脇狂言 ／ ★★子方（子役）が主。★短い入門曲 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（父）"
+    },
+    {
+      "label": "アド（子）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★父が子にいろはを教える",
+      "group_label": "段",
+      "roles": [
+        "シテ（父）",
+        "アド（子）"
+      ]
+    },
+    {
+      "label": "★子が父の言葉をそのまま返す",
+      "group_label": "段",
+      "roles": [
+        "シテ（父）",
+        "アド（子）"
+      ]
+    },
+    {
+      "label": "父が怒るが、子はなお真似る",
+      "group_label": "段",
+      "roles": [
+        "シテ（父）",
+        "アド（子）"
+      ]
+    },
+    {
+      "label": "父が根負けする",
+      "group_label": "段",
+      "roles": [
+        "シテ（父）",
+        "アド（子）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

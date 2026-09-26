@@ -1,0 +1,201 @@
+{
+  "title": "ミレイユ",
+  "title_original": "Mireille",
+  "composer": "グノー",
+  "composer_sort": "Gounod, Charles",
+  "kind": "opera",
+  "year_written": 1864,
+  "duration_min": 150,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "mireille",
+  "roles": [
+    {
+      "label": "ミレイユ"
+    },
+    {
+      "label": "ヴァンサン"
+    },
+    {
+      "label": "ウリアス"
+    },
+    {
+      "label": "ラモン"
+    },
+    {
+      "label": "タヴェン"
+    },
+    {
+      "label": "アンドルー"
+    },
+    {
+      "label": "ヴァンスネット"
+    },
+    {
+      "label": "クレマンス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 桑の畑（娘たちの歌とタヴェンの予言）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミレイユ",
+        "タヴェン",
+        "クレマンス",
+        "ヴァンスネット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ミレイユとヴァンサンの二重唱（マガリの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミレイユ",
+        "ヴァンサン"
+      ]
+    },
+    {
+      "label": "第2幕 アルルの闘技場（ファランドール）",
+      "group_label": "第2幕",
+      "roles": [
+        "ミレイユ",
+        "ヴァンサン",
+        "ウリアス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ラモンの拒みとミレイユの誓い",
+      "group_label": "第2幕",
+      "roles": [
+        "ラモン",
+        "ミレイユ",
+        "ウリアス"
+      ]
+    },
+    {
+      "label": "第3幕 ヴァル・デンフェール（ウリアスとヴァンサンの争い）",
+      "group_label": "第3幕",
+      "roles": [
+        "ウリアス",
+        "ヴァンサン",
+        "タヴェン"
+      ]
+    },
+    {
+      "label": "第4幕 ★クローの砂漠（羊飼いの歌とミレイユの独り旅）",
+      "group_label": "第4幕",
+      "roles": [
+        "ミレイユ",
+        "アンドルー"
+      ]
+    },
+    {
+      "label": "第5幕 終曲（サント・マリーの教会・ミレイユの死）",
+      "group_label": "第5幕",
+      "roles": [
+        "ミレイユ",
+        "ヴァンサン",
+        "ラモン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

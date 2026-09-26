@@ -1,0 +1,194 @@
+{
+  "title": "賢い女",
+  "title_original": "Die Kluge",
+  "composer": "オルフ",
+  "composer_sort": "Orff, Carl",
+  "kind": "opera",
+  "year_written": 1943,
+  "duration_min": 100,
+  "language": "de",
+  "source": "hand",
+  "source_id": "kluge",
+  "roles": [
+    {
+      "label": "賢い女"
+    },
+    {
+      "label": "王"
+    },
+    {
+      "label": "農夫"
+    },
+    {
+      "label": "3人の浮浪者"
+    },
+    {
+      "label": "牢番"
+    },
+    {
+      "label": "ろば引き"
+    },
+    {
+      "label": "驢馬の持ち主"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 牢の農夫（乳ばちの訴え）",
+      "group_label": "第1場",
+      "roles": [
+        "農夫",
+        "牢番"
+      ]
+    },
+    {
+      "label": "★第2場 王の裁き（3つの謎）",
+      "group_label": "第2場",
+      "roles": [
+        "王",
+        "農夫",
+        "賢い女"
+      ]
+    },
+    {
+      "label": "★第3場 賢い女の答えと王の求婚",
+      "group_label": "第3場",
+      "roles": [
+        "賢い女",
+        "王"
+      ]
+    },
+    {
+      "label": "★第4場 3人の浮浪者の歌（世の道理）",
+      "group_label": "第4場",
+      "roles": [
+        "3人の浮浪者",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第5場 驢馬と馬の裁き（賢い女の助言）",
+      "group_label": "第5場",
+      "roles": [
+        "ろば引き",
+        "驢馬の持ち主",
+        "王",
+        "賢い女"
+      ]
+    },
+    {
+      "label": "第6場 王の怒りと追い出し（好きなものを1つ持って行け）",
+      "group_label": "第6場",
+      "roles": [
+        "王",
+        "賢い女"
+      ]
+    },
+    {
+      "label": "★終曲（王を箱に入れて持ち出す）",
+      "group_label": "終場",
+      "roles": [
+        "賢い女",
+        "王",
+        "3人の浮浪者",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "title": "ファラモンド",
+  "title_original": "Faramondo",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1738,
+  "duration_min": 165,
+  "language": "it",
+  "source": "hand",
+  "source_id": "faramondo",
+  "roles": [
+    {
+      "label": "ファラモンド"
+    },
+    {
+      "label": "クロティルデ"
+    },
+    {
+      "label": "ロズィミラ"
+    },
+    {
+      "label": "グスターヴォ"
+    },
+    {
+      "label": "アドルフォ"
+    },
+    {
+      "label": "ジェルナンド"
+    },
+    {
+      "label": "テオバルド"
+    },
+    {
+      "label": "チルドリコ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 グスターヴォの誓い（息子の仇を討つ）",
+      "group_label": "第1幕",
+      "roles": [
+        "グスターヴォ",
+        "アドルフォ",
+        "クロティルデ"
+      ]
+    },
+    {
+      "label": "★第1幕 ファラモンドとロズィミラ",
+      "group_label": "第1幕",
+      "roles": [
+        "ファラモンド",
+        "ロズィミラ"
+      ]
+    },
+    {
+      "label": "第1幕 ジェルナンドの横恋慕",
+      "group_label": "第1幕",
+      "roles": [
+        "ジェルナンド",
+        "クロティルデ",
+        "テオバルド"
+      ]
+    },
+    {
+      "label": "★第2幕 クロティルデがファラモンドを助ける",
+      "group_label": "第2幕",
+      "roles": [
+        "クロティルデ",
+        "ファラモンド",
+        "グスターヴォ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★ロズィミラのアリア（Combattuta da più venti）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロズィミラ"
+      ]
+    },
+    {
+      "label": "★第3幕 チルドリコの正体（取り替えられた子）",
+      "group_label": "第3幕",
+      "roles": [
+        "テオバルド",
+        "チルドリコ",
+        "グスターヴォ"
+      ]
+    },
+    {
+      "label": "★終曲（2組の婚礼と和解）",
+      "group_label": "第3幕",
+      "roles": [
+        "ファラモンド",
+        "クロティルデ",
+        "ロズィミラ",
+        "グスターヴォ",
+        "アドルフォ",
+        "ジェルナンド"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

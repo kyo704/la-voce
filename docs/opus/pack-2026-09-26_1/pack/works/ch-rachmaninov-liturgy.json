@@ -1,0 +1,35 @@
+{
+  "title": "聖ヨハネス・クリソストモスの典礼 作品31",
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninov, Sergei",
+  "kind": "chorus",
+  "year_written": 1910,
+  "duration_min": 70,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "ch-rachmaninov-liturgy",
+  "note": "★★無伴奏。★曲数（20曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全20曲（★曲名は 入れて いません）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

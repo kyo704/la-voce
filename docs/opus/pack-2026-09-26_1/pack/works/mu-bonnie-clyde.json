@@ -1,0 +1,157 @@
+{
+  "title": "ボニー＆クライド",
+  "title_original": "Bonnie & Clyde",
+  "composer": "フランク・ワイルドホーン",
+  "kind": "musical",
+  "year_written": 2011,
+  "duration_min": 140,
+  "edition": "★ブロードウェイ版（2011）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-bonnie-clyde",
+  "note": "★作詞 ドン・ブラック ／ 脚本 アイヴァン・メンチェル",
+  "roles": [
+    {
+      "label": "ボニー・パーカー"
+    },
+    {
+      "label": "クライド・バロウ"
+    },
+    {
+      "label": "バック・バロウ"
+    },
+    {
+      "label": "ブランチ"
+    },
+    {
+      "label": "テッド"
+    },
+    {
+      "label": "牧師"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "子どもの頃の夢",
+      "group_label": "第1幕",
+      "roles": [
+        "ボニー・パーカー",
+        "クライド・バロウ"
+      ]
+    },
+    {
+      "label": "出会いと最初の罪",
+      "group_label": "第1幕",
+      "roles": [
+        "ボニー・パーカー",
+        "クライド・バロウ",
+        "バック・バロウ"
+      ]
+    },
+    {
+      "label": "追われる日々",
+      "group_label": "第2幕",
+      "roles": [
+        "ボニー・パーカー",
+        "クライド・バロウ",
+        "ブランチ",
+        "テッド"
+      ]
+    },
+    {
+      "label": "★結末",
+      "group_label": "第2幕",
+      "roles": [
+        "ボニー・パーカー",
+        "クライド・バロウ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "title": "怪談牡丹燈籠",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1892,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-botan-doro",
+  "note": "★歌舞伎 ／ 作者 三遊亭円朝（原作） ／ ★★音（下駄の音）が 仕掛け ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "萩原新三郎"
+    },
+    {
+      "label": "お露"
+    },
+    {
+      "label": "お米"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "伴蔵"
+    },
+    {
+      "label": "お峰"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★萩原新三郎とお露",
+      "group_label": "序幕",
+      "roles": [
+        "萩原新三郎",
+        "お露",
+        "お米",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★牡丹燈籠（★カラン コロンの下駄の音）",
+      "group_label": "二幕",
+      "roles": [
+        "お露",
+        "お米",
+        "萩原新三郎",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★伴蔵とお峰",
+      "group_label": "三幕",
+      "roles": [
+        "伴蔵",
+        "お峰",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

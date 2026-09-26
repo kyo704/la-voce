@@ -1,0 +1,97 @@
+{
+  "title": "神明恵和合取組",
+  "aliases": [
+    "め組の喧嘩"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1890,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-megumi-kenka",
+  "note": "★歌舞伎 ／ 作者 竹柴其水 ／ ★★大人数の 立廻り ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "辰五郎"
+    },
+    {
+      "label": "九竜山浪右衛門"
+    },
+    {
+      "label": "四ツ車大八"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "お仲"
+    },
+    {
+      "label": "又八"
+    },
+    {
+      "label": "鳶の者"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★品川島崎楼（★口論の始まり）",
+      "group_label": "序幕",
+      "roles": [
+        "辰五郎",
+        "九竜山浪右衛門",
+        "四ツ車大八",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★辰五郎内（★女房お仲との別れ）",
+      "group_label": "二幕",
+      "roles": [
+        "辰五郎",
+        "お仲",
+        "又八",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★神明鳥居前 大喧嘩（★鳶と力士の乱闘）",
+      "group_label": "三幕",
+      "roles": [
+        "辰五郎",
+        "四ツ車大八",
+        "九竜山浪右衛門",
+        "鳶の者",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

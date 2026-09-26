@@ -1,0 +1,175 @@
+{
+  "title": "セビリアの理髪師（パイジエッロ）",
+  "title_original": "Il barbiere di Siviglia",
+  "composer": "パイジエッロ",
+  "composer_sort": "Paisiello, Giovanni",
+  "kind": "opera",
+  "year_written": 1782,
+  "duration_min": 135,
+  "language": "it",
+  "source": "hand",
+  "source_id": "barbiere-paisiello",
+  "note": "★ロッシーニ作の34年前。当時の人気作で、ロッシーニ作は当初『アルマヴィーヴァ』と題された",
+  "roles": [
+    {
+      "label": "ロジーナ"
+    },
+    {
+      "label": "アルマヴィーヴァ伯爵"
+    },
+    {
+      "label": "フィガロ"
+    },
+    {
+      "label": "バルトロ"
+    },
+    {
+      "label": "ドン・バジリオ"
+    },
+    {
+      "label": "スヴェーリァト"
+    },
+    {
+      "label": "ジョヴィネット"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ★伯爵のセレナードとフィガロの登場",
+      "group_label": "第1幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "フィガロ",
+        "スヴェーリァト",
+        "ジョヴィネット"
+      ]
+    },
+    {
+      "label": "第1幕 ロジーナの窓と手紙",
+      "group_label": "第1幕",
+      "roles": [
+        "ロジーナ",
+        "バルトロ",
+        "アルマヴィーヴァ伯爵"
+      ]
+    },
+    {
+      "label": "第2幕 兵士に変装した伯爵",
+      "group_label": "第2幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "バルトロ",
+        "ロジーナ",
+        "フィガロ"
+      ]
+    },
+    {
+      "label": "★第3幕 音楽の稽古（アロンゾと偽る）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルマヴィーヴァ伯爵",
+        "ロジーナ",
+        "バルトロ",
+        "ドン・バジリオ"
+      ]
+    },
+    {
+      "label": "★終曲（夜の婚礼と公証人）",
+      "group_label": "第4幕",
+      "roles": [
+        "ロジーナ",
+        "アルマヴィーヴァ伯爵",
+        "フィガロ",
+        "バルトロ",
+        "ドン・バジリオ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+ "title": "4つの最後の歌",
+ "title_original": "Vier letzte Lieder",
+ "composer": "R.シュトラウス",
+ "composer_sort": "Strauss, Richard",
+ "kind": "song_cycle",
+ "year_written": 1948,
+ "duration_min": 22,
+ "language": "de",
+ "source_id": "strauss-vierletzte",
+ "note": "★管弦楽つき。★ピアノでも 歌われます",
+ "roles": [
+  {
+   "label": "ソプラノ独唱"
+  },
+  {
+   "label": "管弦楽"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ファゴット",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "弦五部",
+   "count": 1,
+   "section": "strings"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. 春（Frühling）",
+   "group_label": "",
+   "roles": [
+    "ソプラノ独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "2. 9月（September）",
+   "group_label": "",
+   "roles": [
+    "ソプラノ独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "3. 眠りにつくとき（Beim Schlafengehen）",
+   "group_label": "",
+   "roles": [
+    "ソプラノ独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "4. 夕映えの中で（Im Abendrot）",
+   "group_label": "",
+   "roles": [
+    "ソプラノ独唱",
+    "管弦楽"
+   ]
+  }
+ ],
+ "source": "hand"
+}

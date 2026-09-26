@@ -1,0 +1,98 @@
+{
+  "title": "大川敵討",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1700,
+  "duration_min": 70,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-okawa-katakiuchi",
+  "note": "★組踊（琉球の歌舞劇） ／ 作者 田里朝直 ／ ★★組踊の 中で 最も よく 上演される 敵討物の1つ ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "谷茶の子"
+    },
+    {
+      "label": "富盛の子"
+    },
+    {
+      "label": "あまおへ（敵）"
+    },
+    {
+      "label": "乙樽"
+    },
+    {
+      "label": "供の者"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★父を討たれた兄弟が名乗る",
+      "group_label": "段",
+      "roles": [
+        "谷茶の子",
+        "富盛の子"
+      ]
+    },
+    {
+      "label": "★仇を探して旅に出る",
+      "group_label": "段",
+      "roles": [
+        "谷茶の子",
+        "富盛の子",
+        "供の者"
+      ]
+    },
+    {
+      "label": "★★乙樽の力を借りる",
+      "group_label": "段",
+      "roles": [
+        "谷茶の子",
+        "乙樽",
+        "富盛の子"
+      ]
+    },
+    {
+      "label": "★★大川での討入り",
+      "group_label": "段",
+      "roles": [
+        "谷茶の子",
+        "富盛の子",
+        "あまおへ（敵）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

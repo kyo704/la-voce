@@ -1,0 +1,243 @@
+{
+  "title": "アスペクツ・オブ・ラヴ",
+  "title_original": "Aspects of Love",
+  "composer": "ロイド・ウェッバー",
+  "composer_sort": "Lloyd Webber, Andrew",
+  "kind": "musical",
+  "year_written": 1989,
+  "duration_min": 140,
+  "edition": "1989 ロンドン初演版（★2023 ロンドン版で曲が整理される）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "aspects-of-love",
+  "note": "★作詞 ドン・ブラック／チャールズ・ハート ／ 脚本 ドン・ブラック／チャールズ・ハート ／ ★★デイヴィッド・ガーネットの小説による。★★全曲通し歌の室内劇",
+  "roles": [
+    {
+      "label": "アレックス・ディリンガム"
+    },
+    {
+      "label": "ローズ・ヴィベール"
+    },
+    {
+      "label": "ジョージ・ディリンガム"
+    },
+    {
+      "label": "ジュリエッタ・トラパーニ"
+    },
+    {
+      "label": "ジェニー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★ラヴ・チェンジズ・エヴリシング",
+      "group_label": "第1幕",
+      "roles": [
+        "アレックス・ディリンガム"
+      ]
+    },
+    {
+      "label": "M2 ★★パリの劇場（ローズとの出会い）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレックス・ディリンガム",
+        "ローズ・ヴィベール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★ピレネーの別荘（2人の夏）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレックス・ディリンガム",
+        "ローズ・ヴィベール"
+      ]
+    },
+    {
+      "label": "M4 ★★ジョージの到来とジュリエッタ",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョージ・ディリンガム",
+        "ジュリエッタ・トラパーニ",
+        "ローズ・ヴィベール"
+      ]
+    },
+    {
+      "label": "M5 ★★シーイング・イズ・ビリーヴィング",
+      "group_label": "第1幕",
+      "roles": [
+        "アレックス・ディリンガム",
+        "ローズ・ヴィベール"
+      ]
+    },
+    {
+      "label": "M6 ★★アレックスの銃（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "アレックス・ディリンガム",
+        "ローズ・ヴィベール",
+        "ジョージ・ディリンガム"
+      ]
+    },
+    {
+      "label": "M7 ★★13年後（ローズとジョージの娘ジェニー）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジェニー",
+        "ローズ・ヴィベール",
+        "ジョージ・ディリンガム"
+      ]
+    },
+    {
+      "label": "M8 ★★アンエクスペクテッド・ソング",
+      "group_label": "第2幕",
+      "roles": [
+        "ローズ・ヴィベール"
+      ]
+    },
+    {
+      "label": "M9 ★★アレックスの帰還とジェニーへの思い",
+      "group_label": "第2幕",
+      "roles": [
+        "アレックス・ディリンガム",
+        "ジェニー"
+      ]
+    },
+    {
+      "label": "M10 ★★ジョージの死",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョージ・ディリンガム",
+        "ローズ・ヴィベール",
+        "ジュリエッタ・トラパーニ"
+      ]
+    },
+    {
+      "label": "M11 ★★★終曲（ラヴ・チェンジズ・エヴリシングの再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "アレックス・ディリンガム",
+        "ローズ・ヴィベール",
+        "ジェニー",
+        "ジュリエッタ・トラパーニ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

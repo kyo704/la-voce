@@ -1,0 +1,259 @@
+{
+  "title": "リトル・ショップ・オブ・ホラーズ",
+  "title_original": "Little Shop of Horrors",
+  "composer": "アラン・メンケン",
+  "kind": "musical",
+  "year_written": 1982,
+  "duration_min": 110,
+  "edition": "★★1982 オフ・ブロードウェイ初演版（★★オードリーIIが勝つ結末）／★1986 映画版（★★人間が勝つ結末に変更）／★2003 ブロードウェイ版／★2019 オフ版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "little-shop-of-horrors",
+  "note": "★作詞 ハワード・アシュマン ／ 脚本 ハワード・アシュマン ／ ★★★結末が版で違う（初演版はオードリーIIの勝ち、映画版は人間の勝ち）。★オードリーIIは大きな人形＋声の役者",
+  "roles": [
+    {
+      "label": "シーモア・クレルボーン"
+    },
+    {
+      "label": "オードリー"
+    },
+    {
+      "label": "ムシュニク"
+    },
+    {
+      "label": "オリン・スクリヴェロ（歯科医）"
+    },
+    {
+      "label": "オードリーII（声）"
+    },
+    {
+      "label": "クリスタル"
+    },
+    {
+      "label": "ロネット"
+    },
+    {
+      "label": "シフォン"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★プロローグ（リトル・ショップ・オブ・ホラーズ）",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスタル",
+        "ロネット",
+        "シフォン"
+      ]
+    },
+    {
+      "label": "M2 ★★スキッド・ロウ（ダウンタウン）",
+      "group_label": "第1幕",
+      "roles": [
+        "シーモア・クレルボーン",
+        "オードリー",
+        "ムシュニク",
+        "クリスタル",
+        "ロネット",
+        "シフォン"
+      ]
+    },
+    {
+      "label": "M3 ★★★ダ・ドゥー（不思議な植物）",
+      "group_label": "第1幕",
+      "roles": [
+        "シーモア・クレルボーン",
+        "クリスタル",
+        "ロネット",
+        "シフォン"
+      ]
+    },
+    {
+      "label": "M4 ★★グロウ・フォー・ミー（★血を与える）",
+      "group_label": "第1幕",
+      "roles": [
+        "シーモア・クレルボーン",
+        "オードリーII（声）"
+      ]
+    },
+    {
+      "label": "M5 ★★ヤ・ネヴァー・ノウ",
+      "group_label": "第1幕",
+      "roles": [
+        "ムシュニク",
+        "シーモア・クレルボーン",
+        "クリスタル",
+        "ロネット",
+        "シフォン"
+      ]
+    },
+    {
+      "label": "M6 ★★★サムホエア・ザッツ・グリーン",
+      "group_label": "第1幕",
+      "roles": [
+        "オードリー"
+      ]
+    },
+    {
+      "label": "M7 ★★★ビー・ア・デンティスト（歯科医の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "オリン・スクリヴェロ（歯科医）",
+        "クリスタル",
+        "ロネット",
+        "シフォン"
+      ]
+    },
+    {
+      "label": "M8 ★★★フィード・ミー（ゲット・イット）",
+      "group_label": "第1幕",
+      "roles": [
+        "オードリーII（声）",
+        "シーモア・クレルボーン"
+      ]
+    },
+    {
+      "label": "M9 ★★★歯科医の死（Now It's Just the Gas ─ 第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "オリン・スクリヴェロ（歯科医）",
+        "シーモア・クレルボーン"
+      ]
+    },
+    {
+      "label": "M10 ★★カル・バック・イン・ザ・モーニング",
+      "group_label": "第2幕",
+      "roles": [
+        "シーモア・クレルボーン",
+        "オードリー"
+      ]
+    },
+    {
+      "label": "M11 ★★★スッデンリー・シーモア",
+      "group_label": "第2幕",
+      "roles": [
+        "オードリー",
+        "シーモア・クレルボーン",
+        "クリスタル",
+        "ロネット",
+        "シフォン"
+      ]
+    },
+    {
+      "label": "M12 ★★ムシュニクの死（Suppertime）",
+      "group_label": "第2幕",
+      "roles": [
+        "オードリーII（声）",
+        "ムシュニク",
+        "シーモア・クレルボーン"
+      ]
+    },
+    {
+      "label": "M13 ★★★オードリーの死（Somewhere That's Green の再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "オードリー",
+        "シーモア・クレルボーン"
+      ]
+    },
+    {
+      "label": "M14 ★★★終曲（ドント・フィード・ザ・プランツ）",
+      "group_label": "第2幕",
+      "roles": [
+        "オードリーII（声）",
+        "クリスタル",
+        "ロネット",
+        "シフォン",
+        "シーモア・クレルボーン",
+        "オードリー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

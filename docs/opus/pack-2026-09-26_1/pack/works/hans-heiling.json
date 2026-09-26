@@ -1,0 +1,197 @@
+{
+  "title": "ハンス・ハイリング",
+  "title_original": "Hans Heiling",
+  "composer": "マルシュナー",
+  "composer_sort": "Marschner, Heinrich",
+  "kind": "opera",
+  "year_written": 1833,
+  "duration_min": 145,
+  "language": "de",
+  "source": "hand",
+  "source_id": "hans-heiling",
+  "roles": [
+    {
+      "label": "ハンス・ハイリング"
+    },
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "コンラート"
+    },
+    {
+      "label": "ゲルトルート"
+    },
+    {
+      "label": "地の精の女王（母）"
+    },
+    {
+      "label": "小地の精"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 地の底（母と別れて地上へ）",
+      "group_label": "序幕",
+      "roles": [
+        "ハンス・ハイリング",
+        "地の精の女王（母）",
+        "小地の精",
+        "合唱"
+      ]
+    },
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 アンナの家（魔法の本を焼く）",
+      "group_label": "第1幕",
+      "roles": [
+        "ハンス・ハイリング",
+        "アンナ",
+        "ゲルトルート"
+      ]
+    },
+    {
+      "label": "第1幕 ★村の祝いとコンラートの登場",
+      "group_label": "第1幕",
+      "roles": [
+        "アンナ",
+        "コンラート",
+        "ハンス・ハイリング",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 森（地の精の女王がアンナに正体を告げる）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ",
+        "地の精の女王（母）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アンナの気絶とコンラートの救い",
+      "group_label": "第2幕",
+      "roles": [
+        "アンナ",
+        "コンラート",
+        "ハンス・ハイリング"
+      ]
+    },
+    {
+      "label": "★第3幕 婚礼の宴とハイリングの乱入",
+      "group_label": "第3幕",
+      "roles": [
+        "ハンス・ハイリング",
+        "アンナ",
+        "コンラート",
+        "ゲルトルート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（ハイリングは地の底へ帰る）",
+      "group_label": "第3幕",
+      "roles": [
+        "ハンス・ハイリング",
+        "地の精の女王（母）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

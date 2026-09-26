@@ -1,0 +1,76 @@
+{
+  "title": "トロイアの女たち",
+  "composer": "エウリピデス",
+  "composer_sort": "Euripides",
+  "kind": "drama",
+  "year_written": -415,
+  "duration_min": 110,
+  "language": "el",
+  "source": "hand",
+  "source_id": "dr-trojan-women",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ヘカベー"
+    },
+    {
+      "label": "カッサンドラ"
+    },
+    {
+      "label": "アンドロマケー"
+    },
+    {
+      "label": "ヘレネー"
+    },
+    {
+      "label": "メネラオス"
+    },
+    {
+      "label": "合唱団（コロス）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "落城のあとの女たち",
+      "group_label": "一幕物",
+      "roles": [
+        "ヘカベー",
+        "合唱団（コロス）"
+      ]
+    },
+    {
+      "label": "★カッサンドラの予言",
+      "group_label": "一幕物",
+      "roles": [
+        "カッサンドラ",
+        "ヘカベー"
+      ]
+    },
+    {
+      "label": "★★アンドロマケーと子の別れ",
+      "group_label": "一幕物",
+      "roles": [
+        "アンドロマケー",
+        "ヘカベー"
+      ]
+    },
+    {
+      "label": "★ヘレネーの弁明",
+      "group_label": "一幕物",
+      "roles": [
+        "ヘレネー",
+        "メネラオス",
+        "ヘカベー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

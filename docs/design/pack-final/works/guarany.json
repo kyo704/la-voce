@@ -1,0 +1,197 @@
+{
+  "title": "グアラニー族",
+  "title_original": "Il Guarany",
+  "composer": "ゴメス",
+  "composer_sort": "Gomes, Antônio Carlos",
+  "kind": "opera",
+  "year_written": 1870,
+  "duration_min": 150,
+  "language": "it",
+  "source": "hand",
+  "source_id": "guarany",
+  "note": "★ブラジルの作曲家によるイタリア語オペラ",
+  "roles": [
+    {
+      "label": "チェチーリア"
+    },
+    {
+      "label": "ペーリ"
+    },
+    {
+      "label": "ゴンザーレス"
+    },
+    {
+      "label": "ドン・アントーニオ・デ・マリス"
+    },
+    {
+      "label": "ドン・アルヴァーロ"
+    },
+    {
+      "label": "カチーケ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ドン・アントーニオの館（ポルトガルの冒険者たち）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・アントーニオ・デ・マリス",
+        "ドン・アルヴァーロ",
+        "ゴンザーレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ペーリの登場（チェチーリアを救った男）",
+      "group_label": "第1幕",
+      "roles": [
+        "ペーリ",
+        "チェチーリア",
+        "ドン・アントーニオ・デ・マリス"
+      ]
+    },
+    {
+      "label": "★第1幕 ゴンザーレスの企み（銀鉱と誘拐）",
+      "group_label": "第1幕",
+      "roles": [
+        "ゴンザーレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ペーリとチェチーリアの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ペーリ",
+        "チェチーリア"
+      ]
+    },
+    {
+      "label": "第2幕 ゴンザーレスの襲撃の失敗",
+      "group_label": "第2幕",
+      "roles": [
+        "ゴンザーレス",
+        "ペーリ",
+        "ドン・アントーニオ・デ・マリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 アイモレ族の陣（カチーケとペーリの捕縛）",
+      "group_label": "第3幕",
+      "roles": [
+        "カチーケ",
+        "ペーリ",
+        "チェチーリア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（館の爆破・ペーリとチェチーリアだけが残る）",
+      "group_label": "第4幕",
+      "roles": [
+        "ペーリ",
+        "チェチーリア",
+        "ドン・アントーニオ・デ・マリス",
+        "ゴンザーレス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

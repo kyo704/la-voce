@@ -1,0 +1,183 @@
+{
+  "title": "セルヴィリア",
+  "title_original": "Сервилия",
+  "composer": "リムスキー＝コルサコフ",
+  "composer_sort": "Rimsky-Korsakov, Nikolai",
+  "kind": "opera",
+  "year_written": 1902,
+  "duration_min": 150,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "servilia",
+  "roles": [
+    {
+      "label": "セルヴィリア"
+    },
+    {
+      "label": "ヴァレリー・ルフス"
+    },
+    {
+      "label": "ソラーヌス"
+    },
+    {
+      "label": "エギナ"
+    },
+    {
+      "label": "トラーゼア"
+    },
+    {
+      "label": "アフラニウス"
+    },
+    {
+      "label": "モントゥス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 ローマの広場（護民官トラーゼアの裁き）",
+      "group_label": "第1幕",
+      "roles": [
+        "トラーゼア",
+        "セルヴィリア",
+        "ソラーヌス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ヴァレリーとセルヴィリアの出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴァレリー・ルフス",
+        "セルヴィリア"
+      ]
+    },
+    {
+      "label": "第2幕 エギナの魔術（呪いの企て）",
+      "group_label": "第2幕",
+      "roles": [
+        "エギナ",
+        "ヴァレリー・ルフス",
+        "モントゥス"
+      ]
+    },
+    {
+      "label": "第3幕 トラーゼアの家（父の死の宣告）",
+      "group_label": "第3幕",
+      "roles": [
+        "トラーゼア",
+        "セルヴィリア",
+        "アフラニウス"
+      ]
+    },
+    {
+      "label": "第4幕 ★キリスト教徒の集い（セルヴィリアの改宗）",
+      "group_label": "第4幕",
+      "roles": [
+        "セルヴィリア",
+        "ヴァレリー・ルフス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5幕 終曲（セルヴィリアの死とヴァレリーの改心）",
+      "group_label": "第5幕",
+      "roles": [
+        "セルヴィリア",
+        "ヴァレリー・ルフス",
+        "エギナ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

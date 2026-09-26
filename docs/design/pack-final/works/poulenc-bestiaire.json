@@ -1,0 +1,79 @@
+{
+  "title": "動物詩集",
+  "title_original": "Le bestiaire",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "song_cycle",
+  "year_written": 1919,
+  "duration_min": 7,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "poulenc-bestiaire",
+  "note": "★作詩 アポリネール ／  ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. らくだ（Le dromadaire）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. チベットの山羊（La chèvre du Thibet）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. ばった（La sauterelle）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. いるか（Le dauphin）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. ざりがに（L’écrevisse）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. こい（La carpe）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "室内合奏（またはピアノ）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

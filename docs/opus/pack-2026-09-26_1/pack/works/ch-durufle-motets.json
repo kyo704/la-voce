@@ -1,0 +1,56 @@
+{
+  "title": "グレゴリオ聖歌の主題による4つのモテット",
+  "composer": "デュリュフレ",
+  "composer_sort": "Duruflé, Maurice",
+  "kind": "chorus",
+  "year_written": 1960,
+  "duration_min": 10,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-durufle-motets",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. ウビ・カリタス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "2. トタ・プルクラ・エス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "3. トゥ・エス・ペトルス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "4. タントゥム・エルゴ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

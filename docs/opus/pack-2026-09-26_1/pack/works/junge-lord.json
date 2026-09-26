@@ -1,0 +1,222 @@
+{
+  "title": "若き貴族",
+  "title_original": "Der junge Lord",
+  "composer": "ヘンツェ",
+  "composer_sort": "Henze, Hans Werner",
+  "kind": "opera",
+  "year_written": 1965,
+  "duration_min": 140,
+  "language": "de",
+  "source": "hand",
+  "source_id": "junge-lord",
+  "roles": [
+    {
+      "label": "ルイーゼ"
+    },
+    {
+      "label": "ヴィルヘルム"
+    },
+    {
+      "label": "エドガー卿"
+    },
+    {
+      "label": "バルラト夫人"
+    },
+    {
+      "label": "ザイス市長"
+    },
+    {
+      "label": "ハッテリヒ牧師"
+    },
+    {
+      "label": "シェルツ学校長"
+    },
+    {
+      "label": "エドガー卿の秘書"
+    },
+    {
+      "label": "ベグォニア"
+    },
+    {
+      "label": "イーダ"
+    },
+    {
+      "label": "猿（ロード・バラット）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ヒュルスドルフ＝ゴータの広場（エドガー卿の到着）",
+      "group_label": "第1幕",
+      "roles": [
+        "バルラト夫人",
+        "ザイス市長",
+        "ハッテリヒ牧師",
+        "シェルツ学校長",
+        "エドガー卿の秘書",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ルイーゼとヴィルヘルムの恋",
+      "group_label": "第1幕",
+      "roles": [
+        "ルイーゼ",
+        "ヴィルヘルム",
+        "イーダ"
+      ]
+    },
+    {
+      "label": "★第2幕 深夜の家から聞こえる叫び（町の噂）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベグォニア",
+        "エドガー卿の秘書",
+        "バルラト夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 サーカスの追い出しと町の当惑",
+      "group_label": "第2幕",
+      "roles": [
+        "ザイス市長",
+        "エドガー卿の秘書",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 若き貴族の登場（皆が真似をする）",
+      "group_label": "第2幕",
+      "roles": [
+        "猿（ロード・バラット）",
+        "バルラト夫人",
+        "ルイーゼ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 舞踏会（若き貴族とルイーゼの踊り）",
+      "group_label": "第3幕",
+      "roles": [
+        "猿（ロード・バラット）",
+        "ルイーゼ",
+        "ヴィルヘルム",
+        "エドガー卿",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（燕尾服が裂けて猿と分かる）",
+      "group_label": "第3幕",
+      "roles": [
+        "猿（ロード・バラット）",
+        "ルイーゼ",
+        "エドガー卿",
+        "バルラト夫人",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

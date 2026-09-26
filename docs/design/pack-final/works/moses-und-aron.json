@@ -1,0 +1,234 @@
+{
+  "title": "モーゼとアロン",
+  "title_original": "Moses und Aron",
+  "composer": "シェーンベルク",
+  "composer_sort": "Schoenberg, Arnold",
+  "kind": "opera",
+  "year_written": 1957,
+  "duration_min": 105,
+  "language": "de",
+  "source": "hand",
+  "source_id": "moses-und-aron",
+  "note": "★第3幕は作曲されず未完（詩のみ残る）。初演1954（演奏会）／1957（舞台）",
+  "roles": [
+    {
+      "label": "モーゼ"
+    },
+    {
+      "label": "アロン"
+    },
+    {
+      "label": "若い娘"
+    },
+    {
+      "label": "病んだ女"
+    },
+    {
+      "label": "若い男"
+    },
+    {
+      "label": "別の男"
+    },
+    {
+      "label": "エフライム"
+    },
+    {
+      "label": "祭司"
+    },
+    {
+      "label": "6人の独唱者"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 第1場 燃える柴の前のモーゼ（6人の声）",
+      "group_label": "第1幕",
+      "roles": [
+        "モーゼ",
+        "6人の独唱者"
+      ]
+    },
+    {
+      "label": "★第1幕 第2場 荒野でのアロンとの出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "モーゼ",
+        "アロン"
+      ]
+    },
+    {
+      "label": "★第1幕 第3場 民の待ち（噂）",
+      "group_label": "第1幕",
+      "roles": [
+        "若い娘",
+        "若い男",
+        "祭司",
+        "別の男",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 第4場 3つの奇蹟（杖・らい病の手・血の水）",
+      "group_label": "第1幕",
+      "roles": [
+        "モーゼ",
+        "アロン",
+        "若い娘",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★間奏曲（モーゼはどこに？）",
+      "group_label": "間奏曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 第1場 山の下の祭司たち",
+      "group_label": "第2幕",
+      "roles": [
+        "アロン",
+        "祭司",
+        "エフライム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 第3場 ★金の子牛と祭壇の場（乱舞・生け贄・4人の裸の処女）",
+      "group_label": "第2幕",
+      "roles": [
+        "アロン",
+        "若い娘",
+        "病んだ女",
+        "若い男",
+        "エフライム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 第4場 モーゼの帰還と子牛の消滅",
+      "group_label": "第2幕",
+      "roles": [
+        "モーゼ",
+        "アロン"
+      ]
+    },
+    {
+      "label": "★第2幕 第5場 モーゼとアロンの論争（像か思想か）",
+      "group_label": "第2幕",
+      "roles": [
+        "モーゼ",
+        "アロン"
+      ]
+    },
+    {
+      "label": "★終曲（おお、言葉よ、わたしに欠けている言葉よ）",
+      "group_label": "第2幕",
+      "roles": [
+        "モーゼ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

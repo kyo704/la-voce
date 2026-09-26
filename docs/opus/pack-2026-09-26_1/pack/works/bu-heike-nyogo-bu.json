@@ -1,0 +1,98 @@
+{
+  "title": "平家女護島（文楽）",
+  "aliases": [
+    "俊寛"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1719,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-heike-nyogo-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松門左衛門 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "俊寛"
+    },
+    {
+      "label": "丹波少将成経"
+    },
+    {
+      "label": "平判官康頼"
+    },
+    {
+      "label": "千鳥"
+    },
+    {
+      "label": "瀬尾太郎"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★鬼界ヶ島（★俊寛の残される）",
+      "group_label": "二段目",
+      "roles": [
+        "俊寛",
+        "丹波少将成経",
+        "平判官康頼",
+        "千鳥",
+        "瀬尾太郎",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★船を見送る俊寛",
+      "group_label": "二段目",
+      "roles": [
+        "俊寛",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

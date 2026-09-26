@@ -1,0 +1,64 @@
+{
+  "title": "川上",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kawakami",
+  "note": "★座頭狂言 ／ ★★重い曲。★★終わりは 妻に 手を引かれて 帰ります ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（夫（盲人））"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "川上の地蔵に願をかけて目が開く",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫（盲人））"
+      ]
+    },
+    {
+      "label": "妻と縁を切れば開くという告げを隠す",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫（盲人））",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "妻に知られて言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫（盲人））",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "また見えなくなり、二人で歩き出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫（盲人））",
+        "アド（妻）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "title": "悪魔の壁",
+  "title_original": "Čertova stěna",
+  "composer": "スメタナ",
+  "composer_sort": "Smetana, Bedřich",
+  "kind": "opera",
+  "year_written": 1882,
+  "duration_min": 140,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "devils-wall",
+  "roles": [
+    {
+      "label": "ヴォク・ヴィートコヴィツ"
+    },
+    {
+      "label": "ヤルミラ"
+    },
+    {
+      "label": "ザーヴィシュ"
+    },
+    {
+      "label": "ベネシ"
+    },
+    {
+      "label": "ラホミール"
+    },
+    {
+      "label": "ミハーレク"
+    },
+    {
+      "label": "カトゥシュカ"
+    },
+    {
+      "label": "ヘドヴィカ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ロゼンベルクの城（独り身のヴォク）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴォク・ヴィートコヴィツ",
+        "ベネシ",
+        "ミハーレク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ザーヴィシュの二役（僧と悪魔ラホミール）",
+      "group_label": "第1幕",
+      "roles": [
+        "ザーヴィシュ",
+        "ラホミール"
+      ]
+    },
+    {
+      "label": "第2幕 ヤルミラとヘドヴィカ",
+      "group_label": "第2幕",
+      "roles": [
+        "ヤルミラ",
+        "ヘドヴィカ",
+        "ミハーレク"
+      ]
+    },
+    {
+      "label": "第2幕 カトゥシュカの縁談の混乱",
+      "group_label": "第2幕",
+      "roles": [
+        "カトゥシュカ",
+        "ベネシ",
+        "ザーヴィシュ"
+      ]
+    },
+    {
+      "label": "★第3幕 悪魔がヴルタヴァをせき止める（悪魔の壁）",
+      "group_label": "第3幕",
+      "roles": [
+        "ラホミール",
+        "ヴォク・ヴィートコヴィツ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（十字架で壁が崩れ、婚礼）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴォク・ヴィートコヴィツ",
+        "ヘドヴィカ",
+        "ヤルミラ",
+        "ミハーレク",
+        "ザーヴィシュ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

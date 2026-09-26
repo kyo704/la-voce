@@ -1,0 +1,183 @@
+{
+  "title": "アルバのアスカーニオ",
+  "title_original": "Ascanio in Alba",
+  "aliases": [
+    "K.111"
+  ],
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "opera",
+  "year_written": 1771,
+  "duration_min": 160,
+  "language": "it",
+  "source": "hand",
+  "source_id": "ascanio-alba",
+  "note": "祝典劇（セレナータ・テアトラーレ）",
+  "roles": [
+    {
+      "label": "ヴェーネレ"
+    },
+    {
+      "label": "アスカーニオ"
+    },
+    {
+      "label": "シルヴィア"
+    },
+    {
+      "label": "アチェステ"
+    },
+    {
+      "label": "ファウノ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ヴェーネレの降臨と合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴェーネレ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アスカーニオへの言いつけ（姿を隠せ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴェーネレ",
+        "アスカーニオ"
+      ]
+    },
+    {
+      "label": "第1幕 アチェステとファウノ（羊飼いたち）",
+      "group_label": "第1幕",
+      "roles": [
+        "アチェステ",
+        "ファウノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 シルヴィアの夢の人",
+      "group_label": "第1幕",
+      "roles": [
+        "シルヴィア",
+        "アチェステ"
+      ]
+    },
+    {
+      "label": "第2幕 シルヴィアとアスカーニオの出会い",
+      "group_label": "第2幕",
+      "roles": [
+        "シルヴィア",
+        "アスカーニオ"
+      ]
+    },
+    {
+      "label": "第2幕 シルヴィアの試み（誠の心）",
+      "group_label": "第2幕",
+      "roles": [
+        "シルヴィア",
+        "ヴェーネレ",
+        "アチェステ"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（アルバの町の祝い）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴェーネレ",
+        "アスカーニオ",
+        "シルヴィア",
+        "アチェステ",
+        "ファウノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

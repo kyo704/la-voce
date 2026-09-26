@@ -1,0 +1,86 @@
+{
+  "title": "ワンス",
+  "title_original": "Once",
+  "composer": "グレン・ハンサード／マルケタ・イルグロヴァ",
+  "kind": "musical",
+  "year_written": 2012,
+  "duration_min": 130,
+  "edition": "★ブロードウェイ版（2012）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-spring-awakening-nashi",
+  "note": "★作詞 同 ／ 脚本 エンダ・ウォルシュ ／ ★★★出演者が 自分で 楽器を 弾きます（★ピットが ありません）",
+  "roles": [
+    {
+      "label": "ガイ"
+    },
+    {
+      "label": "ガール"
+    },
+    {
+      "label": "ビリー"
+    },
+    {
+      "label": "父"
+    },
+    {
+      "label": "母"
+    },
+    {
+      "label": "バルーカ"
+    },
+    {
+      "label": "アンドレイ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ダブリンの路上",
+      "group_label": "第1幕",
+      "roles": [
+        "ガイ",
+        "ガール"
+      ]
+    },
+    {
+      "label": "録音を思い立つ",
+      "group_label": "第1幕",
+      "roles": [
+        "ガイ",
+        "ガール",
+        "ビリー",
+        "バルーカ",
+        "アンドレイ"
+      ]
+    },
+    {
+      "label": "録音の夜",
+      "group_label": "第2幕",
+      "roles": [
+        "ガイ",
+        "ガール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★別れ",
+      "group_label": "第2幕",
+      "roles": [
+        "ガイ",
+        "ガール"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "出演者が持つ楽器（ギター・ヴァイオリン・チェロ・アコーディオン・ピアノ ほか）",
+      "count": 0,
+      "section": "other",
+      "note": "★★ピットは ありません。★役者が 弾きます。★人数は 版ごと"
+    }
+  ]
+}

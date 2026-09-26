@@ -1,0 +1,37 @@
+{
+  "title": "AIYANの歌",
+  "composer": "山田耕筰",
+  "composer_sort": "Yamada, Kosaku",
+  "kind": "song_cycle",
+  "year_written": 1922,
+  "duration_min": 15,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "yamada-aiyan",
+  "note": "★作詩 北原白秋 ／ ★★曲名を 全部 確かめられなかったので ★曲数（5曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全5曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

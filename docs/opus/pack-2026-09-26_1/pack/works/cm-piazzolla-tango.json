@@ -1,0 +1,66 @@
+{
+  "title": "タンゴの歴史",
+  "title_original": "Histoire du Tango",
+  "composer": "ピアソラ",
+  "composer_sort": "Piazzolla, Astor",
+  "kind": "chamber",
+  "year_written": 1986,
+  "duration_min": 20,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-piazzolla-tango",
+  "roles": [
+    {
+      "label": "フルート"
+    },
+    {
+      "label": "ギター"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. ボルデル 1900",
+      "group_label": "楽章",
+      "roles": [
+        "フルート",
+        "ギター"
+      ]
+    },
+    {
+      "label": "2. カフェ 1930",
+      "group_label": "楽章",
+      "roles": [
+        "フルート",
+        "ギター"
+      ]
+    },
+    {
+      "label": "3. ナイトクラブ 1960",
+      "group_label": "楽章",
+      "roles": [
+        "フルート",
+        "ギター"
+      ]
+    },
+    {
+      "label": "4. 現代のコンサート",
+      "group_label": "楽章",
+      "roles": [
+        "フルート",
+        "ギター"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

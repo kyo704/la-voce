@@ -1,0 +1,279 @@
+{
+  "title": "マイ・フェア・レディ",
+  "title_original": "My Fair Lady",
+  "composer": "フレデリック・ロウ",
+  "kind": "musical",
+  "year_written": 1956,
+  "duration_min": 180,
+  "edition": "1956 ブロードウェイ初演版（★1964 映画版・2018 リンカーン・センター版で結末の演出が違う）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "my-fair-lady",
+  "note": "★作詞 アラン・ジェイ・ラーナー ／ 脚本 アラン・ジェイ・ラーナー ／ ★バーナード・ショウ『ピグマリオン』による",
+  "roles": [
+    {
+      "label": "イライザ・ドゥーリトル"
+    },
+    {
+      "label": "ヒギンズ教授"
+    },
+    {
+      "label": "アルフレッド・P・ドゥーリトル"
+    },
+    {
+      "label": "ピカリング大佐"
+    },
+    {
+      "label": "フレディ・アインスフォード＝ヒル"
+    },
+    {
+      "label": "ヒギンズ夫人"
+    },
+    {
+      "label": "ピアス夫人"
+    },
+    {
+      "label": "ゾルタン・カルパティ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★ホワイ・キャント・ジ・イングリッシュ",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒギンズ教授",
+        "イライザ・ドゥーリトル",
+        "ピカリング大佐"
+      ]
+    },
+    {
+      "label": "M2 ★★ウドゥント・イット・ビー・ラヴァリー",
+      "group_label": "第1幕",
+      "roles": [
+        "イライザ・ドゥーリトル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★運が良ければ（With a Little Bit of Luck）",
+      "group_label": "第1幕",
+      "roles": [
+        "アルフレッド・P・ドゥーリトル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★アイム・アン・オーディナリー・マン",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒギンズ教授"
+      ]
+    },
+    {
+      "label": "M5 ★ジャスト・ユー・ウェイト",
+      "group_label": "第1幕",
+      "roles": [
+        "イライザ・ドゥーリトル"
+      ]
+    },
+    {
+      "label": "M6 ★★スペインの雨（The Rain in Spain）",
+      "group_label": "第1幕",
+      "roles": [
+        "イライザ・ドゥーリトル",
+        "ヒギンズ教授",
+        "ピカリング大佐"
+      ]
+    },
+    {
+      "label": "M7 ★★アイ・クッド・ハヴ・ダンスト・オール・ナイト",
+      "group_label": "第1幕",
+      "roles": [
+        "イライザ・ドゥーリトル",
+        "ピアス夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★アスコット・ガヴォット（競馬場）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★オン・ザ・ストリート・ホエア・ユー・リヴ",
+      "group_label": "第1幕",
+      "roles": [
+        "フレディ・アインスフォード＝ヒル"
+      ]
+    },
+    {
+      "label": "M10 ★第1幕終曲（大使館の舞踏会・カルパティの鑑定）",
+      "group_label": "第1幕",
+      "roles": [
+        "イライザ・ドゥーリトル",
+        "ヒギンズ教授",
+        "ゾルタン・カルパティ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★ユー・ディド・イット",
+      "group_label": "第2幕",
+      "roles": [
+        "ヒギンズ教授",
+        "ピカリング大佐",
+        "ピアス夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★ショウ・ミー",
+      "group_label": "第2幕",
+      "roles": [
+        "イライザ・ドゥーリトル",
+        "フレディ・アインスフォード＝ヒル"
+      ]
+    },
+    {
+      "label": "M13 ★★教会まで連れてって（Get Me to the Church on Time）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルフレッド・P・ドゥーリトル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★ア・ヒム・トゥ・ヒム（女ってやつは）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヒギンズ教授",
+        "ピカリング大佐"
+      ]
+    },
+    {
+      "label": "M15 ★ウィズアウト・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "イライザ・ドゥーリトル",
+        "ヒギンズ教授"
+      ]
+    },
+    {
+      "label": "M16 ★★アイヴ・グロウン・アカスタムド・トゥ・ハー・フェイス（終曲）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヒギンズ教授",
+        "イライザ・ドゥーリトル"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

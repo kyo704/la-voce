@@ -1,0 +1,97 @@
+{
+  "title": "ピンピノーネ",
+  "title_original": "Pimpinone",
+  "composer": "テレマン",
+  "composer_sort": "Telemann, Georg Philipp",
+  "kind": "opera",
+  "year_written": 1725,
+  "duration_min": 50,
+  "language": "de",
+  "source": "hand",
+  "source_id": "pimpinone",
+  "note": "★★『間奏劇』（インテルメッツォ）。★ドイツ語とイタリア語が混じる。★ペルゴレージ『奥様女中』と同じ型",
+  "roles": [
+    {
+      "label": "ヴェスペッタ"
+    },
+    {
+      "label": "ピンピノーネ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1の幕間 ヴェスペッタの就職（従順な女中を装う）",
+      "group_label": "第1の幕間",
+      "roles": [
+        "ヴェスペッタ",
+        "ピンピノーネ"
+      ]
+    },
+    {
+      "label": "★★二重唱（お給金と忠実さ）",
+      "group_label": "第1の幕間",
+      "roles": [
+        "ヴェスペッタ",
+        "ピンピノーネ"
+      ]
+    },
+    {
+      "label": "★第2の幕間 結婚の約束",
+      "group_label": "第2の幕間",
+      "roles": [
+        "ヴェスペッタ",
+        "ピンピノーネ"
+      ]
+    },
+    {
+      "label": "★★ピンピノーネのアリア（★女の声を真似る2つの声のアリア）",
+      "group_label": "第2の幕間",
+      "roles": [
+        "ピンピノーネ"
+      ]
+    },
+    {
+      "label": "★★第3の幕間 妻となったヴェスペッタの変わりよう",
+      "group_label": "第3の幕間",
+      "roles": [
+        "ヴェスペッタ",
+        "ピンピノーネ"
+      ]
+    },
+    {
+      "label": "★★終曲（夫の後悔の二重唱）",
+      "group_label": "第3の幕間",
+      "roles": [
+        "ヴェスペッタ",
+        "ピンピノーネ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（チェロ）",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

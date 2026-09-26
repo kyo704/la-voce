@@ -1,0 +1,183 @@
+{
+  "title": "浄瑠璃",
+  "title_original": "浄瑠璃",
+  "composer": "三木稔",
+  "composer_sort": "Miki, Minoru",
+  "kind": "opera",
+  "year_written": 1985,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "joruri",
+  "note": "★★『曽根崎心中』を書く近松自身が登場する。★邦楽器を大きく用いる",
+  "roles": [
+    {
+      "label": "お初"
+    },
+    {
+      "label": "徳兵衛"
+    },
+    {
+      "label": "近松門左衛門"
+    },
+    {
+      "label": "九平次"
+    },
+    {
+      "label": "亭主"
+    },
+    {
+      "label": "太夫"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★第1幕 近松の机（書きかけの浄瑠璃）",
+      "group_label": "第1幕",
+      "roles": [
+        "近松門左衛門",
+        "太夫"
+      ]
+    },
+    {
+      "label": "★第1幕 お初と徳兵衛（劇の中へ）",
+      "group_label": "第1幕",
+      "roles": [
+        "お初",
+        "徳兵衛",
+        "近松門左衛門"
+      ]
+    },
+    {
+      "label": "★第2幕 天満屋（九平次の罠）",
+      "group_label": "第2幕",
+      "roles": [
+        "お初",
+        "徳兵衛",
+        "九平次",
+        "亭主"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★近松が登場人物に語りかける",
+      "group_label": "第2幕",
+      "roles": [
+        "近松門左衛門",
+        "お初",
+        "徳兵衛"
+      ]
+    },
+    {
+      "label": "★★第3幕 道行（天神森）",
+      "group_label": "第3幕",
+      "roles": [
+        "お初",
+        "徳兵衛",
+        "太夫",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（★近松が2人を死なせる／死なせないの葛藤）",
+      "group_label": "第3幕",
+      "roles": [
+        "近松門左衛門",
+        "お初",
+        "徳兵衛",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "邦楽器（尺八・箏・三味線など）",
+      "count": 3,
+      "section": "other",
+      "note": "編成は作品ごと"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

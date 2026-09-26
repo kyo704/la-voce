@@ -1,0 +1,112 @@
+{
+  "title": "三人吉三廓初買",
+  "aliases": [
+    "三人吉三"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1860,
+  "duration_min": 160,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-sannin-kichisa",
+  "note": "★歌舞伎 ／ 作者 二代目河竹新七（黙阿弥） ／ ★★★『月も朧に』の名せりふ。★★女装のお嬢吉三は女方が演じる ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "お坊吉三"
+    },
+    {
+      "label": "お嬢吉三"
+    },
+    {
+      "label": "和尚吉三"
+    },
+    {
+      "label": "十三郎"
+    },
+    {
+      "label": "おとせ"
+    },
+    {
+      "label": "土左衛門伝吉"
+    },
+    {
+      "label": "研師の与九郎"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★序幕 大川端庚申塚（★『月も朧に白魚の』のせりふ）",
+      "group_label": "序幕",
+      "roles": [
+        "お嬢吉三",
+        "お坊吉三",
+        "和尚吉三",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "★第2幕 割下水の伝吉内",
+      "group_label": "第2幕",
+      "roles": [
+        "土左衛門伝吉",
+        "十三郎",
+        "おとせ",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★第3幕 巣鴨吉祥院（★3人の義兄弟の縁）",
+      "group_label": "第3幕",
+      "roles": [
+        "和尚吉三",
+        "お坊吉三",
+        "お嬢吉三",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★第4幕 本郷火の見櫓（★雪の立廻りと3人の死）",
+      "group_label": "第4幕",
+      "roles": [
+        "お坊吉三",
+        "お嬢吉三",
+        "和尚吉三",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

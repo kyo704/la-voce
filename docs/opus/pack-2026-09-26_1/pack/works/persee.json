@@ -1,0 +1,202 @@
+{
+  "title": "ペルセ",
+  "title_original": "Persée",
+  "composer": "リュリ",
+  "composer_sort": "Lully, Jean-Baptiste",
+  "kind": "opera",
+  "year_written": 1682,
+  "duration_min": 175,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "persee",
+  "roles": [
+    {
+      "label": "ペルセ"
+    },
+    {
+      "label": "アンドロメード"
+    },
+    {
+      "label": "メリュス"
+    },
+    {
+      "label": "フィネ"
+    },
+    {
+      "label": "カシオペ"
+    },
+    {
+      "label": "セフェ"
+    },
+    {
+      "label": "メデューズ"
+    },
+    {
+      "label": "ミネルヴ"
+    },
+    {
+      "label": "メルキュール"
+    },
+    {
+      "label": "エウリアール"
+    },
+    {
+      "label": "スタノー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕（★ヴェルテュ＝徳の讃歌）",
+      "group_label": "序幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 メリュスとフィネの求婚とアンドロメードの心",
+      "group_label": "第1幕",
+      "roles": [
+        "アンドロメード",
+        "メリュス",
+        "フィネ",
+        "カシオペ",
+        "セフェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ミネルヴがペルセに武具を与える",
+      "group_label": "第2幕",
+      "roles": [
+        "ペルセ",
+        "ミネルヴ",
+        "メルキュール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★メデューズの場（★3人のゴルゴンの三重唱と首を斬る）",
+      "group_label": "第3幕",
+      "roles": [
+        "ペルセ",
+        "メデューズ",
+        "エウリアール",
+        "スタノー"
+      ]
+    },
+    {
+      "label": "★★第4幕 ★海の怪物の生け贄（岩に縛られたアンドロメード）",
+      "group_label": "第4幕",
+      "roles": [
+        "アンドロメード",
+        "ペルセ",
+        "カシオペ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 怪物退治",
+      "group_label": "第4幕",
+      "roles": [
+        "ペルセ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第5幕 フィネの襲撃とメデューズの首",
+      "group_label": "第5幕",
+      "roles": [
+        "フィネ",
+        "ペルセ",
+        "メリュス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（婚礼と天上の祝い）",
+      "group_label": "第5幕",
+      "roles": [
+        "ペルセ",
+        "アンドロメード",
+        "ミネルヴ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

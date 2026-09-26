@@ -1,0 +1,250 @@
+{
+  "title": "スイート・チャリティ",
+  "title_original": "Sweet Charity",
+  "composer": "サイ・コールマン",
+  "kind": "musical",
+  "year_written": 1966,
+  "duration_min": 150,
+  "edition": "1966 ブロードウェイ初演版（★1986／2005 リバイバル版。★1969 映画版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "sweet-charity",
+  "note": "★作詞 ドロシー・フィールズ ／ 脚本 ニール・サイモン ／ ★フェリーニの映画『カビリアの夜』による。★振付ボブ・フォッシー",
+  "roles": [
+    {
+      "label": "チャリティ・ホープ・ヴァレンタイン"
+    },
+    {
+      "label": "オスカー・リンドクイスト"
+    },
+    {
+      "label": "ニッキー"
+    },
+    {
+      "label": "ヘレン"
+    },
+    {
+      "label": "ヴィットリオ・ヴィダル"
+    },
+    {
+      "label": "ウルスラ"
+    },
+    {
+      "label": "ハーマン"
+    },
+    {
+      "label": "ダディ・ブルベック"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★ユー・シュッド・シー・ユアセルフ",
+      "group_label": "第1幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン"
+      ]
+    },
+    {
+      "label": "M2 ★★★ビッグ・スペンダー",
+      "group_label": "第1幕",
+      "roles": [
+        "ニッキー",
+        "ヘレン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★ヴィットリオとの一夜（If My Friends Could See Me Now）",
+      "group_label": "第1幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン"
+      ]
+    },
+    {
+      "label": "M4 ★★リッチマン（Rich Man's Frug ─ 踊りだけの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ゼアズ・ガッタ・ビー・サムシング・ベター・ザン・ジス",
+      "group_label": "第1幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン",
+        "ニッキー",
+        "ヘレン"
+      ]
+    },
+    {
+      "label": "M6 ★★エレベーターの場（オスカーとの出会い）",
+      "group_label": "第1幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン",
+        "オスカー・リンドクイスト"
+      ]
+    },
+    {
+      "label": "M7 ★★アイム・ザ・ブレイヴェスト・インディヴィジュアル（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン",
+        "オスカー・リンドクイスト"
+      ]
+    },
+    {
+      "label": "M8 ★★★ザ・リズム・オブ・ライフ（ダディ・ブルベックの教会）",
+      "group_label": "第2幕",
+      "roles": [
+        "ダディ・ブルベック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ベイビー、ドリーム・ユア・ドリーム",
+      "group_label": "第2幕",
+      "roles": [
+        "ニッキー",
+        "ヘレン"
+      ]
+    },
+    {
+      "label": "M10 ★★★ホエア・アム・アイ・ゴーイング？",
+      "group_label": "第2幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン"
+      ]
+    },
+    {
+      "label": "M11 ★★アイム・ア・ブラス・バンド",
+      "group_label": "第2幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★アイ・ラヴ・トゥ・クライ・アット・ウェディングス",
+      "group_label": "第2幕",
+      "roles": [
+        "ハーマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（オスカーに捨てられ、それでも生きる）",
+      "group_label": "第2幕",
+      "roles": [
+        "チャリティ・ホープ・ヴァレンタイン",
+        "オスカー・リンドクイスト"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

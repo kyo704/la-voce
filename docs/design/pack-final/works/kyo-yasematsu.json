@@ -1,0 +1,57 @@
+{
+  "title": "痩松",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-yasematsu",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（山賊）"
+    },
+    {
+      "label": "アド（女）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "山賊が道で女を脅す",
+      "group_label": "段",
+      "roles": [
+        "シテ（山賊）",
+        "アド（女）"
+      ]
+    },
+    {
+      "label": "女が薙刀を取り上げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（山賊）",
+        "アド（女）"
+      ]
+    },
+    {
+      "label": "逆に脅されて着物を取られる",
+      "group_label": "段",
+      "roles": [
+        "シテ（山賊）",
+        "アド（女）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

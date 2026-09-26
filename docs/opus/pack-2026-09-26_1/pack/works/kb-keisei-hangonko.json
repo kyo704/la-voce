@@ -1,0 +1,92 @@
+{
+  "title": "傾城反魂香",
+  "aliases": [
+    "吃又",
+    "土佐将監閑居"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1708,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-keisei-hangonko",
+  "note": "★歌舞伎 ／ 作者 近松門左衛門 ／ ★★★言葉の不自由な絵師の話。★上演では 扱いに 気を配ります ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "浮世又平"
+    },
+    {
+      "label": "おとく"
+    },
+    {
+      "label": "土佐将監光信"
+    },
+    {
+      "label": "修理之助"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★土佐将監閑居（吃又）（★又平とおとく）",
+      "group_label": "上",
+      "roles": [
+        "浮世又平",
+        "おとく",
+        "土佐将監光信",
+        "修理之助",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★吃又 手水鉢に自画像が抜ける",
+      "group_label": "上",
+      "roles": [
+        "浮世又平",
+        "おとく",
+        "土佐将監光信",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★吃又 幕切れ（★名字を許される・喜びの舞）",
+      "group_label": "上",
+      "roles": [
+        "浮世又平",
+        "おとく",
+        "土佐将監光信",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

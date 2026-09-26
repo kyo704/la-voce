@@ -1,0 +1,300 @@
+{
+  "title": "ジーザス・クライスト・スーパースター",
+  "title_original": "Jesus Christ Superstar",
+  "composer": "ロイド・ウェッバー",
+  "composer_sort": "Lloyd Webber, Andrew",
+  "kind": "musical",
+  "year_written": 1971,
+  "duration_min": 95,
+  "edition": "★★1970 レコード版が先（舞台は1971 ブロードウェイ）／★1996 ロンドン版／★2012 アリーナ・ツアー版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "jesus-christ-superstar",
+  "note": "★作詞 ティム・ライス ／ 脚本 （通し歌の作・台詞なし） ／ ★★全曲通し歌（sung-through）で台詞がない。★『ロック・オペラ』として発表された",
+  "roles": [
+    {
+      "label": "イエス"
+    },
+    {
+      "label": "ユダ"
+    },
+    {
+      "label": "マリア（マグダラのマリア）"
+    },
+    {
+      "label": "ピラト"
+    },
+    {
+      "label": "カヤパ"
+    },
+    {
+      "label": "アンナス"
+    },
+    {
+      "label": "ヘロデ王"
+    },
+    {
+      "label": "ペテロ"
+    },
+    {
+      "label": "シモン・ゼロテ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★序曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "M2 ★★ヘヴン・オン・ゼア・マインズ",
+      "group_label": "第1幕",
+      "roles": [
+        "ユダ"
+      ]
+    },
+    {
+      "label": "M3 ★★ホワッツ・ザ・バズ／ストレンジ・シング・ミスティファイング",
+      "group_label": "第1幕",
+      "roles": [
+        "マリア（マグダラのマリア）",
+        "イエス",
+        "ユダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ジス・ジーザス・マスト・ダイ",
+      "group_label": "第1幕",
+      "roles": [
+        "カヤパ",
+        "アンナス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ホサナ",
+      "group_label": "第1幕",
+      "roles": [
+        "イエス",
+        "カヤパ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★シモン・ゼロテ／プア・エルサレム",
+      "group_label": "第1幕",
+      "roles": [
+        "シモン・ゼロテ",
+        "イエス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ピラトの夢",
+      "group_label": "第1幕",
+      "roles": [
+        "ピラト"
+      ]
+    },
+    {
+      "label": "M8 ★★神殿の場（両替人の追い出し）",
+      "group_label": "第1幕",
+      "roles": [
+        "イエス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★エヴリシングズ・オールライト／アイ・ドント・ノウ・ハウ・トゥ・ラヴ・ヒム",
+      "group_label": "第1幕",
+      "roles": [
+        "マリア（マグダラのマリア）",
+        "イエス",
+        "ユダ"
+      ]
+    },
+    {
+      "label": "M10 ★★ダムド・フォー・オール・タイム／血の代金（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ユダ",
+        "カヤパ",
+        "アンナス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★最後の晩餐",
+      "group_label": "第2幕",
+      "roles": [
+        "イエス",
+        "ユダ",
+        "ペテロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★ゲッセマネ（Gethsemane ─ I Only Want to Say）",
+      "group_label": "第2幕",
+      "roles": [
+        "イエス"
+      ]
+    },
+    {
+      "label": "M13 ★★裏切りと逮捕",
+      "group_label": "第2幕",
+      "roles": [
+        "ユダ",
+        "イエス",
+        "ペテロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★ペテロの否認",
+      "group_label": "第2幕",
+      "roles": [
+        "ペテロ",
+        "マリア（マグダラのマリア）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M15 ★★ヘロデ王の歌（ラグタイム）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヘロデ王",
+        "イエス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M16 ★★ユダの死",
+      "group_label": "第2幕",
+      "roles": [
+        "ユダ",
+        "カヤパ",
+        "アンナス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M17 ★★★裁判と39回の鞭打ち",
+      "group_label": "第2幕",
+      "roles": [
+        "ピラト",
+        "イエス",
+        "カヤパ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M18 ★★★スーパースター",
+      "group_label": "第2幕",
+      "roles": [
+        "ユダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M19 ★★十字架（The Crucifixion）と★ジョン19:41",
+      "group_label": "第2幕",
+      "roles": [
+        "イエス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

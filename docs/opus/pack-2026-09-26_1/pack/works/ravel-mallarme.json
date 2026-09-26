@@ -1,0 +1,55 @@
+{
+  "title": "ステファヌ・マラルメの3つの詩",
+  "title_original": "Trois poèmes de Stéphane Mallarmé",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "song_cycle",
+  "year_written": 1913,
+  "duration_min": 12,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "ravel-mallarme",
+  "note": "★作詩 マラルメ ／  ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. ため息（Soupir）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 空しい願い（Placet futile）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 尻からとび出た（Surgi de la croupe et du bond）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "室内合奏（ピッコロ・フルート・クラリネット・バスクラリネット・弦楽四重奏・ピアノ）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

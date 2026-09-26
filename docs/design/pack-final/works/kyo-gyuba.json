@@ -1,0 +1,61 @@
+{
+  "title": "牛馬",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-gyuba",
+  "note": "★集狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（牛の精）"
+    },
+    {
+      "label": "アド（馬の精）"
+    },
+    {
+      "label": "小アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "牛と馬が言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（牛の精）",
+        "アド（馬の精）"
+      ]
+    },
+    {
+      "label": "互いの働きを並べる",
+      "group_label": "段",
+      "roles": [
+        "シテ（牛の精）",
+        "アド（馬の精）"
+      ]
+    },
+    {
+      "label": "裁きを受けて収まる",
+      "group_label": "段",
+      "roles": [
+        "シテ（牛の精）",
+        "アド（馬の精）",
+        "小アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

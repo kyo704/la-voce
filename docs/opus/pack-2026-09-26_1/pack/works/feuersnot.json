@@ -1,0 +1,181 @@
+{
+  "title": "火の欠乏",
+  "title_original": "Feuersnot",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1901,
+  "duration_min": 100,
+  "language": "de",
+  "source": "hand",
+  "source_id": "feuersnot",
+  "roles": [
+    {
+      "label": "クンラート"
+    },
+    {
+      "label": "ディームート"
+    },
+    {
+      "label": "シュヴァイカー"
+    },
+    {
+      "label": "オルトルフ・ゼントリンガー"
+    },
+    {
+      "label": "エルスベート"
+    },
+    {
+      "label": "ヴィーゲリス"
+    },
+    {
+      "label": "マルグレート"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1場 ミュンヘンの街（子どもたちの薪集め）",
+      "group_label": "第1場",
+      "roles": [
+        "オルトルフ・ゼントリンガー",
+        "シュヴァイカー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1場 クンラートの家を壊させる",
+      "group_label": "第1場",
+      "roles": [
+        "クンラート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ディームートとの出会いと接吻",
+      "group_label": "中間",
+      "roles": [
+        "クンラート",
+        "ディームート"
+      ]
+    },
+    {
+      "label": "ディームートの仕返し（籠に吊る）",
+      "group_label": "中間",
+      "roles": [
+        "ディームート",
+        "エルスベート",
+        "ヴィーゲリス",
+        "マルグレート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "クンラートの呪い（町の火が消える）",
+      "group_label": "終場",
+      "roles": [
+        "クンラート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "愛の場（火が戻る・終曲）",
+      "group_label": "終場",
+      "roles": [
+        "クンラート",
+        "ディームート",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

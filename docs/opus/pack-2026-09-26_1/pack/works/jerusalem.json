@@ -1,0 +1,207 @@
+{
+  "title": "エルサレム",
+  "title_original": "Jérusalem",
+  "aliases": [
+    "ロンバルディア人 仏語改訂版"
+  ],
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1847,
+  "duration_min": 150,
+  "edition": "1847 パリ・オペラ座（『ロンバルディア人』の仏語改作）",
+  "language": "fr",
+  "source": "hand",
+  "source_id": "jerusalem",
+  "roles": [
+    {
+      "label": "ガストン"
+    },
+    {
+      "label": "エレーヌ"
+    },
+    {
+      "label": "ロジェ"
+    },
+    {
+      "label": "トゥールーズ伯爵"
+    },
+    {
+      "label": "イザウール"
+    },
+    {
+      "label": "教皇特使"
+    },
+    {
+      "label": "ラマン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 トゥールーズの宮廷（和解の誓い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ガストン",
+        "エレーヌ",
+        "トゥールーズ伯爵",
+        "ロジェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ロジェの呪いと取り違えの刺客",
+      "group_label": "第1幕",
+      "roles": [
+        "ロジェ",
+        "ラマン"
+      ]
+    },
+    {
+      "label": "第2幕 パレスチナの隠者ロジェ",
+      "group_label": "第2幕",
+      "roles": [
+        "ロジェ",
+        "教皇特使"
+      ]
+    },
+    {
+      "label": "第2幕 エレーヌとイザウールの探索",
+      "group_label": "第2幕",
+      "roles": [
+        "エレーヌ",
+        "イザウール"
+      ]
+    },
+    {
+      "label": "第2幕 ガストンとの再会",
+      "group_label": "第2幕",
+      "roles": [
+        "ガストン",
+        "エレーヌ"
+      ]
+    },
+    {
+      "label": "第3幕 バレエ（ハーレムの場）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ガストンの不名誉（剣の折り）",
+      "group_label": "第3幕",
+      "roles": [
+        "ガストン",
+        "エレーヌ",
+        "教皇特使",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 十字軍の祈りと戦い",
+      "group_label": "第4幕",
+      "roles": [
+        "ロジェ",
+        "ガストン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 フィナーレ（ロジェの死と許し）",
+      "group_label": "第4幕",
+      "roles": [
+        "ロジェ",
+        "ガストン",
+        "エレーヌ",
+        "トゥールーズ伯爵",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

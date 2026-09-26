@@ -1,0 +1,85 @@
+{
+  "title": "祇園祭礼信仰記（文楽）",
+  "aliases": [
+    "金閣寺"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1757,
+  "duration_min": 110,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-gion-sairei-bu",
+  "note": "★文楽（人形浄瑠璃） ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "雪姫"
+    },
+    {
+      "label": "松永大膳"
+    },
+    {
+      "label": "此下東吉"
+    },
+    {
+      "label": "狩野之介直信"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★金閣寺（★雪姫の爪先鼠）",
+      "group_label": "四段目",
+      "roles": [
+        "雪姫",
+        "松永大膳",
+        "此下東吉",
+        "狩野之介直信",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

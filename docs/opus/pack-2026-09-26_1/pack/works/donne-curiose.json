@@ -1,0 +1,193 @@
+{
+  "title": "女はみな物好き",
+  "title_original": "Le donne curiose",
+  "composer": "ヴォルフ＝フェラーリ",
+  "composer_sort": "Wolf-Ferrari, Ermanno",
+  "kind": "opera",
+  "year_written": 1903,
+  "duration_min": 135,
+  "language": "it",
+  "source": "hand",
+  "source_id": "donne-curiose",
+  "roles": [
+    {
+      "label": "ロザウラ"
+    },
+    {
+      "label": "フロリンド"
+    },
+    {
+      "label": "オッタヴィオ"
+    },
+    {
+      "label": "ベアトリーチェ"
+    },
+    {
+      "label": "レリオ"
+    },
+    {
+      "label": "エレオノーラ"
+    },
+    {
+      "label": "パンタローネ"
+    },
+    {
+      "label": "コロンビーナ"
+    },
+    {
+      "label": "アルレッキーノ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 男だけの club（女は入れない）",
+      "group_label": "第1幕",
+      "roles": [
+        "オッタヴィオ",
+        "レリオ",
+        "パンタローネ",
+        "フロリンド",
+        "アルレッキーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 妻たちの詮索（何をしているのか）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベアトリーチェ",
+        "エレオノーラ",
+        "ロザウラ",
+        "コロンビーナ"
+      ]
+    },
+    {
+      "label": "★第2幕 鍵を盗む計",
+      "group_label": "第2幕",
+      "roles": [
+        "コロンビーナ",
+        "アルレッキーノ",
+        "ロザウラ",
+        "ベアトリーチェ"
+      ]
+    },
+    {
+      "label": "第2幕 ロザウラとフロリンドの愛の二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ロザウラ",
+        "フロリンド"
+      ]
+    },
+    {
+      "label": "★第3幕 女たちの潜入（宴を覗く）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロザウラ",
+        "ベアトリーチェ",
+        "エレオノーラ",
+        "コロンビーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（種明かし＝ただの食事会・皆で踊る）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロザウラ",
+        "フロリンド",
+        "オッタヴィオ",
+        "ベアトリーチェ",
+        "レリオ",
+        "パンタローネ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "title": "伊賀越道中双六（文楽）",
+  "aliases": [
+    "沼津"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1783,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-igagoe-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松半二・近松加作 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "呉服屋十兵衛"
+    },
+    {
+      "label": "雲助平作"
+    },
+    {
+      "label": "お米"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★沼津（★十兵衛と平作）",
+      "group_label": "六段目",
+      "roles": [
+        "呉服屋十兵衛",
+        "雲助平作",
+        "お米",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★千本松原（★平作の自害）",
+      "group_label": "六段目",
+      "roles": [
+        "雲助平作",
+        "呉服屋十兵衛",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

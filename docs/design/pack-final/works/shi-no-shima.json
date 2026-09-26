@@ -1,0 +1,168 @@
+{
+  "title": "死の島",
+  "title_original": "死の島",
+  "composer": "池辺晋一郎",
+  "composer_sort": "Ikebe, Shinichiro",
+  "kind": "opera",
+  "year_written": 2018,
+  "duration_min": 130,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "shi-no-shima",
+  "note": "★福永武彦の同名小説による",
+  "roles": [
+    {
+      "label": "相馬"
+    },
+    {
+      "label": "妻"
+    },
+    {
+      "label": "萌子"
+    },
+    {
+      "label": "画家"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 広島（記憶の断片）",
+      "group_label": "第1幕",
+      "roles": [
+        "相馬",
+        "語り手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第1幕 萌子の絵と原爆の記憶",
+      "group_label": "第1幕",
+      "roles": [
+        "相馬",
+        "萌子",
+        "画家"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★ベックリンの絵『死の島』",
+      "group_label": "第2幕",
+      "roles": [
+        "相馬",
+        "画家",
+        "妻"
+      ]
+    },
+    {
+      "label": "★★第2幕 萌子の死",
+      "group_label": "第2幕",
+      "roles": [
+        "萌子",
+        "相馬",
+        "妻"
+      ]
+    },
+    {
+      "label": "★★終曲（生き残った者の問い）",
+      "group_label": "終幕",
+      "roles": [
+        "相馬",
+        "語り手",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

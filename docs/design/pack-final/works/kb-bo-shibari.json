@@ -1,0 +1,79 @@
+{
+  "title": "棒しばり",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1916,
+  "duration_min": 40,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-bo-shibari",
+  "note": "★歌舞伎 ／ 作者 岡村柿紅 ／ ★★狂言『棒縛』を歌舞伎にした松羽目物 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "次郎冠者"
+    },
+    {
+      "label": "太郎冠者"
+    },
+    {
+      "label": "曽根松兵衛"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★主が2人を縛って出かける",
+      "group_label": "一幕",
+      "roles": [
+        "曽根松兵衛",
+        "太郎冠者",
+        "次郎冠者"
+      ]
+    },
+    {
+      "label": "★★縛られたまま酒を飲む工夫",
+      "group_label": "一幕",
+      "roles": [
+        "太郎冠者",
+        "次郎冠者",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★酔って舞う",
+      "group_label": "一幕",
+      "roles": [
+        "太郎冠者",
+        "次郎冠者",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★主が帰って見つかる",
+      "group_label": "一幕",
+      "roles": [
+        "曽根松兵衛",
+        "太郎冠者",
+        "次郎冠者"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

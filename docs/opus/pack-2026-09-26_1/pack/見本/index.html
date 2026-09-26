@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Woolsong ― 声を使う人のための記録と、ホームページと、教室・公演。</title>
+<meta name="description" content="点数をつけない声の記録。先生も学校も見られない。検索に出る自分のホームページ。香盤表から動く公演の運営。">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=BIZ+UDPGothic:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{--velvet:#5A1420;--velvet-d:#2E0A11;--velvet-l:#7A1F2E;--gold:#E8C36F;--gold-d:#B8933F;--paper:#F7F2EA;--paper-2:#EFE7DA;--ink:#1B1614;--ink-2:#5E554D;--ink-3:#9A9087;--rule:#D8CFC1;
+    --min:"Shippori Mincho","Hiragino Mincho ProN",serif;--ud:"BIZ UDPGothic","Hiragino Sans",system-ui,sans-serif;--lat:"Cormorant Garamond",serif}
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ud);font-size:17px;line-height:1.9;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit} ::selection{background:var(--gold);color:var(--ink)}
+  .theatre{position:relative;height:100svh;min-height:640px;background:var(--velvet-d);overflow:hidden;color:var(--paper)}
+  .curtain{position:absolute;inset:0;background-color:var(--velvet);background-image:repeating-linear-gradient(90deg,#4A0F1A 0 22px,#6A1A27 22px 44px,#3B0B14 44px 62px,#7A2030 62px 84px);box-shadow:inset 0 -120px 160px -60px rgba(0,0,0,.55);will-change:transform}
+  .curtain::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 70%,rgba(0,0,0,.5))}
+  .valance{position:absolute;left:0;right:0;top:0;height:64px;background:var(--velvet-d);border-bottom:6px double var(--gold-d);z-index:3}
+  .foot{position:absolute;left:0;right:0;bottom:0;height:46px;background:radial-gradient(60% 100% at 50% 100%,rgba(232,195,111,.55),transparent 70%);z-index:3;pointer-events:none}
+  .stage{position:absolute;inset:0;background:var(--paper);color:var(--ink);display:grid;place-items:end start;padding:0 0 150px 8vw}
+  .stage .floor{position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(180deg,transparent,var(--paper-2))}
+  .stage .staff{position:absolute;left:0;right:0;bottom:120px;height:2px;background:var(--rule)}
+  .stage .sheep{position:absolute;bottom:118px;right:14vw}
+  .sheepimg{width:120px;height:auto;display:block}
+  .finale .sheepimg{width:220px}
+  .stage .stagecap{font-family:var(--lat);letter-spacing:.3em;font-size:14px;color:var(--ink-3)}
+  .hero-text{position:absolute;left:8vw;bottom:96px;z-index:4;max-width:min(88vw,820px)}
+  .hero-text h1{font-family:var(--min);font-weight:600;font-size:clamp(36px,6.4vw,84px);line-height:1.15;margin:0;letter-spacing:.02em;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+  .hero-text p{margin:18px 0 0;font-size:clamp(15px,1.6vw,19px);color:#F1E6D6;max-width:36em}
+  .herobtns{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+  .herobtns a{text-decoration:none;font-family:var(--min);font-size:15px;letter-spacing:.12em;padding:12px 22px;border-radius:2px;background:var(--gold);color:var(--ink);min-height:48px;display:inline-flex;align-items:center}
+  .herobtns a.ghost{background:transparent;color:#F1E6D6;border:1px solid rgba(241,230,214,.7)}
+  .hero-text .brand{font-family:var(--lat);font-size:16px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+  .tate{position:absolute;right:6vw;top:96px;z-index:4;display:flex;flex-direction:column;align-items:center;font-family:var(--min);font-size:clamp(16px,1.7vw,21px);line-height:1.15;color:#F1E6D6;text-shadow:0 2px 18px rgba(0,0,0,.4)}
+  .tate span{display:block;height:1.35em;width:1.2em;text-align:center}.tate span.r{transform:rotate(90deg)}
+  .scrollhint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:4;font-family:var(--lat);letter-spacing:.3em;font-size:12px;color:var(--gold);text-transform:uppercase}
+  .prog{position:sticky;top:0;z-index:20;background:rgba(247,242,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+  .prog .in{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:22px}
+  .prog .logo{font-family:var(--min);font-weight:600;font-size:18px;letter-spacing:.06em;color:var(--velvet-l);text-decoration:none}
+  .prog nav{margin-left:auto;display:flex;gap:20px;overflow:auto}
+  .prog nav a{text-decoration:none;font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+  .prog .loginbtn{text-decoration:none;font-size:13px;color:var(--velvet-l);border:1px solid var(--velvet-l);border-radius:999px;padding:6px 14px;white-space:nowrap}
+  .prog .signupbtn{text-decoration:none;font-size:13px;color:#fff;background:var(--velvet-l);border-radius:999px;padding:7px 14px;white-space:nowrap}
+  .prog nav a b{font-family:var(--lat);font-weight:500;color:var(--velvet-l);margin-right:4px}
+  .act{max-width:1180px;margin:0 auto;padding:100px 24px 30px;position:relative}
+  .head{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:end;margin-bottom:34px}
+  .head .no{font-family:var(--lat);font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--velvet-l);border-top:2px solid var(--velvet-l);padding-top:10px}
+  .head .no span{display:block;font-family:var(--min);font-weight:600;font-size:clamp(24px,3vw,36px);letter-spacing:.06em;text-transform:none;color:var(--ink);margin-top:6px;white-space:nowrap}
+  .head p{margin:0;font-family:var(--min);font-size:clamp(17px,1.8vw,21px);line-height:1.8;max-width:30em;color:var(--ink)}
+  .quiet{font-size:14px;color:var(--ink-2)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .cols p{margin:0 0 16px}
+  .promise{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--ink)}
+  .promise>div{padding:30px 28px 30px 0;border-bottom:1px solid var(--rule)}
+  .promise>div:nth-child(odd){border-right:1px solid var(--rule);padding-right:40px}.promise>div:nth-child(even){padding-left:40px}
+  .promise h3{font-family:var(--min);font-weight:600;font-size:23px;margin:0 0 8px}.promise h3::before{content:"【";color:var(--velvet-l)}.promise h3::after{content:"】";color:var(--velvet-l)}
+  .promise p{margin:0 0 8px}.promise .why{font-size:13.5px;color:var(--ink-2)}
+  .types{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:8px}
+  .types>div{border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s}
+  .types>div:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(27,22,20,.14)}
+  .types>div.on{outline:3px solid var(--velvet-l);outline-offset:-3px}
+  .types img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;object-position:top}
+  .types span{display:block;font-family:var(--min);font-size:13px;padding:6px 8px;border-top:1px solid var(--rule)}
+  .frame{border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 18px 40px rgba(27,22,20,.1)}
+  .frame .fh{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;font-size:12.5px;color:var(--ink-2);border-bottom:1px solid var(--rule);background:var(--paper)}
+  .frame iframe{display:block;width:100%;height:720px;border:0;overflow:hidden}
+  .phoneframe{max-width:460px;margin:0 auto}
+  @media (max-width:860px){.phoneframe iframe{height:820px!important}}
+  .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--ink);margin-top:34px}
+  .feat>div{padding:22px 24px 22px 0;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
+  .feat>div:nth-child(3n){border-right:0}.feat>div:nth-child(3n+2),.feat>div:nth-child(3n){padding-left:24px}
+  .feat b{display:block;font-family:var(--min);font-weight:600;font-size:18px;margin-bottom:6px}.feat p{margin:0;font-size:14.5px;line-height:1.8}
+  .interval{background:var(--velvet-d);color:#F1E6D6;padding:80px 24px;margin-top:80px}
+  .interval .in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  .interval h2{font-family:var(--min);font-weight:600;font-size:clamp(26px,3vw,38px);margin:0 0 14px;color:#fff}
+  .interval .no{font-family:var(--lat);letter-spacing:.3em;text-transform:uppercase;font-size:13px;color:var(--gold);margin-bottom:12px}
+  .interval ul{list-style:none;padding:0;margin:0}.interval li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.14)}
+  .interval li b{font-family:var(--min);font-weight:600;color:var(--gold);margin-right:8px}.interval p{margin:0 0 12px;color:#E9DCC9}
+  .finale{max-width:1180px;margin:0 auto;padding:110px 24px 60px}
+  .finale .in{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .finale p{margin:0 0 10px}
+  form.wait{display:grid;gap:10px;max-width:440px}
+  form.wait input{border:0;border-bottom:2px solid var(--ink);background:transparent;padding:14px 0;font-family:inherit;font-size:18px;color:var(--ink);border-radius:0}
+  form.wait button{margin-top:10px;min-height:56px;border:0;background:var(--velvet-l);color:#fff;font-family:var(--min);font-size:18px;letter-spacing:.14em;cursor:pointer;border-radius:2px}
+  form.wait .fine{font-size:13px;color:var(--ink-2);line-height:1.7}
+  .thanks{font-family:var(--min);font-size:18px;color:var(--velvet-l);display:none}
+  footer{border-top:1px solid var(--rule);padding:28px 24px 60px}
+  footer .in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px 28px;font-size:13px;color:var(--ink-2);align-items:baseline}
+  footer .in a{text-decoration:none}footer .in .logo{font-family:var(--min);color:var(--velvet-l);font-size:16px;margin-right:auto}
+  :focus-visible{outline:2px solid var(--velvet-l);outline-offset:3px}
+  @media (max-width:860px){.cols,.promise,.interval .in,.finale .in{grid-template-columns:1fr}.promise>div:nth-child(odd){border-right:0;padding-right:0}.promise>div:nth-child(even){padding-left:0}.head{grid-template-columns:1fr;gap:10px}.tate{display:none}.hero-text{bottom:80px}.types{grid-template-columns:repeat(3,1fr)}.feat{grid-template-columns:1fr}.feat>div{padding:18px 0!important;border-right:0!important}.stage{grid-template-columns:1fr;padding:0 6vw 120px}.stage .sheep{display:none}.frame iframe{height:560px!important}}
+</style>
+</head>
+<body>
+<section class="theatre" id="top" aria-label="開幕">
+  <div class="stage" aria-hidden="true"><div class="staff"></div><div class="floor"></div>
+    <div class="sheep"><img src="img/sheep.png" alt="羊" class="sheepimg"></div>
+    <p class="stagecap">WOOLSONG</p>
+  </div>
+  <div class="curtain" id="curtain"></div><div class="valance"></div><div class="foot"></div>
+  <div class="hero-text"><div class="brand">Woolsong</div><h1>声を使う人のための記録と、<br>ホームページと、教室・公演。</h1><p>舞台に携わる人たち、そして先生と学校と稽古場のために。</p><div class="herobtns"><a href="#fin">新規登録（無料）</a><a href="#" onclick="return false" class="ghost">ログイン</a></div></div>
+  <div class="tate" id="tate" aria-hidden="true"></div>
+  <div class="scrollhint">Scroll</div>
+</section>
+
+<div class="prog"><div class="in"><a class="logo" href="#top">Woolsong</a>
+  <nav class="navlinks"><a href="#a1"><b>I</b>約束</a><a href="#a2"><b>II</b>記録</a><a href="#a3"><b>III</b>ホームページ</a><a href="#a4"><b>IV</b>アイランド</a><a href="#a5"><b>V</b>教室と学校</a><a href="#a6"><b>VI</b>公演</a><a href="#iv"><b>幕間</b>値段</a><a href="#fin"><b>終幕</b>新規登録・ログイン</a></nav><a class="loginbtn" href="#" onclick="return false">ログイン</a><a class="signupbtn" href="#fin">新規登録</a></div></div>
+
+<section class="act" id="a1">
+  <div class="head"><div class="no">Act I<span>約束</span></div><p>ふつうのアプリがやっていることを、私たちはやりません。</p></div>
+  <div class="promise">
+    <div><h3>点数を出さない</h3><p>声の調子は「出た・ふつう・出づらい」の三つ。順位も、赤や緑の色もありません。</p><p class="why">自分の声を守りたい気持ちは、点数に置き換えると弱くなります（自己決定理論）。</p></div>
+    <div><h3>急かさない</h3><p>連続記録を数えません。通知も送りません。</p><p class="why">書かなかった日は、ただ書かなかった日です。</p></div>
+    <div><h3>本番の前は、静かにする</h3><p>本番の3日前から翌々日まで、まとめも関連も出しません。書くことだけ、いつもどおり。</p><p class="why">本番の直前に自分を監視させる情報は、演奏を不安定にします（Furuya 2021）。</p></div>
+    <div><h3>誰にも見せない</h3><p>先生は生徒の記録を見られません。学校も、劇団も。見せるときは、あなたが一枚にして手渡します。</p><p class="why">見られる可能性があるだけで、記録は正直でなくなる。だから仕組みで「見られない」を作りました。</p></div>
+  </div>
+</section>
+
+<section class="act" id="a2">
+  <div class="head"><div class="no">Act II<span>声の記録</span></div><p>記録は2タップで終わります。あとは、書きたい人だけが足す。</p></div>
+  <div class="frame phoneframe"><div class="fh"><span>声の記録 ― 実際のスマホの画面（触れます）</span></div><iframe src="demo/スマホの見本.html" title="声の記録（スマホ）" loading="lazy" style="height:900px"></iframe></div>
+  <div class="cols" style="margin-top:26px"><div><h3 style="font-family:var(--min);font-weight:600;font-size:22px;margin:0 0 10px">書くのは2つ。見返すのは、本番のあと。</h3><ol style="padding-left:1.3em;margin:0 0 12px"><li>「記録」を押す</li><li>三つの絵から一つ選ぶ。この時点で保存されます</li></ol><p>眠り、水、食べたもの、歌った時間、ひとこと。足したいときだけ足します。</p></div>
+  <div><p>本番が終わると「さかのぼる」が開き、本番の一週間前に何をしていたかが、自分にだけ見えます。因果は言いません。並べるだけです。</p><p>受診のときは、一枚にして医師に渡せます。楽器の人は楽器の札を、俳優と声優は台本の札を。作品の雛形は約700。</p><p class="quiet">Woolsong は医療機器ではありません。疾病の診断・治療・予防を目的としていません。</p></div></div>
+</section>
+
+<section class="act" id="a3">
+  <div class="head"><div class="no">Act III<span>あなただけのホームページ</span></div><p>全ての人に見てもらえて、簡単に作成して公開できます。</p></div>
+  <div class="types" aria-label="ホームページの型（実際の画面）">
+    <div class="tp on" data-f="demo/型_幕番付ポスター.html" data-t="t16" onclick="pickType(this)"><img src="img/幕.png" alt="幕"><span>幕</span></div><div class="tp" data-f="demo/型_幕番付ポスター.html" data-t="t17" onclick="pickType(this)"><img src="img/番付.png" alt="番付"><span>番付</span></div><div class="tp" data-f="demo/型_幕番付ポスター.html" data-t="t18" onclick="pickType(this)"><img src="img/ポスター.png" alt="ポスター"><span>ポスター</span></div><div class="tp" data-f="demo/型_大見出し余白波形名刺.html" data-t="t53" onclick="pickType(this)"><img src="img/余白.png" alt="余白"><span>余白</span></div><div class="tp" data-f="demo/型_大見出し余白波形名刺.html" data-t="t54" onclick="pickType(this)"><img src="img/波形.png" alt="波形"><span>波形</span></div><div class="tp" data-f="demo/型_巻物.html" data-t="t72" onclick="pickType(this)"><img src="img/巻物.png" alt="巻物"><span>巻物</span></div>
+    <div class="tp" data-f="demo/型_発車標文庫本日めくり図鑑.html" data-t="t56" onclick="pickType(this)"><img src="img/発車標.png" alt="発車標"><span>発車標</span></div><div class="tp" data-f="demo/型_かわいい自然ゴシック怪盗探偵神社スピ.html" data-t="t41" onclick="pickType(this)"><img src="img/神社.png" alt="神社"><span>神社</span></div><div class="tp" data-f="demo/型_お寺書道伊独仏お笑い.html" data-t="t45" onclick="pickType(this)"><img src="img/イタリア.png" alt="イタリア"><span>イタリア</span></div><div class="tp" data-f="demo/型_かわいい自然ゴシック怪盗探偵神社スピ.html" data-t="t36" onclick="pickType(this)"><img src="img/かわいい.png" alt="かわいい"><span>かわいい</span></div><div class="tp" data-f="demo/型_Maison_Atelier_Salon.html" data-t="t49" onclick="pickType(this)"><img src="img/Maison.png" alt="Maison"><span>Maison</span></div><div class="tp" data-f="demo/型_搭乗券天気図展示パネル.html" data-t="t67" onclick="pickType(this)"><img src="img/搭乗券.png" alt="搭乗券"><span>搭乗券</span></div>
+  </div>
+  <p class="quiet" style="margin-top:10px">50を超える型（実際の画面）。<b>型を押すと下の画面に映り、その場で文字を書き換え、写真を替え、色・書体・節の順番を変えられます（簡単編集）。</b>どれも「誰か・何をする人か・次にどこで会えるか」が最初の画面で分かります。</p>
+  <div class="frame" style="margin-top:18px"><div class="fh"><span id="tpname">型：幕 ― 文字は押して書き換え、写真は押して替える・動かす、左で色・書体・節の順番（触れます）</span></div><iframe id="tpframe" src="demo/型_幕番付ポスター.html#t16" title="ホームページの型" style="height:900px"></iframe></div>
+  <div class="feat">
+    <div><b>簡単編集</b><p>文字はその場で書き換えられる。文字や色、載せたいこと、情報の並べ替えも簡単操作でできます。</p></div>
+    <div><b>アプリの情報が自動で入る</b><p>次の本番、出演予定、レパートリー（多い人は見せるものを選ぶ）。本番が終わると出演歴へ動きます。</p></div>
+    <div><b>検索に出る</b><p>Googleなどの検索に載り、SNSに貼ったときの見え方も整えます。見る人に会員登録は求めません。</p></div>
+    <div><b>お問い合わせ</b><p>ホームページから届いたものは、あなたの受信箱に。メールアドレスには届きません。</p></div>
+    <div><b>教室の紹介</b><p>空いている枠と料金と体験の申し込みを記載できます。</p></div>
+    <div><b>やめたとき</b><p>ホームページの公開は、契約のあいだだけ。買った型と書いたものは手元に残り、再開すればそのまま使えます。</p></div>
+  </div>
+</section>
+
+<section class="act" id="a4">
+  <div class="head"><div class="no">Act IV<span>Woolsong アイランド</span></div><p>分野ごとの地区に住む島。地区を押すと、そこに住む人のホームページが一覧で並びます。</p></div>
+  <div class="frame"><div class="fh"><span>Woolsong アイランド ― 実際の画面（触れます）</span></div><iframe src="demo/アイランド.html" title="Woolsong アイランド" loading="lazy" style="height:640px"></iframe></div>
+  <div class="cols" style="margin-top:26px"><p>地区の中には建物があります。歌劇場、教会、歌曲サロン、寄席、放送局、稽古場。建物を押すと、そこに住む人だけが並びます。</p><p>新しい順、本番が近い順、名前順で並べられます。地図でなくても一覧で簡単に絞り込むことができる親切設計。<span class="quiet">載るのは、本人が「公開する」を押したホームページだけ。健康の記録は一切出ません。</span></p></div>
+</section>
+
+<section class="act" id="a5">
+  <div class="head"><div class="no">Act V<span>教室と学校</span></div><p>先生は生徒の記録を見られない。その上で、運営だけを引き受けます。</p></div>
+  <div class="feat" style="margin-top:0">
+    <div><b>レッスン割</b><p>希望を集めて、ヒートマップを見て、置く。年度初めの表が1日で。衝突は教えるだけで、勝手に動かしません。</p></div>
+    <div><b>出欠と行事</b><p>先生は0タップ。行事とくばりものを一斉送信でき、既読は一切数えません。</p></div>
+    <div><b>変わったら、すぐ</b><p>日程はカレンダーに流れます（ICS）。変わったものは「変わったもの」に出ます。通知は送りません。</p></div>
+    <div><b>稟議の一枚</b><p>半年の使われ方を数だけで（5人未満は出さない）。事務の時間が何分減ったかを、1月に。</p></div>
+    <div><b>導入について</b><p>申込→契約→名簿→合言葉→最初の1週間のおためし。</p></div>
+    <div><b>実技試験</b><p>審査員と伴奏者と部屋の割り当てを、レッスン割と同じ操作で。成績で並べません。</p></div>
+  </div>
+</section>
+
+<section class="act" id="a6">
+  <div class="head"><div class="no">Act VI<span>公演</span></div><p>香盤表を入れると、稽古に呼ぶ人が出る。当日の進行も、お金も、同じ場所で。</p></div>
+  <div class="feat" style="margin-top:0">
+    <div><b>香盤表から、呼び出し</b><p>場面×役を入れると、稽古ごとに呼ぶ人が自動で出ます。集合時刻は人ごと。ダブルキャストもカバーも。オペラ、演劇、ミュージカル、オーケストラ、合唱、ガラ、バンド、ダンス。</p></div>
+    <div><b>当日</b><p>降り番、進行、変更は一方向で。稽古場のLINEはそのままで構いません。子供の出演には、子供を守る機能があります。</p></div>
+    <div><b>お金は、動かさずに、全部</b><p>予算、明細、出演料、立替、精算の一枚、助成金の報告書の形、会計ソフトへのCSV。決済も送金もチケット販売もしません。記録と計算だけ。</p></div>
+  </div>
+  <div class="frame" style="margin-top:30px"><div class="fh"><span>チケットの値段 ― 実際の画面（触れます）</span></div><iframe src="demo/運営の見本.html" title="チケットの値段" style="height:1300px" id="tkframe"></iframe></div>
+</section>
+
+<section class="interval" id="iv"><div class="in">
+  <div><div class="no">Intermission</div><h2>値段。</h2><p>記録は、ずっと無料。有料は、揃えて見る・ホームページ・教室・学校・公演。14日の体験に、カードの登録は要りません。終わっても自動で有料にはなりません。</p>
+    <ul style="margin-top:14px"><li><b>学生</b>所属学校がシステムを導入している場合、他の有料機能が半額</li><li><b>やめたとき</b>書いたものと買った型は手元に残ります。ホームページの公開は契約のあいだ</li></ul></div>
+  <div><ul>
+    <li><b>無料</b>記録する・見返す・書き出す・受診のときに見せる一枚・伴奏者を探す</li>
+    <li><b>つたえる　月300円</b>ホームページ（型1つ）・くばりもの</li>
+    <li><b>しらべる　月580円</b>揃えて見る（さかのぼる・関連・音域）</li>
+    <li><b>よそおい　月580円</b>羊の着せかえ（毎月16点）</li>
+    <li><b>ぜんぶ　月980円</b>上の全部</li>
+    <li><b>ホームページの型（プリセット）の追加　480円</b>買い切り</li>
+    <li><b>教室　月2,980円</b>先生2人・生徒30人まで。教室の紹介と、40人までの公演を含む</li>
+    <li><b>学校　1席 250円〜400円</b></li>
+    <li><b>公演　0円〜15万円</b>人数で決まります。公演ごと</li>
+  </ul></div>
+</div></section>
+
+<section class="finale" id="fin"><div class="in">
+  <div><div class="head" style="margin-bottom:18px"><div class="no">Finale<span>新規登録・ログイン</span></div></div>
+    <p>記録は無料で、今日から。14日の体験にカードの登録は要りません。</p>
+    <form class="wait" onsubmit="event.preventDefault();this.style.display='none';document.getElementById('thanks').style.display='block';">
+      <input type="email" placeholder="メールアドレス" required aria-label="メールアドレス">
+      <input type="password" placeholder="パスワード（8文字以上）" required minlength="8" aria-label="パスワード">
+      <label class="fine" style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" required style="margin-top:6px"><span>18歳以上です。<a href="#" onclick="return false">利用規約</a>と<a href="#" onclick="return false">プライバシーポリシー</a>に同意します。</span></label>
+      <button type="submit">新規登録（無料）</button>
+      <div class="fine">すでにお使いの方は <a href="#" onclick="return false" style="color:var(--velvet-l)">ログイン</a>。パスワードを忘れた方は <a href="#" onclick="return false" style="color:var(--velvet-l)">こちら</a>。</div></form>
+    <div class="thanks" id="thanks">ありがとうございます。確認のメールを一通だけお送りしました。</div></div>
+  <div aria-hidden="true" style="justify-self:end"><img src="img/sheep.png" alt="羊" class="sheepimg"></div>
+</div></section>
+
+<footer><div class="in"><span class="logo">Woolsong</span><a href="#" onclick="return false">利用規約</a><a href="#" onclick="return false">プライバシーポリシー</a><a href="#" onclick="return false">特定商取引法に基づく表示</a><a href="#" onclick="return false">安全管理措置</a><span>© 2026 Kyo Sakamoto　日本にお住まいの方向けのサービスです。</span></div></footer>
+
+<script>
+function pickType(el){document.querySelectorAll('.types .tp').forEach(x=>x.classList.toggle('on',x===el));const f=el.dataset.f,t=el.dataset.t;const fr=document.getElementById('tpframe');document.getElementById('tpname').textContent='型：'+el.querySelector('span').textContent+' ― 文字は押して書き換え、写真は押して替える・動かす、左で色・書体・節の順番（触れます）';const send=()=>{try{fr.contentWindow.postMessage({t:t},'*')}catch(e){}};if(window.DEMOS){fr.onload=send;fr.srcdoc=window.DEMOS[f];}else{fr.onload=send;fr.src=f+'#'+t;}fr.scrollIntoView({behavior:'smooth',block:'start'});}
+const curtain=document.getElementById('curtain'),theatre=document.querySelector('.theatre'),hero=document.querySelector('.hero-text'),tate=document.getElementById('tate'),hint=document.querySelector('.scrollhint');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function onScroll(){const h=theatre.offsetHeight;const p=Math.min(1,Math.min(window.scrollY,h)/h);const lift=reduce?(p>0.05?1:0):Math.min(1,p*1.6);curtain.style.transform=`translateY(${-lift*100}%)`;const f=Math.max(0,1-p*2.2);hero.style.opacity=f;tate.style.opacity=f;hint.style.opacity=f;}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+(function(){const t='点数をつけません。急かしません。誰にも見せません。';const ROT=new Set(['。','、','ー','―']);[...t].forEach(ch=>{const s=document.createElement('span');s.textContent=ch;if(ROT.has(ch))s.className='r';tate.appendChild(s);});})();
+</script>
+</body>
+</html>

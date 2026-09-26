@@ -1,0 +1,56 @@
+{
+  "title": "大黒連歌",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-daikoku-renga",
+  "note": "★脇狂言（祝言物） ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（大黒天）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "連歌の会を思い立つ",
+      "group_label": "段",
+      "roles": [
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "大黒天が現れて句を付ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（大黒天）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "宝を授けて舞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（大黒天）",
+        "アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "title": "ジュエルズ",
+  "composer": "フォーレ／ストラヴィンスキー／チャイコフスキー",
+  "composer_sort": "Balanchine Jewels",
+  "kind": "dance",
+  "year_written": 1967,
+  "duration_min": 95,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-jewels",
+  "note": "★振付 バランシン ／ ★★3人の 作曲家の 曲を 3部に 並べた 作品 ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "エメラルド",
+      "is_group": true
+    },
+    {
+      "label": "ルビー",
+      "is_group": true
+    },
+    {
+      "label": "ダイヤモンド",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "エメラルド（フォーレ『ペレアスとメリザンド』）",
+      "group_label": "第1部",
+      "roles": [
+        "エメラルド"
+      ]
+    },
+    {
+      "label": "★ルビー（ストラヴィンスキー『カプリッチョ』）",
+      "group_label": "第2部",
+      "roles": [
+        "ルビー"
+      ]
+    },
+    {
+      "label": "★★ダイヤモンド（チャイコフスキー 交響曲第3番）",
+      "group_label": "第3部",
+      "roles": [
+        "ダイヤモンド"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
