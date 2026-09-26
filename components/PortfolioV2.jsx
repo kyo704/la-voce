@@ -11,7 +11,7 @@ import {
 import { AUTOSAVE_MS } from "@/lib/notes";
 import {
   HEAD, SCOPE_HEAD, LEAD, BIO_MAX, bioTooLong,
-  SCOPES, scopesFor, ENTRY_KINDS, inGivenOrder, NOTES, SCOPE_NOTES, NOT_YET,
+  SCOPES, scopesFor, inGivenOrder, NOTES, SCOPE_NOTES, NOT_YET,
   // ★★録画（★裁定 その94 §4f・2026-09-19 の 追補）。★URL だけ です。
   RECORDING_HEAD, RECORDING_HINT, RECORDING_URL_HINT, RECORDING_NOTES,
   urlOk, hostOf
@@ -208,6 +208,9 @@ export default function PortfolioV2({
   scopeOpen, onOpenScope, onCloseScope,
   // ★18歳未満の 方に `link` を 出さない ため に 要ります
   profile,
+  // ★★★節（★`public.my_page_fields()` の 行）。★呼ぶ 側が 渡します。
+  //   ★★渡されなければ 1つも 並べません（★勝手に 並べない）。
+  fields = [],
   saving, error = ""
 }) {
   // ★★★打つ たびに 台帳へ 送って いました（★2026-09-19 に 気づきました）。
@@ -307,8 +310,13 @@ export default function PortfolioV2({
       <Usu>{BIO_MAX}字まで。改行できます。{
         bioTooLong(p.bio) ? `　いまは ${String(p.bio || "").length}字 です。` : ""}</Usu>
 
-      {/* ★★学んだところ ／ 賞・コンクール ／ 師事 */}
-      {ENTRY_KINDS.map((k) => (
+      {/* ★★★節は 台帳の 関数が 出します（★`my_page_fields()`・裁定207・2026-09-26）。
+          ★★きょうまで `ENTRY_KINDS`（★手で 書いた 一覧）でした。
+            ★★台帳 16種・見本 music 9／voice 11／stage 11 に 対して、
+              ★手書きは music 9／voice 7／stage 8 で、★節の 名も 古い まま でした。
+          ★★★渡されて いない ときは **1つも 並べません**。
+            ★★倒れ先の 一覧を 作りません ── ★それも 2つ目の 一覧 です。 */}
+      {(Array.isArray(fields) ? fields : []).map((k) => (
         <Kind key={k.key} kind={k} entries={entries} saving={saving}
           onAddEntry={onAddEntry} onRemoveEntry={onRemoveEntry} />
       ))}

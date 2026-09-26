@@ -178,6 +178,10 @@ import { COLS_SECTION as PAGE_SECTION_COLS } from "@/lib/totonoeru";
 // ★★しらべている ことの 組は「順番」の 上から です。★鍵は `lib/lagChoice.js` が 持ちます。
 import { ITEMS as COMPARE_ITEMS } from "@/lib/lagChoice";
 import { patchOf as lookPatch } from "@/lib/portfolioLook";
+// ★★★ページの 節（★`public.my_page_fields()`・裁定207・sql/96）。
+//   ★★手で 書いた 一覧は 消しました。★出どころは 台帳の 関数 だけ です。
+import { RPC as PAGE_FIELDS_RPC, normalize as normalizePageFields, NOT_YET as PAGE_FIELDS_NOT_YET }
+  from "@/lib/pageFields";
 import KyoshitsuOps from "@/components/KyoshitsuOps";
 import { COL as WORK_FIELD_COL, normalize as normalizeField, patchOf as fieldPatch,
   TOAST as WORK_FIELD_TOAST } from "@/lib/workField";
@@ -13386,6 +13390,20 @@ export default function VocalTracker({
   }, [layoutV2, moreSection, userId, featureClient]);
 
   const [pageSections, setPageSections] = useState(null);
+  // ★★★ページの 節。★お仕事（`field`）で 変わります。★台帳が 決めます。
+  //   ★★返って くる 前は 空 です ── ★倒れ先の 一覧を 作りません（★2つ目の 一覧に なる）。
+  const [pageFields, setPageFields] = useState(PAGE_FIELDS_NOT_YET);
+  useEffect(() => {
+    if (!layoutV2 || !userId) return;
+    let 生 = true;
+    (async () => {
+      const { data, error } = await featureClient.rpc(PAGE_FIELDS_RPC);
+      if (!生) return;
+      if (error) { console.error("★ページの 節を 読めませんでした:", error); return; }
+      setPageFields(normalizePageFields(data));
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, userId, featureClient, profile.field]);
   useEffect(() => {
     if (!layoutV2 || moreSection !== "整える" || !userId) return;
     let 生 = true;
@@ -28389,6 +28407,8 @@ export default function VocalTracker({
                         value={portfolio}
                         entries={portfolioEntries}
                         profile={profile}
+                        /* ★★節は 台帳の 関数から。★手書きの 一覧は ありません。 */
+                        fields={pageFields}
                         saving={portfolioSaving}
                         error={portfolioError}
                         scopeOpen={portfolioScope}
@@ -28464,7 +28484,7 @@ export default function VocalTracker({
                 {/* ★★★なにを 書く（★2026-09-26 に つなぎました）。
                     ★★お仕事（`field`）で 出る 種が 変わります（★裁定202）。 */}
                 {layoutV2 && moreSection === "なにを書く" ? (
-                  <NaniWoKaku field={profile.field} entries={portfolioEntries}
+                  <NaniWoKaku fields={pageFields} entries={portfolioEntries}
                     onPick={() => setMoreSection("経歴")}
                     onBack={() => setMoreSection(null)} />
                 ) : null}

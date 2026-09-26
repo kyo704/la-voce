@@ -13,8 +13,9 @@ import { C } from "@/lib/tokens";
 import { ScreenHead, Back, Box } from "@/components/UiV2";
 import { TITLE, BACK_TO, rowsOf, NOTE_LINES, NOTE_STRONG } from "@/lib/naniwoKaku";
 
-export default function NaniWoKaku({ field, entries, onPick, onBack }) {
-  const 行 = rowsOf(field, entries);
+export default function NaniWoKaku({ fields, entries, onPick, onBack }) {
+  // ★★節は 台帳の 関数から 来ます（★`my_page_fields()`）。★ここで 並べません。
+  const 行 = rowsOf(fields, entries);
 
   return (
     <div>
@@ -30,7 +31,16 @@ export default function NaniWoKaku({ field, entries, onPick, onBack }) {
               border: "none", background: "none", textAlign: "left",
               borderTop: i === 0 ? "none" : `1px solid ${C.line}`, cursor: "pointer"
             }}>
-            <span style={{ fontSize: "0.875rem", color: C.ink }}>{r.label}</span>
+            <span style={{ flex: 1 }}>
+              <span style={{ fontSize: "0.875rem", color: C.ink }}>{r.label}</span>
+              {/* ★★手引きは 台帳の 関数から（★`my_page_fields()` の `hint`）。
+                  ★★無ければ 出しません。★ここで 書きません。 */}
+              {r.hint ? (
+                <span style={{
+                  display: "block", fontSize: "0.75rem", color: C.inkSoft, lineHeight: 1.8
+                }}>{r.hint}</span>
+              ) : null}
+            </span>
             {/* ★★0件の ときは 数を 出しません。★責める 形に しません。 */}
             <span style={{ fontSize: "0.75rem", color: C.inkSoft, whiteSpace: "nowrap" }}>
               {r.right}{r.right ? " " : ""}›

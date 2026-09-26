@@ -61,7 +61,7 @@ for (const f of ["components/PortfolioV2.jsx", "lib/portfolio.js", "lib/moreMenu
   t(/NOT_YET/.test(画面), "★まだ できない ものを 名ざしで 出して いる");
 
   console.log("\n③ 決めは lib が 持つ");
-  for (const k of ["SCOPES", "scopesFor", "ENTRY_KINDS", "inGivenOrder",
+  for (const k of ["SCOPES", "scopesFor", "inGivenOrder",
                    "NOTES", "SCOPE_NOTES", "BIO_MAX"]) {
     t(new RegExp("\\b" + k + "\\b").test(画面), `★${k} を lib から 取って いる`);
   }
