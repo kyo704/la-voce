@@ -108,5 +108,21 @@ const にせ = "  const ニセ = ニセ用の値;\n  const ニセ用の値 = 1;\
 const 深 = (にせ.slice(0, にせ.indexOf("ニセ用の値")).match(/\{/g) || []).length;
 t(深 === 0, "★較正 ── ★深さの 数え方が 動く");
 
+// ── ★③ ★178枚 ぜんぶ を 数えます（★1枚だけ 見て 終わらせない）────────
+//   ★★★2026-09-26 ── ★この 見張りは `VocalTracker.jsx` だけ を 見て いました。
+//     ★★同じ 形は ほかの 部品にも あり得ます。★道具に 任せます。
+const { execFileSync } = require("child_process");
+const path2 = require("path");
+let 走 = "";
+try {
+  走 = execFileSync("python3", [path2.join(__dirname, "..", "..", "tools", "tdz_scan.py")],
+    { cwd: path2.join(__dirname, "..", ".."), encoding: "utf-8" });
+} catch (e) {
+  走 = String((e && (e.stdout || e.message)) || "");
+}
+走.split("\n").filter((x) => x.trim()).forEach((x) => console.log("     " + x));
+t(/RESULT: OK/.test(走), "★ほかの 部品にも 同じ 形が ない");
+t(/TDZ_SCAN\s+★\d+ 枚/.test(走), "★道具が 紙を 数えて いる（★0枚では ない）");
+
 console.log(`\n${pass} 通り ／ ${fail} 落ち`);
 if (fail) process.exit(1);
