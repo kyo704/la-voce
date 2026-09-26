@@ -56,8 +56,12 @@ async function 開く(page, 道) {
   // ★★★行は「名 ＋ 添える 字」が **1つの 札の 中** に あります。
   //   ★★だから `exact: true` では 当たりません（★2026-09-26 に 30秒 待って 落ちました）。
   //   ★★札（`button`）の 中の 字で 探します。★人が 押す のと 同じ 道 です。
+  //   ★★★**見えて いる** 札 だけ から 選びます（★2026-09-26）。
+  //     ★★もっとの 行は 束を 開いても `display:none` で 残ります（★`inMore(節)`）。
+  //     ★★隠れた 札が 先に 当たると ★見える まで 待って 落ちます
+  //       （★「プラン」「毎日、聞いてほしいこと」は 束の 外にも 同じ 字の 行が あります）。
   const 押す = async (字) => {
-    const 札 = page.locator("main button", { hasText: 字 }).first();
+    const 札 = page.locator("main button:visible", { hasText: 字 }).first();
     await 札.click({ timeout: 20000 });
   };
   if (道.bundle) { await 押す(道.bundle); await page.waitForTimeout(900); }

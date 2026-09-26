@@ -31,6 +31,7 @@
 
   python3 tools/pixel_gate.py --baseline 届いたもの          # ★基準画と くらべる
   python3 tools/pixel_gate.py --baseline --all
+  python3 tools/pixel_gate.py --check-all                    # ★↑と 同じ。★まとめ 4組 と 記録の 紙
   python3 tools/pixel_gate.py --update-baseline 届いたもの   # ★基準画を 作る／替える
 
   ★★★この 型が 意味を 持つ のは ★**同じ 環境で 撮った 2枚 どうし だけ** です（★Opus Q5）。
@@ -132,9 +133,24 @@ def 一枚(名):
 基準 = os.path.join(蔵, "docs/design/pixel_baseline")
 基準_今 = os.path.join(基準, "_now")     # ★今回 撮った 絵（★git に 入れません）
 基準_差 = os.path.join(基準, "_diff")    # ★差の 絵（★git に 入れません）
+基準道 = os.path.join(蔵, "tools/baseline_map.json")  # ★基準画 だけ の 画面の 行き方
 
-def 基準を撮る(名, 出す):
-  """★実装を 1枚 撮ります。★返す もの …… (名札, 覆い) ／ 撮れなければ (None, 理由)"""
+def 基準を撮る(名, 出す, 試す=3):
+  """★実装を 1枚 撮ります。★返す もの …… (名札, 覆い) ／ 撮れなければ (None, 理由)
+  ★★撮れなかった とき だけ ★撮り直します（★最大 3回）。
+    ★★2026-09-26 ── ★台（`next dev`）が 組み直して いる あいだ、★入口の 欄が 出ず 落ちました。
+    ★★撮れた 絵は 撮り直しません（★差が 出た 絵を 撮り直して 消す ことは しません）。
+  """
+  for 回 in range(試す):
+    名札, 覆い = _基準を撮る_1回(名, 出す)
+    if 名札 is not None: return 名札, 覆い
+    print("  ★撮れません（%d回目）…… %s" % (回 + 1, (覆い or "").split("\n")[-1][:120]))
+    if 回 + 1 < 試す:
+      import time; time.sleep(15 * (回 + 1))   # ★台が 組み直し 終わる のを 待つ
+  return None, 覆い
+
+def _基準を撮る_1回(名, 出す):
+  if os.path.exists(出す): os.remove(出す)   # ★前の 回の 絵を 撮れた ことに しない
   r = 走る(["node", "tools/baseline_shot.js", 名, 出す])
   名札 = 覆い = None
   for l in r.stdout.split("\n"):
@@ -297,7 +313,40 @@ def 基準を替える(名):
   print("  ★基準画を 書きました …… " + os.path.relpath(前, 蔵))
   return 0
 
+# ★★★まとめの 組（★2026-09-26）── ★どの 画面も どれか 1つ に 入ります。
+#   ★OK …… 差 0 ／ ★DIFF …… 差 1 以上、または 大きさが 違う
+#   ★NO_BASELINE …… 基準画が 無い ／ ★SKIPPED …… 撮れない・環境が 違う（無効）・較正が 落ちた
+def 組を決める(r):
+  if r["画素"] == 0: return "OK"
+  if r["画素"] is not None or r["なぜ"] == "大きさが 違う": return "DIFF"
+  if r["なぜ"] == "基準画が 無い": return "NO_BASELINE"
+  return "SKIPPED"
+
+def 報告を書く(出来, 時):
+  """★★まとめを 紙に 残します（★画面に 出した 字と 同じ ものから 作ります）。
+  ★置き場 …… docs/design/pixel_baseline/reports/<時>.md（★その 時の 記録。★後から 直しません）"""
+  os.makedirs(os.path.join(基準, "reports"), exist_ok=True)
+  p = os.path.join(基準, "reports", 時 + ".md")
+  頭 = 走る(["git", "rev-parse", "--short", "HEAD"]).stdout.strip()
+  L = ["# 基準画と くらべた 記録 %s" % 時, "",
+       "撮った 木の commit（sub3）…… %s ／ 台 …… %s" % (頭, os.environ.get("E2E_LOCAL_URL", "`.env.e2e` の E2E_LOCAL_URL")),
+       "★台（`next dev`）が 出す 画面は ★台の 木の 作業中の 中身 です。★commit では ありません。", ""]
+  for 組 in ("OK", "DIFF", "NO_BASELINE", "SKIPPED"):
+    群 = [r for r in 出来 if 組を決める(r) == 組]
+    L.append("## %s（%d）" % (組, len(群)))
+    L.append("")
+    for r in 群:
+      if 組 == "OK": L.append("- %s …… 差 0" % r["名"])
+      elif r["画素"] is not None: L.append("- %s …… 差 %d 画素（%.6f%%）差の 絵 `_diff/%s-差.png`" % (r["名"], r["画素"], r["率"], r["名"]))
+      else: L.append("- %s …… %s" % (r["名"], r["なぜ"]))
+    if not 群: L.append("- なし")
+    L.append("")
+  open(p, "w", encoding="utf-8").write("\n".join(L))
+  return p
+
 def 基準と比べる_全部(的):
+  import datetime
+  時 = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
   出来 = [基準と比べる(n) for n in 的]
   print("=" * 66)
   print("★まとめ（★基準画と くらべる）")
@@ -306,6 +355,11 @@ def 基準と比べる_全部(的):
       print("  %-12s ★くらべて いません（%s）" % (r["名"], r["なぜ"]))
     else:
       print("  %-12s 差 %d 画素（%.6f%%）" % (r["名"], r["画素"], r["率"]))
+  数 = {}
+  for r in 出来: 数[組を決める(r)] = 数.get(組を決める(r), 0) + 1
+  print("SUMMARY: OK %d ／ DIFF %d ／ NO_BASELINE %d ／ SKIPPED %d" % tuple(
+    数.get(k, 0) for k in ("OK", "DIFF", "NO_BASELINE", "SKIPPED")))
+  print("REPORT: " + os.path.relpath(報告を書く(出来, 時), 蔵))
   赤 = [r for r in 出来 if r["画素"] != 0]
   print("RESULT: " + ("OK" if not 赤 else "DIFF（%d枚）" % len(赤)))
   return 0 if not 赤 else 1
@@ -321,13 +375,22 @@ def 基準を替える_全部(的):
 def main():
   名一覧 = json.load(open(道, encoding="utf-8"))
   名一覧 = [k for k in 名一覧 if not k.startswith("★")]
+  if "--check-all" in sys.argv:
+    # ★★1つの 命令で ★基準画の ある 画面 ＋ 行き方の ある 画面 を すべて くらべます。
+    #   ★★基準画の 無い 画面も 数えます（★NO_BASELINE）── ★黙って 飛ばしません。
+    sys.argv += ["--baseline", "--all"]
   引 = [a for a in sys.argv[1:] if not a.startswith("--")]
   的 = 名一覧 if "--all" in sys.argv else 引
   if not 的:
     print(__doc__); return 2
-  if "--update-baseline" in sys.argv:
-    return 基準を替える_全部(的)
-  if "--baseline" in sys.argv:
+  if "--update-baseline" in sys.argv or "--baseline" in sys.argv:
+    # ★★基準画の 型は ★基準画 だけ の 画面（`baseline_map.json`）も 含みます。
+    #   ★★見本の 型（下）は 含みません ── ★見本が 無い 画面 だから です。
+    基準名 = 名一覧 + [k for k in json.load(open(基準道, encoding="utf-8"))
+                      if not k.startswith("★") and k not in 名一覧]
+    的 = 基準名 if "--all" in sys.argv else 引
+    if "--update-baseline" in sys.argv:
+      return 基準を替える_全部(的)
     return 基準と比べる_全部(的)
   print("★撮る 環境 ……")
   for k, v in 環境.items(): print("    %s …… %s" % (k, v))

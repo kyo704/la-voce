@@ -21,7 +21,10 @@ const path = require("path");
 const NAV = require("./personal_nav");
 
 const ROOT = path.join(__dirname, "..");
-const MAP = JSON.parse(fs.readFileSync(path.join(__dirname, "dom_personal_map.json"), "utf8"));
+// ★★行き先 ＝ ★見本と くらべる 画面（`dom_personal_map.json`）＋ ★基準画 だけ の 画面（`baseline_map.json`）。
+//   ★★同じ 名が 両方に あれば ★見本の 側を 使います（★道を 2つ 持ちません）。
+const 読む = (f) => JSON.parse(fs.readFileSync(path.join(__dirname, f), "utf8"));
+const MAP = { ...読む("baseline_map.json"), ...読む("dom_personal_map.json") };
 
 // ★★★撮り方（★ここを 変えたら ★今ある 基準画は 全部 無効 です）。
 //   ★★`pixel_gate.py` の `環境` と 同じ 値 です。
