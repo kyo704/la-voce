@@ -55,7 +55,12 @@ security definer stable volatile immutable trigger before after each row execute
 begin declare loop foreach array if elsif raise exception perform return next
 date interval now text integer boolean uuid jsonb timestamp timestamptz numeric
 smallint bigint anon authenticated public postgres service_role
+of auth extensions storage vault graphql_public realtime cron
 """.split())
+# ★★★2026-09-26 の 較正 その2 ──
+#   ★`update of web_type`（★引き金の 書き方）の `of` を 表と 見て いました。
+#   ★`auth.users` の `auth` も 同じ ── ★あれは **別の 綴り の 家**（schema）です。
+#     ★★`public` 以外の 家は 数えません ── ★こちらで 作る ものでは ありません。
 # ★もとから ある 道具（★`public.` が 付かない もの）。
 TSUKAU = re.compile(r"^(jsonb_|json_|to_|array_|string_|regexp_|extract|coalesce|greatest"
                     r"|least|count|max|min|sum|avg|now|upper|lower|btrim|left|right"

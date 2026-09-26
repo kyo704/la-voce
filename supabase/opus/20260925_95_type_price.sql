@@ -37,7 +37,9 @@ create trigger trg_portfolios_type before insert or update of web_type, visibili
 
 -- ★★下見リンクも 無料です（★visibility は self のまま・sql/86）
 
-create or replace function public.my_page_types()
+-- ★★2026-09-26: ★94 が 返す 形と 違います → ★先に 落とします
+drop function if exists public.my_page_types();
+create function public.my_page_types()
 returns table(type_key text, label text, group_name text, paid boolean,
               price_yen integer, owned boolean)
 language sql stable security definer set search_path to 'public' as $$
