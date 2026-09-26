@@ -10,20 +10,13 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, readRaw, libUrl } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
   if (c) { console.log(`  ✓ ${label}`); pass++; } else { console.log(`  ✗ ${label}`); fail++; }
 }
-const 読 = async (名, 置換) => {
-  let s = readRaw("lib", 名);
-  if (置換) for (const [k, v] of Object.entries(置換)) {
-    s = s.replace(`"${k}"`, JSON.stringify("data:text/javascript;base64,"
-      + Buffer.from(readRaw("lib", v), "utf-8").toString("base64")));
-  }
-  return import("data:text/javascript;base64," + Buffer.from(s, "utf-8").toString("base64"));
-};
+const 読 = async (名) => import(libUrl(名.replace(/\.js$/, "")));
 
 async function main() {
   console.log("=== 一 ★曲を 直す ===");

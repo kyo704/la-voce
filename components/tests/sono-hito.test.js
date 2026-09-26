@@ -15,7 +15,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, readRaw, libUrl } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -26,11 +26,9 @@ async function main() {
   const libRaw = readRaw("lib", "sonoHito.js");
   const jsx = readRaw("components", "SonoHito.jsx");
   const jsxCode = stripComments(jsx);
-  const b64 = (...q) => "data:text/javascript;base64,"
-    + Buffer.from(fs.readFileSync(path.join(ROOT, ...q), "utf-8"), "utf-8").toString("base64");
-  const m = await import("data:text/javascript;base64," + Buffer.from(
-    libRaw.replace('"@/lib/orgRoster"', JSON.stringify(b64("lib", "orgRoster.js"))),
-    "utf-8").toString("base64"));
+  // ★★すり替えは `_source.js` の `libUrl` に 寄せました（★2026-09-26）。
+  const b64 = (...q) => libUrl(q[q.length - 1]);
+  const m = await import(libUrl("sonoHito"));
 
   console.log("=== 一 ★見られないもの 8行（★約束） ===");
   const 約 = ["声の記録", "からだの記録", "ノート・レパートリー", "受診用の 1枚",

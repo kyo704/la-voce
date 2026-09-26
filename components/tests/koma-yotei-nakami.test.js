@@ -16,14 +16,13 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, readRaw, libUrl } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
   if (c) { console.log(`  ✓ ${label}`); pass++; } else { console.log(`  ✗ ${label}`); fail++; }
 }
-const 読 = (名) => import("data:text/javascript;base64,"
-  + Buffer.from(readRaw("lib", 名), "utf-8").toString("base64"));
+const 読 = (名) => import(libUrl(名.replace(/\.js$/, "")));
 
 async function main() {
   const sql = fs.readFileSync(

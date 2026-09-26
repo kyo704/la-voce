@@ -26,6 +26,7 @@
 const { execFileSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const { libUrl } = require("./_source");
 
 const ROOT = path.join(__dirname, "..", "..");
 const TOOL = path.join(ROOT, "tools", "star_leak_scan.py");
@@ -95,8 +96,7 @@ const EXPECT = {
   "health.reflux_care": "fnv1a-094f46d4"
 };
 (async () => {
-  const C = await import("data:text/javascript;base64,"
-    + Buffer.from(consentSrc, "utf-8").toString("base64"));
+  const C = await import(libUrl("consent"));
   console.log("\n★★同意の 文の ハッシュが 変わって いないこと");
   Object.keys(EXPECT).forEach((k) => {
     const p = C.purposeByKey(k);

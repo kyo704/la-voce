@@ -261,6 +261,34 @@ function readPack(...parts) {
   return readRaw(...packParts(), ...parts);
 }
 
+/**
+ * ★`lib/` の 紙を、★`@/lib/…` を 解いた 上で 読み込める 形（data: URL）に します。
+ *
+ *   ★★★出どころ 2026-09-26 ── ★`lib/*.js` の 字を `tx()`（`lib/t.js`）で 包んだ 日、
+ *     ★見張り 7本が いっせいに 落ちました。★`data:` で 読み込むと `@/` が 解けません。
+ *   ★★★それまで 各見張りが 自分で すり替えを 書いて いました（★同じ 決めが 何か所にも）。
+ *     ★★この 蔵で 繰り返して いる 形 そのもの なので、★1か所に 集めました。
+ *   ★★深さに 限りが あります（★輪に なったら 止まります）。
+ */
+function libUrl(name, 見た) {
+  const 済 = 見た || new Set();
+  const 名 = String(name).replace(/\.js$/, "");
+  if (済.has(名)) return "data:text/javascript;base64," + Buffer.from("", "utf-8").toString("base64");
+  済.add(名);
+  let src = fs.readFileSync(path.join(__dirname, "..", "..", "lib", 名 + ".js"), "utf-8");
+  src = src.replace(/"@\/lib\/([A-Za-z0-9_]+)"/g, (_, n) => JSON.stringify(libUrl(n, 済)));
+  return "data:text/javascript;base64," + Buffer.from(src, "utf-8").toString("base64");
+}
+
+// ★★★`loadLib` を ここに **もう1つ 書きました**（★2026-09-26）── ★消しました。
+//   ★★この 紙の 174行目に 前から `loadLib(...parts)` が あります。
+//   ★★★同じ 名を 2つ 置くと、★**後が 勝ちます**。★文法も 検査も 通ります。
+//     ★★80本の 見張りが いっせいに 落ちました ── ★`lib/lib.js` を 読もうと して。
+//     ★★★Opus が 同じ 日に 自分で 挙げた 失敗の 形 です
+//       （「同じ 名前の 関数を 2つ 置く（後が 勝つ）」）。★同じ 穴に 落ちました。
+//   ★★足すのは `libUrl` **だけ** に します。★読み込みは 前から ある `loadLib` で。
+
 module.exports = {
+  libUrl,
   assertAbsent, ROOT, stripComments, readRaw, readCode, loadLib,
   packParts, readPack, stripCode, stripSqlCode, stripCounts, readsTable };

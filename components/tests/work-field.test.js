@@ -15,7 +15,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, readRaw, libUrl } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -26,8 +26,7 @@ async function main() {
   const libRaw = readRaw("lib", "workField.js");
   const jsx = readRaw("components", "WorkField.jsx");
   const jsxCode = stripComments(jsx);
-  const m = await import("data:text/javascript;base64,"
-    + Buffer.from(libRaw, "utf-8").toString("base64"));
+  const m = await import(libUrl("workField"));
 
   console.log("=== 一 ★3つ（★見本の 並び そのまま） ===");
   t(m.FIELDS.length === 3, `★3つ だけ（いま ${m.FIELDS.length}）`);
@@ -91,8 +90,8 @@ async function main() {
 
   console.log("=== 六 ★「さがす」は ほんとうに 出なくなる（★約束の 3行目） ===");
   const gate = fs.readFileSync(path.join(ROOT, "lib", "matchingGate.js"), "utf-8");
-  const b64 = (...q) => "data:text/javascript;base64,"
-    + Buffer.from(fs.readFileSync(path.join(ROOT, ...q), "utf-8"), "utf-8").toString("base64");
+  // ★★すり替えは `_source.js` の `libUrl` に 寄せました（★2026-09-26）。
+  const b64 = (...q) => libUrl(q[q.length - 1]);
   const G = await import("data:text/javascript;base64," + Buffer.from(
     gate.replace('"@/lib/workField"', JSON.stringify(b64("lib", "workField.js"))),
     "utf-8").toString("base64"));

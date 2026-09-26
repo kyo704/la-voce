@@ -1,0 +1,40 @@
+{
+  "title": "音の絵 作品39",
+  "title_original": "Études-Tableaux op.39",
+  "aliases": [],
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninoff, Sergei",
+  "kind": "chamber",
+  "year_written": 1917,
+  "source": "hand",
+  "source_id": "rachmaninov-etudes-op39",
+  "duration_min": 40,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1番〜第5番",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    },
+    {
+      "label": "第6番〜第9番",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

@@ -15,7 +15,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, readRaw, libUrl } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -27,11 +27,9 @@ async function main() {
   const jsx = readRaw("components", "KyoshitsuOps.jsx");
   const jsxCode = stripComments(jsx);
   const vt = stripComments(readRaw("components", "VocalTracker.jsx"));
-  const b64 = (...q) => "data:text/javascript;base64,"
-    + Buffer.from(fs.readFileSync(path.join(ROOT, ...q), "utf-8"), "utf-8").toString("base64");
-  const m = await import("data:text/javascript;base64," + Buffer.from(
-    libRaw.replace('"@/lib/opsPerms"', JSON.stringify(b64("lib", "opsPerms.js"))),
-    "utf-8").toString("base64"));
+  // ★★すり替えは `_source.js` の `libUrl` に 寄せました（★2026-09-26）。
+  const b64 = (...q) => libUrl(q[q.length - 1]);
+  const m = await import(libUrl("kyoshitsuOps"));
 
   console.log("=== 一 ★下の 2行（★約束） ===");
   t(m.NOTES.length === 2, `★2行（いま ${m.NOTES.length}）`);

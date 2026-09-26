@@ -1,0 +1,104 @@
+{
+  "title": "お気に召すまま",
+  "title_original": "As You Like It",
+  "aliases": [],
+  "composer": "シェイクスピア",
+  "composer_sort": "Shakespeare, William",
+  "kind": "drama",
+  "year_written": 1599,
+  "source": "hand",
+  "source_id": "shakespeare-as-you-like",
+  "duration_min": 150,
+  "language": "en",
+  "roles": [
+    {
+      "label": "ロザリンド"
+    },
+    {
+      "label": "オーランドー"
+    },
+    {
+      "label": "シーリア"
+    },
+    {
+      "label": "タッチストーン"
+    },
+    {
+      "label": "ジェイクィズ"
+    },
+    {
+      "label": "公爵"
+    },
+    {
+      "label": "オリヴァー"
+    },
+    {
+      "label": "その他",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 宮廷と追放",
+      "group_label": "第1幕",
+      "roles": [
+        "ロザリンド",
+        "シーリア",
+        "オーランドー",
+        "オリヴァー",
+        "タッチストーン"
+      ]
+    },
+    {
+      "label": "第2幕 アーデンの森",
+      "group_label": "第2幕",
+      "roles": [
+        "公爵",
+        "ジェイクィズ",
+        "オーランドー",
+        "その他"
+      ]
+    },
+    {
+      "label": "第3幕 森の恋の遊び",
+      "group_label": "第3幕",
+      "roles": [
+        "ロザリンド",
+        "オーランドー",
+        "シーリア",
+        "タッチストーン"
+      ]
+    },
+    {
+      "label": "第4幕 求愛の稽古",
+      "group_label": "第4幕",
+      "roles": [
+        "ロザリンド",
+        "オーランドー",
+        "ジェイクィズ"
+      ]
+    },
+    {
+      "label": "第5幕 四組の結婚",
+      "group_label": "第5幕",
+      "roles": [
+        "ロザリンド",
+        "オーランドー",
+        "シーリア",
+        "オリヴァー",
+        "タッチストーン",
+        "公爵",
+        "その他"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ]
+}

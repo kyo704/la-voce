@@ -16,7 +16,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, readRaw, libUrl } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -25,8 +25,7 @@ function t(c, label) {
 
 async function main() {
   const libRaw = readRaw("lib", "moreBundles.js");
-  const m = await import("data:text/javascript;base64,"
-    + Buffer.from(libRaw, "utf-8").toString("base64"));
+  const m = await import(libUrl("moreBundles"));
   const vt = stripComments(readRaw("components", "VocalTracker.jsx"));
 
   // ★★表を 源から 切り出します。★数を 覚えません。
@@ -49,11 +48,7 @@ async function main() {
   // ★★★「この 教室の 運営」の 行も 行き先 です（★2026-09-25・design-v76）。
   //   ★★束の 行では ありませんが、★同じ 表が 引きます。
   //     ★★`組織` と `場所を決める` は 束に ありません ── ★あちらの 6行 です。
-  const ko = await import("data:text/javascript;base64," + Buffer.from(
-    readRaw("lib", "kyoshitsuOps.js")
-      .replace('"@/lib/opsPerms"', JSON.stringify("data:text/javascript;base64," + Buffer.from(
-        readRaw("lib", "opsPerms.js"), "utf-8").toString("base64"))),
-    "utf-8").toString("base64"));
+  const ko = await import(libUrl("kyoshitsuOps"));
   ko.ROWS.forEach((r) => to.push(r.to));
   // ★★★束の 行でも、★教室の 運営の 行でも ない 行き先（★2026-09-26）。
   //   ★★見本では **別の 画面の 中から** 押します。★束には 出て きません。

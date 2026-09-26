@@ -10,7 +10,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { stripComments, readRaw } = require("./_source");
+const { stripComments, readRaw, libUrl } = require("./_source");
 const ROOT = path.join(__dirname, "..", "..");
 let pass = 0, fail = 0;
 function t(c, label) {
@@ -20,8 +20,8 @@ function t(c, label) {
 async function main() {
   const src = fs.readFileSync(path.join(ROOT, "lib", "matchingGate.js"), "utf-8");
   // ★★`@/` を 解けないので、★読み込みの 道だけを 本物の 中身に すり替えます。
-  const b64 = (...q) => "data:text/javascript;base64,"
-    + Buffer.from(fs.readFileSync(path.join(ROOT, ...q), "utf-8"), "utf-8").toString("base64");
+  // ★★すり替えは `_source.js` の `libUrl` に 寄せました（★2026-09-26）。
+  const b64 = (...q) => libUrl(q[q.length - 1]);
   const 解 = src.replace('"@/lib/workField"', JSON.stringify(b64("lib", "workField.js")));
   const m = await import("data:text/javascript;base64," + Buffer.from(解, "utf-8").toString("base64"));
   const 名 = m.MATCHING_ENV;
