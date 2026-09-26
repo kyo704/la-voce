@@ -13383,7 +13383,12 @@ export default function VocalTracker({
     // ★★★2026-09-26 に つなぎました（★引き金は 2026-09-25 に 済んで いました）。
     //   ★★`tools/trigger_met.py` が「済んだ のに 呼ばれて いない」と 教えました。
     //   ★★見本では「公演の機能」「学校の機能」の 束 から 開きます（★たどって 確かめました）。
-    "子どもの枠": () => setMoreSection("子どもの枠"),
+    // ★★★子どもの枠は「どの 公演か」が 決まって いる ときだけ 出します。
+    //   ★★見本は 1つの 公演の 中の 1枚 です（`bk('公演')`）。
+    //   ★★★掛け持ちの 方に 1つを 勝手に 選ばせません ──
+    //     ★お子さんを 別の 公演に 出して しまいます。
+    //   ★★決まって いない ときは 行ごと 出しません（★押せない 札を 置かない）。
+    "子どもの枠": (koenId || kidOnlyKoen) ? () => setMoreSection("子どもの枠") : null,
     "希望がまだの方": 運営できる教室().length === 1 ? () => setMoreSection("希望がまだの方") : null,
     "担当の先生を選ぶ": studentCanChoose(monkaSetting)
       ? () => setMoreSection("担当の先生") : null,
@@ -14613,6 +14618,27 @@ export default function VocalTracker({
     const post = mm.post_id ? myOrgPosts[mm.post_id] : null;
     return mayEnterOps(post ? permSet(post.perms) : null);
   }
+  // ==========================================================================
+  // ★★★入って いる 公演が 1つ だけ の とき、★その 鍵（★2026-09-26）
+  //
+  //   ★★束の 行「子どもの 枠」を 出すか どうかが これで 決まります。
+  //   ★★★もっとを 開いた ときに 数えます ── ★節を 開いて からでは、
+  //     ★行を 出すか どうかの 判じに 間に 合いません。
+  //   ★★掛け持ちの 方（★2つ 以上）では `null` です。★行を 出しません。
+  // ==========================================================================
+  const [kidOnlyKoen, setKidOnlyKoen] = useState(null);
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== null || !userId) return;
+    let 生 = true;
+    (async () => {
+      const { data } = await featureClient.from("koen_members")
+        .select("koen_id").eq("user_id", userId).is("left_at", null);
+      const ids = [...new Set((data || []).map((m) => m.koen_id).filter(Boolean))];
+      if (生) setKidOnlyKoen(ids.length === 1 ? ids[0] : null);
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, featureClient]);
+
   const [myAssignedTeachers, setMyAssignedTeachers] = useState({}); // orgId -> 担当講師のuserId配列
 
   // ==========================================================================
@@ -14646,15 +14672,53 @@ export default function VocalTracker({
   // ==========================================================================
   const [kidRows, setKidRows] = useState(null);
   const [kidReads, setKidReads] = useState({});
+  // ★★★どの 公演か（★2026-09-26）。
+  //   ★★見本は `bk('公演')` ── ★1つの 公演の 中の 1枚 です。
+  //   ★★★`koenId` は 公演の 一覧から 開いた ときだけ 立ちます。
+  //     ★★束から 直に 来ると 空 です。★だから ここで 解きます ──
+  //       ★入って いる 公演が **1つ だけ** の とき、★それ に します。
+  //       ★★2つ 以上 の ときは 出しません（★行き先が 決まりません）。
+  //     ★★同じ 判じを `教室の運営` でも して います（★1つ だけ の とき）。
+  const [kidKoen, setKidKoen] = useState(null);
   useEffect(() => {
-    if (!layoutV2 || moreSection !== "子どもの枠" || !userId || !koenId) return;
+    if (!layoutV2 || moreSection !== "子どもの枠" || !userId) return;
+    let 生 = true;
+    (async () => {
+      // ★★行を 出すか どうかと 同じ 鍵を 使います（★決めを 2か所に しません）。
+      if (生) setKidKoen(koenId || kidOnlyKoen);
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, koenId, featureClient]);
+  // ★★公演の 名（★見本 ── `KP.title　／　あなたの アカウントで…`）。
+  const [kidKoenTitle, setKidKoenTitle] = useState("");
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "子どもの枠" || !kidKoen) return;
+    let 生 = true;
+    (async () => {
+      const { data } = await featureClient.from("koen")
+        .select("id, title").eq("id", kidKoen).limit(1);
+      if (生) setKidKoenTitle(((data || [])[0] || {}).title || "");
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, kidKoen, featureClient]);
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "子どもの枠" || !userId || !kidKoen) return;
     let 生 = true;
     (async () => {
       const { data, error } = await featureClient.from("koen_kids")
-        .select(KID_COLS).eq("koen_id", koenId).eq("guardian_user_id", userId);
+        .select(KID_COLS).eq("koen_id", kidKoen).eq("guardian_user_id", userId);
       if (!生) return;
       if (error) { setKidRows(null); return; }
       const 子 = data || [];
+      // ★★★緊急の 連絡先が「ある か」を **こちらでは 知れません**（★2026-09-26 に 確かめました）。
+      //   ★★`koen_kid_contacts` は 決まりを 1枚も 持たず、★選ぶ 権も ありません
+      //     （★試しの 口座で 引いたら `42501 permission denied`）。
+      //   ★★★それは 正しい 作り です ── ★番号を 読めるのは
+      //     ★`read_kid_contact`（★責任者・当日）だけ です（★約束⑤）。
+      //   ★★★だから「なし」と 書きません ── ★「無い」のと「知れない」のは 別 です。
+      //     ★★`hasContact` を 渡しません（★`undefined` の まま）。
+      //     ★★台帳の 側に「ある か だけ」を 返す 口が できたら、★ここで 渡します
+      //       （★`docs/ledgers/13-…` に 書きました）。
       setKidRows(子);
       if (子.length === 0) { setKidReads({}); return; }
       // ★★見た 記録。★お名前は 読みません（★`viewer_role_at` だけ）。
@@ -14669,7 +14733,7 @@ export default function VocalTracker({
       setKidReads(束);
     })();
     return () => { 生 = false; };
-  }, [layoutV2, moreSection, userId, koenId, featureClient]);
+  }, [layoutV2, moreSection, userId, kidKoen, featureClient]);
 
   // ==========================================================================
   // ★★★希望がまだの方（★2026-09-26 に つなぎました）
@@ -28393,14 +28457,13 @@ export default function VocalTracker({
                     ★★呼び名 だけ です。★年齢・学校・写真・体調は うかがいません。 */}
                 {layoutV2 && moreSection === "子どもの枠" ? (
                   <KodomoNoWaku
-                    koenTitle={(koenListRows || []).find((r) => r && r.id === koenId)
-                      ? (koenListRows.find((r) => r.id === koenId).title || "") : ""}
+                    koenTitle={kidKoenTitle}
                     kids={kidRows}
                     readsByKid={kidReads}
                     onAdd={async (v) => {
-                      if (!koenId) return;
+                      if (!kidKoen) return;
                       const { error } = await featureClient.from("koen_kids")
-                        .insert({ koen_id: koenId, guardian_user_id: userId,
+                        .insert({ koen_id: kidKoen, guardian_user_id: userId,
                                   nickname: v.nickname });
                       if (error) { setToastMessage("足せませんでした。"); }
                       else { setToastMessage("足しました。"); setMoreSection("子どもの枠"); }

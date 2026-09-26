@@ -12,7 +12,7 @@
 
 import { useState } from "react";
 import { C } from "@/lib/tokens";
-import { ScreenHead, Back, Box, H3 } from "@/components/UiV2";
+import { ScreenHead, Back, Box, H3, Li } from "@/components/UiV2";
 import {
   TITLE, subLine, ROLE_NOT_YET, contactWord, READS_HEAD, READS_EMPTY,
   BTN_REMOVE, ADD_HEAD, F_NAME, F_NAME_PH, F_TEL, F_TEL_PH, BTN_ADD,
@@ -49,45 +49,48 @@ export default function KodomoNoWaku({
         const reads = (readsByKid && readsByKid[k.id]) || [];
         return (
           <Box key={k.id} style={{ marginBottom: 11 }}>
-            <div style={{
-              display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-              gap: 12, padding: "12px 14px"
-            }}>
-              <span>
-                <span style={{ fontSize: "0.875rem", color: C.ink }}>{k.nickname}</span>
-                <span style={{ display: "block", fontSize: "0.75rem", color: C.inkSoft, marginTop: 2 }}>
-                  {(k.role || ROLE_NOT_YET) + "　／　" + contactWord(!!k.hasContact)}
-                </span>
-              </span>
-              <button type="button" onClick={() => onRemove && onRemove(k.id)}
+            {/* ★★★行は `UiV2` の `Li` です（★2026-09-26）。
+                ★★自分で 組んだ 行は class を 持たず、★骨組みの 道具が 拾えません。
+                ★★見本の 行は `div.li.plain` です。★同じ 種に 揃えます。 */}
+            {/* ★★★「外す」は 行の **中**（右の 口）に 置きます（★2026-09-26）。
+                ★★見本は `div.li` の 中の `span.pill` です ── ★行の 外では ありません。
+                ★★別の 札に すると、★骨組みが 行と 分かれて 数えます。
+                ★★押しどころの 高さ（44）は 保ちます。
+                ★★★註を `right={ … }` の 中に 書かないこと ── ★式の 中 です。 */}
+            <Li last={!k.hasContact} right={
+              <span role="button" tabIndex={0}
+                onClick={() => onRemove && onRemove(k.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") { if (onRemove) onRemove(k.id); }
+                }}
                 style={{
-                  minHeight: 44, padding: "0 12px", borderRadius: 999,
+                  display: "inline-flex", alignItems: "center", minHeight: 44,
+                  padding: "0 12px", borderRadius: 999,
                   border: `1px solid ${C.line}`, background: C.card,
-                  color: C.inkSoft, fontSize: "0.75rem", cursor: "pointer"
-                }}>{BTN_REMOVE}</button>
-            </div>
+                  color: C.inkSoft, fontSize: "0.75rem", cursor: "pointer",
+                  whiteSpace: "nowrap"
+                }}>{BTN_REMOVE}</span>
+            }>
+              <span style={{ fontSize: "0.875rem", color: C.ink }}>{k.nickname}</span>
+              {/* ★★★連絡先の 有無が 知れない ときは、★その 節を 落とします（★2026-09-26）。
+                  ★★`contactWord` が 空を 返します。★「なし」と 書きません。 */}
+              <span style={{ display: "block", fontSize: "0.75rem", color: C.inkSoft, marginTop: 2 }}>
+                {[k.role || ROLE_NOT_YET, contactWord(k.hasContact)]
+                  .filter(Boolean).join("　／　")}
+              </span>
+            </Li>
 
             {/* ★★連絡先が ある 子だけ、★見た 記録を 出します。
                 ★★★役割 だけ です。★名前を 出しません（★約束⑤）。 */}
             {k.hasContact ? (
               <>
-                <div style={{ padding: "10px 14px", borderTop: `1px solid ${C.line}` }}>
-                  <span style={{ fontSize: "0.75rem", color: C.inkSoft }}>{READS_HEAD}</span>
-                </div>
+                <Li><span style={{ fontSize: "0.75rem", color: C.inkSoft }}>{READS_HEAD}</span></Li>
                 {reads.length === 0 ? (
-                  <div style={{ padding: "10px 14px", borderTop: `1px solid ${C.line}` }}>
-                    <span style={{ fontSize: "0.75rem", color: C.inkSoft }}>{READS_EMPTY}</span>
-                  </div>
-                ) : reads.map((r) => {
+                  <Li last><span style={{ fontSize: "0.75rem", color: C.inkSoft }}>{READS_EMPTY}</span></Li>
+                ) : reads.map((r, i) => {
                   const l = readLine(r);
                   return (
-                    <div key={r.id} style={{
-                      display: "flex", alignItems: "center", justifyContent: "space-between",
-                      gap: 12, padding: "10px 14px", borderTop: `1px solid ${C.line}`
-                    }}>
-                      <span style={{ fontSize: "0.8125rem", color: C.ink }}>{l.when}</span>
-                      <span style={{ fontSize: "0.8125rem", color: C.inkSoft }}>{l.role}</span>
-                    </div>
+                    <Li key={r.id} right={l.role} last={i === reads.length - 1}>{l.when}</Li>
                   );
                 })}
               </>
