@@ -1,0 +1,69 @@
+{
+  "title": "無伴奏チェロ組曲第5番 ハ短調",
+  "title_original": "Cellosuite Nr. 5 BWV 1011",
+  "aliases": [],
+  "composer": "バッハ",
+  "composer_sort": "Bach, Johann Sebastian",
+  "kind": "chamber",
+  "year_written": 1720,
+  "source": "hand",
+  "source_id": "bach-cello-suite5",
+  "duration_min": 25,
+  "roles": [
+    {
+      "label": "チェロ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲とフーガ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "アルマンド",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "クーラント",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "サラバンド",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "ガヴォットI・II",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    },
+    {
+      "label": "ジーグ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ],
+  "note": "★スコルダトゥーラ（A弦をGに下げる）"
+}

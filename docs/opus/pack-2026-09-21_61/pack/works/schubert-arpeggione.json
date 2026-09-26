@@ -1,0 +1,59 @@
+{
+  "title": "アルペジョーネ・ソナタ イ短調",
+  "title_original": "Arpeggione-Sonate",
+  "aliases": [],
+  "composer": "シューベルト",
+  "composer_sort": "Schubert, Franz",
+  "kind": "chamber",
+  "year_written": 1824,
+  "source": "hand",
+  "source_id": "schubert-arpeggione",
+  "duration_min": 25,
+  "roles": [
+    {
+      "label": "チェロ"
+    },
+    {
+      "label": "ピアノ伴奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ・モデラート",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    },
+    {
+      "label": "第3楽章 アレグレット",
+      "group_label": "全曲",
+      "roles": [
+        "チェロ",
+        "ピアノ伴奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ],
+  "note": "★原曲はアルペジョーネ。チェロ・ヴィオラで演奏される"
+}

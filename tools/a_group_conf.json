@@ -91,6 +91,10 @@
     "components/Yotei.jsx",
     "lib/yotei.js"
   ],
+  "わたしの出演料": [
+    "components/WatashiNoGaku.jsx",
+    "lib/watashiNoGaku.js"
+  ],
   "アカウントと設定": [
     "components/MoreBundle.jsx",
     "lib/moreBundles.js"
@@ -330,6 +334,11 @@
   "審査員を足す": [
     "components/JuryPanel.jsx",
     "lib/juryPanel.js"
+  ],
+  "届いたもの": [
+    "components/TodoitaMono.jsx",
+    "lib/todoitaMono.js",
+    "lib/renraku.js"
   ],
   "希望がまだの方": [
     "components/WariMada.jsx",

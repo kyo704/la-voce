@@ -1,0 +1,98 @@
+{
+  "title": "マゼランの未知なる大陸への挑戦",
+  "title_original": "マゼランの未知なる大陸への挑戦",
+  "aliases": [
+    "マゼラン"
+  ],
+  "composer": "樽屋雅徳",
+  "composer_sort": "Taruya, Masanori",
+  "kind": "band",
+  "year_written": 2007,
+  "source": "hand",
+  "source_id": "taruya-magellan",
+  "duration_min": 8,
+  "language": "ja",
+  "roles": [],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": []
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピッコロ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 6,
+      "section": "woodwind",
+      "doubling": "エスクラリネット・バスクラリネット"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 4,
+      "section": "woodwind",
+      "note": "アルト2・テナー・バリトン"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ユーフォニアム",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings",
+      "is_optional": true
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "title": "シンデレラ",
+  "composer": "マスネ",
+  "composer_sort": "Massenet, Jules",
+  "kind": "opera",
+  "year_written": 1899,
+  "source": "hand",
+  "source_id": "massenet-cendrillon",
+  "roles": [
+    {
+      "label": "サンドリヨン（シンデレラ）"
+    },
+    {
+      "label": "王子"
+    },
+    {
+      "label": "妖精"
+    },
+    {
+      "label": "マダム・ド・ラ・アルティエール"
+    },
+    {
+      "label": "パンドルフ"
+    },
+    {
+      "label": "ノエミ"
+    },
+    {
+      "label": "ドロテ"
+    },
+    {
+      "label": "国王"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "第1幕",
+      "roles": []
+    },
+    {
+      "label": "支度の場（召使いたちの合唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "パンドルフ",
+        "マダム・ド・ラ・アルティエール",
+        "ノエミ",
+        "ドロテ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "サンドリヨンの独白（留守番）",
+      "group_label": "第1幕",
+      "roles": [
+        "サンドリヨン（シンデレラ）"
+      ]
+    },
+    {
+      "label": "妖精の登場と精霊の合唱",
+      "group_label": "第1幕",
+      "roles": [
+        "妖精",
+        "合唱",
+        "サンドリヨン（シンデレラ）"
+      ]
+    },
+    {
+      "label": "宮廷の場（王子の憂い）",
+      "group_label": "第2幕",
+      "roles": [
+        "王子",
+        "国王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "舞踏会と出会いの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "サンドリヨン（シンデレラ）",
+        "王子",
+        "国王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "真夜中の逃走",
+      "group_label": "第3幕",
+      "roles": [
+        "サンドリヨン（シンデレラ）",
+        "妖精"
+      ]
+    },
+    {
+      "label": "家の場（継母との対決）",
+      "group_label": "第3幕",
+      "roles": [
+        "サンドリヨン（シンデレラ）",
+        "マダム・ド・ラ・アルティエール",
+        "パンドルフ"
+      ]
+    },
+    {
+      "label": "樫の木の場（夢の二重唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "サンドリヨン（シンデレラ）",
+        "王子",
+        "妖精",
+        "合唱"
+      ]
+    },
+    {
+      "label": "目覚めとフィナーレ（靴合わせ）",
+      "group_label": "第4幕",
+      "roles": [
+        "サンドリヨン（シンデレラ）",
+        "王子",
+        "パンドルフ",
+        "妖精",
+        "国王",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "ピッコロ"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind",
+      "doubling": "コーラングレ"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion",
+      "note": "大太鼓・シンバル・トライアングル・グロッケン・鐘"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "舞台裏の楽器",
+      "count": 0,
+      "section": "banda",
+      "note": "妖精の場"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ],
+  "title_original": "Cendrillon",
+  "aliases": [
+    "サンドリヨン"
+  ],
+  "duration_min": 150,
+  "language": "fr"
+}

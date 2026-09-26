@@ -1,0 +1,168 @@
+{
+  "title": "アルチーナ",
+  "title_original": "Alcina",
+  "aliases": [],
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1735,
+  "duration_min": 195,
+  "language": "it",
+  "source": "hand",
+  "source_id": "handel-alcina",
+  "roles": [
+    {
+      "label": "アルチーナ"
+    },
+    {
+      "label": "ルッジェーロ"
+    },
+    {
+      "label": "ブラダマンテ"
+    },
+    {
+      "label": "モルガーナ"
+    },
+    {
+      "label": "オロンテ"
+    },
+    {
+      "label": "メリッソ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 魔法の島への漂着",
+      "group_label": "第1幕",
+      "roles": [
+        "ブラダマンテ",
+        "メリッソ",
+        "モルガーナ"
+      ]
+    },
+    {
+      "label": "第1幕 アルチーナとルッジェーロ",
+      "group_label": "第1幕",
+      "roles": [
+        "アルチーナ",
+        "ルッジェーロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 モルガーナのアリア（さあ、私の喜びよ）",
+      "group_label": "第1幕",
+      "roles": [
+        "モルガーナ"
+      ]
+    },
+    {
+      "label": "第2幕 魔法が解ける",
+      "group_label": "第2幕",
+      "roles": [
+        "ルッジェーロ",
+        "メリッソ",
+        "ブラダマンテ"
+      ]
+    },
+    {
+      "label": "第2幕 アルチーナのアリア（ああ、わが心よ）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルチーナ"
+      ]
+    },
+    {
+      "label": "第3幕 島の崩壊とフィナーレ",
+      "group_label": "第3幕",
+      "roles": [
+        "アルチーナ",
+        "ルッジェーロ",
+        "ブラダマンテ",
+        "モルガーナ",
+        "オロンテ",
+        "メリッソ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "リコーダー",
+      "count": 2,
+      "section": "woodwind",
+      "is_optional": true
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass",
+      "is_optional": true
+    },
+    {
+      "part": "チェンバロ",
+      "count": 2,
+      "section": "continuo"
+    },
+    {
+      "part": "テオルボ",
+      "count": 1,
+      "section": "continuo",
+      "is_optional": true
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    }
+  ]
+}

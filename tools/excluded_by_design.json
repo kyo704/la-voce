@@ -932,5 +932,25 @@
    "decided": "2026-09-26",
    "decided_by": "Code"
   }
+ ],
+ "わたしの出演料": [
+  {
+   "text": "フィガロの結婚",
+   "why": "★公演の 名 です。★`koen.title` から 出します。★見せかけの 名 です。",
+   "mockup_number_is_fixture": "★見本の 公演の 名 です。",
+   "why_not_placeholder": "★書き写すと、★どの 方の 画面にも 同じ 公演の 名が 出ます。",
+   "trigger": "―（★作りは 出来て います）",
+   "decided": "2026-09-26",
+   "decided_by": "Code"
+  },
+  {
+   "text": "本番1回 ＋ 稽古3回 まとめて",
+   "why": "★内わけ です。★`koen_fees.memo` から 出します。★★こちらで 組み立てません ── ★「本番◯回」を 数えて 作ると、★制作の 方が 書いた ことと ちがう ものが 出ます。",
+   "mockup_number_is_fixture": "★見本の 内わけ です。",
+   "why_not_placeholder": "★同上。",
+   "trigger": "―",
+   "decided": "2026-09-26",
+   "decided_by": "Code"
+  }
  ]
 }
