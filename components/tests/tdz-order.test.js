@@ -124,5 +124,20 @@ try {
 t(/RESULT: OK/.test(走), "★ほかの 部品にも 同じ 形が ない");
 t(/TDZ_SCAN\s+★\d+ 枚/.test(走), "★道具が 紙を 数えて いる（★0枚では ない）");
 
+// ── ★④ ★道具が **見つけられる** か を 見ます（★2026-09-26）────────────────
+//   ★★★`RESULT: OK` は、★2つの ことを 同じ 顔で 言います ──
+//     ★「無い」のか、★「見て いない」のか。
+//   ★★実際 この 道具は、★日本語の 名の `function`（★この 蔵に 17 個）を
+//     ★1つも 見て いません でした。★それでも ずっと `RESULT: OK` でした。
+//   ★★★だから 道具に、★わざと 当たる ものを 置かせて、★出る ところまで 見ます。
+let 較 = "", 較rc = 0;
+try {
+  較 = execFileSync("python3",
+    [path2.join(__dirname, "..", "..", "tools", "tdz_scan.py"), "--selftest"],
+    { cwd: path2.join(__dirname, "..", ".."), encoding: "utf-8" });
+} catch (e) { 較 = String((e && (e.stdout || e.message)) || ""); 較rc = 1; }
+t(較rc === 0 && /SELFTEST PASS/.test(較), "★道具が わざと の 1件 を 見つける（--selftest）");
+t(/日本語の function\s+✓|✓ 日本語の function/.test(較), "★日本語の 名の function も 見て いる");
+
 console.log(`\n${pass} 通り ／ ${fail} 落ち`);
 if (fail) process.exit(1);
