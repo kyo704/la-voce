@@ -1,0 +1,5 @@
+#!/bin/sh
+# ★commit の 前に、★軽い 見張りが ひとりでに 走ります（★較正③・2026-09-26）。
+#   ★★中身は `tools/hook_guard.py` が 1つ だけ 持ちます（★ここに 判じを 書きません）。
+#   ★★止めたい とき …… `git commit --no-verify`
+exec python3 "$(git rev-parse --show-toplevel)/tools/hook_guard.py" commit

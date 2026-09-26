@@ -1,0 +1,5 @@
+#!/bin/sh
+# ★push の 前に、★重い 見張り（506本 ぜんぶ）が ひとりでに 走ります（★較正③・2026-09-26）。
+#   ★★押す ぶんの refs は 立ち口（stdin）から 来ます。★そのまま 渡します。
+#   ★★止めたい とき …… `git push --no-verify`
+exec python3 "$(git rev-parse --show-toplevel)/tools/hook_guard.py" push
