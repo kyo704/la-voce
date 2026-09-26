@@ -72,7 +72,16 @@ vt = 読("components/VocalTracker.jsx")
   #   ★★どちらも「まだ」で 止めます ── ★勝手に 入口を 作りません
   #     （★台帳「見本に ある 仕掛けだけ を 使う」）。
   "mockup_orphan": lambda: False,
-  "mockup_name_unknown": lambda: False
+  "mockup_name_unknown": lambda: False,
+  # ★★★2026-09-26（2度目）── ★見本を **動かして** たどった 結果 の 鍵。
+  #   ★`kaminokata_wired` …… ★「紙の型」を 作って、★その 中の
+  #     ★「できあがりを 見る」を つないだ とき。
+  "kaminokata_wired": lambda: "<KamiTashikame" in vt,
+  # ★★下の 2つは こちらでは 直せません。★見本の 側に 入口が ありません。
+  #   ★★`tools/mihon_trace.js` で 親の 中を 1つずつ 数えた 結果 です
+  #     （★字で さがしただけ では ありません）。
+  "mihon_no_entry": lambda: False,
+  "mihon_name_unknown": lambda: False
 }
 
 def main():
