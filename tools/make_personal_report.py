@@ -11,13 +11,14 @@ def 読む(p):
   return io.open(p, encoding="utf-8").read()
 
 def 組(本):
-  出 = {"①": [], "②": [], "③": [], "④": [], "共通": []}
+  出 = {"①": [], "②": [], "③": [], "④": [], "⑤": [], "共通": []}
   いま = None
   for l in 本.split("\n"):
     if l.startswith("■ ① "): いま = "①"; continue
     if l.startswith("■ ② "): いま = "②"; continue
     if l.startswith("■ ③ "): いま = "③"; continue
     if l.startswith("■ ④ "): いま = "④"; continue
+    if l.startswith("■ ⑤ "): いま = "⑤"; continue
     if l.startswith("■ ★共通"): いま = "共通"; continue
     if l.startswith("★絵") or l.startswith("RESULT"): いま = None; continue
     if いま and l.startswith("    ") and not l.startswith("      "):
@@ -40,14 +41,15 @@ def main():
   行.append("")
   行.append("## ★まとめ")
   行.append("")
-  行.append("| 画面 | 結 | ①見本だけ | ②実機だけ | ③わざと | ④足した | 共通で 落とした |")
-  行.append("|---|---|---|---|---|---|---|")
+  行.append("| 画面 | 結 | ①見本だけ | ②実機だけ | ③わざと | ④足した | ⑤種ちがい | 共通で 落とした |")
+  行.append("|---|---|---|---|---|---|---|---|")
   中身 = {}
   for n in 名一覧:
     d = 組(読む(os.path.join(元, "fin_%s.txt" % n)))
     中身[n] = d
-    行.append("| %s | %s | %d | %d | %d | %d | %d |" % (
-      n, d["結"], len(d["①"]), len(d["②"]), len(d["③"]), len(d["④"]), len(d["共通"])))
+    行.append("| %s | %s | %d | %d | %d | %d | %d | %d |" % (
+      n, d["結"], len(d["①"]), len(d["②"]), len(d["③"]), len(d["④"]),
+      len(d["⑤"]), len(d["共通"])))
   行.append("")
   for n in 名一覧:
     d = 中身[n]
@@ -59,6 +61,7 @@ def main():
                   ("②", "★実機に あって 見本に 無い"),
                   ("③", "★見本に 在るが わざと 出して いない"),
                   ("④", "★実機に 在って 見本に 無い（わけ あり）"),
+                  ("⑤", "★種が 違う だけ（★入れる 種を 書いて あります）"),
                   ("共通", "★どの 画面にも 付く もの として 落とした")):
       行.append("### %s %s（%d）" % (k, 題, len(d[k])))
       行.append("")
