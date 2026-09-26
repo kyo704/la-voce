@@ -163,6 +163,10 @@ import Tsutaeru from "@/components/Tsutaeru";
 import NaniWoKaku from "@/components/NaniWoKaku";
 import HonbanYotei from "@/components/HonbanYotei";
 import KoenList from "@/components/KoenList";
+import WatashiNoGaku from "@/components/WatashiNoGaku";
+import TodoitaMono from "@/components/TodoitaMono";
+import { COLS as GAKU_COLS } from "@/lib/watashiNoGaku";
+import { COLS as INQUIRY_COLS, visibleRows as inquiryRows } from "@/lib/todoitaMono";
 import { COLS as HONBAN_COLS, patchOf as honbanPatch, SAVED as HONBAN_SAVED }
   from "@/lib/honbanYotei";
 import { mayShowTsutaeru } from "@/lib/tsutaeru";
@@ -13338,6 +13342,8 @@ export default function VocalTracker({
     "見た目を選ぶ": () => setMoreSection("見た目を選ぶ"),
     // ★★★Woolsong に ついて（★買う 前の 1枚）。★鍵が 閉じて いれば 出しません。
     "Woolsong": mayShowTsutaeru(features) ? () => setMoreSection("Woolsong") : null,
+    // ★★★届いたもの（★あなたの ページから 届いた もの）。
+    "届いたもの": () => setMoreSection("届いたもの"),
     // ★── 学校
     "通っているところ": () => setMoreSection("通っているところ"),
     // ★★★この 教室の 運営 …… ★運営に 入れる 教室が **1つ** の 方だけ 出します。
@@ -13353,6 +13359,8 @@ export default function VocalTracker({
     "公演の一覧": mayShowKoenMine(features) ? () => setMoreSection("公演の一覧") : null,
     // ★★★本番前の ことば。★台帳は `performances`（★誰の 鍵も 要りません）。
     "本番の予定": () => setMoreSection("本番の予定"),
+    // ★★★お支払いの こと（★ご自分の ぶん だけ）。
+    "わたしの出演料": () => setMoreSection("わたしの出演料"),
     // ★── さがす（★門は `matchingOn`。★お仕事と 名簿の 両方を 見て います）
     "伴奏をさがす": matchingOn ? () => setMoreSection("さがす") : null,
     // ★── 学ぶ
@@ -13390,6 +13398,32 @@ export default function VocalTracker({
   }, [layoutV2, moreSection, userId, featureClient]);
 
   const [pageSections, setPageSections] = useState(null);
+  // ★★★お支払いの こと（★1行 だけ。★一覧を 持ちません）。
+  const [myFee, setMyFee] = useState(undefined);
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "わたしの出演料" || !userId) return;
+    let 生 = true;
+    (async () => {
+      // ★★決まりが ご自分の 行 だけ を 通します（★`koen_fees_select`）。
+      //   ★★だから ここで `user_id` を 足しません ── ★足すと 決めが 2か所に なります。
+      const { data } = await featureClient.from("koen_fees").select(GAKU_COLS).limit(1);
+      if (生) setMyFee((data && data[0]) ? data[0] : null);
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, featureClient]);
+  // ★★★届いたもの。★迷いの ものは `lib` が 落とします。
+  const [inquiries, setInquiries] = useState(null);
+  useEffect(() => {
+    if (!layoutV2 || moreSection !== "届いたもの" || !userId) return;
+    let 生 = true;
+    (async () => {
+      const { data } = await featureClient.from("page_inquiries")
+        .select(INQUIRY_COLS).eq("owner_user_id", userId)
+        .order("created_at", { ascending: false });
+      if (生) setInquiries(inquiryRows(data));
+    })();
+    return () => { 生 = false; };
+  }, [layoutV2, moreSection, userId, featureClient]);
   // ★★★ページの 節。★お仕事（`field`）で 変わります。★台帳が 決めます。
   //   ★★返って くる 前は 空 です ── ★倒れ先の 一覧を 作りません（★2つ目の 一覧に なる）。
   const [pageFields, setPageFields] = useState(PAGE_FIELDS_NOT_YET);
@@ -28432,6 +28466,20 @@ export default function VocalTracker({
                     ★★記録の 画面の 札（`PeriodMarkerButton`）は そのまま 残します。
                       ★同じ 台帳・同じ 言葉 です。★道を 消しません。
                     ★★理由を 書く ところは ありません（★設計 §9 の 8番）。 */}
+                {/* ★★★お支払いの こと（★2026-09-26 に つなぎました）。
+                    ★★渡すのは **1行 だけ** です ── ★一覧を 渡しません
+                      （★「ほかの 出演者の 額は 出ません」）。
+                    ★★税の 式を 1つも 足しません（★裁定201）。 */}
+                {layoutV2 && moreSection === "わたしの出演料" && myFee !== undefined ? (
+                  <WatashiNoGaku row={myFee}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
+                {/* ★★★届いたもの（★2026-09-26 に つなぎました）。
+                    ★★返信の 欄は ありません。★メールも 渡しません。 */}
+                {layoutV2 && moreSection === "届いたもの" && inquiries ? (
+                  <TodoitaMono rows={inquiries}
+                    onBack={() => setMoreSection(null)} />
+                ) : null}
                 {/* ★★★しらべている こと（★2026-09-26 に つなぎました）。
                     ★★組は 順番の 1番目 です。★好きに 選べません（★くらべると 同じ 決め）。
                     ★★順番の 出どころは `lib/compareOrder.js` 1つ です。 */}
