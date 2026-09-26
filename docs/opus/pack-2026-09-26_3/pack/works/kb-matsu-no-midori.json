@@ -1,0 +1,45 @@
+{
+  "title": "松の緑（長唄）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1920,
+  "duration_min": 15,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-matsu-no-midori",
+  "note": "★歌舞伎舞踊（所作事） ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "少女（禿）"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★祝いの舞（★名披露目に出す）",
+      "group_label": "一段",
+      "roles": [
+        "少女（禿）",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

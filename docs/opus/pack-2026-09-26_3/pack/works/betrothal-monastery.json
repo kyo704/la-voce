@@ -1,0 +1,226 @@
+{
+  "title": "修道院での婚約",
+  "title_original": "Обручение в монастыре",
+  "composer": "プロコフィエフ",
+  "composer_sort": "Prokofiev, Sergei",
+  "kind": "opera",
+  "year_written": 1946,
+  "duration_min": 150,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "betrothal-monastery",
+  "roles": [
+    {
+      "label": "ルイーサ"
+    },
+    {
+      "label": "アントニオ"
+    },
+    {
+      "label": "クラーラ"
+    },
+    {
+      "label": "フェルディナンド"
+    },
+    {
+      "label": "ドン・ヘローム"
+    },
+    {
+      "label": "メンドーサ"
+    },
+    {
+      "label": "ドゥエンニャ"
+    },
+    {
+      "label": "アウグスティン神父"
+    },
+    {
+      "label": "カルロス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 セビリアの広場（ドン・ヘロームと魚の商談）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・ヘローム",
+        "メンドーサ",
+        "アントニオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 アントニオのセレナード",
+      "group_label": "第1幕",
+      "roles": [
+        "アントニオ",
+        "ルイーサ"
+      ]
+    },
+    {
+      "label": "第2幕 ★ドゥエンニャの計（手紙と入れ替わり）",
+      "group_label": "第2幕",
+      "roles": [
+        "ルイーサ",
+        "ドゥエンニャ",
+        "ドン・ヘローム"
+      ]
+    },
+    {
+      "label": "第2幕 メンドーサとドゥエンニャの出会い（勘違い）",
+      "group_label": "第2幕",
+      "roles": [
+        "メンドーサ",
+        "ドゥエンニャ"
+      ]
+    },
+    {
+      "label": "第3幕 クラーラとフェルディナンドの行き違い",
+      "group_label": "第3幕",
+      "roles": [
+        "クラーラ",
+        "フェルディナンド",
+        "ルイーサ"
+      ]
+    },
+    {
+      "label": "★第3幕 ドン・ヘロームの四重奏（クラリネットとコルネット）",
+      "group_label": "第3幕",
+      "roles": [
+        "ドン・ヘローム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 修道院（酔った修道士たち）",
+      "group_label": "第4幕",
+      "roles": [
+        "アウグスティン神父",
+        "カルロス",
+        "アントニオ",
+        "フェルディナンド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（3組の婚礼とドン・ヘロームの諦め）",
+      "group_label": "第4幕",
+      "roles": [
+        "ルイーサ",
+        "アントニオ",
+        "クラーラ",
+        "フェルディナンド",
+        "メンドーサ",
+        "ドゥエンニャ",
+        "ドン・ヘローム",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

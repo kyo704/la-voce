@@ -1,0 +1,55 @@
+{
+  "title": "ドゥルシネア姫に心を寄せるドン・キホーテ",
+  "title_original": "Don Quichotte à Dulcinée",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "song_cycle",
+  "year_written": 1933,
+  "duration_min": 8,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "ravel-don-quichotte",
+  "note": "★作詩 モラン ／ ★★ラヴェル 最後の 作品。★バリトンのための 曲 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. ロマネスクな歌（Chanson romanesque）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 叙事的な歌（Chanson épique）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 酒の歌（Chanson à boire）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽（またはピアノ）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "title": "シェエラザード",
+  "title_original": "Shéhérazade",
+  "composer": "ラヴェル",
+  "composer_sort": "Ravel, Maurice",
+  "kind": "song_cycle",
+  "year_written": 1903,
+  "duration_min": 17,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "ravel-sheherazade",
+  "note": "★作詩 トリスタン・クリングソル ／ ★★管弦楽つきが もとの 形 ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. アジア（Asie）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 魔法の笛（La flûte enchantée）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. つれない人（L’indifférent）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽（またはピアノ）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

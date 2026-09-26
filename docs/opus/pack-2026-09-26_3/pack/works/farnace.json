@@ -1,0 +1,177 @@
+{
+  "title": "ファルナーチェ",
+  "title_original": "Farnace",
+  "composer": "ヴィヴァルディ",
+  "composer_sort": "Vivaldi, Antonio",
+  "kind": "opera",
+  "year_written": 1727,
+  "duration_min": 175,
+  "edition": "1727 ヴェネツィア版／1731 パヴィア版など複数の版がある",
+  "language": "it",
+  "source": "hand",
+  "source_id": "farnace",
+  "roles": [
+    {
+      "label": "ファルナーチェ"
+    },
+    {
+      "label": "タミリ"
+    },
+    {
+      "label": "ベレニーチェ"
+    },
+    {
+      "label": "セリンダ"
+    },
+    {
+      "label": "ポンペオ"
+    },
+    {
+      "label": "ジラーデ"
+    },
+    {
+      "label": "アキッラ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 敗れたファルナーチェの命（妻に子を殺させようとする）",
+      "group_label": "第1幕",
+      "roles": [
+        "ファルナーチェ",
+        "タミリ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★タミリのアリア（子を隠す）",
+      "group_label": "第1幕",
+      "roles": [
+        "タミリ",
+        "アキッラ"
+      ]
+    },
+    {
+      "label": "第1幕 ベレニーチェの復讐（娘の夫を憎む母）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベレニーチェ",
+        "ポンペオ",
+        "セリンダ"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★ファルナーチェのアリア（Gelido in ogni vena ─ 血は凍る）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファルナーチェ"
+      ]
+    },
+    {
+      "label": "★第2幕 セリンダとアキッラ・ジラーデ",
+      "group_label": "第2幕",
+      "roles": [
+        "セリンダ",
+        "アキッラ",
+        "ジラーデ"
+      ]
+    },
+    {
+      "label": "★第3幕 子の発見と祖母の心の動き",
+      "group_label": "第3幕",
+      "roles": [
+        "ベレニーチェ",
+        "タミリ",
+        "ファルナーチェ"
+      ]
+    },
+    {
+      "label": "★終曲（ポンペオの寛大さと一同の和解）",
+      "group_label": "第3幕",
+      "roles": [
+        "ファルナーチェ",
+        "タミリ",
+        "ベレニーチェ",
+        "ポンペオ",
+        "セリンダ",
+        "アキッラ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

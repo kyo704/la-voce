@@ -1,0 +1,70 @@
+{
+  "title": "船渡聟",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 30,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-fune-funa",
+  "note": "★聟狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（聟）"
+    },
+    {
+      "label": "アド（船頭（舅））"
+    },
+    {
+      "label": "小アド（姑）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★聟が舅の家へ酒樽を持って舟で渡る",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（船頭（舅））"
+      ]
+    },
+    {
+      "label": "★船頭が酒を飲ませろとせがみ、樽を空にする",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（船頭（舅））"
+      ]
+    },
+    {
+      "label": "舅の家で対面すると同じ顔",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（船頭（舅））",
+        "小アド（姑）"
+      ]
+    },
+    {
+      "label": "★髭を剃って別人を装う",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（船頭（舅））",
+        "小アド（姑）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

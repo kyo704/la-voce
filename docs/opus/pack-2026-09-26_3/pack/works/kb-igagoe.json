@@ -1,0 +1,87 @@
+{
+  "title": "伊賀越道中双六",
+  "aliases": [
+    "沼津"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1783,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-igagoe",
+  "note": "★歌舞伎 ／ 作者 近松半二・近松加作 ／ ★★『沼津』は 道中を 花道と 客席で 見せます ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "呉服屋十兵衛"
+    },
+    {
+      "label": "雲助平作"
+    },
+    {
+      "label": "お米"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "唐木政右衛門"
+    },
+    {
+      "label": "お谷"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★沼津（★十兵衛と平作の名乗り）",
+      "group_label": "六段目",
+      "roles": [
+        "呉服屋十兵衛",
+        "雲助平作",
+        "お米",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★沼津 千本松原（★平作の自害）",
+      "group_label": "六段目",
+      "roles": [
+        "雲助平作",
+        "呉服屋十兵衛",
+        "お米",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "岡崎",
+      "group_label": "七段目",
+      "roles": [
+        "唐木政右衛門",
+        "お谷",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

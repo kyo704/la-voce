@@ -1,0 +1,72 @@
+{
+  "title": "彩入御伽草紙",
+  "aliases": [
+    "播州皿屋敷"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1808,
+  "duration_min": 80,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-sannin-katawa-kb",
+  "note": "★歌舞伎 ／ 作者 四世鶴屋南北 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "お菊"
+    },
+    {
+      "label": "浅山鉄山"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★皿屋敷（★お菊の皿）",
+      "group_label": "序幕",
+      "roles": [
+        "お菊",
+        "浅山鉄山",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★お菊の幽霊（★井戸から）",
+      "group_label": "二幕",
+      "roles": [
+        "お菊",
+        "浅山鉄山",
+        "長唄囃子連中",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

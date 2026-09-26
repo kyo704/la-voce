@@ -1,0 +1,171 @@
+{
+  "title": "ムーラン・ルージュ！",
+  "title_original": "Moulin Rouge! The Musical",
+  "composer": "既にある曲を集めたもの",
+  "kind": "musical",
+  "year_written": 2018,
+  "duration_min": 155,
+  "edition": "★ブロードウェイ版（2018）── ★★使う曲の 権利の 都合で ★国ごとに 曲が 違います",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-moulin-rouge",
+  "note": "★作詞 同 ／ 脚本 ジョン・ローガン",
+  "roles": [
+    {
+      "label": "サティーン"
+    },
+    {
+      "label": "クリスチャン"
+    },
+    {
+      "label": "ハロルド・ジドラー"
+    },
+    {
+      "label": "デューク"
+    },
+    {
+      "label": "トゥールーズ＝ロートレック"
+    },
+    {
+      "label": "サンティアゴ"
+    },
+    {
+      "label": "ニニ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "モンマルトルとムーラン・ルージュ",
+      "group_label": "第1幕",
+      "roles": [
+        "ハロルド・ジドラー",
+        "サティーン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "クリスチャン",
+        "サティーン"
+      ]
+    },
+    {
+      "label": "デュークの申し出",
+      "group_label": "第1幕",
+      "roles": [
+        "デューク",
+        "サティーン",
+        "ハロルド・ジドラー"
+      ]
+    },
+    {
+      "label": "劇中劇の稽古",
+      "group_label": "第2幕",
+      "roles": [
+        "クリスチャン",
+        "サティーン",
+        "トゥールーズ＝ロートレック",
+        "サンティアゴ",
+        "ニニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★結末",
+      "group_label": "第2幕",
+      "roles": [
+        "サティーン",
+        "クリスチャン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

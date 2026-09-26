@@ -1,0 +1,38 @@
+{
+  "title": "隠者の歌 作品29",
+  "title_original": "Hermit Songs op.29",
+  "composer": "バーバー",
+  "composer_sort": "Barber, Samuel",
+  "kind": "song_cycle",
+  "year_written": 1953,
+  "duration_min": 18,
+  "language": "en",
+  "source": "hand",
+  "source_id": "barber-op29",
+  "note": "★作詩 8〜13世紀のアイルランドの僧の書きこみ ／ ★★初演は レオンタイン・プライスと 作曲者の ピアノ ／ ★★曲名を 全部 確かめられなかったので ★曲数（10曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全10曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

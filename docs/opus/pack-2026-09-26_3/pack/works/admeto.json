@@ -1,0 +1,181 @@
+{
+  "title": "アドメート",
+  "title_original": "Admeto, re di Tessaglia",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1727,
+  "duration_min": 185,
+  "language": "it",
+  "source": "hand",
+  "source_id": "admeto",
+  "note": "★★クッツォーニとボルドーニ、2人のプリマドンナの競演のために書かれた",
+  "roles": [
+    {
+      "label": "アドメート"
+    },
+    {
+      "label": "アルチェステ"
+    },
+    {
+      "label": "アンティゴーナ"
+    },
+    {
+      "label": "トラジメーデ"
+    },
+    {
+      "label": "オリンド"
+    },
+    {
+      "label": "メラスペ"
+    },
+    {
+      "label": "エルコレ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 死の床のアドメート（★幻の場・復讐の女神たち）",
+      "group_label": "第1幕",
+      "roles": [
+        "アドメート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 アルチェステの身代わりの決意",
+      "group_label": "第1幕",
+      "roles": [
+        "アルチェステ",
+        "アドメート"
+      ]
+    },
+    {
+      "label": "第1幕 エルコレの助けとアンティゴーナの到着",
+      "group_label": "第1幕",
+      "roles": [
+        "エルコレ",
+        "アンティゴーナ",
+        "メラスペ"
+      ]
+    },
+    {
+      "label": "★第2幕 男装のアルチェステ（冥界から戻る）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルチェステ",
+        "エルコレ"
+      ]
+    },
+    {
+      "label": "★第2幕 アドメートとアンティゴーナ（肖像の誤解）",
+      "group_label": "第2幕",
+      "roles": [
+        "アドメート",
+        "アンティゴーナ",
+        "トラジメーデ"
+      ]
+    },
+    {
+      "label": "★第3幕 アルチェステの試み（アドメートの心を試す）",
+      "group_label": "第3幕",
+      "roles": [
+        "アルチェステ",
+        "アドメート"
+      ]
+    },
+    {
+      "label": "★終曲（アルチェステの帰還とアンティゴーナはトラジメーデへ）",
+      "group_label": "第3幕",
+      "roles": [
+        "アドメート",
+        "アルチェステ",
+        "アンティゴーナ",
+        "トラジメーデ",
+        "エルコレ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

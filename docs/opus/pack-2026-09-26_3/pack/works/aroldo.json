@@ -1,0 +1,202 @@
+{
+  "title": "アロルド",
+  "title_original": "Aroldo",
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1857,
+  "duration_min": 135,
+  "edition": "1857 リミニ（『スティッフェリオ』の改作。第4幕は新作）",
+  "language": "it",
+  "source": "hand",
+  "source_id": "aroldo",
+  "roles": [
+    {
+      "label": "アロルド"
+    },
+    {
+      "label": "ミーナ"
+    },
+    {
+      "label": "エグベルト"
+    },
+    {
+      "label": "ブリアーノ"
+    },
+    {
+      "label": "ゴドヴィーノ"
+    },
+    {
+      "label": "エンリーコ"
+    },
+    {
+      "label": "エレーナ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 アロルドの帰還の祝い",
+      "group_label": "第1幕",
+      "roles": [
+        "アロルド",
+        "ミーナ",
+        "エグベルト",
+        "ブリアーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ミーナの祈りと指輪",
+      "group_label": "第1幕",
+      "roles": [
+        "ミーナ",
+        "アロルド"
+      ]
+    },
+    {
+      "label": "第1幕 エグベルトとゴドヴィーノ",
+      "group_label": "第1幕",
+      "roles": [
+        "エグベルト",
+        "ゴドヴィーノ",
+        "エンリーコ",
+        "エレーナ"
+      ]
+    },
+    {
+      "label": "第2幕 墓地のミーナ",
+      "group_label": "第2幕",
+      "roles": [
+        "ミーナ",
+        "ゴドヴィーノ",
+        "エグベルト"
+      ]
+    },
+    {
+      "label": "第2幕 教会の前の決闘（ブリアーノの制止）",
+      "group_label": "第2幕",
+      "roles": [
+        "アロルド",
+        "エグベルト",
+        "ゴドヴィーノ",
+        "ブリアーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 離縁の書",
+      "group_label": "第3幕",
+      "roles": [
+        "アロルド",
+        "ミーナ",
+        "エグベルト"
+      ]
+    },
+    {
+      "label": "第4幕 スコットランドの湖畔（隠者アロルド）",
+      "group_label": "第4幕",
+      "roles": [
+        "アロルド",
+        "ブリアーノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 フィナーレ（嵐と許し）",
+      "group_label": "第4幕",
+      "roles": [
+        "アロルド",
+        "ミーナ",
+        "エグベルト",
+        "ブリアーノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

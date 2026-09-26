@@ -1,0 +1,66 @@
+{
+  "title": "木実争",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-ki-no-mi-arasoi",
+  "note": "★集狂言 ／ ★木の実に なって 出ます ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（柑子）"
+    },
+    {
+      "label": "アド（栗）"
+    },
+    {
+      "label": "小アド（柿）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "木の実たちが集まる",
+      "group_label": "段",
+      "roles": [
+        "シテ（柑子）",
+        "アド（栗）"
+      ]
+    },
+    {
+      "label": "★どれが勝るか言い争う",
+      "group_label": "段",
+      "roles": [
+        "シテ（柑子）",
+        "アド（栗）",
+        "小アド（柿）"
+      ]
+    },
+    {
+      "label": "★★言い立てて競う",
+      "group_label": "段",
+      "roles": [
+        "シテ（柑子）",
+        "アド（栗）",
+        "小アド（柿）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "title": "ブルックナー モテット集",
+  "composer": "ブルックナー",
+  "composer_sort": "Bruckner, Anton",
+  "kind": "chorus",
+  "duration_min": 30,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-bruckner-motets",
+  "note": "★★大半が 無伴奏。★『エッチェ・サチェルドス』は 金管と オルガンつき ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★アヴェ・マリア（1861）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ロクス・イステ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "オス・ユスティ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★クリストゥス・ファクトゥス・エスト",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "ヴィルガ・イェッセ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "エッチェ・サチェルドス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "title": "双蝶々曲輪日記（文楽）",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1749,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-futatsu-chocho-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 竹田出雲・三好松洛・並木千柳 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "濡髪長五郎"
+    },
+    {
+      "label": "放駒長吉"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    },
+    {
+      "label": "南与兵衛"
+    },
+    {
+      "label": "お早"
+    },
+    {
+      "label": "母お幸"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★角力場",
+      "group_label": "二段目",
+      "roles": [
+        "濡髪長五郎",
+        "放駒長吉",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★★引窓",
+      "group_label": "八段目",
+      "roles": [
+        "南与兵衛",
+        "お早",
+        "母お幸",
+        "濡髪長五郎",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "title": "ホルン三重奏曲 変ホ長調 作品40",
+  "composer": "ブラームス",
+  "composer_sort": "Brahms, Johannes",
+  "kind": "chamber",
+  "year_written": 1865,
+  "duration_min": 30,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-brahms-horn-trio",
+  "note": "★★母の 死の あとに 書かれました。★ナチュラルホルンの 指定",
+  "roles": [
+    {
+      "label": "ホルン"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アンダンテ",
+      "group_label": "楽章",
+      "roles": [
+        "ホルン",
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第2楽章 スケルツォ",
+      "group_label": "楽章",
+      "roles": [
+        "ホルン",
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "★第3楽章 アダージョ・メスト",
+      "group_label": "楽章",
+      "roles": [
+        "ホルン",
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "第4楽章 アレグロ・コン・ブリオ",
+      "group_label": "楽章",
+      "roles": [
+        "ホルン",
+        "ヴァイオリン",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

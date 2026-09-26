@@ -1,0 +1,195 @@
+{
+  "title": "青ひげ",
+  "title_original": "Barbe-bleue",
+  "composer": "オッフェンバック",
+  "composer_sort": "Offenbach, Jacques",
+  "kind": "opera",
+  "year_written": 1866,
+  "duration_min": 140,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "barbe-bleue",
+  "roles": [
+    {
+      "label": "ブーロット"
+    },
+    {
+      "label": "青ひげ"
+    },
+    {
+      "label": "エルミア（フルーレット）"
+    },
+    {
+      "label": "ポポラーニ"
+    },
+    {
+      "label": "ボベッシュ王"
+    },
+    {
+      "label": "クレマンティーヌ王妃"
+    },
+    {
+      "label": "サフィール王子"
+    },
+    {
+      "label": "オスカル伯爵"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 村（バラ娘の選び）",
+      "group_label": "第1幕",
+      "roles": [
+        "ブーロット",
+        "エルミア（フルーレット）",
+        "サフィール王子",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 青ひげの登場とブーロットの選出",
+      "group_label": "第1幕",
+      "roles": [
+        "青ひげ",
+        "ブーロット",
+        "ポポラーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 宮廷（ボベッシュ王とオスカル伯爵）",
+      "group_label": "第2幕",
+      "roles": [
+        "ボベッシュ王",
+        "クレマンティーヌ王妃",
+        "オスカル伯爵",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 エルミアは王女だった（再会）",
+      "group_label": "第2幕",
+      "roles": [
+        "エルミア（フルーレット）",
+        "サフィール王子",
+        "ボベッシュ王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★ポポラーニの実験室（5人の妻は生きている）",
+      "group_label": "第3幕",
+      "roles": [
+        "ポポラーニ",
+        "ブーロット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ブーロットの反乱の呼びかけ",
+      "group_label": "第3幕",
+      "roles": [
+        "ブーロット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（6人の妻の帰還と組み替え）",
+      "group_label": "第4幕",
+      "roles": [
+        "ブーロット",
+        "青ひげ",
+        "エルミア（フルーレット）",
+        "ボベッシュ王",
+        "ポポラーニ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

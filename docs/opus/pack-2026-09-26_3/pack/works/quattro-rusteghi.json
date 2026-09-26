@@ -1,0 +1,199 @@
+{
+  "title": "四人の田舎者",
+  "title_original": "I quatro rusteghi",
+  "composer": "ヴォルフ＝フェラーリ",
+  "composer_sort": "Wolf-Ferrari, Ermanno",
+  "kind": "opera",
+  "year_written": 1906,
+  "duration_min": 135,
+  "language": "it",
+  "source": "hand",
+  "source_id": "quattro-rusteghi",
+  "note": "★ゴルドーニの喜劇による。原語はヴェネツィア方言",
+  "roles": [
+    {
+      "label": "ルチエータ"
+    },
+    {
+      "label": "フィリペート"
+    },
+    {
+      "label": "ルナルド"
+    },
+    {
+      "label": "マルゲリータ"
+    },
+    {
+      "label": "マウリツィオ"
+    },
+    {
+      "label": "マリーナ"
+    },
+    {
+      "label": "シモン"
+    },
+    {
+      "label": "フェリーチェ"
+    },
+    {
+      "label": "カンチャーノ伯爵"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ルナルドの家（娘に何も知らせぬ縁談）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルチエータ",
+        "マルゲリータ",
+        "ルナルド"
+      ]
+    },
+    {
+      "label": "第1幕 マウリツィオとルナルドの取り決め",
+      "group_label": "第1幕",
+      "roles": [
+        "マウリツィオ",
+        "ルナルド"
+      ]
+    },
+    {
+      "label": "★第1幕 マリーナの怒り（シモンの頑固さ）",
+      "group_label": "第1幕",
+      "roles": [
+        "マリーナ",
+        "シモン",
+        "フィリペート"
+      ]
+    },
+    {
+      "label": "★第2幕 フェリーチェの計（仮面で花婿を見せる）",
+      "group_label": "第2幕",
+      "roles": [
+        "フェリーチェ",
+        "カンチャーノ伯爵",
+        "ルチエータ",
+        "フィリペート",
+        "マルゲリータ",
+        "マリーナ"
+      ]
+    },
+    {
+      "label": "★第2幕 4人の田舎者の発見と大騒ぎ",
+      "group_label": "第2幕",
+      "roles": [
+        "ルナルド",
+        "シモン",
+        "カンチャーノ伯爵",
+        "マウリツィオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★フェリーチェの長い説得（女の知恵）",
+      "group_label": "第3幕",
+      "roles": [
+        "フェリーチェ",
+        "ルナルド",
+        "シモン",
+        "カンチャーノ伯爵",
+        "マウリツィオ"
+      ]
+    },
+    {
+      "label": "★終曲（婚礼が許される）",
+      "group_label": "第3幕",
+      "roles": [
+        "ルチエータ",
+        "フィリペート",
+        "ルナルド",
+        "マルゲリータ",
+        "マリーナ",
+        "シモン",
+        "フェリーチェ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

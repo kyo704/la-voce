@@ -1,0 +1,71 @@
+{
+  "title": "恋女房染分手綱",
+  "aliases": [
+    "重の井"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1751,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-koi-nyobo",
+  "note": "★歌舞伎 ／ 作者 吉田冠子・三好松洛 ／ ★★母と子の 子別れ物 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "乳人重の井"
+    },
+    {
+      "label": "自然薯の三吉"
+    },
+    {
+      "label": "調姫"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★重の井（★子別れ・道中双六の唄）",
+      "group_label": "十段目",
+      "roles": [
+        "乳人重の井",
+        "自然薯の三吉",
+        "調姫",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★重の井 名乗れぬまま別れる",
+      "group_label": "十段目",
+      "roles": [
+        "乳人重の井",
+        "自然薯の三吉",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

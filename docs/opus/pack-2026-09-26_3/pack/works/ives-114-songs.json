@@ -1,0 +1,37 @@
+{
+  "title": "114の歌",
+  "title_original": "114 Songs",
+  "composer": "アイヴズ",
+  "composer_sort": "Ives, Charles",
+  "kind": "song_cycle",
+  "year_written": 1922,
+  "language": "en",
+  "source": "hand",
+  "source_id": "ives-114",
+  "note": "★★★曲集ではなく ★生涯の 歌を 自分で 集めた もの。★続けて 歌うことは ありません。★『The Circus Band』『Charlie Rutlage』などを 選んで 組みます ／ ★★曲名を 全部 確かめられなかったので ★曲数（114曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全114曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

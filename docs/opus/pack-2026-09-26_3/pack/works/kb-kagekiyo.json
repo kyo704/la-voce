@@ -1,0 +1,82 @@
+{
+  "title": "景清",
+  "title_original": "景清",
+  "aliases": [],
+  "composer": "歌舞伎（市川宗家 歌舞伎十八番）",
+  "composer_sort": "Kabuki Juhachiban",
+  "kind": "kabuki",
+  "year_written": 1732,
+  "source": "hand",
+  "source_id": "kabuki-kagekiyo",
+  "duration_min": 50,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "悪七兵衛景清"
+    },
+    {
+      "label": "阿古屋"
+    },
+    {
+      "label": "秩父庄司重忠"
+    },
+    {
+      "label": "岩永左衛門"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "牢内の景清",
+      "group_label": "序",
+      "roles": [
+        "悪七兵衛景清",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "阿古屋の嘆き",
+      "group_label": "中",
+      "roles": [
+        "阿古屋",
+        "秩父庄司重忠",
+        "岩永左衛門",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "牢破り（荒事）",
+      "group_label": "終",
+      "roles": [
+        "悪七兵衛景清",
+        "岩永左衛門",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線（舞台上の雛壇）"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽（舞台袖）"
+    }
+  ],
+  "note": "★復活上演の演目。場面の立て方は上演ごとに変わる／★型（音羽屋型・成田屋型など）により 演出が変わる",
+  "school": "成田屋（市川宗家）"
+}

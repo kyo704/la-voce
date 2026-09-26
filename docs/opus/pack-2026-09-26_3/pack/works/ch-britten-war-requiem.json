@@ -1,0 +1,108 @@
+{
+  "title": "戦争レクイエム 作品66",
+  "title_original": "War Requiem op.66",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "chorus",
+  "year_written": 1962,
+  "duration_min": 85,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-britten-war-requiem",
+  "note": "★★★ラテン語の 典礼文と ★ウィルフレッド・オーウェンの 英語の 詩を 交互に 置きます。★★大管弦楽・室内合奏・オルガン・児童合唱を 別の 場所に 置きます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バリトン独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. レクイエム・エテルナム",
+      "group_label": "―",
+      "roles": [
+        "合唱",
+        "児童合唱",
+        "テノール独唱"
+      ]
+    },
+    {
+      "label": "★2. ディエス・イレ",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "バリトン独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "3. オフェルトリウム",
+      "group_label": "―",
+      "roles": [
+        "テノール独唱",
+        "バリトン独唱",
+        "合唱",
+        "児童合唱"
+      ]
+    },
+    {
+      "label": "4. サンクトゥス",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "5. アニュス・デイ",
+      "group_label": "―",
+      "roles": [
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★6. リベラ・メ（★『奇妙な出会い』と 結び）",
+      "group_label": "―",
+      "roles": [
+        "テノール独唱",
+        "バリトン独唱",
+        "ソプラノ独唱",
+        "合唱",
+        "児童合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "大管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "室内合奏（12人）",
+      "count": 12,
+      "section": "other"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

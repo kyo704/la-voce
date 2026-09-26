@@ -1,0 +1,212 @@
+{
+  "title": "カム・フロム・アウェイ",
+  "title_original": "Come From Away",
+  "composer": "アイリーン・サンコフ／デイヴィッド・ヘイン",
+  "kind": "musical",
+  "year_written": 2017,
+  "duration_min": 100,
+  "edition": "2017 ブロードウェイ初演版（★休憩なしの1幕物。★2021 映像版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "come-from-away",
+  "note": "★作詞 同 ／ 脚本 同 ／ ★★★2001年9月11日にニューファンドランド島ガンダーへ降りた38機の話。★★★12人の俳優が全員複数役を演じる（住民と乗客を入れ替わる）",
+  "roles": [
+    {
+      "label": "クロード（町長）"
+    },
+    {
+      "label": "ベヴァリー・バス"
+    },
+    {
+      "label": "ボニー"
+    },
+    {
+      "label": "ビューラ"
+    },
+    {
+      "label": "ハンナ"
+    },
+    {
+      "label": "ニック"
+    },
+    {
+      "label": "ダイアン"
+    },
+    {
+      "label": "ケヴィン・T／ケヴィン・J"
+    },
+    {
+      "label": "アリ"
+    },
+    {
+      "label": "オズ"
+    },
+    {
+      "label": "ジャニス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★ウェルカム・トゥ・ザ・ロック（ガンダーの町）",
+      "group_label": "本編",
+      "roles": [
+        "クロード（町長）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★★38・プレインズ（38機の着陸）",
+      "group_label": "本編",
+      "roles": [
+        "クロード（町長）",
+        "ベヴァリー・バス",
+        "ジャニス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★機内での待機（Costume Party）",
+      "group_label": "本編",
+      "roles": [
+        "ニック",
+        "ダイアン",
+        "ケヴィン・T／ケヴィン・J",
+        "ハンナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★★ダークネス・アンド・トレイルズ（体育館への移送）",
+      "group_label": "本編",
+      "roles": [
+        "ビューラ",
+        "ハンナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★ミー・アンド・ザ・スカイ（ベヴァリーの半生）",
+      "group_label": "本編",
+      "roles": [
+        "ベヴァリー・バス"
+      ]
+    },
+    {
+      "label": "M6 ★★★プレイヤー（3つの宗教の祈りが重なる）",
+      "group_label": "本編",
+      "roles": [
+        "アリ",
+        "ケヴィン・T／ケヴィン・J",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★オン・ザ・エッジ",
+      "group_label": "本編",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★サムシング・ズ・ミッシング（帰路と別れ）",
+      "group_label": "本編",
+      "roles": [
+        "クロード（町長）",
+        "ニック",
+        "ダイアン",
+        "ボニー",
+        "オズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★★終曲（Finale／10年後の再会）",
+      "group_label": "本編",
+      "roles": [
+        "クロード（町長）",
+        "ベヴァリー・バス",
+        "ニック",
+        "ダイアン",
+        "ハンナ",
+        "ビューラ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴァイオリン／ヴィオラ",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

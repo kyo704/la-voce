@@ -1,0 +1,189 @@
+{
+  "title": "運命",
+  "title_original": "Osud",
+  "composer": "ヤナーチェク",
+  "composer_sort": "Janáček, Leoš",
+  "kind": "opera",
+  "year_written": 1907,
+  "duration_min": 80,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "fate",
+  "note": "★生前未上演（初演1958 ブルノ）。第3幕は意図的に未完のまま終わる",
+  "roles": [
+    {
+      "label": "ジーヴニー"
+    },
+    {
+      "label": "ミーラ"
+    },
+    {
+      "label": "ミーラの母"
+    },
+    {
+      "label": "ドクトル・スーダ"
+    },
+    {
+      "label": "ミーラの息子"
+    },
+    {
+      "label": "学生ら"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 温泉地の遊歩道（人々のざわめき）",
+      "group_label": "第1幕",
+      "roles": [
+        "ミーラ",
+        "ミーラの母",
+        "ドクトル・スーダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ジーヴニーとミーラの再会",
+      "group_label": "第1幕",
+      "roles": [
+        "ジーヴニー",
+        "ミーラ"
+      ]
+    },
+    {
+      "label": "★第1幕 嵐（合唱つきの大場面）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジーヴニー",
+        "ミーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 4年後の家（作曲するジーヴニー）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジーヴニー",
+        "ミーラ",
+        "ミーラの息子"
+      ]
+    },
+    {
+      "label": "★第2幕 母の狂乱と階段からの転落（2人の死）",
+      "group_label": "第2幕",
+      "roles": [
+        "ミーラ",
+        "ミーラの母",
+        "ジーヴニー"
+      ]
+    },
+    {
+      "label": "★第3幕 音楽院（学生たちの噂と楽譜）",
+      "group_label": "第3幕",
+      "roles": [
+        "学生ら",
+        "ジーヴニー",
+        "ミーラの息子",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（第3幕は神の手の中にある）",
+      "group_label": "第3幕",
+      "roles": [
+        "ジーヴニー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "title": "班女",
+  "title_original": "Hanjo",
+  "composer": "細川俊夫",
+  "composer_sort": "Hosokawa, Toshio",
+  "kind": "opera",
+  "year_written": 2004,
+  "duration_min": 60,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "hanjo-hosokawa",
+  "note": "★★三島由紀夫『近代能楽集』の『班女』による。★エクサン＝プロヴァンス音楽祭の委嘱",
+  "roles": [
+    {
+      "label": "花子"
+    },
+    {
+      "label": "実子"
+    },
+    {
+      "label": "吉雄"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★第1場 実子の家（花子は毎日駅へ行く）",
+      "group_label": "第1場",
+      "roles": [
+        "実子",
+        "花子"
+      ]
+    },
+    {
+      "label": "★★第2場 ★花子の扇（別れた男の形見）",
+      "group_label": "第2場",
+      "roles": [
+        "花子",
+        "実子"
+      ]
+    },
+    {
+      "label": "★★第3場 吉雄の来訪（迎えに来た）",
+      "group_label": "第3場",
+      "roles": [
+        "吉雄",
+        "実子"
+      ]
+    },
+    {
+      "label": "★★第4場 実子の拒み（渡さない）",
+      "group_label": "第4場",
+      "roles": [
+        "実子",
+        "吉雄"
+      ]
+    },
+    {
+      "label": "★★第5場 花子と吉雄の対面（★花子は彼を見分けられない）",
+      "group_label": "第5場",
+      "roles": [
+        "花子",
+        "吉雄",
+        "実子"
+      ]
+    },
+    {
+      "label": "★★終曲（吉雄は去り、2人が残る）",
+      "group_label": "終場",
+      "roles": [
+        "花子",
+        "実子"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

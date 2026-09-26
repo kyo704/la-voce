@@ -1,0 +1,216 @@
+{
+  "title": "恋愛禁制",
+  "title_original": "Das Liebesverbot",
+  "aliases": [
+    "WWV 38",
+    "パレルモの修練女"
+  ],
+  "composer": "ワーグナー",
+  "composer_sort": "Wagner, Richard",
+  "kind": "opera",
+  "year_written": 1836,
+  "duration_min": 185,
+  "language": "de",
+  "source": "hand",
+  "source_id": "liebesverbot",
+  "roles": [
+    {
+      "label": "フリードリヒ"
+    },
+    {
+      "label": "イザベッラ"
+    },
+    {
+      "label": "ルーツィオ"
+    },
+    {
+      "label": "クラウディオ"
+    },
+    {
+      "label": "マリアーナ"
+    },
+    {
+      "label": "アントーニオ"
+    },
+    {
+      "label": "アンジェロ"
+    },
+    {
+      "label": "ブリゲッラ"
+    },
+    {
+      "label": "ドレッラ"
+    },
+    {
+      "label": "ダニエーリ"
+    },
+    {
+      "label": "ポンツィオ・ピラート"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 パレルモの街（禁令の触れ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ブリゲッラ",
+        "ダニエーリ",
+        "ドレッラ",
+        "ポンツィオ・ピラート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ルーツィオとクラウディオ（死刑の報せ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルーツィオ",
+        "クラウディオ",
+        "アントーニオ",
+        "アンジェロ"
+      ]
+    },
+    {
+      "label": "第1幕 修道院のイザベッラとマリアーナ",
+      "group_label": "第1幕",
+      "roles": [
+        "イザベッラ",
+        "マリアーナ"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（裁きの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "フリードリヒ",
+        "イザベッラ",
+        "ルーツィオ",
+        "ブリゲッラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 牢のクラウディオとイザベッラ",
+      "group_label": "第2幕",
+      "roles": [
+        "クラウディオ",
+        "イザベッラ"
+      ]
+    },
+    {
+      "label": "第2幕 フリードリヒの独白（偽善の告白）",
+      "group_label": "第2幕",
+      "roles": [
+        "フリードリヒ"
+      ]
+    },
+    {
+      "label": "第2幕 仮面の入れ替え（マリアーナの計)",
+      "group_label": "第2幕",
+      "roles": [
+        "イザベッラ",
+        "マリアーナ",
+        "ルーツィオ"
+      ]
+    },
+    {
+      "label": "第2幕 フィナーレ（謝肉祭・仮面が外れる）",
+      "group_label": "第2幕",
+      "roles": [
+        "フリードリヒ",
+        "イザベッラ",
+        "マリアーナ",
+        "ルーツィオ",
+        "クラウディオ",
+        "ブリゲッラ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

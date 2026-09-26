@@ -1,0 +1,70 @@
+{
+  "title": "鈍太郎",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-dontaro",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（鈍太郎）"
+    },
+    {
+      "label": "アド（本妻）"
+    },
+    {
+      "label": "小アド（愛人）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "三年ぶりに都へ帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（鈍太郎）"
+      ]
+    },
+    {
+      "label": "本妻と愛人の両方に追い返される",
+      "group_label": "段",
+      "roles": [
+        "シテ（鈍太郎）",
+        "アド（本妻）",
+        "小アド（愛人）"
+      ]
+    },
+    {
+      "label": "出家すると言い出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（鈍太郎）",
+        "アド（本妻）",
+        "小アド（愛人）"
+      ]
+    },
+    {
+      "label": "二人が引き止め、担がれて行く",
+      "group_label": "段",
+      "roles": [
+        "シテ（鈍太郎）",
+        "アド（本妻）",
+        "小アド（愛人）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

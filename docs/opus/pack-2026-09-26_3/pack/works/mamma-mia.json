@@ -1,0 +1,273 @@
+{
+  "title": "マンマ・ミーア！",
+  "title_original": "Mamma Mia!",
+  "composer": "ベニー・アンダーソン／ビョルン・ウルヴァース",
+  "kind": "musical",
+  "year_written": 1999,
+  "duration_min": 150,
+  "edition": "1999 ロンドン初演版（★2008 映画版で曲が入れ替わる。★日本版〈劇団四季〉は日本語訳詞）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mamma-mia",
+  "note": "★作詞 同（ABBA の既存曲） ／ 脚本 キャサリン・ジョンソン ／ ★★★既存のヒット曲で作る『ジュークボックス・ミュージカル』の代表",
+  "roles": [
+    {
+      "label": "ドナ・シェリダン"
+    },
+    {
+      "label": "ソフィ・シェリダン"
+    },
+    {
+      "label": "サム・カーマイケル"
+    },
+    {
+      "label": "ビル・オースティン"
+    },
+    {
+      "label": "ハリー・ブライト"
+    },
+    {
+      "label": "ロージー"
+    },
+    {
+      "label": "ターニャ"
+    },
+    {
+      "label": "スカイ"
+    },
+    {
+      "label": "アリ"
+    },
+    {
+      "label": "リサ"
+    },
+    {
+      "label": "ペッパー"
+    },
+    {
+      "label": "エディ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★アイ・ハヴ・ア・ドリーム",
+      "group_label": "第1幕",
+      "roles": [
+        "ソフィ・シェリダン"
+      ]
+    },
+    {
+      "label": "M2 ★★ハニー、ハニー",
+      "group_label": "第1幕",
+      "roles": [
+        "ソフィ・シェリダン",
+        "アリ",
+        "リサ"
+      ]
+    },
+    {
+      "label": "M3 ★★マネー、マネー、マネー",
+      "group_label": "第1幕",
+      "roles": [
+        "ドナ・シェリダン",
+        "ロージー",
+        "ターニャ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★★マンマ・ミーア（3人の父の登場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドナ・シェリダン",
+        "サム・カーマイケル",
+        "ビル・オースティン",
+        "ハリー・ブライト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★チキチータ",
+      "group_label": "第1幕",
+      "roles": [
+        "ロージー",
+        "ターニャ",
+        "ドナ・シェリダン"
+      ]
+    },
+    {
+      "label": "M6 ★★ダンシング・クイーン",
+      "group_label": "第1幕",
+      "roles": [
+        "ドナ・シェリダン",
+        "ロージー",
+        "ターニャ"
+      ]
+    },
+    {
+      "label": "M7 ★★レイ・オール・ユア・ラヴ・オン・ミー",
+      "group_label": "第1幕",
+      "roles": [
+        "スカイ",
+        "ソフィ・シェリダン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★ヴーレ・ヴー（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★アンダー・アタック（ソフィの夢）",
+      "group_label": "第2幕",
+      "roles": [
+        "ソフィ・シェリダン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★ワン・オブ・アス",
+      "group_label": "第2幕",
+      "roles": [
+        "ドナ・シェリダン"
+      ]
+    },
+    {
+      "label": "M11 ★★SOS",
+      "group_label": "第2幕",
+      "roles": [
+        "サム・カーマイケル",
+        "ドナ・シェリダン"
+      ]
+    },
+    {
+      "label": "M12 ★★ダズ・ユア・マザー・ノウ",
+      "group_label": "第2幕",
+      "roles": [
+        "ターニャ",
+        "ペッパー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★ザ・ウィナー・テイクス・イット・オール",
+      "group_label": "第2幕",
+      "roles": [
+        "ドナ・シェリダン"
+      ]
+    },
+    {
+      "label": "M14 ★★テイク・ア・チャンス・オン・ミー",
+      "group_label": "第2幕",
+      "roles": [
+        "ロージー",
+        "ビル・オースティン"
+      ]
+    },
+    {
+      "label": "M15 ★★★終曲（ドナとサムの婚礼／アイ・ドゥ・アイ・ドゥ・アイ・ドゥ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ドナ・シェリダン",
+        "サム・カーマイケル",
+        "ソフィ・シェリダン",
+        "スカイ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "title": "優雅なインドの国々",
+  "title_original": "Les Indes galantes",
+  "composer": "ラモー",
+  "composer_sort": "Rameau, Jean-Philippe",
+  "kind": "opera",
+  "year_written": 1735,
+  "duration_min": 185,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "indes-galantes",
+  "note": "★★『オペラ＝バレエ』。4つの独立した話を序幕でつなぐ。踊りが中心",
+  "roles": [
+    {
+      "label": "エベ"
+    },
+    {
+      "label": "ベローヌ"
+    },
+    {
+      "label": "アムール"
+    },
+    {
+      "label": "オスマン"
+    },
+    {
+      "label": "エミリー"
+    },
+    {
+      "label": "ヴァレール"
+    },
+    {
+      "label": "ファニ"
+    },
+    {
+      "label": "カルロス"
+    },
+    {
+      "label": "ユアスカル"
+    },
+    {
+      "label": "ダモン"
+    },
+    {
+      "label": "アリキ"
+    },
+    {
+      "label": "アダリオ"
+    },
+    {
+      "label": "ザイール"
+    },
+    {
+      "label": "ファティメ"
+    },
+    {
+      "label": "タクマス"
+    },
+    {
+      "label": "アリ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕 ★エベの宮廷（青春の神・4つの国へ）",
+      "group_label": "序幕",
+      "roles": [
+        "エベ",
+        "ベローヌ",
+        "アムール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★『寛大なトルコ人』（オスマンとエミリー・ヴァレール）",
+      "group_label": "第1の入り",
+      "roles": [
+        "オスマン",
+        "エミリー",
+        "ヴァレール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★『ペルーのインカ人』（★太陽の祭り・ユアスカルとファニ）",
+      "group_label": "第2の入り",
+      "roles": [
+        "ユアスカル",
+        "ファニ",
+        "カルロス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★火山の噴火の場（地震の音楽）",
+      "group_label": "第2の入り",
+      "roles": [
+        "ユアスカル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★『ペルシアの花』（タクマス・アリ・ザイール・ファティメ）",
+      "group_label": "第3の入り",
+      "roles": [
+        "タクマス",
+        "アリ",
+        "ザイール",
+        "ファティメ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★花の祭り（バレエ）",
+      "group_label": "第3の入り",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★『未開人』（北米・アダリオとダモン・アリキ）",
+      "group_label": "第4の入り",
+      "roles": [
+        "アダリオ",
+        "ダモン",
+        "アリキ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★平和の煙管の踊り（Danse du grand calumet de la paix）",
+      "group_label": "第4の入り",
+      "roles": [
+        "アダリオ",
+        "アリキ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★シャコンヌ（終曲）",
+      "group_label": "第4の入り",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

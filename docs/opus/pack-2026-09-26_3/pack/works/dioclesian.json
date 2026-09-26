@@ -1,0 +1,177 @@
+{
+  "title": "ディオクレシアン",
+  "title_original": "The Prophetess, or The History of Dioclesian",
+  "composer": "パーセル",
+  "composer_sort": "Purcell, Henry",
+  "kind": "opera",
+  "year_written": 1690,
+  "duration_min": 120,
+  "language": "en",
+  "source": "hand",
+  "source_id": "dioclesian",
+  "note": "★★セミ・オペラ。★第5幕の仮面劇が音楽の中心",
+  "roles": [
+    {
+      "label": "ディオクレシアン"
+    },
+    {
+      "label": "ドラベッラ"
+    },
+    {
+      "label": "オーレリア"
+    },
+    {
+      "label": "マキシミニアン"
+    },
+    {
+      "label": "デルフィア"
+    },
+    {
+      "label": "キュパリッソス"
+    },
+    {
+      "label": "ボーカス"
+    },
+    {
+      "label": "ジェタ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 兵士ディオクレスの予言（猪を殺せば皇帝に）",
+      "group_label": "第1幕",
+      "roles": [
+        "ディオクレシアン",
+        "デルフィア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 皇帝となり、ドラベッラを捨ててオーレリアへ",
+      "group_label": "第2幕",
+      "roles": [
+        "ディオクレシアン",
+        "ドラベッラ",
+        "オーレリア",
+        "マキシミニアン"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★デルフィアの魔術（幻の場）",
+      "group_label": "第3幕",
+      "roles": [
+        "デルフィア",
+        "ディオクレシアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 マキシミニアンの反逆とディオクレシアンの退位",
+      "group_label": "第4幕",
+      "roles": [
+        "マキシミニアン",
+        "ディオクレシアン",
+        "オーレリア",
+        "ボーカス",
+        "ジェタ"
+      ]
+    },
+    {
+      "label": "★★第5幕 ★大仮面劇（★キュパリッソスとバッカスの場・愛の勝利）",
+      "group_label": "第5幕",
+      "roles": [
+        "キュパリッソス",
+        "デルフィア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（シャコンヌと大合唱）",
+      "group_label": "第5幕",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

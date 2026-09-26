@@ -1,0 +1,53 @@
+{
+  "title": "ノヴェンバー・ステップス",
+  "title_original": "November Steps",
+  "composer": "武満徹",
+  "composer_sort": "Takemitsu, Toru",
+  "kind": "chamber",
+  "year_written": 1967,
+  "duration_min": 20,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-takemitsu-november",
+  "note": "★★★琵琶と 尺八と 管弦楽。★西洋と 日本の 楽器を 合わせた 代表作",
+  "roles": [
+    {
+      "label": "琵琶"
+    },
+    {
+      "label": "尺八"
+    },
+    {
+      "label": "管弦楽"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★一曲（★11の 部分）",
+      "group_label": "楽章",
+      "roles": [
+        "琵琶",
+        "尺八",
+        "管弦楽"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "琵琶",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "尺八",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "title": "軍艦ピナフォア",
+  "title_original": "H.M.S. Pinafore",
+  "composer": "サリヴァン",
+  "composer_sort": "Sullivan, Arthur",
+  "kind": "opera",
+  "year_written": 1878,
+  "duration_min": 120,
+  "language": "en",
+  "source": "hand",
+  "source_id": "hms-pinafore",
+  "roles": [
+    {
+      "label": "ジョセフィン"
+    },
+    {
+      "label": "ラルフ・ラックストロー"
+    },
+    {
+      "label": "コーコラン艦長"
+    },
+    {
+      "label": "サー・ジョセフ・ポーター"
+    },
+    {
+      "label": "リトル・バタカップ"
+    },
+    {
+      "label": "ディック・デッドアイ"
+    },
+    {
+      "label": "ヘビー"
+    },
+    {
+      "label": "ビル・ボブステイ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 甲板（★われらは陽気な水夫）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビル・ボブステイ",
+        "ディック・デッドアイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 リトル・バタカップの物売りの歌",
+      "group_label": "第1幕",
+      "roles": [
+        "リトル・バタカップ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ラルフの恋（身分の違い）",
+      "group_label": "第1幕",
+      "roles": [
+        "ラルフ・ラックストロー",
+        "ジョセフィン",
+        "ディック・デッドアイ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★サー・ジョセフの歌（若き日、わたしは事務所に勤めた）",
+      "group_label": "第1幕",
+      "roles": [
+        "サー・ジョセフ・ポーター",
+        "ヘビー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 フィナーレ（駆け落ちの約束）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョセフィン",
+        "ラルフ・ラックストロー",
+        "サー・ジョセフ・ポーター",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★月夜の艦長のカヴァティーナ",
+      "group_label": "第2幕",
+      "roles": [
+        "コーコラン艦長",
+        "リトル・バタカップ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★三重唱（決して、いや、ほとんど決して）",
+      "group_label": "第2幕",
+      "roles": [
+        "コーコラン艦長",
+        "サー・ジョセフ・ポーター",
+        "ジョセフィン"
+      ]
+    },
+    {
+      "label": "★第2幕 デッドアイの密告と駆け落ちの失敗",
+      "group_label": "第2幕",
+      "roles": [
+        "ディック・デッドアイ",
+        "コーコラン艦長",
+        "ラルフ・ラックストロー",
+        "ジョセフィン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（バタカップの告白＝赤子の取り違え・立場の逆転）",
+      "group_label": "第2幕",
+      "roles": [
+        "リトル・バタカップ",
+        "ラルフ・ラックストロー",
+        "コーコラン艦長",
+        "ジョセフィン",
+        "サー・ジョセフ・ポーター",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

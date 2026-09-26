@@ -1,0 +1,310 @@
+{
+  "title": "ライオン・キング",
+  "title_original": "The Lion King",
+  "composer": "エルトン・ジョン／レボ・M／ハンス・ジマー",
+  "kind": "musical",
+  "year_written": 1997,
+  "duration_min": 165,
+  "edition": "1997 ブロードウェイ初演版（★★ジュリー・テイモア演出。★1994 映画版とは曲が違い、レボ・Mによるアフリカ語の曲が加わる。★日本版〈劇団四季〉は日本語訳詞）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "lion-king",
+  "note": "★作詞 ティム・ライス ／ 脚本 ロジャー・アラーズ／アイリーン・メッキ ／ ★★★人形と仮面（パペット）が中心。★★『ヌーの大群』『動物たちの行進』は大がかりな仕掛けを要する",
+  "roles": [
+    {
+      "label": "シンバ"
+    },
+    {
+      "label": "ヤング・シンバ"
+    },
+    {
+      "label": "ムファサ"
+    },
+    {
+      "label": "スカー"
+    },
+    {
+      "label": "ナラ"
+    },
+    {
+      "label": "ヤング・ナラ"
+    },
+    {
+      "label": "ラフィキ"
+    },
+    {
+      "label": "ザズー"
+    },
+    {
+      "label": "ティモン"
+    },
+    {
+      "label": "プンバァ"
+    },
+    {
+      "label": "シェンジ"
+    },
+    {
+      "label": "バンザイ"
+    },
+    {
+      "label": "エド"
+    },
+    {
+      "label": "サラビ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★サークル・オブ・ライフ（★動物たちの行進・ラフィキの呼び声）",
+      "group_label": "第1幕",
+      "roles": [
+        "ラフィキ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★グラスランド・チャント",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★モーニング・リポート",
+      "group_label": "第1幕",
+      "roles": [
+        "ザズー",
+        "ムファサ",
+        "ヤング・シンバ"
+      ]
+    },
+    {
+      "label": "M4 ★★★アイ・ジャスト・キャント・ウェイト・トゥ・ビー・キング",
+      "group_label": "第1幕",
+      "roles": [
+        "ヤング・シンバ",
+        "ヤング・ナラ",
+        "ザズー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★ビー・プリペアド（スカーとハイエナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "スカー",
+        "シェンジ",
+        "バンザイ",
+        "エド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★ヌーの大群とムファサの死",
+      "group_label": "第1幕",
+      "roles": [
+        "ムファサ",
+        "ヤング・シンバ",
+        "スカー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★シャドウランド（★ナラの旅立ち）",
+      "group_label": "第1幕",
+      "roles": [
+        "ナラ",
+        "ラフィキ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★ハクナ・マタタ（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ティモン",
+        "プンバァ",
+        "ヤング・シンバ",
+        "シンバ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ワン・バイ・ワン",
+      "group_label": "第2幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★ザ・マッドネス・オブ・キング・スカー",
+      "group_label": "第2幕",
+      "roles": [
+        "スカー",
+        "ザズー",
+        "ナラ",
+        "シェンジ",
+        "バンザイ",
+        "エド"
+      ]
+    },
+    {
+      "label": "M11 ★★エンドレス・ナイト",
+      "group_label": "第2幕",
+      "roles": [
+        "シンバ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★キャン・ユー・フィール・ザ・ラヴ・トゥナイト",
+      "group_label": "第2幕",
+      "roles": [
+        "シンバ",
+        "ナラ",
+        "ティモン",
+        "プンバァ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★ヒー・リヴズ・イン・ユー（ムファサの声とラフィキ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ラフィキ",
+        "ムファサ",
+        "シンバ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★★終曲（スカーとの戦いと戴冠・サークル・オブ・ライフの再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "シンバ",
+        "スカー",
+        "ナラ",
+        "ラフィキ",
+        "サラビ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woolsong の土地 ― 声を使う人たちが住む島</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=BIZ+UDPGothic:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Kaisei+Decol:wght@500;700&family=Zen+Kurenaido&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F7F2EA;--ink:#1B1614;--ink2:#5E554D;--ink3:#9A9087;--rule:#DDD4C6;--wine:#7A1F2E;--wool:#EFE9DE;--gold:#C9A961;
+    --min:"Shippori Mincho",serif;--ud:"BIZ UDPGothic",system-ui,sans-serif;--lat:"Cormorant Garamond",serif}
+  *{box-sizing:border-box} html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ud);-webkit-font-smoothing:antialiased}
+  header{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;padding:16px 28px;border-bottom:1px solid var(--rule);background:rgba(247,242,234,.95);position:sticky;top:0;z-index:10}
+  header .brand{font-family:var(--min);font-weight:600;font-size:22px;letter-spacing:.06em;color:var(--wine)}
+  header .brand small{display:block;font-family:var(--ud);font-size:11.5px;letter-spacing:.2em;color:var(--ink2);font-weight:400;margin-top:2px}
+  header .search{display:flex;align-items:center;gap:8px;max-width:520px;justify-self:center;width:100%}
+  header input{flex:1;border:1px solid var(--rule);border-radius:999px;padding:10px 16px;font-family:inherit;font-size:14px;background:#fff}
+  header .me a{font-family:var(--min);font-size:13px;letter-spacing:.14em;color:var(--wine);text-decoration:none;border:1px solid var(--wine);border-radius:999px;padding:8px 16px;white-space:nowrap}
+  .stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);min-height:calc(100vh - 70px)}
+  .mapwrap{position:relative;padding:22px 28px 30px;background:radial-gradient(ellipse at 50% 30%,#FBF8F1,var(--paper) 70%)}
+  .mapwrap .cap{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .mapwrap h2{font-family:var(--min);font-weight:500;font-size:16px;margin:0;color:var(--ink2)}
+  .mapwrap .back{font-family:var(--ud);font-size:12.5px;color:var(--wine);background:#fff;border:1px solid var(--rule);border-radius:999px;padding:6px 12px;cursor:pointer;visibility:hidden}
+  .mapwrap .back.on{visibility:visible}
+  .frame{border:1px solid var(--rule);border-radius:16px;overflow:hidden;background:#BFD7E1;box-shadow:0 18px 40px rgba(27,22,20,.12)}
+  svg.map{width:100%;height:auto;display:block}
+  .dist{cursor:pointer}
+  .dist .halo{opacity:0;transition:opacity .25s}
+  .dist:hover .halo,.dist.on .halo{opacity:1}
+  .dist .lbl{font-family:"Kaisei Decol",var(--min);font-size:22px;font-weight:700;fill:#2b2320;pointer-events:none}
+  .dist .lbl.s{font-family:"Zen Kurenaido",var(--ud);font-size:14px;font-weight:400;fill:#5E554D}
+  .ribbon{fill:#FFFDF7;stroke:#8f8470;stroke-width:1.4}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .legend button{border:1px solid var(--rule);background:#fff;border-radius:999px;padding:7px 13px;font-family:var(--min);font-size:13px;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .legend button i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .legend button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .side{border-left:1px solid var(--rule);background:#fff;padding:0 0 40px;overflow:auto;max-height:calc(100vh - 70px)}
+  .side .head{padding:22px 24px 16px;border-bottom:1px solid var(--rule);background:linear-gradient(180deg,#FBF8F1,#fff)}
+  .side .head .k{font-family:var(--lat);font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink3)}
+  .side h3{font-family:var(--min);font-weight:600;font-size:26px;margin:4px 0 4px;letter-spacing:.04em}
+  .side .sub{font-size:13.5px;color:var(--ink2);line-height:1.7}
+  .side .count{font-family:var(--lat);font-size:13px;color:var(--ink3);margin-top:8px;letter-spacing:.1em}
+  .index{padding:12px 24px 0}
+  .index .all{display:flex;justify-content:space-between;align-items:center;font-family:var(--min);font-size:14px;padding:8px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+  .index .all span{font-family:var(--lat);color:var(--ink3);font-size:13px}
+  .index details{border-bottom:1px solid var(--rule)}
+  .index summary{list-style:none;display:flex;align-items:center;gap:10px;padding:9px 0;cursor:pointer;font-family:var(--min);font-size:15px}
+  .index summary::-webkit-details-marker{display:none}
+  .index summary i{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+  .index summary .c{margin-left:auto;font-family:var(--lat);font-size:13px;color:var(--ink3)}
+  .index summary .arrow{color:var(--ink3);font-size:11px;transition:transform .2s}
+  .index details[open] summary .arrow{transform:rotate(90deg)}
+  .index summary.on{color:var(--wine)}
+  .index ul{list-style:none;margin:0;padding:0 0 8px 20px}
+  .index li{display:flex;justify-content:space-between;padding:6px 0;font-size:13.5px;cursor:pointer;color:var(--ink2)}
+  .index li:hover,.index li.on{color:var(--wine)}
+  .index li span{font-family:var(--lat);font-size:12.5px;color:var(--ink3)}
+  .filters{display:flex;flex-wrap:wrap;gap:6px;padding:14px 24px 0}
+  .filters button{border:1px solid var(--rule);background:var(--paper);border-radius:999px;padding:5px 12px;font-family:inherit;font-size:12px;cursor:pointer;color:var(--ink)}
+  .filters button[aria-pressed="true"]{background:var(--wine);color:#fff;border-color:var(--wine)}
+  .sort{display:flex;gap:14px;padding:10px 24px 0;font-size:12px;color:var(--ink3)}
+  .sort button{border:0;background:transparent;font-family:inherit;font-size:12px;color:var(--ink3);cursor:pointer;padding:0;border-bottom:1px solid transparent}
+  .sort button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 24px 0}
+  .card{border:1px solid var(--rule);border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s}
+  .card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(27,22,20,.12)}
+  .card .thumb{height:92px;position:relative}
+  .card .thumb small{position:absolute;top:8px;right:10px;font-size:10px;letter-spacing:.14em;background:rgba(255,255,255,.85);padding:2px 8px;border-radius:999px;color:var(--ink)}
+  .card .face{width:52px;height:52px;border-radius:50%;border:3px solid #fff;background:linear-gradient(160deg,#8b7a72,#3b3230);position:absolute;left:12px;bottom:-22px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+  .card .meta{padding:28px 12px 12px}
+  .card .meta b{font-family:var(--min);font-weight:600;font-size:16px;display:block}
+  .card .meta .g{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+  .card .meta .g span{font-size:10.5px;border:1px solid var(--rule);border-radius:999px;padding:1px 8px;color:var(--ink2)}
+  .card .meta .next{font-size:12px;color:var(--ink2);margin-top:4px}
+  .card .meta .next b{display:inline;font-family:var(--ud);font-size:12px;color:var(--wine)}
+  .empty{color:var(--ink3);font-size:14px;padding:30px 24px;text-align:center;line-height:1.8}
+  .week{margin:22px 24px 0;border-top:1px solid var(--rule);padding-top:14px}
+  .week h4{font-family:var(--lat);font-weight:400;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink3);margin:0 0 8px}
+  .week div{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:7px 0;border-bottom:1px dotted var(--rule);font-size:13px}
+  .week time{font-family:var(--lat);font-size:16px}
+  .frame{position:relative}
+  svg.block{width:100%;height:auto;display:none}
+  .frame.zoom svg.map{display:none}.frame.zoom svg.block{display:block}
+  .bld{cursor:pointer}
+  .bld .glow{opacity:0;transition:opacity .2s}
+  .bld:hover .glow,.bld.on .glow{opacity:1}
+  .bld .plate{font-family:"Kaisei Decol",var(--min);font-size:20px;font-weight:700;fill:#2b2320;pointer-events:none}
+  .bld .plate.s{font-family:"Zen Kurenaido",var(--ud);font-size:13.5px;font-weight:400;fill:#5E554D}
+  .crumbs{font-size:12.5px;color:var(--ink3);margin:6px 0 0}
+  .crumbs b{color:var(--ink);font-weight:400;font-family:var(--min)}
+  .tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;padding:6px 10px;border-radius:6px;transform:translate(-50%,-140%);opacity:0;transition:opacity .15s;white-space:nowrap;z-index:20}
+  .tip.on{opacity:1}
+  @keyframes bob{0%,100%{transform:translate(120px,500px)}50%{transform:translate(120px,497px)}}
+  .boat{animation:bob 3s ease-in-out infinite}
+  @media (prefers-reduced-motion:reduce){.boat{animation:none}}
+  @media (max-width:960px){.stage{grid-template-columns:1fr}.side{max-height:none;border-left:0;border-top:1px solid var(--rule)}header{grid-template-columns:1fr auto}header .search{grid-column:1/-1}.cards{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Woolsong の土地<small>声を使う人たちが住む島 ― みんなのホームページ</small></div>
+  <div class="search"><input id="q" placeholder="名前・作品・楽器・都市で探す" aria-label="検索"></div>
+  <div class="me"><a href="#" onclick="return false">自分の家を建てる</a></div>
+</header>
+<div class="stage">
+  <div class="mapwrap">
+    <div class="cap"><h2>島の地図 ― 分野ごとの地区。地区を押すと、近づきます</h2><button class="back" id="back">島全体へ戻る</button></div>
+    <div class="frame">
+    <svg class="map" id="map" viewBox="0 0 1000 680" aria-label="Woolsongの土地">
+      <defs>
+        <pattern id="wave" width="28" height="14" patternUnits="userSpaceOnUse"><path d="M0 7 Q7 1 14 7 T28 7" fill="none" stroke="#A9C6D3" stroke-width="1.2"/></pattern>
+        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CDE1EA"/><stop offset="1" stop-color="#B3CFDC"/></linearGradient>
+        <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CBE0B3"/><stop offset="1" stop-color="#A9C98A"/></linearGradient>
+        <filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.2"/></filter>
+        <filter id="wobble" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter>
+        <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .18"/></feComponentTransfer></filter>
+        <filter id="shade" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter>
+        <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <g id="tree"><ellipse cx="0" cy="-9" rx="7" ry="9" fill="#6E9A5C"/><ellipse cx="-3" cy="-11" rx="5" ry="6" fill="#88B26E"/><rect x="-1.2" y="-1" width="2.4" height="6" fill="#6B4F3A"/></g>
+        <g id="house"><path d="M8 -6 L14 -10 L14 0 L8 4Z" fill="#E6DCC6" stroke="#B9AD98" stroke-width=".8"/><rect x="-8" y="-6" width="16" height="10" fill="#FBF6EA" stroke="#B9AD98" stroke-width=".8"/><path d="M-10 -6 L0 -14 L10 -6Z" fill="#7A1F2E"/><path d="M10 -6 L16 -10 L6 -18 L0 -14Z" fill="#5A1420"/><rect x="-2" y="-2" width="4" height="6" fill="#7A6455"/><rect x="-6" y="-3" width="3" height="3" fill="#3E5C8C"/></g>
+        <g id="house2"><path d="M8 -6 L14 -10 L14 0 L8 4Z" fill="#E6DCC6" stroke="#B9AD98" stroke-width=".8"/><rect x="-8" y="-6" width="16" height="10" fill="#FBF6EA" stroke="#B9AD98" stroke-width=".8"/><path d="M-10 -6 L0 -14 L10 -6Z" fill="#4A5560"/><path d="M10 -6 L16 -10 L6 -18 L0 -14Z" fill="#2F3840"/><rect x="-2" y="-2" width="4" height="6" fill="#7A6455"/><rect x="-6" y="-3" width="3" height="3" fill="#3E5C8C"/></g>
+      </defs>
+      <rect width="1000" height="680" fill="url(#sea)"/><rect width="1000" height="680" fill="url(#wave)" opacity=".7"/>
+      <g filter="url(#wobble)">
+      <path d="M120 330 C110 200 250 90 430 96 C600 102 720 60 830 150 C930 230 920 420 820 520 C700 610 500 625 340 585 C200 550 130 450 120 330Z" fill="#DCE9DF" opacity=".8" filter="url(#soft)"/>
+      <path d="M135 330 C125 210 260 105 430 110 C595 116 712 76 815 160 C905 240 900 415 805 508 C690 596 500 610 350 573 C215 540 145 445 135 330Z" fill="#F1E4C8"/>
+      <path d="M150 330 C142 220 270 122 430 126 C590 131 705 92 800 170 C885 245 880 410 790 497 C680 580 500 594 360 560 C230 528 158 440 150 330Z" fill="#CFE0B8"/>
+      <path d="M470 130 C450 220 520 300 480 380 C450 440 520 520 500 590" fill="none" stroke="#A9C6D3" stroke-width="12" stroke-linecap="round"/>
+      <path d="M470 130 C450 220 520 300 480 380 C450 440 520 520 500 590" fill="none" stroke="#CDE1EA" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 10"/>
+      <g fill="none" stroke-linecap="round"><path d="M240 380 C330 300 440 330 560 290 C650 260 720 300 790 300" stroke="#F5EEDD" stroke-width="12"/><path d="M240 380 C330 300 440 330 560 290 C650 260 720 300 790 300" stroke="#D8CBB0" stroke-width="1.5" stroke-dasharray="6 6"/>
+        <path d="M430 520 C440 430 470 370 500 260" stroke="#F5EEDD" stroke-width="10"/><path d="M430 520 C440 430 470 370 500 260" stroke="#D8CBB0" stroke-width="1.5" stroke-dasharray="6 6"/>
+        <path d="M270 470 C330 460 400 500 470 520 C560 540 640 500 720 470" stroke="#F5EEDD" stroke-width="10"/><path d="M270 470 C330 460 400 500 470 520 C560 540 640 500 720 470" stroke="#D8CBB0" stroke-width="1.5" stroke-dasharray="6 6"/></g>
+      <rect x="486" y="372" width="30" height="8" rx="2" fill="#B9AD98"/><rect x="474" y="514" width="34" height="8" rx="2" fill="#B9AD98"/>
+      </g>
+      <!-- 水彩の陰影 -->
+      <g filter="url(#shade)" opacity=".35"><ellipse cx="330" cy="260" rx="150" ry="70" fill="#8FB26E"/><ellipse cx="640" cy="230" rx="160" ry="70" fill="#8FB26E"/><ellipse cx="500" cy="560" rx="260" ry="60" fill="#B39A6B"/><ellipse cx="800" cy="360" rx="90" ry="60" fill="#8FB26E"/></g>
+      <!-- 小さなもの -->
+      <g><g transform="translate(420,336)"><rect x="-7" y="-4" width="14" height="7" rx="2" fill="#B7282E"/><circle cx="-4" cy="4" r="2" fill="#1B1614"/><circle cx="4" cy="4" r="2" fill="#1B1614"/></g><g transform="translate(600,284)"><rect x="-7" y="-4" width="14" height="7" rx="2" fill="#3E5C8C"/><circle cx="-4" cy="4" r="2" fill="#1B1614"/><circle cx="4" cy="4" r="2" fill="#1B1614"/></g>
+      <g fill="#7A6455"><rect x="366" y="300" width="12" height="3"/><rect x="367" y="303" width="2" height="4"/><rect x="375" y="303" width="2" height="4"/></g>
+      <g><path d="M330 168 v-14" stroke="#1B1614" stroke-width="1"/><path d="M330 154 l10 3 -10 3z" fill="#B7282E"/></g>
+      <g fill="#5E554D"><circle cx="352" cy="300" r="2"/><circle cx="358" cy="302" r="2"/><circle cx="446" cy="470" r="2"/><circle cx="452" cy="468" r="2"/><circle cx="458" cy="471" r="2"/><circle cx="700" cy="300" r="2"/></g>
+      <g class="boat" style="animation-name:none"><g transform="translate(860,560)"><path d="M-12 0 L12 0 L8 6 L-8 6Z" fill="#3E5C8C"/><rect x="-2" y="-12" width="4" height="12" fill="#FBF6EA"/><path d="M2 -12 L11 -3 L2 -3Z" fill="#fff"/></g></g></g>
+      <g><use href="#tree" x="640" y="380"/><use href="#tree" x="655" y="392"/><use href="#tree" x="632" y="400"/><use href="#tree" x="670" y="405"/><use href="#tree" x="210" y="240"/><use href="#tree" x="225" y="250"/><use href="#tree" x="770" y="420"/><use href="#tree" x="785" y="430"/><use href="#tree" x="760" y="440"/><use href="#tree" x="380" y="560"/><use href="#tree" x="395" y="568"/><use href="#tree" x="600" y="140"/><use href="#tree" x="615" y="150"/><use href="#tree" x="300" y="520"/></g>
+
+      <g class="dist" data-d="vocal">
+        <ellipse class="halo" cx="330" cy="215" rx="130" ry="80" fill="#7A1F2E" opacity=".18" filter="url(#glow)"/>
+        <ellipse cx="330" cy="240" rx="120" ry="60" fill="#8FB26E" opacity=".5"/><ellipse cx="330" cy="235" rx="120" ry="60" fill="url(#hill)"/><ellipse cx="330" cy="215" rx="80" ry="40" fill="#D8E8C2"/>
+        <g transform="translate(330,196)"><rect x="-34" y="-8" width="68" height="28" fill="#FBF6EA" stroke="#B9AD98"/><path d="M-34 -8 Q0 -40 34 -8Z" fill="#7A1F2E"/><g fill="#B9AD98"><rect x="-26" y="-2" width="4" height="22"/><rect x="-14" y="-2" width="4" height="22"/><rect x="-2" y="-2" width="4" height="22"/><rect x="10" y="-2" width="4" height="22"/><rect x="22" y="-2" width="4" height="22"/></g><circle cx="0" cy="-26" r="4" fill="#C9A961"/></g>
+        <use href="#house" x="270" y="240"/><use href="#house2" x="390" y="245"/><use href="#house" x="300" y="258"/>
+        <g transform="translate(330,290)"><path class="ribbon" d="M-82 -16 H82 L88 0 L82 16 H-82 L-88 0Z"/><text class="lbl" text-anchor="middle" y="7">声楽の丘</text></g><text class="lbl s" text-anchor="middle" x="330" y="322">歌う人</text>
+      </g>
+      <g class="dist" data-d="instr">
+        <ellipse class="halo" cx="620" cy="205" rx="130" ry="80" fill="#4F6B4A" opacity=".2" filter="url(#glow)"/>
+        <path d="M530 170 C560 150 690 150 720 175 C740 200 700 240 620 245 C540 240 510 200 530 170Z" fill="#A9C98A"/>
+        <g transform="translate(620,200) rotate(-25)"><path d="M0 -34 C14 -34 16 -22 10 -14 C22 -10 26 8 16 20 C8 32 -8 32 -16 20 C-26 8 -22 -10 -10 -14 C-16 -22 -14 -34 0 -34Z" fill="#A9C6D3" stroke="#8FB0C0"/><path d="M-4 -2 v10 M4 -2 v10" stroke="#8FB0C0" stroke-width="1.5"/></g>
+        <use href="#house2" x="560" y="225"/><use href="#house" x="680" y="228"/>
+        <g transform="translate(620,272)"><path class="ribbon" d="M-82 -16 H82 L88 0 L82 16 H-82 L-88 0Z"/><text class="lbl" text-anchor="middle" y="7">器楽の谷</text></g><text class="lbl s" text-anchor="middle" x="620" y="304">弾く人</text>
+      </g>
+      <g class="dist" data-d="cond">
+        <ellipse class="halo" cx="800" cy="330" rx="90" ry="90" fill="#5B3A5E" opacity=".2" filter="url(#glow)"/>
+        <ellipse cx="800" cy="350" rx="70" ry="38" fill="#B9D3A0"/>
+        <g transform="translate(800,300)"><rect x="-14" y="-40" width="28" height="70" fill="#FBF6EA" stroke="#B9AD98"/><path d="M-18 -40 L0 -64 L18 -40Z" fill="#5B3A5E"/><circle cx="0" cy="-22" r="7" fill="#fff" stroke="#B9AD98"/><path d="M0 -22 L0 -27 M0 -22 L4 -20" stroke="#1B1614" stroke-width="1.2"/><rect x="-4" y="12" width="8" height="18" fill="#7A6455"/><path d="M0 -64 L2 -80" stroke="#1B1614" stroke-width="1.6"/></g>
+        <g transform="translate(800,395)"><path class="ribbon" d="M-96 -16 H96 L102 0 L96 16 H-96 L-102 0Z"/><text class="lbl" text-anchor="middle" y="7">指揮と作曲の塔</text></g><text class="lbl s" text-anchor="middle" x="800" y="427">書く人・振る人</text>
+      </g>
+      <g class="dist" data-d="voice">
+        <ellipse class="halo" cx="230" cy="380" rx="105" ry="80" fill="#3E5C8C" opacity=".2" filter="url(#glow)"/>
+        <ellipse cx="230" cy="395" rx="90" ry="46" fill="#D9E3D0"/>
+        <g transform="translate(200,372)"><rect x="-16" y="-10" width="32" height="24" fill="#FBF6EA" stroke="#B9AD98"/><rect x="-10" y="-4" width="6" height="6" fill="#3E5C8C"/><rect x="2" y="-4" width="6" height="6" fill="#3E5C8C"/><path d="M12 -10 L12 -40" stroke="#4A5560" stroke-width="2"/><g fill="none" stroke="#3E5C8C" stroke-width="1.4"><path d="M4 -40 a8 8 0 0 1 16 0"/><path d="M-2 -42 a14 14 0 0 1 28 0"/></g></g>
+        <use href="#house2" x="250" y="395"/><use href="#house" x="275" y="380"/><use href="#house2" x="225" y="412"/>
+        <g transform="translate(230,440)"><path class="ribbon" d="M-90 -16 H90 L96 0 L90 16 H-90 L-96 0Z"/><text class="lbl" text-anchor="middle" y="7">声の放送局街</text></g><text class="lbl s" text-anchor="middle" x="230" y="472">声優・ナレーター</text>
+      </g>
+      <g class="dist" data-d="stage">
+        <ellipse class="halo" cx="420" cy="420" rx="120" ry="80" fill="#C9A961" opacity=".28" filter="url(#glow)"/>
+        <rect x="330" y="395" width="180" height="60" rx="6" fill="#E9DFC6"/>
+        <g transform="translate(400,400)"><rect x="-40" y="-16" width="80" height="40" fill="#2A2320"/><rect x="-46" y="-22" width="92" height="12" rx="2" fill="#F2C97D"/><g fill="#FFF4CF"><circle cx="-38" cy="-16" r="1.6"/><circle cx="-26" cy="-16" r="1.6"/><circle cx="-14" cy="-16" r="1.6"/><circle cx="-2" cy="-16" r="1.6"/><circle cx="10" cy="-16" r="1.6"/><circle cx="22" cy="-16" r="1.6"/><circle cx="34" cy="-16" r="1.6"/></g><path d="M-28 -6 h56 v26 h-56z" fill="#7A1F2E"/><path d="M-28 -6 Q-14 14 -8 20 M28 -6 Q14 14 8 20" stroke="#C9A961" stroke-width="1.2" fill="none"/><rect x="-10" y="4" width="20" height="16" fill="#1B1614"/></g>
+        <use href="#house" x="460" y="440"/><use href="#house2" x="480" y="425"/><use href="#house" x="350" y="440"/>
+        <g transform="translate(420,478)"><path class="ribbon" d="M-96 -16 H96 L102 0 L96 16 H-96 L-102 0Z"/><text class="lbl" text-anchor="middle" y="7">舞台の劇場通り</text></g><text class="lbl s" text-anchor="middle" x="420" y="510">俳優・ミュージカル</text>
+      </g>
+      <g class="dist" data-d="trad">
+        <ellipse class="halo" cx="620" cy="400" rx="110" ry="78" fill="#B0342B" opacity=".2" filter="url(#glow)"/>
+        <ellipse cx="620" cy="412" rx="92" ry="44" fill="#D9E3D0"/>
+        <g transform="translate(620,382)"><path d="M-40 4 L0 -22 L40 4Z" fill="#4A5560"/><rect x="-32" y="4" width="64" height="20" fill="#FBF6EA" stroke="#B9AD98"/><g fill="#B7282E"><rect x="-26" y="4" width="4" height="20"/><rect x="22" y="4" width="4" height="20"/></g><rect x="-8" y="10" width="16" height="14" fill="#7A6455"/><g transform="translate(-58,10)"><rect x="-12" y="-14" width="24" height="3" fill="#B7282E"/><rect x="-9" y="-11" width="2.5" height="22" fill="#B7282E"/><rect x="6.5" y="-11" width="2.5" height="22" fill="#B7282E"/><rect x="-10" y="-8" width="20" height="2" fill="#B7282E"/></g></g>
+        <g transform="translate(620,458)"><path class="ribbon" d="M-90 -16 H90 L96 0 L90 16 H-90 L-96 0Z"/><text class="lbl" text-anchor="middle" y="7">伝統芸能の宮</text></g><text class="lbl s" text-anchor="middle" x="620" y="490">能・歌舞伎・落語</text>
+      </g>
+      <g class="dist" data-d="dance">
+        <ellipse class="halo" cx="300" cy="530" rx="100" ry="70" fill="#FF4F9A" opacity=".18" filter="url(#glow)"/>
+        <circle cx="300" cy="530" r="44" fill="#F3D9D3" stroke="#E5B9C8"/><circle cx="300" cy="530" r="30" fill="#FBE3EA"/><circle cx="300" cy="530" r="8" fill="#A9C6D3" stroke="#8FB0C0"/>
+        <g fill="#7A1F2E"><circle cx="286" cy="520" r="3"/><circle cx="314" cy="540" r="3"/><circle cx="312" cy="518" r="3"/></g>
+        <g transform="translate(300,590)"><path class="ribbon" d="M-84 -16 H84 L90 0 L84 16 H-84 L-90 0Z"/><text class="lbl" text-anchor="middle" y="7">ダンスの広場</text></g><text class="lbl s" text-anchor="middle" x="300" y="622">踊る人</text>
+      </g>
+      <g class="dist" data-d="teacher">
+        <ellipse class="halo" cx="500" cy="545" rx="110" ry="70" fill="#5C6B4A" opacity=".2" filter="url(#glow)"/>
+        <rect x="440" y="520" width="120" height="44" rx="4" fill="#E9DFC6"/>
+        <g transform="translate(500,528)"><rect x="-44" y="-12" width="88" height="30" fill="#FBF6EA" stroke="#B9AD98"/><path d="M-48 -12 L0 -30 L48 -12Z" fill="#5C6B4A"/><g fill="#3E5C8C"><rect x="-36" y="-4" width="8" height="8"/><rect x="-20" y="-4" width="8" height="8"/><rect x="12" y="-4" width="8" height="8"/><rect x="28" y="-4" width="8" height="8"/></g><rect x="-5" y="2" width="10" height="16" fill="#7A6455"/><circle cx="0" cy="-16" r="5" fill="#fff" stroke="#B9AD98"/><path d="M0 -16 v-3 M0 -16 h2" stroke="#1B1614"/></g>
+        <g transform="translate(500,592)"><path class="ribbon" d="M-88 -16 H88 L94 0 L88 16 H-88 L-94 0Z"/><text class="lbl" text-anchor="middle" y="7">先生の学校区</text></g><text class="lbl s" text-anchor="middle" x="500" y="624">教える人・教室</text>
+      </g>
+      <g class="dist" data-d="choir">
+        <ellipse class="halo" cx="720" cy="520" rx="100" ry="70" fill="#3E5C8C" opacity=".18" filter="url(#glow)"/>
+        <ellipse cx="720" cy="535" rx="80" ry="38" fill="#D9E3D0"/>
+        <g transform="translate(720,510)"><rect x="-26" y="-10" width="52" height="28" fill="#FBF6EA" stroke="#B9AD98"/><path d="M-30 -10 L0 -26 L30 -10Z" fill="#4A5560"/><rect x="-36" y="-30" width="14" height="48" fill="#FBF6EA" stroke="#B9AD98"/><path d="M-38 -30 L-29 -44 L-20 -30Z" fill="#7A1F2E"/><path d="M-29 -46 v-6 M-32 -49 h6" stroke="#C9A961" stroke-width="1.5"/><path d="M0 -4 a6 6 0 0 1 0 12 a6 6 0 0 1 0 -12" fill="#3E5C8C"/><rect x="-5" y="6" width="10" height="12" fill="#7A6455"/></g>
+        <g transform="translate(720,568)"><path class="ribbon" d="M-82 -16 H82 L88 0 L82 16 H-82 L-88 0Z"/><text class="lbl" text-anchor="middle" y="7">合唱の教会</text></g><text class="lbl s" text-anchor="middle" x="720" y="600">歌う集まり</text>
+      </g>
+      <g><path d="M160 470 L230 470 L222 484 L168 484Z" fill="#B9AD98"/><g class="boat"><path d="M-18 0 L18 0 L12 8 L-12 8Z" fill="#7A1F2E"/><rect x="-3" y="-16" width="6" height="16" fill="#FBF6EA"/><path d="M3 -16 L16 -4 L3 -4Z" fill="#fff"/></g><text x="150" y="505" font-family="BIZ UDPGothic" font-size="10.5" fill="#5E554D">港 ― 海外から来た人</text></g>
+      <g transform="translate(870,470)"><rect x="-22" y="-8" width="44" height="14" rx="3" fill="#4A5560"/><rect x="-18" y="-5" width="8" height="6" fill="#CDE1EA"/><rect x="-6" y="-5" width="8" height="6" fill="#CDE1EA"/><rect x="6" y="-5" width="8" height="6" fill="#CDE1EA"/><circle cx="-14" cy="8" r="3" fill="#1B1614"/><circle cx="14" cy="8" r="3" fill="#1B1614"/><text x="0" y="26" text-anchor="middle" font-family="BIZ UDPGothic" font-size="10.5" fill="#5E554D">駅 ― 新しく来た人</text></g>
+      <g fill="#fff" opacity=".85"><ellipse cx="150" cy="80" rx="34" ry="12"/><ellipse cx="170" cy="72" rx="22" ry="12"/><ellipse cx="700" cy="60" rx="40" ry="12"/><ellipse cx="725" cy="52" rx="26" ry="12"/></g>
+      <g fill="none" stroke="#5E554D" stroke-width="1.2"><path d="M560 70 q5 -5 10 0 q5 -5 10 0"/><path d="M585 84 q5 -5 10 0 q5 -5 10 0"/></g>
+      <g transform="translate(940,70)"><circle r="22" fill="#FBF8F1" stroke="#C9BFAE"/><path d="M0 -18 L5 0 L0 18 L-5 0Z" fill="#7A1F2E"/><text y="-24" text-anchor="middle" font-family="Cormorant Garamond" font-size="12" fill="#5E554D">N</text></g>
+      <rect width="1000" height="680" filter="url(#grain)" style="mix-blend-mode:multiply" pointer-events="none"/>
+      <g id="sheep" transform="translate(500,330)" style="transition:transform .8s ease"><g transform="scale(.55)"><g fill="#F7F1E6" stroke="#1B1614" stroke-width="2" stroke-linejoin="round"><circle cx="24" cy="30" r="12"/><circle cx="38" cy="24" r="14"/><circle cx="52" cy="31" r="12"/><circle cx="38" cy="38" r="13"/></g><g stroke="#1B1614" stroke-width="2" stroke-linecap="round"><path d="M28 50v6M36 50v6M46 50v6M54 50v6"/></g><g fill="#1B1614"><ellipse cx="60" cy="30" rx="8" ry="7"/><circle cx="63" cy="29" r="1.2" fill="#F7F1E6"/></g></g></g>
+    </svg>
+    <svg class="block" id="block" viewBox="0 0 1000 680" aria-label="地区の地図"></svg>
+    </div>
+    <div class="crumbs" id="crumbs">島全体</div>
+    <div class="legend" id="legend"></div>
+    <div class="tip" id="tip"></div>
+  </div>
+  <aside class="side">
+    <div class="head"><div class="k">District</div><h3 id="title">島全体</h3><div class="sub" id="sub">声を使う人たちが、分野ごとの地区に住んでいます。地区を押すと、そこに住む人のページが並びます。誰も順位づけされません。</div><div class="count" id="count"></div></div>
+    <div class="index" id="index"></div>
+    <div class="filters" id="filters"></div>
+    <div class="sort" id="sort"><span>並び：</span><button aria-pressed="true" data-s="new">新しく来た順</button><button aria-pressed="false" data-s="next">本番が近い順</button><button aria-pressed="false" data-s="name">名前の順</button></div>
+    <div class="cards" id="cards"></div>
+    <div class="week" id="week"></div>
+  </aside>
+</div>
+<script>
+const DIST={vocal:{n:'声楽の丘',s:'歌う人 ― ソプラノからバスまで。丘の上に小さな歌劇場。',cx:330,cy:230,c:'#7A1F2E'},instr:{n:'器楽の谷',s:'弾く人 ― 弦・管・鍵盤。ヴァイオリンの形の湖。',cx:620,cy:205,c:'#4F6B4A'},cond:{n:'指揮と作曲の塔',s:'書く人・振る人。塔のてっぺんに指揮棒。',cx:800,cy:330,c:'#5B3A5E'},voice:{n:'声の放送局街',s:'声優・ナレーター・アナウンサー。電波が出ている街。',cx:230,cy:390,c:'#3E5C8C'},stage:{n:'舞台の劇場通り',s:'俳優・ミュージカル。電飾のある劇場の通り。',cx:420,cy:420,c:'#C9A961'},trad:{n:'伝統芸能の宮',s:'能・歌舞伎・落語。鳥居と舞台。',cx:620,cy:405,c:'#B0342B'},dance:{n:'ダンスの広場',s:'踊る人・振付。噴水のある広場。',cx:300,cy:530,c:'#E5B9C8'},teacher:{n:'先生の学校区',s:'教える人・教室・門下。時計のある学校。',cx:500,cy:540,c:'#5C6B4A'},choir:{n:'合唱の教会',s:'歌う集まり。鐘の鳴る教会。',cx:720,cy:520,c:'#3E5C8C'}};
+const THEMES={'幕':'linear-gradient(135deg,#5A1420,#2E0A11)','大劇場':'linear-gradient(135deg,#0f0d0c,#3a2f2a)','ポスター':'linear-gradient(135deg,#F2F0EA,#7A1F2E)','番付':'linear-gradient(135deg,#F3ECDD,#B0342B)','楽屋':'linear-gradient(135deg,#2A2320,#E8C36F)','番組表':'linear-gradient(135deg,#F5F3EE,#151515)','台本':'linear-gradient(135deg,#fff,#bbb)','スタジオ':'linear-gradient(135deg,#141516,#7A1F2E)','レコード':'linear-gradient(135deg,#111,#444)','総譜':'linear-gradient(135deg,#FBF9F3,#161412)','座席表':'linear-gradient(135deg,#F4F1EA,#7A1F2E)','切符':'linear-gradient(135deg,#1c1916,#F2C97D)','黒板':'linear-gradient(135deg,#2E3B34,#F2D98B)','フライヤー':'linear-gradient(135deg,#9C9A94,#F6F1E6)','短冊':'linear-gradient(135deg,#EFE9DA,#1a1714)','掲示板':'linear-gradient(135deg,#C9A876,#FBF7EC)','かわいい':'linear-gradient(135deg,#FFE3F0,#FF4F9A)','自然':'linear-gradient(135deg,#A9C4D4,#4F6B4A)','ゴシック':'linear-gradient(135deg,#0C0A0B,#7A1024)','神社':'linear-gradient(135deg,#FBFAF7,#B7282E)','イタリア':'linear-gradient(135deg,#2E6F9E,#C86B3C)','フランス':'linear-gradient(135deg,#1F3A93,#C8102E)','Maison':'linear-gradient(135deg,#161412,#F6F3EE)','Salon':'linear-gradient(135deg,#141312,#C9A961)','Atelier':'linear-gradient(135deg,#FBFAF7,#8a8479)','書道':'linear-gradient(135deg,#2E3F6E,#FBF9F2)','お笑い':'linear-gradient(135deg,#FFD400,#111)','原稿用紙':'linear-gradient(135deg,#F4EFE3,#7A1F2E)'};
+const PEOPLE=[
+ {n:'白石 澪',d:'vocal',sg:'opera',g:['ソプラノ','オペラ','歌曲'],t:'幕',c:'東京 / バーリ',next:'10.11 秋のコンサート',nd:20261011,joined:20260901},
+ {n:'長谷川 遼',d:'vocal',sg:'opera',g:['テノール','オペラ'],t:'大劇場',c:'名古屋',next:'11.3 『椿姫』',nd:20261103,joined:20260812},
+ {n:'松本 千秋',d:'vocal',sg:'sacred',g:['メゾソプラノ','宗教曲'],t:'神社',c:'京都',next:'12.24 メサイア',nd:20261224,joined:20260720},
+ {n:'Mio Shiraishi',d:'vocal',sg:'lied',g:['Soprano','Opera'],t:'Maison',c:'Bari',next:'19 Sep 2027 Figaro',nd:20270919,joined:20260915},
+ {n:'藤井 和',d:'instr',sg:'strings',g:['ヴァイオリン','室内楽'],t:'ポスター',c:'東京 / ベルリン',next:'12.20 ベートーヴェン協奏曲',nd:20261220,joined:20260830},
+ {n:'山田 悠',d:'instr',sg:'orch',g:['ヴィオラ','オーケストラ'],t:'座席表',c:'東京',next:'12.20 ○○交響楽団 定期',nd:20261220,joined:20260801},
+ {n:'岡本 律',d:'instr',sg:'keys',g:['ピアノ','伴奏'],t:'切符',c:'大阪',next:'10.18 リサイタル',nd:20261018,joined:20260910},
+ {n:'森 直哉',d:'cond',sg:'comp',g:['作曲','指揮'],t:'レコード',c:'東京',next:'12.20 ブラームス 4番',nd:20261220,joined:20260705},
+ {n:'中村 みな',d:'voice',sg:'anime',g:['声優','ナレーション'],t:'番組表',c:'東京',next:'10.8 ラジオ「○○の時間」',nd:20261008,joined:20260918},
+ {n:'朝比奈 藍',d:'voice',sg:'reading',g:['朗読','ナレーション'],t:'原稿用紙',c:'横浜',next:'10.11 朗読会',nd:20261011,joined:20260822},
+ {n:'佐藤 陽',d:'stage',sg:'musical',g:['俳優','ミュージカル'],t:'楽屋',c:'東京',next:'12.5 『レ・ミゼラブル』',nd:20261205,joined:20260905},
+ {n:'石田 蒼',d:'stage',sg:'theatre',g:['俳優','演劇'],t:'フライヤー',c:'下北沢',next:"'27 2.20 『十二夜』",nd:20270220,joined:20260610},
+ {n:'柳家 小澪',d:'trad',sg:'yose',g:['落語'],t:'番付',c:'東京',next:'10.11 秋の落語会',nd:20261011,joined:20260920},
+ {n:'小林 匠',d:'trad',sg:'noh',g:['能楽師','シテ方'],t:'短冊',c:'東京',next:'11.3 定例能「羽衣」',nd:20261103,joined:20260715},
+ {n:'高橋 凜',d:'dance',sg:'jazz',g:['ダンサー','振付'],t:'黒板',c:'東京',next:'10.18 ワークショップ',nd:20261018,joined:20260902},
+ {n:'白石 澪 声楽教室',d:'teacher',sg:'vocalschool',g:['教室','声楽'],t:'掲示板',c:'東京',next:'体験 30分 無料',nd:99999999,joined:20260903},
+ {n:'高橋 ○○ 門下',d:'teacher',sg:'studio',g:['門下','声楽'],t:'書道',c:'東京',next:"'27 3.14 発表会",nd:20270314,joined:20260601},
+ {n:'港の合唱団',d:'choir',sg:'mixed',g:['混声合唱'],t:'かわいい',c:'神戸',next:'12.24 クリスマス',nd:20261224,joined:20260808},
+ {n:'黒田 玲',d:'vocal',sg:'baritone',g:['バリトン','オペラ'],t:'総譜',c:'福岡',next:'11.15 『ドン・ジョヴァンニ』',nd:20261115,joined:20260925},
+ {n:'伊藤 さくら',d:'vocal',sg:'lied',g:['ソプラノ','歌曲'],t:'イタリア',c:'東京',next:'2.7 リサイタル',nd:20270207,joined:20260919},
+ {n:'渡辺 海',d:'instr',sg:'winds',g:['フルート','室内楽'],t:'自然',c:'札幌',next:'10.25 木管五重奏',nd:20261025,joined:20260912},
+ {n:'田口 慎',d:'instr',sg:'strings',g:['チェロ','室内楽'],t:'Salon',c:'東京',next:'1.24 弦楽五重奏',nd:20270124,joined:20260916},
+ {n:'青木 澄',d:'cond',sg:'cond',g:['指揮','合唱指揮'],t:'ゴシック',c:'仙台',next:'12.13 『第九』',nd:20261213,joined:20260908},
+ {n:'三上 圭',d:'voice',sg:'radio',g:['アナウンサー','ラジオ'],t:'スタジオ',c:'名古屋',next:'毎朝 ラジオ',nd:20261001,joined:20260921},
+ {n:'林 千尋',d:'stage',sg:'tate',g:['殺陣','俳優'],t:'切符',c:'京都',next:'11.8 殺陣ワークショップ',nd:20261108,joined:20260911},
+ {n:'松風 弥',d:'trad',sg:'kabuki',g:['歌舞伎','女方'],t:'番付',c:'東京',next:'12.2 顔見世',nd:20261202,joined:20260830},
+ {n:'佐々木 舞',d:'dance',sg:'ballet',g:['バレエ'],t:'かわいい',c:'東京',next:'12.20 『くるみ割り人形』',nd:20261220,joined:20260914},
+];
+
+/* ===== 地区の中：建物・施設で分ける ===== */
+const SUB={
+ vocal:{bg:'#D8E8C2',b:[{k:'opera',n:'歌劇場',s:'オペラ',t:'opera',x:300,y:250},{k:'sacred',n:'教会',s:'宗教曲・オラトリオ',t:'church',x:560,y:220},{k:'lied',n:'歌曲サロン',s:'歌曲・リート',t:'salon',x:760,y:270},{k:'baritone',n:'声種の通り',s:'ソプラノ〜バス',t:'row',x:420,y:470},{k:'contest',n:'稽古場',s:'コンクール・学生',t:'studio',x:720,y:480}]},
+ instr:{bg:'#CFE0B8',b:[{k:'strings',n:'弦の工房',s:'ヴァイオリン・ヴィオラ・チェロ',t:'atelier',x:280,y:260},{k:'winds',n:'管の丘',s:'フルート・オーボエ・金管',t:'pavilion',x:540,y:210},{k:'keys',n:'鍵盤の館',s:'ピアノ・オルガン',t:'salon',x:780,y:250},{k:'orch',n:'音楽堂',s:'オーケストラ',t:'hall',x:430,y:480},{k:'chamber',n:'室内楽の家',s:'四重奏・伴奏',t:'house',x:740,y:490}]},
+ cond:{bg:'#E4DDF0',b:[{k:'comp',n:'作曲家のアトリエ',s:'作曲',t:'atelier',x:300,y:260},{k:'cond',n:'指揮の練習場',s:'指揮',t:'hall',x:580,y:250},{k:'pub',n:'楽譜の図書館',s:'出版・編曲',t:'library',x:760,y:470},{k:'chorus',n:'合唱指揮の教会',s:'合唱指揮',t:'church',x:380,y:480}]},
+ voice:{bg:'#DDE7F0',b:[{k:'radio',n:'放送局',s:'ラジオ・アナウンス',t:'radio',x:300,y:250},{k:'anime',n:'アニメの録音所',s:'声優',t:'studio',x:560,y:220},{k:'dub',n:'吹替の録音所',s:'吹替',t:'studio',x:780,y:270},{k:'narr',n:'ナレーション室',s:'ナレーション・CM',t:'house',x:430,y:480},{k:'reading',n:'朗読の図書館',s:'朗読',t:'library',x:720,y:480}]},
+ stage:{bg:'#F4E3C8',b:[{k:'musical',n:'大劇場',s:'ミュージカル',t:'theatre',x:320,y:250},{k:'theatre',n:'小劇場',s:'演劇',t:'small',x:600,y:230},{k:'rehearsal',n:'稽古場',s:'稽古・オーディション',t:'studio',x:800,y:280},{k:'tate',n:'殺陣道場',s:'殺陣・アクション',t:'dojo',x:430,y:480},{k:'screen',n:'映像スタジオ',s:'ドラマ・CM',t:'radio',x:720,y:490}]},
+ trad:{bg:'#F5D5CF',b:[{k:'noh',n:'能舞台',s:'能・狂言',t:'noh',x:300,y:250},{k:'kabuki',n:'歌舞伎座',s:'歌舞伎',t:'kabuki',x:580,y:230},{k:'yose',n:'寄席',s:'落語・講談',t:'yose',x:800,y:280},{k:'gagaku',n:'楽所',s:'雅楽・邦楽',t:'pavilion',x:450,y:480},{k:'buyo',n:'日本舞踊の座敷',s:'日本舞踊',t:'house',x:720,y:490}]},
+ dance:{bg:'#FBE3EA',b:[{k:'ballet',n:'バレエ学校',s:'バレエ',t:'salon',x:300,y:250},{k:'jazz',n:'ジャズとタップの倉庫',s:'ジャズ・タップ',t:'warehouse',x:580,y:240},{k:'contemp',n:'コンテンポラリーの工房',s:'コンテンポラリー',t:'atelier',x:800,y:280},{k:'nihon',n:'日本舞踊の座敷',s:'日本舞踊',t:'house',x:450,y:480}]},
+ teacher:{bg:'#EAE4D2',b:[{k:'vocalschool',n:'声楽教室',s:'歌の先生',t:'house',x:300,y:250},{k:'piano',n:'ピアノ教室',s:'鍵盤の先生',t:'salon',x:560,y:220},{k:'college',n:'音楽大学',s:'大学・音楽学部',t:'college',x:800,y:270},{k:'studio',n:'門下の家',s:'門下・ゼミ',t:'house',x:430,y:480},{k:'online',n:'オンライン教室',s:'遠くの生徒',t:'radio',x:720,y:480}]},
+ choir:{bg:'#E1EBE3',b:[{k:'mixed',n:'混声合唱の教会',s:'混声合唱',t:'church',x:320,y:250},{k:'kids',n:'児童合唱の学校',s:'児童合唱',t:'college',x:600,y:240},{k:'opera',n:'オペラ合唱の稽古場',s:'オペラ合唱',t:'studio',x:800,y:280},{k:'mens',n:'男声・女声の集会所',s:'男声・女声',t:'hall',x:450,y:480}]},
+};
+const P={paper:'#FBF6EA',line:'#B9AD98',wine:'#7A1F2E',slate:'#4A5560',wood:'#7A6455',gold:'#C9A961',blue:'#3E5C8C',green:'#5C6B4A',red:'#B7282E'};
+function win(x,y,w=8,h=10,c=P.blue){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}" opacity=".85"/>`;}
+function door(x,y,w=12,h=18){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${P.wood}"/>`;}
+const B={
+ opera:()=>`<rect x="-64" y="-20" width="128" height="60" fill="${P.paper}" stroke="${P.line}"/><path d="M-64 -20 Q0 -80 64 -20Z" fill="${P.wine}"/><rect x="-70" y="-24" width="140" height="6" fill="${P.gold}"/>${[-50,-30,-10,10,30].map(x=>`<rect x="${x}" y="-10" width="8" height="50" fill="${P.line}"/>`).join('')}<circle cx="0" cy="-58" r="6" fill="${P.gold}"/>${door(-8,20,16,20)}`,
+ church:()=>`<rect x="-40" y="-16" width="80" height="56" fill="${P.paper}" stroke="${P.line}"/><path d="M-46 -16 L0 -46 L46 -16Z" fill="${P.slate}"/><rect x="-60" y="-50" width="22" height="90" fill="${P.paper}" stroke="${P.line}"/><path d="M-63 -50 L-49 -74 L-35 -50Z" fill="${P.wine}"/><path d="M-49 -78 v-10 M-54 -83 h10" stroke="${P.gold}" stroke-width="2"/><path d="M0 -6 a10 10 0 0 1 0 20 a10 10 0 0 1 0 -20" fill="${P.blue}"/>${door(-7,22,14,18)}${win(-30,0)}${win(22,0)}`,
+ salon:()=>`<rect x="-54" y="-10" width="108" height="50" fill="${P.paper}" stroke="${P.line}"/><path d="M-58 -10 L0 -44 L58 -10Z" fill="${P.wine}"/><rect x="-6" y="-40" width="12" height="16" fill="${P.line}"/>${[-44,-26,-8,10,28].map(x=>win(x,-2,10,12)).join('')}${door(-8,22,16,18)}<rect x="-60" y="40" width="120" height="4" fill="${P.gold}"/>`,
+ row:()=>[-80,-40,0,40,80].map((x,i)=>`<g transform="translate(${x},0)"><rect x="-16" y="-8" width="32" height="34" fill="${P.paper}" stroke="${P.line}"/><path d="M-19 -8 L0 -24 L19 -8Z" fill="${[P.wine,P.slate,P.green,P.blue,P.gold][i]}"/>${win(-9,-2,7,8)}${win(2,-2,7,8)}${door(-4,12,8,14)}</g>`).join(''),
+ studio:()=>`<rect x="-52" y="-10" width="104" height="48" fill="${P.paper}" stroke="${P.line}"/><rect x="-52" y="-18" width="104" height="8" fill="${P.slate}"/><rect x="-44" y="-2" width="88" height="14" fill="#DDE7F0"/><rect x="-44" y="-2" width="88" height="14" fill="none" stroke="${P.line}"/>${door(-8,20,16,18)}<circle cx="34" cy="-12" r="3" fill="${P.red}"/>`,
+ atelier:()=>`<rect x="-50" y="-8" width="100" height="46" fill="${P.paper}" stroke="${P.line}"/><path d="M-54 -8 L-20 -40 L20 -40 L54 -8Z" fill="${P.wood}"/><rect x="-14" y="-34" width="28" height="22" fill="#DDE7F0" stroke="${P.line}"/><path d="M-14 -23 h28 M0 -34 v22" stroke="${P.line}"/>${door(-8,20,16,18)}${win(-40,0)}${win(30,0)}`,
+ pavilion:()=>`<ellipse cx="0" cy="34" rx="60" ry="10" fill="#A9C98A"/><path d="M-50 -10 L0 -50 L50 -10Z" fill="${P.green}"/><rect x="-42" y="-10" width="84" height="8" fill="${P.paper}" stroke="${P.line}"/>${[-36,-18,0,18,36].map(x=>`<rect x="${x-3}" y="-2" width="6" height="36" fill="${P.line}"/>`).join('')}`,
+ hall:()=>`<rect x="-70" y="-14" width="140" height="56" fill="${P.paper}" stroke="${P.line}"/><path d="M-70 -14 Q0 -46 70 -14Z" fill="${P.slate}"/>${[-58,-40,-22,-4,14,32,50].map(x=>win(x,-2,10,26,P.blue)).join('')}${door(-10,26,20,16)}`,
+ house:()=>`<rect x="-36" y="-6" width="72" height="42" fill="${P.paper}" stroke="${P.line}"/><path d="M-42 -6 L0 -36 L42 -6Z" fill="${P.wine}"/><rect x="14" y="-32" width="8" height="14" fill="${P.line}"/>${win(-26,4)}${win(18,4)}${door(-7,18,14,18)}`,
+ library:()=>`<rect x="-60" y="-14" width="120" height="54" fill="${P.paper}" stroke="${P.line}"/><rect x="-66" y="-20" width="132" height="8" fill="${P.gold}"/>${[-50,-34,-18,-2,14,30,46].map(x=>`<rect x="${x}" y="-8" width="6" height="44" fill="${P.line}"/>`).join('')}${door(-10,22,20,18)}`,
+ radio:()=>`<rect x="-44" y="-6" width="88" height="44" fill="${P.paper}" stroke="${P.line}"/><rect x="-44" y="-12" width="88" height="6" fill="${P.slate}"/>${win(-32,4,12,12)}${win(-8,4,12,12)}${win(16,4,12,12)}${door(-6,22,12,16)}<path d="M30 -12 v-46" stroke="${P.slate}" stroke-width="3"/><g fill="none" stroke="${P.blue}" stroke-width="2"><path d="M18 -58 a12 12 0 0 1 24 0"/><path d="M10 -62 a20 20 0 0 1 40 0"/></g>`,
+ theatre:()=>`<rect x="-70" y="-16" width="140" height="60" fill="#2A2320"/><rect x="-78" y="-26" width="156" height="14" rx="3" fill="#F2C97D"/>${[-70,-56,-42,-28,-14,0,14,28,42,56,70].map(x=>`<circle cx="${x}" cy="-19" r="2" fill="#FFF4CF"/>`).join('')}<path d="M-50 -4 h100 v40 h-100z" fill="${P.wine}"/><path d="M-50 -4 Q-24 26 -14 34 M50 -4 Q24 26 14 34" stroke="${P.gold}" stroke-width="1.6" fill="none"/><rect x="-16" y="8" width="32" height="28" fill="#1B1614"/>`,
+ small:()=>`<rect x="-46" y="-8" width="92" height="46" fill="#3B3230" stroke="#1B1614"/><rect x="-46" y="-16" width="92" height="8" fill="${P.wine}"/><rect x="-38" y="0" width="76" height="16" fill="${P.paper}"/><text x="0" y="12" text-anchor="middle" font-family="BIZ UDPGothic" font-size="9" fill="#1B1614">小劇場</text>${door(-8,20,16,18)}`,
+ dojo:()=>`<rect x="-56" y="-6" width="112" height="44" fill="${P.paper}" stroke="${P.line}"/><path d="M-64 -6 L0 -34 L64 -6Z" fill="${P.slate}"/><path d="M-60 -6 h120" stroke="${P.wood}" stroke-width="4"/><rect x="-40" y="4" width="80" height="14" fill="#F3EEE4" stroke="${P.line}"/>${door(-8,20,16,18)}`,
+ noh:()=>`<rect x="-60" y="10" width="120" height="10" fill="${P.wood}"/><rect x="-50" y="-6" width="100" height="16" fill="#E9D8B4"/><path d="M-58 -6 L0 -40 L58 -6Z" fill="${P.slate}"/>${[-44,-24,24,44].map(x=>`<rect x="${x-3}" y="-6" width="6" height="26" fill="${P.wood}"/>`).join('')}<path d="M-10 0 q10 -8 20 0" stroke="${P.green}" stroke-width="2" fill="none"/>`,
+ kabuki:()=>`<rect x="-64" y="-10" width="128" height="50" fill="${P.paper}" stroke="${P.line}"/><path d="M-70 -10 L0 -44 L70 -10Z" fill="${P.slate}"/><rect x="-64" y="0" width="128" height="8" fill="${P.red}"/><rect x="-64" y="8" width="128" height="8" fill="#1B1614"/><rect x="-64" y="16" width="128" height="8" fill="${P.green}"/>${door(-10,26,20,14)}`,
+ yose:()=>`<rect x="-44" y="-8" width="88" height="46" fill="${P.paper}" stroke="${P.line}"/><path d="M-48 -8 L0 -32 L48 -8Z" fill="${P.wood}"/><rect x="-36" y="-2" width="72" height="12" fill="${P.red}"/><text x="0" y="7" text-anchor="middle" font-family="Shippori Mincho" font-size="9" fill="#fff">寄席</text>${door(-7,20,14,18)}<rect x="-40" y="20" width="10" height="18" fill="${P.paper}" stroke="${P.line}"/>`,
+ warehouse:()=>`<rect x="-60" y="-8" width="120" height="46" fill="#D8CBB0" stroke="${P.line}"/><path d="M-60 -8 Q0 -34 60 -8Z" fill="${P.slate}"/><rect x="-44" y="4" width="26" height="34" fill="${P.wood}"/><rect x="18" y="4" width="26" height="34" fill="${P.wood}"/><path d="M-44 4 l26 34 M-18 4 l-26 34 M18 4 l26 34 M44 4 l-26 34" stroke="#B9AD98"/>`,
+ college:()=>`<rect x="-76" y="-14" width="152" height="54" fill="${P.paper}" stroke="${P.line}"/><path d="M-80 -14 L0 -40 L80 -14Z" fill="${P.green}"/><circle cx="0" cy="-22" r="7" fill="#fff" stroke="${P.line}"/><path d="M0 -22 v-4 M0 -22 h3" stroke="#1B1614"/>${[-64,-48,-32,-16,10,26,42,58].map(x=>win(x,-4,10,12)).join('')}${door(-8,22,16,18)}`,
+};
+function ground(d,bg){
+  const T=(x,y,k=1)=>`<g transform="translate(${x},${y}) scale(${k})"><ellipse cx="0" cy="8" rx="12" ry="4" fill="rgba(0,0,0,.08)"/><ellipse cx="0" cy="-12" rx="11" ry="14" fill="#6E9A5C"/><ellipse cx="-4" cy="-15" rx="7" ry="9" fill="#88B26E"/><rect x="-2" y="-1" width="4" height="9" fill="#6B4F3A"/></g>`;
+  const L=(x,y)=>`<g transform="translate(${x},${y})"><rect x="-2" y="-40" width="4" height="40" fill="#4A5560"/><circle cx="0" cy="-44" r="6" fill="#FFF4CF" stroke="#4A5560"/></g>`;
+  const pav=`<defs><filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .16"/></feComponentTransfer></filter><filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><pattern id="paving" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#F5EEDD"/><path d="M0 8 h16 M8 0 v16" stroke="#E6DCC6" stroke-width="1"/></pattern><pattern id="stone" width="22" height="12" patternUnits="userSpaceOnUse"><rect width="22" height="12" fill="#E9E4DA"/><rect x="1" y="1" width="9" height="10" fill="#DDD6C9"/><rect x="12" y="1" width="9" height="10" fill="#E2DBCE"/></pattern></defs>`;
+  let h=pav+`<rect width="1000" height="680" fill="${bg}"/>`;
+  switch(d){
+    case 'vocal': /* 段々の丘と曲がる小径 */
+      h+=`<ellipse cx="500" cy="700" rx="620" ry="420" fill="#CBE0B3"/><ellipse cx="500" cy="720" rx="470" ry="330" fill="#D8E8C2"/><ellipse cx="500" cy="740" rx="320" ry="240" fill="#E3EFD0"/>
+      <path d="M120 600 C260 520 300 420 420 400 C560 380 600 300 760 260 C820 240 880 220 930 180" fill="none" stroke="#F5EEDD" stroke-width="22" stroke-linecap="round"/><path d="M120 600 C260 520 300 420 420 400 C560 380 600 300 760 260 C820 240 880 220 930 180" fill="none" stroke="#D8CBB0" stroke-width="1.2" stroke-dasharray="8 8"/>
+      <path d="M200 240 C320 300 420 300 520 240" fill="none" stroke="#F5EEDD" stroke-width="14" stroke-linecap="round"/>
+      ${[[110,180],[150,210],[880,560],[920,520],[600,600],[640,620],[430,150],[470,130]].map(([x,y])=>T(x,y,1.2)).join('')}${L(470,410)}${L(760,250)}`;break;
+    case 'instr': /* 谷と川、木の橋 */
+      h+=`<path d="M0 0 H1000 V680 H0Z" fill="#B9D3A0"/><path d="M0 140 C200 90 300 260 500 220 C700 180 800 60 1000 120 V680 H0Z" fill="#CFE0B8"/><path d="M0 460 C200 420 300 560 500 520 C700 480 820 600 1000 540 V680 H0Z" fill="#A9C98A"/>
+      <path d="M0 330 C200 300 320 400 500 380 C700 360 820 300 1000 340" fill="none" stroke="#A9C6D3" stroke-width="34"/><path d="M0 330 C200 300 320 400 500 380 C700 360 820 300 1000 340" fill="none" stroke="#CDE1EA" stroke-width="10" stroke-dasharray="4 14"/>
+      <rect x="470" y="352" width="60" height="16" rx="3" fill="#B9AD98"/><rect x="230" y="330" width="60" height="16" rx="3" fill="#B9AD98"/><rect x="740" y="322" width="60" height="16" rx="3" fill="#B9AD98"/>
+      ${[[120,600],[160,620],[860,620],[900,590],[520,120],[560,140],[900,200]].map(([x,y])=>T(x,y,1.2)).join('')}`;break;
+    case 'cond': /* 塔の広場：放射状の石畳 */
+      h+=`<rect width="1000" height="680" fill="#E4DDF0"/><circle cx="500" cy="380" r="300" fill="url(#stone)"/><circle cx="500" cy="380" r="300" fill="none" stroke="#C5B9DA" stroke-width="3"/>${[0,45,90,135].map(a=>`<path d="M200 380 H800" stroke="#D5CCE3" stroke-width="3" transform="rotate(${a} 500 380)"/>`).join('')}<circle cx="500" cy="380" r="60" fill="#5B3A5E" opacity=".9"/><circle cx="500" cy="380" r="46" fill="#FBF6EA"/><path d="M500 340 L500 380 L530 360" stroke="#1B1614" stroke-width="3" fill="none"/>
+      ${[[120,120],[880,120],[120,640],[880,640],[160,150],[840,150]].map(([x,y])=>T(x,y,1.3)).join('')}${L(300,240)}${L(700,240)}${L(300,520)}${L(700,520)}`;break;
+    case 'voice': /* 碁盤の目の街と電波 */
+      h+=`<rect width="1000" height="680" fill="#DDE7F0"/>${[180,340,500,660,820].map(x=>`<path d="M${x} 40 V640" stroke="url(#paving)" stroke-width="26"/>`).join('')}${[150,300,450,600].map(y=>`<path d="M40 ${y} H960" stroke="url(#paving)" stroke-width="26"/>`).join('')}
+      <g fill="none" stroke="#3E5C8C" stroke-width="2" opacity=".5"><circle cx="300" cy="180" r="120"/><circle cx="300" cy="180" r="180"/><circle cx="300" cy="180" r="240"/></g>
+      ${[[100,90],[900,90],[100,630],[900,630]].map(([x,y])=>T(x,y)).join('')}${L(420,225)}${L(580,225)}${L(420,525)}${L(580,525)}`;break;
+    case 'stage': /* 一本の大通りと電飾 */
+      h+=`<rect width="1000" height="680" fill="#F4E3C8"/><path d="M0 380 H1000" stroke="#3B3230" stroke-width="120"/><path d="M0 380 H1000" stroke="#F2C97D" stroke-width="2" stroke-dasharray="18 18"/><path d="M0 322 H1000 M0 438 H1000" stroke="#E9DFC6" stroke-width="10"/>
+      ${[...Array(12)].map((_,i)=>`<circle cx="${60+i*80}" cy="332" r="4" fill="#FFF4CF"/><circle cx="${100+i*80}" cy="428" r="4" fill="#FFF4CF"/>`).join('')}<path d="M60 332 H940 M100 428 H940" stroke="#F2C97D" stroke-width="1"/>
+      ${[[60,130],[940,130],[60,620],[940,620]].map(([x,y])=>T(x,y)).join('')}`;break;
+    case 'trad': /* 参道と石灯籠、玉砂利 */
+      h+=`<rect width="1000" height="680" fill="#F5D5CF"/><rect x="60" y="60" width="880" height="560" fill="#F3EEE4"/><rect x="60" y="60" width="880" height="560" fill="url(#stone)" opacity=".55"/><path d="M500 640 V120" stroke="#E9E4DA" stroke-width="60"/><path d="M500 640 V120" stroke="#C9BFAE" stroke-width="1" stroke-dasharray="6 10"/>
+      ${[200,300,400,600,700].map(y=>`<g transform="translate(455,${y})"><rect x="-6" y="-30" width="12" height="30" fill="#B9AD98"/><rect x="-11" y="-40" width="22" height="10" fill="#8f8470"/><rect x="-9" y="-38" width="18" height="6" fill="#FFF4CF"/></g><g transform="translate(545,${y})"><rect x="-6" y="-30" width="12" height="30" fill="#B9AD98"/><rect x="-11" y="-40" width="22" height="10" fill="#8f8470"/><rect x="-9" y="-38" width="18" height="6" fill="#FFF4CF"/></g>`).join('')}
+      <g transform="translate(500,110)"><rect x="-70" y="-26" width="140" height="8" fill="#B7282E"/><rect x="-60" y="-18" width="120" height="6" fill="#B7282E"/><rect x="-48" y="-18" width="8" height="70" fill="#B7282E"/><rect x="40" y="-18" width="8" height="70" fill="#B7282E"/></g>
+      ${[[120,150],[880,150],[120,600],[880,600],[150,200],[850,200]].map(([x,y])=>T(x,y,1.2)).join('')}`;break;
+    case 'dance': /* 円形広場と噴水、モザイク */
+      h+=`<rect width="1000" height="680" fill="#FBE3EA"/><circle cx="500" cy="380" r="290" fill="#F7D6DF"/><circle cx="500" cy="380" r="220" fill="#FBE3EA"/><circle cx="500" cy="380" r="150" fill="#F7D6DF"/>${[0,30,60,90,120,150].map(a=>`<path d="M210 380 H790" stroke="#fff" stroke-width="2" transform="rotate(${a} 500 380)"/>`).join('')}<circle cx="500" cy="380" r="34" fill="#A9C6D3" stroke="#8FB0C0"/><circle cx="500" cy="380" r="16" fill="#CDE1EA"/>
+      ${[[110,110],[890,110],[110,650],[890,650],[150,140],[850,140]].map(([x,y])=>T(x,y,1.2)).join('')}${L(500,120)}${L(500,640)}`;break;
+    case 'teacher': /* 校庭と時計台の広場 */
+      h+=`<rect width="1000" height="680" fill="#EAE4D2"/><rect x="80" y="80" width="840" height="520" rx="12" fill="#CFE0B8"/><rect x="120" y="120" width="760" height="440" rx="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="500" cy="380" r="90" fill="none" stroke="#fff" stroke-width="3"/><path d="M500 120 V640" stroke="#fff" stroke-width="3"/>
+      ${[[100,100],[900,100],[100,620],[900,620],[140,130],[860,130]].map(([x,y])=>T(x,y,1.2)).join('')}${L(300,140)}${L(700,140)}`;break;
+    case 'choir': /* 丘の上の教会と石段 */
+      h+=`<rect width="1000" height="680" fill="#E1EBE3"/><ellipse cx="500" cy="640" rx="560" ry="360" fill="#CFE0B8"/><ellipse cx="500" cy="680" rx="380" ry="260" fill="#D9E8C6"/>${[...Array(9)].map((_,i)=>`<rect x="${470-i*6}" y="${560-i*22}" width="${60+i*12}" height="8" fill="#E9E4DA" stroke="#C9BFAE" stroke-width=".8"/>`).join('')}
+      ${[[100,120],[900,120],[100,640],[900,640],[150,160],[850,160]].map(([x,y])=>T(x,y,1.2)).join('')}${L(300,250)}${L(700,250)}`;break;
+  }
+  return h;
+}
+function drawBlock(d){
+  const cfg=SUB[d];const blk=document.getElementById('block');
+  let h=ground(d,cfg.bg);
+  cfg.b.forEach(b=>{const n=PEOPLE.filter(p=>p.d===d&&p.sg===b.k).length;
+    h+=`<g class="bld" data-k="${b.k}" transform="translate(${b.x},${b.y})"><ellipse class="glow" cx="0" cy="20" rx="110" ry="70" fill="${P.wine}" opacity=".16" filter="url(#glow)"/><ellipse cx="0" cy="42" rx="80" ry="10" fill="rgba(0,0,0,.08)"/>${B[b.t]()}
+      <g transform="translate(0,82)"><path d="M-104 -17 H104 L112 0 L104 17 H-104 L-112 0Z" fill="#FBF8F1" stroke="#C9BFAE"/><text class="plate" text-anchor="middle" y="7">${b.n}</text></g><text class="plate s" text-anchor="middle" y="116">${b.s}${n?'　'+n+'人':''}</text></g>`;});
+  h+='<rect width="1000" height="680" filter="url(#grain)" style="mix-blend-mode:multiply" pointer-events="none"/>';blk.innerHTML=h;
+  blk.querySelectorAll('.bld').forEach(el=>{el.addEventListener('click',ev=>{ev.stopPropagation();subPick(el.dataset.k);});});
+}
+
+/* 一覧で探す：分野 › 建物（区分） */
+function buildIndex(){const ix=document.getElementById('index');let h=`<div class="all" id="ixall">島全体 ― すべての住人<span>${PEOPLE.length}</span></div>`;
+  Object.entries(DIST).forEach(([k,v])=>{const n=PEOPLE.filter(p=>p.d===k).length;h+=`<details data-d="${k}" ${cur===k?'open':''}><summary class="${cur===k&&!subKey?'on':''}"><i style="background:${v.c}"></i>${v.n}<span class="c">${n}</span><span class="arrow">▶</span></summary><ul>${SUB[k].b.map(b=>{const m=PEOPLE.filter(p=>p.d===k&&p.sg===b.k).length;return `<li data-d="${k}" data-k="${b.k}" class="${cur===k&&subKey===b.k?'on':''}">${b.n}<span>${m}</span></li>`;}).join('')}</ul></details>`;});
+  ix.innerHTML=h;
+  ix.querySelector('#ixall').onclick=whole;
+  ix.querySelectorAll('summary').forEach(sm=>sm.addEventListener('click',e=>{const d=sm.parentElement.dataset.d;if(cur!==d){e.preventDefault();pick(d);}}));
+  ix.querySelectorAll('li').forEach(li=>li.onclick=()=>{const d=li.dataset.d,k=li.dataset.k;if(cur!==d){pick(d);setTimeout(()=>subPick(k),750);}else{subPick(k);}});
+}
+let subKey=null;
+function subPick(k){subKey=(subKey===k?null:k);document.querySelectorAll('#block .bld').forEach(x=>x.classList.toggle('on',x.dataset.k===subKey));const b=SUB[cur].b.find(x=>x.k===k);document.getElementById('crumbs').innerHTML=`島全体 › <b>${DIST[cur].n}</b>`+(subKey?` › <b>${b.n}</b>`:'');document.getElementById('title').textContent=subKey?b.n:DIST[cur].n;document.getElementById('sub').textContent=subKey?b.s+' ― '+DIST[cur].n:DIST[cur].s;render();}
+
+const svg=document.getElementById('map'), sheep=document.getElementById('sheep'), tip=document.getElementById('tip'), back=document.getElementById('back');
+const FULL=[0,0,1000,680]; let cur=null, gf=null, sortKey='new';
+function animateView(to){const from=svg.getAttribute('viewBox').split(' ').map(Number);const t0=performance.now();const dur=650;function step(t){const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);const v=from.map((f,i)=>f+(to[i]-f)*e);svg.setAttribute('viewBox',v.join(' '));if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+function pick(d){cur=d;gf=null;subKey=null;document.querySelectorAll('.dist').forEach(x=>x.classList.toggle('on',x.dataset.d===d));const D=DIST[d];animateView([D.cx-260,D.cy-180,520,354]);sheep.setAttribute('transform',`translate(${D.cx+40},${D.cy+30})`);back.classList.add('on');document.getElementById('title').textContent=D.n;document.getElementById('sub').textContent=D.s;document.getElementById('crumbs').innerHTML=`島全体 › <b>${D.n}</b>`;render();setTimeout(()=>{drawBlock(d);document.querySelector('.frame').classList.add('zoom');},700);}
+function whole(){cur=null;gf=null;subKey=null;document.querySelector('.frame').classList.remove('zoom');document.getElementById('crumbs').textContent='島全体';document.querySelectorAll('.dist').forEach(x=>x.classList.remove('on'));svg.setAttribute('viewBox',FULL.join(' '));back.classList.remove('on');document.getElementById('title').textContent='島全体';document.getElementById('sub').textContent='声を使う人たちが、分野ごとの地区に住んでいます。地区を押すと、そこに住む人のページが並びます。誰も順位づけされません。';render();}
+back.onclick=whole;
+document.querySelectorAll('.dist').forEach(el=>{el.addEventListener('click',()=>pick(el.dataset.d));el.addEventListener('mousemove',e=>{tip.textContent=DIST[el.dataset.d].n+' ― '+PEOPLE.filter(p=>p.d===el.dataset.d).length+'人';tip.style.left=e.clientX+'px';tip.style.top=e.clientY+'px';tip.classList.add('on');});el.addEventListener('mouseleave',()=>tip.classList.remove('on'));});
+const legend=document.getElementById('legend');Object.entries(DIST).forEach(([k,v])=>{const b=document.createElement('button');b.innerHTML=`<i style="background:${v.c}"></i>${v.n}`;b.onclick=()=>{pick(k);legend.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));};legend.appendChild(b);});
+document.querySelectorAll('#sort button').forEach(b=>b.onclick=()=>{sortKey=b.dataset.s;document.querySelectorAll('#sort button').forEach(x=>x.setAttribute('aria-pressed',x===b));render();});
+const cards=document.getElementById('cards'), filters=document.getElementById('filters'), week=document.getElementById('week'), q=document.getElementById('q'), count=document.getElementById('count');
+function render(){
+  buildIndex();
+  const qq=q.value.trim();
+  let list=PEOPLE.filter(p=>(!cur||p.d===cur)&&(!subKey||p.sg===subKey)&&(!qq||(p.n+p.g.join()+p.t+p.c).includes(qq)));
+  const genres=[...new Set(list.flatMap(p=>p.g))];
+  filters.innerHTML='';filters.style.display=cur?'flex':'none';genres.forEach(g=>{const b=document.createElement('button');b.textContent=g;b.setAttribute('aria-pressed',gf===g);b.onclick=()=>{gf=(gf===g?null:g);render();};filters.appendChild(b);});
+  if(gf)list=list.filter(p=>p.g.includes(gf));
+  list.sort((a,b)=>sortKey==='new'?b.joined-a.joined:sortKey==='next'?a.nd-b.nd:a.n.localeCompare(b.n,'ja'));
+  count.textContent=list.length+' 人が住んでいます';
+  cards.innerHTML='';
+  if(!list.length){cards.innerHTML='<div class="empty" style="grid-column:1/-1">ここには、まだ誰も住んでいません。<br>最初の一人になれます。</div>';}
+  list.forEach(p=>{const c=document.createElement('div');c.className='card';c.innerHTML=`<div class="thumb" style="background:${THEMES[p.t]||'#ccc'}"><small>型 ${p.t}</small><div class="face"></div></div><div class="meta"><b>${p.n}</b><div class="g">${p.g.map(x=>`<span>${x}</span>`).join('')}<span>${p.c}</span></div><div class="next">次：<b>${p.next}</b></div></div>`;c.onclick=()=>alert(p.n+' のページを開きます（試作）');cards.appendChild(c);});
+  const wk=(cur?PEOPLE.filter(p=>p.d===cur):PEOPLE.slice()).filter(p=>p.nd<99999999).sort((a,b)=>a.nd-b.nd).slice(0,6);
+  week.innerHTML='<h4>'+(cur?'この地区の、近い本番':'島の、近い本番')+'</h4>'+wk.map(p=>`<div><time>${p.next.split(' ')[0]}</time><span>${p.n} ― ${p.next.split(' ').slice(1).join(' ')}</span></div>`).join('');
+}
+q.addEventListener('input',render);render();
+</script>
+</body>
+</html>

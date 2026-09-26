@@ -1,0 +1,81 @@
+{
+  "title": "彦山権現誓助剣（文楽）",
+  "aliases": [
+    "毛谷村"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1786,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-hikosan-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 梅野下風・近松保蔵 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "毛谷村六助"
+    },
+    {
+      "label": "お園"
+    },
+    {
+      "label": "微塵弾正"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★毛谷村",
+      "group_label": "九段目",
+      "roles": [
+        "毛谷村六助",
+        "お園",
+        "微塵弾正",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "title": "一本刀土俵入",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1931,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-ippongatana",
+  "note": "★新歌舞伎 ／ 作者 長谷川伸 ／ ★★『しがねえ恋の情けが仇』の 幕切れ ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "駒形茂兵衛"
+    },
+    {
+      "label": "お蔦"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "お君"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★取手宿（★駒形茂兵衛とお蔦）",
+      "group_label": "一幕",
+      "roles": [
+        "駒形茂兵衛",
+        "お蔦",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★★十年後（★横綱になれなかった土俵入り）",
+      "group_label": "二幕",
+      "roles": [
+        "駒形茂兵衛",
+        "お蔦",
+        "お君",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

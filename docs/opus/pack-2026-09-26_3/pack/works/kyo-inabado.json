@@ -1,0 +1,64 @@
+{
+  "title": "因幡堂",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-inabado",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（夫）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "夫が妻を追い出す",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "因幡堂で良い妻を授かるよう願う",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）"
+      ]
+    },
+    {
+      "label": "夢の告げで被り物の女を連れ帰る",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "もとの妻だと知れて追われる",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

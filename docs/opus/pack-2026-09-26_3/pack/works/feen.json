@@ -1,0 +1,233 @@
+{
+  "title": "妖精",
+  "title_original": "Die Feen",
+  "aliases": [
+    "WWV 32"
+  ],
+  "composer": "ワーグナー",
+  "composer_sort": "Wagner, Richard",
+  "kind": "opera",
+  "year_written": 1834,
+  "duration_min": 190,
+  "language": "de",
+  "source": "hand",
+  "source_id": "feen",
+  "note": "★生前は上演されず（初演1888ミュンヘン）",
+  "roles": [
+    {
+      "label": "アリンダル"
+    },
+    {
+      "label": "アーダ"
+    },
+    {
+      "label": "ローラ"
+    },
+    {
+      "label": "モラルト"
+    },
+    {
+      "label": "ゲルノート"
+    },
+    {
+      "label": "ドロラ"
+    },
+    {
+      "label": "妖精の王"
+    },
+    {
+      "label": "ファルツァーナ"
+    },
+    {
+      "label": "ツェミーナ"
+    },
+    {
+      "label": "グロマ"
+    },
+    {
+      "label": "ハラルト"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 妖精の国（ファルツァーナとツェミーナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ファルツァーナ",
+        "ツェミーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アーダと妖精の王の取り決め（8年の試み）",
+      "group_label": "第1幕",
+      "roles": [
+        "アーダ",
+        "妖精の王"
+      ]
+    },
+    {
+      "label": "第1幕 アリンダルの物語（問うてはならぬ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アリンダル",
+        "ゲルノート"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（別れ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アリンダル",
+        "アーダ",
+        "ゲルノート",
+        "ドロラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 囲まれた都（ローラとモラルト）",
+      "group_label": "第2幕",
+      "roles": [
+        "ローラ",
+        "モラルト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アーダの試み（子を投げる・裏切りに見える行い）",
+      "group_label": "第2幕",
+      "roles": [
+        "アーダ",
+        "アリンダル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アリンダルの呪いとアーダの石化",
+      "group_label": "第2幕",
+      "roles": [
+        "アリンダル",
+        "アーダ",
+        "妖精の王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 アリンダルの狂乱",
+      "group_label": "第3幕",
+      "roles": [
+        "アリンダル",
+        "ゲルノート",
+        "グロマ"
+      ]
+    },
+    {
+      "label": "第3幕 竪琴による救い（岩窟）",
+      "group_label": "第3幕",
+      "roles": [
+        "アリンダル",
+        "アーダ",
+        "グロマ"
+      ]
+    },
+    {
+      "label": "第3幕 フィナーレ（妖精の国への昇天）",
+      "group_label": "第3幕",
+      "roles": [
+        "アリンダル",
+        "アーダ",
+        "ローラ",
+        "モラルト",
+        "妖精の王",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

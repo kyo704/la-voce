@@ -1,0 +1,209 @@
+{
+  "title": "チェレヴィチキ（小さな靴）",
+  "title_original": "Черевички",
+  "aliases": [
+    "鍛冶屋のヴァクーラ"
+  ],
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr Ilyich",
+  "kind": "opera",
+  "year_written": 1885,
+  "duration_min": 160,
+  "edition": "1885 改訂版（1874 の『鍛冶屋のヴァクーラ』を書き直したもの）",
+  "language": "ru",
+  "source": "hand",
+  "source_id": "cherevichki",
+  "roles": [
+    {
+      "label": "オクサーナ"
+    },
+    {
+      "label": "ヴァクーラ"
+    },
+    {
+      "label": "ソローハ"
+    },
+    {
+      "label": "チューブ"
+    },
+    {
+      "label": "悪魔"
+    },
+    {
+      "label": "パナス"
+    },
+    {
+      "label": "村長"
+    },
+    {
+      "label": "学校の先生"
+    },
+    {
+      "label": "女帝"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ★ソローハと悪魔（雪の夜）",
+      "group_label": "第1幕",
+      "roles": [
+        "ソローハ",
+        "悪魔"
+      ]
+    },
+    {
+      "label": "第1幕 オクサーナの歌とヴァクーラ",
+      "group_label": "第1幕",
+      "roles": [
+        "オクサーナ",
+        "ヴァクーラ"
+      ]
+    },
+    {
+      "label": "第2幕 ソローハの家（袋に隠れる客人たち）",
+      "group_label": "第2幕",
+      "roles": [
+        "ソローハ",
+        "村長",
+        "学校の先生",
+        "チューブ",
+        "悪魔"
+      ]
+    },
+    {
+      "label": "第2幕 ヴァクーラが袋を運び出す",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴァクーラ",
+        "ソローハ",
+        "オクサーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★悪魔に乗ってペテルブルクへ",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァクーラ",
+        "悪魔"
+      ]
+    },
+    {
+      "label": "第3幕 ★宮廷（ポロネーズとロシアの踊り）",
+      "group_label": "第3幕",
+      "roles": [
+        "女帝",
+        "ヴァクーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（靴を持ち帰り婚礼）",
+      "group_label": "第4幕",
+      "roles": [
+        "ヴァクーラ",
+        "オクサーナ",
+        "チューブ",
+        "ソローハ",
+        "パナス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

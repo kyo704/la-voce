@@ -1,0 +1,92 @@
+{
+ "title": "山田耕筰 歌曲集",
+ "composer": "山田耕筰",
+ "composer_sort": "Yamada, Kosaku",
+ "kind": "song_cycle",
+ "year_written": 1920,
+ "source_id": "yamada-songs",
+ "note": "★代表的な もの。★1曲ずつ 歌われます",
+ "scenes": [
+  {
+   "label": "1. からたちの花",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. この道",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. 赤とんぼ",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. 待ちぼうけ",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. ペチカ",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. 砂山",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. あわて床屋",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. 鐘が鳴ります",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand",
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "language": "ja"
+}

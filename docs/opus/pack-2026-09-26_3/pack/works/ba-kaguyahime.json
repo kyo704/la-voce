@@ -1,0 +1,78 @@
+{
+  "title": "かぐや姫（バレエ）",
+  "composer": "石井眞木",
+  "composer_sort": "Ishii, Maki",
+  "kind": "dance",
+  "year_written": 1998,
+  "duration_min": 110,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-kaguyahime",
+  "note": "★振付 キリアン ／ ★★★ガムランと 雅楽の 楽器を 使います ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "かぐや姫"
+    },
+    {
+      "label": "帝"
+    },
+    {
+      "label": "五人の貴公子"
+    },
+    {
+      "label": "翁"
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "竹から生まれる",
+      "group_label": "第1幕",
+      "roles": [
+        "かぐや姫",
+        "翁"
+      ]
+    },
+    {
+      "label": "★五人の貴公子の求婚",
+      "group_label": "第2幕",
+      "roles": [
+        "かぐや姫",
+        "五人の貴公子",
+        "群舞"
+      ]
+    },
+    {
+      "label": "★★月へ帰る",
+      "group_label": "第3幕",
+      "roles": [
+        "かぐや姫",
+        "帝",
+        "群舞"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ガムラン",
+      "count": 0,
+      "section": "percussion",
+      "note": "編成は版ごと"
+    },
+    {
+      "part": "雅楽の楽器（篳篥・龍笛ほか）",
+      "count": 0,
+      "section": "woodwind",
+      "note": "編成は版ごと"
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "title": "ベアトリスとベネディクト",
+  "title_original": "Béatrice et Bénédict",
+  "composer": "ベルリオーズ",
+  "composer_sort": "Berlioz, Hector",
+  "kind": "opera",
+  "year_written": 1862,
+  "duration_min": 105,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "beatrice-benedict",
+  "roles": [
+    {
+      "label": "ベアトリス"
+    },
+    {
+      "label": "ベネディクト"
+    },
+    {
+      "label": "エロ"
+    },
+    {
+      "label": "クラウディオ"
+    },
+    {
+      "label": "ドン・ペドロ"
+    },
+    {
+      "label": "ソマローネ"
+    },
+    {
+      "label": "ユルシュール"
+    },
+    {
+      "label": "レオナート"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 メッシーナの勝利の祝い",
+      "group_label": "第1幕",
+      "roles": [
+        "エロ",
+        "レオナート",
+        "クラウディオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ベアトリスとベネディクトの口げんか",
+      "group_label": "第1幕",
+      "roles": [
+        "ベアトリス",
+        "ベネディクト"
+      ]
+    },
+    {
+      "label": "第1幕 3人の企み（互いに恋していると思わせる）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・ペドロ",
+        "クラウディオ",
+        "レオナート",
+        "ベネディクト"
+      ]
+    },
+    {
+      "label": "第1幕 ★エロとユルシュールの夜想曲（二重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "エロ",
+        "ユルシュール"
+      ]
+    },
+    {
+      "label": "第2幕 ソマローネの即興の歌（婚礼の稽古）",
+      "group_label": "第2幕",
+      "roles": [
+        "ソマローネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ベアトリスの大アリア",
+      "group_label": "第2幕",
+      "roles": [
+        "ベアトリス"
+      ]
+    },
+    {
+      "label": "第2幕 三重唱（エロ・ベアトリス・ユルシュール）",
+      "group_label": "第2幕",
+      "roles": [
+        "エロ",
+        "ベアトリス",
+        "ユルシュール"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（2組の婚礼と休戦の二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "ベアトリス",
+        "ベネディクト",
+        "エロ",
+        "クラウディオ",
+        "ドン・ペドロ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

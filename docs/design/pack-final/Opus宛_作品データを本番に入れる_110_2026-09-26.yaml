@@ -1,0 +1,98 @@
+TOPIC: "作品データ 2,050作を ★本番に 入れる ── sql/110 と ★試した 結果"
+DATE: 2026-09-26
+FROM: Opus
+FOR: Code（実装）／写し：坂本さん・Sonnet
+FILE: "sql/20260926_110_works_kind_and_fields.sql"
+STATUS: "★★試しの Postgres 16 を 立てて ★2,050作 全部 流して 確かめました"
+
+WHY_THIS_EXISTS:
+  坂本さんの問い: "『体調記録のテーブルと 何の関係が あるの？』"
+  MY_ERROR: "★★関係 ありません。★私が 確かめずに 言いました"
+  WHAT_IS_ACTUALLY_RELATED: |
+    ★作品データの 入れ先は ★★もう あります:
+      works / work_roles / work_scenes / work_scene_roles / work_instruments
+    ★『作品を 選ぶと 香盤表が 立つ』も ★★もう あります:
+      koen_apply_work(p_koen, p_work) ── ★work_roles → koen_slots（列）
+                                          ★work_scenes → koen_rows（行）
+    ★体調の 記録は ★別の 話です。
+
+FOUND:   # ★★見つけた 不整合（★試しの Postgres で 確かめました）
+  1_KIND_TOO_NARROW:
+    WHAT: "★works.kind が 9種類しか 受け取りません"
+    IMPACT: "★★2,051作の うち 1,024作（★ほぼ 半分）が 入りません"
+    PROOF: |
+      select public.upsert_work(jsonb_build_object(
+        'title','羽衣（能）','kind','noh','source','hand','source_id','__t__'));
+      → ★ERROR: BAD_KIND: noh
+    BREAKDOWN: "kyogen 269／noh 240／kabuki 123／musical 112／gagaku 102／song_cycle 95／bunraku 62／kumiodori 21"
+    ODD: |
+      ★★koen_members.school_role には 既に『シテ方・ワキ方・狂言方・人形遣い・太夫』が あり、
+      ★works.school には『観世流・大蔵流』が あります。
+      ★★伝統芸能を 迎える 用意は できて いるのに ★kind だけ 追いついて いませんでした。
+  2_COLUMNS_DROPPED:
+    WHAT: "★upsert_work が ★入れても 捨てて いた 列"
+    LIST: "title_original（原題）・aliases（別名）・duration_min（分）・language（ことば）・school（流派）・variant（小書）"
+    IMPACT: "★『ノルマ』を 原題 Norma で 探せない。★上演時間が 出ない"
+  3_NO_EDITION:
+    WHAT: "★版（edition）を 入れる 列が ありません"
+    NOTE: "★works.variant は ★小書・型（道成寺『赤頭』）── ★版とは 別の もの"
+
+FIX:
+  ①: "★kind を 15種類に（★musical・song_cycle・noh・kyogen・kabuki・bunraku・gagaku・kumiodori を 足す）"
+  ②: "★works に edition・note を 足す"
+  ③: "★upsert_work が 捨てて いた 列を 拾う"
+  ④: "★原題・別名・種類に 索引"
+  ⑤: |
+    ★★kind の 一覧を ★関数から 外し ★表の しばりに 任せました。
+    ★2か所に 書くと ★片方だけ 足して ずれます ── ★★今回 それが 起きた 形です。
+
+MY_SECOND_ERROR:   # ★★これは 書き残します
+  WHAT: "★はじめ upsert_work を ★まるごと 書き直しました"
+  WHAT_I_DROPPED:
+    - "★completeness の 付け直し"
+    - "★★ROLE_NOT_IN_LIST の 検査 ── ★『場面に 役の一覧に 無い 名前が あれば 止める』守り"
+  WHY_BAD: "★★②は『取りこぼしを 黙って 作らない』ための 守りです。★消すと 静かに 欠けます"
+  ALSO: "★私の 版は row_number() over () ── ★並び順の 保証が 弱い。★元の with ordinality が 正しい"
+  HOW_FIXED: "★★元の 関数を 1行ずつ 写し、★足す ところ だけ 変えました"
+  MEASURE_M21g: "★★動いて いる ものを 書き直す ときは、★元を 写して ★差分だけ 変える"
+
+VERIFY:   # ★★試しの Postgres 16 で 通しました（★机上では ありません）
+  - {Q: "17の kind すべて 通る",            A: "○ 17/17"}
+  - {Q: "知らない kind は 弾かれる",        A: "○ works_kind_check で 落ちる"}
+  - {Q: "原題・別名・分・ことば・版・註・流派・小書が 入る", A: "○ 全部 入った"}
+  - {Q: "場面に 出る 役が 入る",            A: "○ カルメン 第1幕 第4番 → カルメン／合唱"}
+  - {Q: "★★ROLE_NOT_IN_LIST の 守りが 生きて いる", A: "○ 役の一覧に 無い 名前で 止まった"}
+  - {Q: "★★completeness の 付け直しが 生きて いる", A: "○ 場面＋役の ある 作品が 'full'"}
+  - {Q: "★★2,050作 全部 入る",             A: "○ ★入った 2050 ／ 入らなかった 0（★5.4秒）"}
+  - {Q: "場面・役の 数",                    A: "場面 11,059 ／ 役 11,210 ／ 場面に出る役 31,080"}
+
+FOUND_WHILE_TESTING:   # ★★流して みて はじめて 分かった こと
+  1_DUP_SOURCE_ID:
+    WHAT: "★★2,051作 入れたら ★2,050作に なりました"
+    WHY: |
+      ★『イタリア歌曲集』（既にある・★曲名 20曲入り）と
+      ★『イタリア歌曲集（ヴォルフ）』（★私が 今日 作った・★曲数だけ）が
+      ★★同じ source_id 'wolf-italienisches' でした。★あとの 1つが 前を 消しました。
+    FIXED: "★中身の 濃い 既存に 一本化し、★私の 版の 註だけ 移しました。★台本からも 外しました"
+    TOOL: |
+      ★★works_lint.py に ★検査I を 足しました（★同じ source_id → NG）。
+      ★★検査D（同じ題名・同じ作曲家）では 捕まりません ── ★題名が 違うからです。
+      ★★selftest に ★今回 起きた 形を そのまま 仕込み、
+      ★『ぶつかって いない ときに 騒がない』ことも 見ます（★番人を 試す）。
+  2_COPY_BREAKS_ON_QUOTES:
+    WHAT: "★\\copy の text 形式は ★\\ を 逃がし文字と 見て ★JSON を 壊します"
+    TRIGGER: "★原題に 二重引用符が ある 作品（Sonate No. 3 \"Ballade\"）"
+    FIX: "★csv 形式 ＋ ★JSON に 出ない 字を 引用符・区切りに する"
+    FOR_CODE: "★★取り込みの 経路でも ★同じ 罠が あります"
+
+HOW_TO_LOAD:   # ★本番に 入れる 手順
+  1: "★sql/110 を 当てる"
+  2: "★works/*.json を 1行1作の JSONL に する（★instruments は 外す ── ★別の 関数）"
+  3: "★upsert_work(j::jsonb) を 1作ずつ 呼ぶ"
+  4: "★数を 突き合わせる（★2,050作・場面 11,059・役 11,210・場面に出る役 31,080）"
+  NOTE: "★編成（work_instruments）は ★別の 関数で 入れます。★今回は 外しました"
+
+NEXT:
+  - "★work_instruments を 入れる 経路を 確かめる（★今回 外しました）"
+  - "★★koen_apply_work に ★稽古の 言葉（_kinds.json）を つなぐ ── ★雅楽に『ゲネプロ』を 出さない"
+  - "★『この 役の 稽古として 記録を はじめる』の 先（★見本では まだ 止まって います）"

@@ -1,0 +1,99 @@
+{
+  "title": "ピアノ五重奏曲 ト短調 作品57",
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "chamber",
+  "year_written": 1940,
+  "duration_min": 32,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-shostakovich-quintet",
+  "roles": [
+    {
+      "label": "ピアノ"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 プレリュード",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 フーガ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 スケルツォ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第4楽章 間奏曲",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第5楽章 フィナーレ",
+      "group_label": "楽章",
+      "roles": [
+        "ピアノ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 2,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

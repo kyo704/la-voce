@@ -1,0 +1,53 @@
+{
+  "title": "保名（清元）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1818,
+  "duration_min": 30,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-yasuna",
+  "note": "★歌舞伎舞踊（所作事） ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "安倍保名"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★恋に狂う保名（★菜の花の野）",
+      "group_label": "一段",
+      "roles": [
+        "安倍保名",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★形見の小袖を抱いて舞う",
+      "group_label": "一段",
+      "roles": [
+        "安倍保名",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

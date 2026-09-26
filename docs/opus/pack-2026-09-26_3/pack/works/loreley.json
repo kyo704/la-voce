@@ -1,0 +1,182 @@
+{
+  "title": "ローレライ",
+  "title_original": "Loreley",
+  "composer": "カタラーニ",
+  "composer_sort": "Catalani, Alfredo",
+  "kind": "opera",
+  "year_written": 1890,
+  "duration_min": 120,
+  "edition": "1890 改作（1880 の『エルダ』を書き直したもの）",
+  "language": "it",
+  "source": "hand",
+  "source_id": "loreley",
+  "roles": [
+    {
+      "label": "ロレライ（レナ）"
+    },
+    {
+      "label": "ヴァルテル"
+    },
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "ヘルマン"
+    },
+    {
+      "label": "ルドルフォ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ライン河畔（ヴァルテルとアンナの婚礼の支度）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴァルテル",
+        "アンナ",
+        "ルドルフォ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 レナの嘆きと河への身投げ",
+      "group_label": "第1幕",
+      "roles": [
+        "ロレライ（レナ）",
+        "ヘルマン"
+      ]
+    },
+    {
+      "label": "★第2幕 ★水の精の場（レナがロレライになる）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロレライ（レナ）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 婚礼の中断（ロレライの出現）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロレライ（レナ）",
+        "ヴァルテル",
+        "アンナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 アンナの死",
+      "group_label": "第3幕",
+      "roles": [
+        "アンナ",
+        "ヘルマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（ヴァルテルの入水）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァルテル",
+        "ロレライ（レナ）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

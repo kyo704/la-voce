@@ -1,0 +1,187 @@
+{
+  "title": "エリザベート（宝塚版）",
+  "composer": "シルヴェスター・リーヴァイ",
+  "composer_sort": "Takarazuka",
+  "kind": "musical",
+  "year_written": 1996,
+  "duration_min": 150,
+  "edition": "★★★宝塚版 ── ★★トートが 主役（★ウィーン版とは 主役の 置きかたが 違います）。★曲の 順も 違います",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "mu-takarazuka-elisabeth",
+  "note": "★作詞 ― ／ 脚本 小池修一郎（潤色・演出） ／ ★★宝塚版は トップスターが トートを 演じます",
+  "roles": [
+    {
+      "label": "トート（死）"
+    },
+    {
+      "label": "エリザベート"
+    },
+    {
+      "label": "フランツ・ヨーゼフ"
+    },
+    {
+      "label": "ルドルフ"
+    },
+    {
+      "label": "ルキーニ"
+    },
+    {
+      "label": "ゾフィー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ルキーニの語り",
+      "group_label": "第1幕",
+      "roles": [
+        "ルキーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★トートとの出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "トート（死）",
+        "エリザベート"
+      ]
+    },
+    {
+      "label": "婚礼と宮廷",
+      "group_label": "第1幕",
+      "roles": [
+        "エリザベート",
+        "フランツ・ヨーゼフ",
+        "ゾフィー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ルドルフ",
+      "group_label": "第2幕",
+      "roles": [
+        "ルドルフ",
+        "トート（死）",
+        "エリザベート"
+      ]
+    },
+    {
+      "label": "★★暗殺と結末",
+      "group_label": "第2幕",
+      "roles": [
+        "エリザベート",
+        "トート（死）",
+        "ルキーニ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

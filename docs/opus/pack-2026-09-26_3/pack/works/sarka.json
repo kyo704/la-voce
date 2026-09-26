@@ -1,0 +1,172 @@
+{
+  "title": "シャールカ",
+  "title_original": "Šárka",
+  "composer": "ヤナーチェク",
+  "composer_sort": "Janáček, Leoš",
+  "kind": "opera",
+  "year_written": 1887,
+  "duration_min": 70,
+  "language": "cs",
+  "source": "hand",
+  "source_id": "sarka",
+  "note": "★初演は1925年（作曲から38年後）。第3幕の管弦楽化はオスヴァルト・フリチュ",
+  "roles": [
+    {
+      "label": "シャールカ"
+    },
+    {
+      "label": "ツチラート"
+    },
+    {
+      "label": "プレミスル"
+    },
+    {
+      "label": "ヴィトラズ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 リブシェの墓（プレミスルの嘆き）",
+      "group_label": "第1幕",
+      "roles": [
+        "プレミスル",
+        "ツチラート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 シャールカと乙女軍の挑み",
+      "group_label": "第1幕",
+      "roles": [
+        "シャールカ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 森（縛られたシャールカの罠）",
+      "group_label": "第2幕",
+      "roles": [
+        "シャールカ",
+        "ツチラート"
+      ]
+    },
+    {
+      "label": "★第2幕 愛の二重唱（罠にかけた相手に惹かれる）",
+      "group_label": "第2幕",
+      "roles": [
+        "シャールカ",
+        "ツチラート"
+      ]
+    },
+    {
+      "label": "第2幕 角笛の合図と乙女軍の襲撃",
+      "group_label": "第2幕",
+      "roles": [
+        "シャールカ",
+        "ツチラート",
+        "ヴィトラズ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ツチラートの葬送とシャールカの投身",
+      "group_label": "第3幕",
+      "roles": [
+        "シャールカ",
+        "プレミスル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

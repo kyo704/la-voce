@@ -1,0 +1,86 @@
+{
+  "title": "賢母三遷の巻",
+  "composer": "組踊",
+  "composer_sort": "Kumiodori",
+  "kind": "kumiodori",
+  "year_written": 1770,
+  "duration_min": 70,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kumi-kenbo-sanken",
+  "note": "★組踊（琉球の歌舞劇） ／ 作者 田里朝直 ／ ★孟母三遷の 話を 組踊に したもの ／ ★★台詞は琉球語の韻文（八八八六の琉歌調）。★詞の文は 入れていません",
+  "roles": [
+    {
+      "label": "母"
+    },
+    {
+      "label": "子"
+    },
+    {
+      "label": "師"
+    },
+    {
+      "label": "隣の者"
+    },
+    {
+      "label": "地謡（歌三線・箏・笛・胡弓・太鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★子の育ちを思って住まいを移す",
+      "group_label": "段",
+      "roles": [
+        "母",
+        "子"
+      ]
+    },
+    {
+      "label": "★★三度 住まいを移す",
+      "group_label": "段",
+      "roles": [
+        "母",
+        "子",
+        "隣の者"
+      ]
+    },
+    {
+      "label": "★★子が学に志す",
+      "group_label": "段",
+      "roles": [
+        "母",
+        "子",
+        "師"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "歌三線",
+      "count": 3,
+      "section": "other",
+      "note": "地謡。人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "胡弓",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

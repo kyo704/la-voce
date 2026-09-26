@@ -1,0 +1,38 @@
+{
+  "title": "6つのロマンス 作品6",
+  "title_original": "6 романсов op.6",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr",
+  "kind": "song_cycle",
+  "year_written": 1869,
+  "duration_min": 18,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "tchaikovsky-op6",
+  "note": "★★★第6曲『ただ憧れを知る者だけが』が 名高い ／ ★★曲名を 全部 確かめられなかったので ★曲数（6曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全6曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

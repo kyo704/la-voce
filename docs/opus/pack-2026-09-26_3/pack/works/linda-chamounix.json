@@ -1,0 +1,208 @@
+{
+  "title": "リンダ・ディ・シャモニ",
+  "title_original": "Linda di Chamounix",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1842,
+  "duration_min": 150,
+  "language": "it",
+  "source": "hand",
+  "source_id": "linda-chamounix",
+  "roles": [
+    {
+      "label": "リンダ"
+    },
+    {
+      "label": "カルロ"
+    },
+    {
+      "label": "アントニオ"
+    },
+    {
+      "label": "マッダレーナ"
+    },
+    {
+      "label": "ボワフルーリ侯爵"
+    },
+    {
+      "label": "ピエロット"
+    },
+    {
+      "label": "村長"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 シャモニの農家（アントニオとマッダレーナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "アントニオ",
+        "マッダレーナ",
+        "村長"
+      ]
+    },
+    {
+      "label": "第1幕 リンダのアリア（この心の光）",
+      "group_label": "第1幕",
+      "roles": [
+        "リンダ"
+      ]
+    },
+    {
+      "label": "第1幕 カルロとの二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "リンダ",
+        "カルロ"
+      ]
+    },
+    {
+      "label": "第1幕 ピエロットの歌と旅立ち（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ピエロット",
+        "リンダ",
+        "アントニオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 パリの部屋（リンダとピエロット）",
+      "group_label": "第2幕",
+      "roles": [
+        "リンダ",
+        "ピエロット"
+      ]
+    },
+    {
+      "label": "第2幕 父アントニオの来訪（気づかれぬ再会）",
+      "group_label": "第2幕",
+      "roles": [
+        "リンダ",
+        "アントニオ"
+      ]
+    },
+    {
+      "label": "第2幕 カルロの結婚の報せとリンダの狂乱",
+      "group_label": "第2幕",
+      "roles": [
+        "リンダ",
+        "カルロ",
+        "ボワフルーリ侯爵",
+        "ピエロット"
+      ]
+    },
+    {
+      "label": "第3幕 シャモニへの帰郷（山男の合唱）",
+      "group_label": "第3幕",
+      "roles": [
+        "ピエロット",
+        "リンダ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（カルロの歌でリンダが正気に戻る）",
+      "group_label": "第3幕",
+      "roles": [
+        "リンダ",
+        "カルロ",
+        "アントニオ",
+        "マッダレーナ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

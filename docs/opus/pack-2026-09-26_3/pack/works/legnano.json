@@ -1,0 +1,189 @@
+{
+  "title": "レニャーノの戦い",
+  "title_original": "La battaglia di Legnano",
+  "composer": "ヴェルディ",
+  "composer_sort": "Verdi, Giuseppe",
+  "kind": "opera",
+  "year_written": 1849,
+  "duration_min": 120,
+  "language": "it",
+  "source": "hand",
+  "source_id": "legnano",
+  "roles": [
+    {
+      "label": "アッリーゴ"
+    },
+    {
+      "label": "リーダ"
+    },
+    {
+      "label": "ロランド"
+    },
+    {
+      "label": "マルコヴァルド"
+    },
+    {
+      "label": "イメルダ"
+    },
+    {
+      "label": "第1執政官"
+    },
+    {
+      "label": "ミラノ市長"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ロンバルディア同盟の誓い",
+      "group_label": "第1幕",
+      "roles": [
+        "アッリーゴ",
+        "ロランド",
+        "第1執政官",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 リーダとアッリーゴの再会",
+      "group_label": "第1幕",
+      "roles": [
+        "リーダ",
+        "アッリーゴ",
+        "イメルダ"
+      ]
+    },
+    {
+      "label": "第2幕 コモの評議（同盟への説得）",
+      "group_label": "第2幕",
+      "roles": [
+        "アッリーゴ",
+        "ロランド",
+        "ミラノ市長",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 死の騎士団の誓い",
+      "group_label": "第3幕",
+      "roles": [
+        "アッリーゴ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 リーダの手紙とマルコヴァルドの密告",
+      "group_label": "第3幕",
+      "roles": [
+        "リーダ",
+        "マルコヴァルド",
+        "イメルダ"
+      ]
+    },
+    {
+      "label": "第3幕 ロランドの怒り（塔に閉ざす）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロランド",
+        "アッリーゴ",
+        "リーダ"
+      ]
+    },
+    {
+      "label": "第4幕 フィナーレ（勝利とアッリーゴの死）",
+      "group_label": "第4幕",
+      "roles": [
+        "アッリーゴ",
+        "リーダ",
+        "ロランド",
+        "第1執政官",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

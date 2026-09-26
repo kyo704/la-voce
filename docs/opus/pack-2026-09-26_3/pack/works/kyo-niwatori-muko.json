@@ -1,0 +1,69 @@
+{
+  "title": "鶏聟",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-niwatori-muko",
+  "note": "★婿狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（婿）"
+    },
+    {
+      "label": "アド（舅）"
+    },
+    {
+      "label": "小アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "婿入りの作法を人に習う",
+      "group_label": "段",
+      "roles": [
+        "シテ（婿）",
+        "小アド（何某）"
+      ]
+    },
+    {
+      "label": "鶏の真似が作法だと教えられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（婿）",
+        "小アド（何某）"
+      ]
+    },
+    {
+      "label": "舅の前で鶏の真似をする",
+      "group_label": "段",
+      "roles": [
+        "シテ（婿）",
+        "アド（舅）"
+      ]
+    },
+    {
+      "label": "舅も真似をし、鶏合わせになる",
+      "group_label": "段",
+      "roles": [
+        "シテ（婿）",
+        "アド（舅）",
+        "小アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "title": "海へ騎り行く人々",
+  "title_original": "Riders to the Sea",
+  "composer": "ヴォーン・ウィリアムズ",
+  "composer_sort": "Vaughan Williams, Ralph",
+  "kind": "opera",
+  "year_written": 1937,
+  "duration_min": 40,
+  "language": "en",
+  "source": "hand",
+  "source_id": "riders-to-the-sea",
+  "note": "★シングの戯曲をほぼそのまま作曲",
+  "roles": [
+    {
+      "label": "モーリヤ"
+    },
+    {
+      "label": "キャスリーン"
+    },
+    {
+      "label": "ノーラ"
+    },
+    {
+      "label": "バートリー"
+    },
+    {
+      "label": "女たち"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★娘たちと隠された衣類の包み",
+      "group_label": "本編",
+      "roles": [
+        "キャスリーン",
+        "ノーラ"
+      ]
+    },
+    {
+      "label": "★バートリーの旅立ち（母の止めるのを聞かず）",
+      "group_label": "本編",
+      "roles": [
+        "バートリー",
+        "モーリヤ",
+        "キャスリーン",
+        "ノーラ"
+      ]
+    },
+    {
+      "label": "★包みを開ける（マイケルの靴下）",
+      "group_label": "本編",
+      "roles": [
+        "キャスリーン",
+        "ノーラ"
+      ]
+    },
+    {
+      "label": "★★モーリヤの幻（灰色の馬に乗るマイケル）",
+      "group_label": "本編",
+      "roles": [
+        "モーリヤ",
+        "キャスリーン",
+        "ノーラ"
+      ]
+    },
+    {
+      "label": "★バートリーの遺体が運ばれる",
+      "group_label": "本編",
+      "roles": [
+        "モーリヤ",
+        "キャスリーン",
+        "ノーラ",
+        "女たち"
+      ]
+    },
+    {
+      "label": "★★終曲（モーリヤの独白・彼らはみな行ってしまった）",
+      "group_label": "本編",
+      "roles": [
+        "モーリヤ",
+        "女たち"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

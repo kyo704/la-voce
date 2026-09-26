@@ -1,0 +1,68 @@
+{
+  "title": "茸",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kusabira",
+  "note": "★山伏狂言 ／ ★★立衆が茸になって並ぶ ── ★人数の多い曲 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（山伏）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "庭に茸が生えて困る",
+      "group_label": "段",
+      "roles": [
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "山伏が祈って追おうとする",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "祈るほどに茸が増える",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "大茸が出て山伏を追い回す",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

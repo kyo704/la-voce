@@ -1,0 +1,253 @@
+{
+  "title": "スターライト・エクスプレス",
+  "title_original": "Starlight Express",
+  "composer": "ロイド・ウェッバー",
+  "composer_sort": "Lloyd Webber, Andrew",
+  "kind": "musical",
+  "year_written": 1984,
+  "duration_min": 135,
+  "edition": "★★1984 ロンドン初演版／★1987 ブロードウェイ版／★1992 ボーフム版（★ドイツで長期上演・曲が違う）／★2024 ロンドン新版。★版ごとに曲が大きく違う",
+  "language": "en",
+  "source": "hand",
+  "source_id": "starlight-express",
+  "note": "★作詞 リチャード・スティルゴー ／ 脚本 リチャード・スティルゴー ／ ★★★全員がローラースケートで演じる。★★劇場に専用のトラック（走路）を組む必要があり、上演できる劇場が限られる",
+  "roles": [
+    {
+      "label": "ラスティ（蒸気機関車）"
+    },
+    {
+      "label": "パール（一等客車）"
+    },
+    {
+      "label": "グリースボール（ディーゼル）"
+    },
+    {
+      "label": "エレクトラ（電気機関車）"
+    },
+    {
+      "label": "ダイナ（食堂車）"
+    },
+    {
+      "label": "ベル（寝台車）"
+    },
+    {
+      "label": "コントロール（少年の声）"
+    },
+    {
+      "label": "パパ（老蒸気機関車）"
+    },
+    {
+      "label": "CB（車掌車）"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★序曲（Rolling Stock）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★コントロールの声（子どもの遊びとして始まる）",
+      "group_label": "第1幕",
+      "roles": [
+        "コントロール（少年の声）"
+      ]
+    },
+    {
+      "label": "M3 ★★ラスティの紹介（A Lotta Locomotion）",
+      "group_label": "第1幕",
+      "roles": [
+        "ラスティ（蒸気機関車）",
+        "ダイナ（食堂車）",
+        "ベル（寝台車）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★グリースボール（Pumping Iron）",
+      "group_label": "第1幕",
+      "roles": [
+        "グリースボール（ディーゼル）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★エレクトラの登場（AC/DC）",
+      "group_label": "第1幕",
+      "roles": [
+        "エレクトラ（電気機関車）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★パパの歌（Poppa's Blues）",
+      "group_label": "第1幕",
+      "roles": [
+        "パパ（老蒸気機関車）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★第1回・第2回のレース",
+      "group_label": "第1幕",
+      "roles": [
+        "ラスティ（蒸気機関車）",
+        "グリースボール（ディーゼル）",
+        "エレクトラ（電気機関車）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★ザ・レース（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ライト・プレイス、ライト・タイム",
+      "group_label": "第2幕",
+      "roles": [
+        "ラスティ（蒸気機関車）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★アイ・アム・ザ・スターライト（パパの声とラスティ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ラスティ（蒸気機関車）",
+        "パパ（老蒸気機関車）"
+      ]
+    },
+    {
+      "label": "M11 ★★CBの裏切りとクラッシュ",
+      "group_label": "第2幕",
+      "roles": [
+        "CB（車掌車）",
+        "グリースボール（ディーゼル）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★決勝のレース",
+      "group_label": "第2幕",
+      "roles": [
+        "ラスティ（蒸気機関車）",
+        "エレクトラ（電気機関車）",
+        "グリースボール（ディーゼル）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★ワンス・アポン・ア・タイム",
+      "group_label": "第2幕",
+      "roles": [
+        "パール（一等客車）",
+        "ラスティ（蒸気機関車）"
+      ]
+    },
+    {
+      "label": "M14 ★★終曲（Light at the End of the Tunnel）",
+      "group_label": "第2幕",
+      "roles": [
+        "ラスティ（蒸気機関車）",
+        "パール（一等客車）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

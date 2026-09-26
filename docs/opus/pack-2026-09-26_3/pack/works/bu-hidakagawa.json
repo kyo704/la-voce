@@ -1,0 +1,77 @@
+{
+  "title": "日高川入相花王",
+  "aliases": [
+    "日高川"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1759,
+  "duration_min": 50,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-hidakagawa",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 竹田小出雲・近松半二 ／ ★★★人形の『ガブ』── 顔が 蛇に 変わる 仕掛け ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "清姫"
+    },
+    {
+      "label": "船頭"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★渡し場（★清姫が蛇になって川を渡る）",
+      "group_label": "四段目",
+      "roles": [
+        "清姫",
+        "船頭",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

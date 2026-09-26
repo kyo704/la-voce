@@ -1,0 +1,171 @@
+{
+  "title": "アディーナ",
+  "title_original": "Adina",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1818,
+  "duration_min": 75,
+  "language": "it",
+  "source": "hand",
+  "source_id": "adina",
+  "roles": [
+    {
+      "label": "アディーナ"
+    },
+    {
+      "label": "セリモ"
+    },
+    {
+      "label": "アリ"
+    },
+    {
+      "label": "ムスタファ"
+    },
+    {
+      "label": "カリファ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "太守アリの後宮（婚礼の支度）",
+      "group_label": "第1場",
+      "roles": [
+        "アリ",
+        "ムスタファ",
+        "カリファ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "アディーナの嘆き",
+      "group_label": "第2場",
+      "roles": [
+        "アディーナ"
+      ]
+    },
+    {
+      "label": "セリモの潜入と再会",
+      "group_label": "第3場",
+      "roles": [
+        "セリモ",
+        "アディーナ"
+      ]
+    },
+    {
+      "label": "ムスタファの手引き",
+      "group_label": "第4場",
+      "roles": [
+        "ムスタファ",
+        "セリモ",
+        "アディーナ"
+      ]
+    },
+    {
+      "label": "逃亡の失敗と捕縛",
+      "group_label": "第5場",
+      "roles": [
+        "アリ",
+        "セリモ",
+        "アディーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "終曲（アディーナはアリの娘）",
+      "group_label": "終場",
+      "roles": [
+        "アリ",
+        "アディーナ",
+        "セリモ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

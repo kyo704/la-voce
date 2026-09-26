@@ -1,0 +1,101 @@
+{
+  "title": "土蜘（新歌舞伎十八番）",
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1881,
+  "duration_min": 60,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-tsuchigumo",
+  "note": "★歌舞伎 ／ 作者 河竹黙阿弥 ／ ★★★能『土蜘蛛』による松羽目物。★『千筋の糸』を投げる ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "僧智籌／土蜘の精"
+    },
+    {
+      "label": "源頼光"
+    },
+    {
+      "label": "侍女胡蝶"
+    },
+    {
+      "label": "平井保昌"
+    },
+    {
+      "label": "太刀持音若"
+    },
+    {
+      "label": "番卒"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★頼光の病（侍女胡蝶の見舞い）",
+      "group_label": "前段",
+      "roles": [
+        "源頼光",
+        "侍女胡蝶",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★僧智籌の登場（★千筋の糸）",
+      "group_label": "前段",
+      "roles": [
+        "僧智籌／土蜘の精",
+        "源頼光",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★番卒の狂言（間の場）",
+      "group_label": "中",
+      "roles": [
+        "番卒",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★土蜘の精の出（塚の中から）",
+      "group_label": "後段",
+      "roles": [
+        "僧智籌／土蜘の精",
+        "平井保昌",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "★★★立廻りと蜘蛛の糸",
+      "group_label": "後段",
+      "roles": [
+        "僧智籌／土蜘の精",
+        "平井保昌",
+        "太刀持音若",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線・囃子。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

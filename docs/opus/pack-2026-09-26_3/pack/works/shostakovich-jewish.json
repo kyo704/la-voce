@@ -1,0 +1,38 @@
+{
+  "title": "ユダヤの民族詩より 作品79",
+  "title_original": "Из еврейской народной поэзии op.79",
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "song_cycle",
+  "year_written": 1948,
+  "duration_min": 25,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "shostakovich-op79",
+  "note": "★★★ソプラノ・アルト・テノールの 3人と ピアノ。★書かれてから 7年 発表できませんでした ／ ★★曲名を 全部 確かめられなかったので ★曲数（11曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ・アルト・テノール"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全11曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "ソプラノ・アルト・テノール",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

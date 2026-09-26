@@ -1,0 +1,64 @@
+{
+  "title": "盆山",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-bonsan",
+  "note": "★集狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（男）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "盆山を盗みに忍び込む",
+      "group_label": "段",
+      "roles": [
+        "シテ（男）"
+      ]
+    },
+    {
+      "label": "主が気づいて見物する",
+      "group_label": "段",
+      "roles": [
+        "シテ（男）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "犬・猿・鯛の鳴き真似をさせられる",
+      "group_label": "段",
+      "roles": [
+        "シテ（男）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "鯛の真似ができず逃げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（男）",
+        "アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "title": "千手",
+  "composer": "能（三番目物（鬘・女））",
+  "composer_sort": "Noh",
+  "kind": "noh",
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "noh-senju",
+  "note": "★三番目物（鬘・女） ／ ★謡（うたい）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（千手の前）"
+    },
+    {
+      "label": "シテツレ（平重衡）"
+    },
+    {
+      "label": "ワキ（狩野介宗茂）"
+    },
+    {
+      "label": "アイ（間狂言）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ワキの登場（鎌倉・狩野介の館）",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（狩野介宗茂）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "シテの登場（千手の前）",
+      "group_label": "前段",
+      "roles": [
+        "シテ（千手の前）",
+        "シテツレ（平重衡）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "問答・いわれ",
+      "group_label": "前段",
+      "roles": [
+        "シテ（千手の前）",
+        "シテツレ（平重衡）",
+        "ワキ（狩野介宗茂）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "アイ（間狂言）",
+      "group_label": "中",
+      "roles": [
+        "アイ（間狂言）",
+        "ワキ（狩野介宗茂）"
+      ]
+    },
+    {
+      "label": "中ノ舞",
+      "group_label": "後段",
+      "roles": [
+        "シテ（千手の前）",
+        "シテツレ（平重衡）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "キリ（終曲）",
+      "group_label": "後段",
+      "roles": [
+        "シテ（千手の前）",
+        "シテツレ（平重衡）",
+        "ワキ（狩野介宗茂）",
+        "地謡",
+        "囃子方"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛（能管）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "title": "奈須与市語",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 20,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-nasu-no-yoichi-no-katari",
+  "note": "★語り（間狂言の独立曲） ／ ★★★一人で 語る 曲。★能『八島』の 間狂言を 独立させたもの ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（（語り））"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "扇の的の一段を語る",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）"
+      ]
+    },
+    {
+      "label": "一人で 三役（義経・与市・伊勢三郎）を 語り分ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）"
+      ]
+    },
+    {
+      "label": "弓を引いて射る形で結ぶ",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "title": "レ・ミゼラブル（1980 パリ初演版）",
+  "title_original": "Les Misérables",
+  "composer": "クロード＝ミシェル・シェーンベルク",
+  "kind": "musical",
+  "year_written": 1980,
+  "duration_min": 120,
+  "edition": "★★1980 パリ・パレ・デ・スポール初演版（★フランス語。★『オン・マイ・オウン』『スターズ』『ブリング・ヒム・ホーム』はまだ無い。プロローグも無い）",
+  "language": "fr",
+  "source": "hand",
+  "source_id": "les-miserables-1980",
+  "note": "★作詞 アラン・ブーブリル ／ 脚本 アラン・ブーブリル ／ ★★★1985 英語版とは曲と構成が大きく違うので、別の作品として分けてあります",
+  "roles": [
+    {
+      "label": "ジャン・ヴァルジャン"
+    },
+    {
+      "label": "ジャヴェール"
+    },
+    {
+      "label": "ファンティーヌ"
+    },
+    {
+      "label": "コゼット"
+    },
+    {
+      "label": "マリウス"
+    },
+    {
+      "label": "エポニーヌ"
+    },
+    {
+      "label": "テナルディエ"
+    },
+    {
+      "label": "マダム・テナルディエ"
+    },
+    {
+      "label": "アンジョルラス"
+    },
+    {
+      "label": "ガヴローシュ"
+    },
+    {
+      "label": "小さなコゼット"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★ラ・ジュルネ・エ・フィニ（一日の終わり）",
+      "group_label": "第1部",
+      "roles": [
+        "ファンティーヌ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★★ジャヴェ・レヴェ（夢を見た）",
+      "group_label": "第1部",
+      "roles": [
+        "ファンティーヌ"
+      ]
+    },
+    {
+      "label": "M3 ★★ムッシュー・ル・メール（市長との対決）",
+      "group_label": "第1部",
+      "roles": [
+        "ジャン・ヴァルジャン",
+        "ジャヴェール"
+      ]
+    },
+    {
+      "label": "M4 ★★★ムン・プリンス・エ・アン・シュマン（雲の上のお城）",
+      "group_label": "第1部",
+      "roles": [
+        "小さなコゼット"
+      ]
+    },
+    {
+      "label": "M5 ★★メートル・ドテル（宿屋の主人）",
+      "group_label": "第1部",
+      "roles": [
+        "テナルディエ",
+        "マダム・テナルディエ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★ラ・フォート・オ・ルー（民衆の歌に当たる曲）",
+      "group_label": "第1部",
+      "roles": [
+        "アンジョルラス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ル・クール・オ・ボヌール（愛の三重唱）",
+      "group_label": "第1部",
+      "roles": [
+        "コゼット",
+        "マリウス",
+        "エポニーヌ"
+      ]
+    },
+    {
+      "label": "M8 ★★★ロン・ドゥ・ラ・バリカード（バリケードの夜）",
+      "group_label": "第2部",
+      "roles": [
+        "アンジョルラス",
+        "マリウス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ラ・モール・デポニーヌ（エポニーヌの死）",
+      "group_label": "第2部",
+      "roles": [
+        "エポニーヌ",
+        "マリウス"
+      ]
+    },
+    {
+      "label": "M10 ★★★ラ・モール・ド・ガヴローシュ（ガヴローシュの死）",
+      "group_label": "第2部",
+      "roles": [
+        "ガヴローシュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★スュイシード・ド・ジャヴェール",
+      "group_label": "第2部",
+      "roles": [
+        "ジャヴェール"
+      ]
+    },
+    {
+      "label": "M12 ★★★終曲（ヴァルジャンの死）",
+      "group_label": "第2部",
+      "roles": [
+        "ジャン・ヴァルジャン",
+        "コゼット",
+        "マリウス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

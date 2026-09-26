@@ -1,0 +1,226 @@
+{
+  "title": "ペンザンスの海賊",
+  "title_original": "The Pirates of Penzance",
+  "composer": "サリヴァン",
+  "composer_sort": "Sullivan, Arthur",
+  "kind": "opera",
+  "year_written": 1879,
+  "duration_min": 135,
+  "language": "en",
+  "source": "hand",
+  "source_id": "pirates-penzance",
+  "roles": [
+    {
+      "label": "フレデリック"
+    },
+    {
+      "label": "メイベル"
+    },
+    {
+      "label": "海賊王"
+    },
+    {
+      "label": "スタンリー少将"
+    },
+    {
+      "label": "ルース"
+    },
+    {
+      "label": "サムエル"
+    },
+    {
+      "label": "警官の長"
+    },
+    {
+      "label": "エディス"
+    },
+    {
+      "label": "ケイト"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 海賊たちの祝い（21歳の年季明け）",
+      "group_label": "第1幕",
+      "roles": [
+        "フレデリック",
+        "海賊王",
+        "サムエル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ルースの告白（子守が聞き違えた：水先案内人と海賊）",
+      "group_label": "第1幕",
+      "roles": [
+        "ルース",
+        "フレデリック"
+      ]
+    },
+    {
+      "label": "★第1幕 少将の娘たちの登場",
+      "group_label": "第1幕",
+      "roles": [
+        "エディス",
+        "ケイト",
+        "メイベル",
+        "フレデリック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★メイベルのアリア（憐れみたまえ）",
+      "group_label": "第1幕",
+      "roles": [
+        "メイベル",
+        "フレデリック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★少将の歌（現代の少将の見本）",
+      "group_label": "第1幕",
+      "roles": [
+        "スタンリー少将",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 フィナーレ（孤児だと偽る）",
+      "group_label": "第1幕",
+      "roles": [
+        "スタンリー少将",
+        "海賊王",
+        "フレデリック",
+        "メイベル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 礼拝堂（少将の良心）",
+      "group_label": "第2幕",
+      "roles": [
+        "スタンリー少将",
+        "メイベル",
+        "フレデリック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★警官たちの歌（警官の身はつらいもの）",
+      "group_label": "第2幕",
+      "roles": [
+        "警官の長",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★閏年の逆理（フレデリックは1940年まで年季が明けない）",
+      "group_label": "第2幕",
+      "roles": [
+        "海賊王",
+        "ルース",
+        "フレデリック"
+      ]
+    },
+    {
+      "label": "★終曲（女王の名で降伏・実は皆貴族）",
+      "group_label": "第2幕",
+      "roles": [
+        "海賊王",
+        "スタンリー少将",
+        "フレデリック",
+        "メイベル",
+        "ルース",
+        "警官の長",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

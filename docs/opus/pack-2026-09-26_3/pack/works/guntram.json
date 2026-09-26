@@ -1,0 +1,184 @@
+{
+  "title": "グントラム",
+  "title_original": "Guntram",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1894,
+  "duration_min": 170,
+  "language": "de",
+  "source": "hand",
+  "source_id": "guntram",
+  "roles": [
+    {
+      "label": "グントラム"
+    },
+    {
+      "label": "フライヒルト"
+    },
+    {
+      "label": "ロベルト公"
+    },
+    {
+      "label": "老公"
+    },
+    {
+      "label": "フリートホルト"
+    },
+    {
+      "label": "道化"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕への前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 飢えた民と歌人グントラム",
+      "group_label": "第1幕",
+      "roles": [
+        "グントラム",
+        "フリートホルト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 フライヒルトの身投げを救う",
+      "group_label": "第1幕",
+      "roles": [
+        "グントラム",
+        "フライヒルト"
+      ]
+    },
+    {
+      "label": "第2幕 城の宴（グントラムの平和の歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "グントラム",
+        "ロベルト公",
+        "老公",
+        "道化",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 ロベルト公の刺殺",
+      "group_label": "第2幕",
+      "roles": [
+        "グントラム",
+        "ロベルト公",
+        "フライヒルト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 牢のグントラム",
+      "group_label": "第3幕",
+      "roles": [
+        "グントラム",
+        "フリートホルト"
+      ]
+    },
+    {
+      "label": "第3幕 フライヒルトとの別れ（自らを裁く）",
+      "group_label": "第3幕",
+      "roles": [
+        "グントラム",
+        "フライヒルト"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "title": "晩祷 作品37",
+  "title_original": "Всенощное бдение op.37",
+  "aliases": [
+    "徹夜祷"
+  ],
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninov, Sergei",
+  "kind": "chorus",
+  "year_written": 1915,
+  "duration_min": 65,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "ch-rachmaninov-vespers",
+  "note": "★★★無伴奏。★★バスに 極めて 低い 音（下のB♭）が 求められます。★曲数（15曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全15曲（★曲名は 入れて いません）",
+      "group_label": "―",
+      "roles": [
+        "アルト独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

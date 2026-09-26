@@ -1,0 +1,172 @@
+{
+  "title": "フランチェスカ・ダ・リミニ（ラフマニノフ）",
+  "title_original": "Франческа да Римини",
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninoff, Sergei",
+  "kind": "opera",
+  "year_written": 1904,
+  "duration_min": 65,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "francesca-rimini-rach",
+  "roles": [
+    {
+      "label": "フランチェスカ"
+    },
+    {
+      "label": "パオロ"
+    },
+    {
+      "label": "ランチョット・マラテスタ"
+    },
+    {
+      "label": "ダンテ"
+    },
+    {
+      "label": "ウェルギリウスの亡霊"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★前奏曲（地獄の第1圏・亡者の合唱）",
+      "group_label": "前奏曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "序幕 ダンテとウェルギリウス（地獄めぐり）",
+      "group_label": "序幕",
+      "roles": [
+        "ダンテ",
+        "ウェルギリウスの亡霊",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ランチョットの独白（嫉妬）",
+      "group_label": "第1場",
+      "roles": [
+        "ランチョット・マラテスタ",
+        "フランチェスカ"
+      ]
+    },
+    {
+      "label": "★フランチェスカとパオロ（ランスロットの本を読む）",
+      "group_label": "第2場",
+      "roles": [
+        "フランチェスカ",
+        "パオロ"
+      ]
+    },
+    {
+      "label": "★愛の二重唱と2人の死",
+      "group_label": "第2場",
+      "roles": [
+        "フランチェスカ",
+        "パオロ",
+        "ランチョット・マラテスタ"
+      ]
+    },
+    {
+      "label": "★エピローグ（亡者の合唱・その日はもう読まなかった）",
+      "group_label": "終曲",
+      "roles": [
+        "ダンテ",
+        "ウェルギリウスの亡霊",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

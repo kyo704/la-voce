@@ -1,0 +1,102 @@
+{
+  "title": "神楽歌",
+  "composer": "雅楽",
+  "composer_sort": "Gagaku",
+  "kind": "gagaku",
+  "duration_min": 40,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "gagaku-kagurauta",
+  "note": "★管絃 ／ 調子 ─（国風歌舞） ／ ★国風歌舞 ／ ★★宮中の神事（御神楽）で歌われる。★和琴・神楽笛・篳篥・笏拍子",
+  "roles": [
+    {
+      "label": "管方（篳篥・龍笛・笙）",
+      "is_group": true
+    },
+    {
+      "label": "絃方（楽琵琶・楽箏）",
+      "is_group": true
+    },
+    {
+      "label": "打物（鞨鼓・太鼓・鉦鼓）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★阿知女作法",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）"
+      ]
+    },
+    {
+      "label": "★榊",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）"
+      ]
+    },
+    {
+      "label": "★早韓神",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）"
+      ]
+    },
+    {
+      "label": "★星",
+      "group_label": "番",
+      "roles": [
+        "管方（篳篥・龍笛・笙）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "篳篥",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "龍笛",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "笙",
+      "count": 3,
+      "section": "woodwind",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "楽琵琶",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "楽箏",
+      "count": 2,
+      "section": "strings",
+      "note": "絃方"
+    },
+    {
+      "part": "鞨鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "鉦鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

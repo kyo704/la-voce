@@ -1,0 +1,171 @@
+{
+  "title": "赤い陣羽織",
+  "title_original": "赤い陣羽織",
+  "composer": "大栗裕",
+  "composer_sort": "Oguri, Hiroshi",
+  "kind": "opera",
+  "year_written": 1955,
+  "duration_min": 75,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "aka-jinbaori",
+  "note": "★木下順二の戯曲による。★スペインの話を日本に移した喜劇",
+  "roles": [
+    {
+      "label": "お代官"
+    },
+    {
+      "label": "おやじ"
+    },
+    {
+      "label": "女房"
+    },
+    {
+      "label": "おさん"
+    },
+    {
+      "label": "代官の妻"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 村（★おやじと女房）",
+      "group_label": "第1場",
+      "roles": [
+        "おやじ",
+        "女房",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第1場 お代官の赤い陣羽織と女房への横恋慕",
+      "group_label": "第1場",
+      "roles": [
+        "お代官",
+        "女房",
+        "おさん"
+      ]
+    },
+    {
+      "label": "★★第2場 おやじが代官の屋敷へ（陣羽織を着る）",
+      "group_label": "第2場",
+      "roles": [
+        "おやじ",
+        "代官の妻",
+        "おさん"
+      ]
+    },
+    {
+      "label": "★★第2場 取り違えの夜",
+      "group_label": "第2場",
+      "roles": [
+        "おやじ",
+        "代官の妻",
+        "お代官",
+        "女房"
+      ]
+    },
+    {
+      "label": "★★終曲（お代官の面目の失墜と村の笑い）",
+      "group_label": "終場",
+      "roles": [
+        "お代官",
+        "おやじ",
+        "女房",
+        "代官の妻",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

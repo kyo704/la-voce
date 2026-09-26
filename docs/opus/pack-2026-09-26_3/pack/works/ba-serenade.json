@@ -1,0 +1,56 @@
+{
+  "title": "セレナーデ（バレエ）",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky Serenade",
+  "kind": "dance",
+  "year_written": 1934,
+  "duration_min": 33,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-serenade",
+  "note": "★振付 バランシン ／ ★物語の ない バレエ ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "群舞（17人の女性ほか）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★弦楽セレナーデ 第1楽章",
+      "group_label": "一幕物",
+      "roles": [
+        "群舞（17人の女性ほか）"
+      ]
+    },
+    {
+      "label": "★ワルツ",
+      "group_label": "一幕物",
+      "roles": [
+        "群舞（17人の女性ほか）"
+      ]
+    },
+    {
+      "label": "★ロシアの主題",
+      "group_label": "一幕物",
+      "roles": [
+        "群舞（17人の女性ほか）"
+      ]
+    },
+    {
+      "label": "★★エレジー",
+      "group_label": "一幕物",
+      "roles": [
+        "群舞（17人の女性ほか）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "弦楽合奏",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

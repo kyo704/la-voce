@@ -1,0 +1,49 @@
+{
+  "title": "24のカプリース 作品1",
+  "title_original": "24 Capricci",
+  "aliases": [
+    "カプリース"
+  ],
+  "composer": "パガニーニ",
+  "composer_sort": "Paganini, Niccolo",
+  "kind": "chamber",
+  "year_written": 1817,
+  "source": "hand",
+  "source_id": "paganini-caprices",
+  "duration_min": 80,
+  "roles": [
+    {
+      "label": "ヴァイオリン独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1番〜第12番（抜粋で演奏されることが多い）",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "第13番〜第23番",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    },
+    {
+      "label": "★第24番 主題と変奏",
+      "group_label": "全曲",
+      "roles": [
+        "ヴァイオリン独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

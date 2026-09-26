@@ -1,0 +1,86 @@
+{
+  "title": "廓文章",
+  "aliases": [
+    "吉田屋"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1808,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-kuruwa-bunsho",
+  "note": "★歌舞伎 ／ ★★上方の 和事（わごと）の 代表作 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "藤屋伊左衛門"
+    },
+    {
+      "label": "扇屋夕霧"
+    },
+    {
+      "label": "吉田屋喜左衛門"
+    },
+    {
+      "label": "おきさ"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★吉田屋（★伊左衛門と夕霧）",
+      "group_label": "上",
+      "roles": [
+        "藤屋伊左衛門",
+        "扇屋夕霧",
+        "吉田屋喜左衛門",
+        "おきさ",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★吉田屋 紙衣の伊左衛門",
+      "group_label": "上",
+      "roles": [
+        "藤屋伊左衛門",
+        "吉田屋喜左衛門",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★吉田屋 幕切れ（★勘当が解ける）",
+      "group_label": "上",
+      "roles": [
+        "藤屋伊左衛門",
+        "扇屋夕霧",
+        "吉田屋喜左衛門",
+        "おきさ",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

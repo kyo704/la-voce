@@ -1,0 +1,183 @@
+{
+  "title": "不死身のカシチェイ",
+  "title_original": "Кащей бессмертный",
+  "composer": "リムスキー＝コルサコフ",
+  "composer_sort": "Rimsky-Korsakov, Nikolai",
+  "kind": "opera",
+  "year_written": 1902,
+  "duration_min": 70,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "kashchey",
+  "roles": [
+    {
+      "label": "カシチェイ"
+    },
+    {
+      "label": "カシチェイの娘"
+    },
+    {
+      "label": "王女"
+    },
+    {
+      "label": "イワン王子"
+    },
+    {
+      "label": "嵐の勇士"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1場 カシチェイの国（冬・王女の子守歌）",
+      "group_label": "第1場",
+      "roles": [
+        "カシチェイ",
+        "王女",
+        "合唱"
+      ]
+    },
+    {
+      "label": "カシチェイの死は娘の涙の中にある",
+      "group_label": "第1場",
+      "roles": [
+        "カシチェイ",
+        "王女"
+      ]
+    },
+    {
+      "label": "★第2場 カシチェイの娘の国（剣を研ぐ歌）",
+      "group_label": "第2場",
+      "roles": [
+        "カシチェイの娘"
+      ]
+    },
+    {
+      "label": "イワン王子の到着と忘却の誘い",
+      "group_label": "第2場",
+      "roles": [
+        "カシチェイの娘",
+        "イワン王子"
+      ]
+    },
+    {
+      "label": "嵐の勇士の登場",
+      "group_label": "第2場",
+      "roles": [
+        "嵐の勇士",
+        "カシチェイの娘",
+        "イワン王子"
+      ]
+    },
+    {
+      "label": "★第3場 再会と娘の涙（カシチェイの死）",
+      "group_label": "第3場",
+      "roles": [
+        "王女",
+        "イワン王子",
+        "カシチェイの娘",
+        "カシチェイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（春の到来）",
+      "group_label": "第3場",
+      "roles": [
+        "王女",
+        "イワン王子",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

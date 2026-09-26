@@ -1,0 +1,79 @@
+{
+  "title": "テ・デウム（ブルックナー）",
+  "composer": "ブルックナー",
+  "composer_sort": "Bruckner, Anton",
+  "kind": "chorus",
+  "year_written": 1884,
+  "duration_min": 24,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-bruckner-te-deum",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "アルト独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "バス独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★テ・デウム・ラウダームス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "テ・エルゴ・クェーズムス",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "アルト独唱",
+        "テノール独唱",
+        "バス独唱"
+      ]
+    },
+    {
+      "label": "★アエテルナ・ファク",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "サルヴム・ファク",
+      "group_label": "―",
+      "roles": [
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★イン・テ・ドミネ・スペラーヴィ（フーガ）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

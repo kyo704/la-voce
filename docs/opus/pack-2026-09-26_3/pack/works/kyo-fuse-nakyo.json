@@ -1,0 +1,65 @@
+{
+  "title": "布施無経",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-fuse-nakyo",
+  "note": "★出家狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（僧）"
+    },
+    {
+      "label": "アド（檀家）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "檀家の家で経を読む",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（檀家）"
+      ]
+    },
+    {
+      "label": "布施が無いと気づく",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（檀家）"
+      ]
+    },
+    {
+      "label": "経のふりをして当てこする",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（檀家）"
+      ]
+    },
+    {
+      "label": "檀家も言葉で返す",
+      "group_label": "段",
+      "roles": [
+        "シテ（僧）",
+        "アド（檀家）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

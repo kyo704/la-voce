@@ -1,0 +1,93 @@
+{
+ "title": "女の愛と生涯",
+ "title_original": "Frauenliebe und -leben",
+ "composer": "シューマン",
+ "composer_sort": "Schumann, Robert",
+ "kind": "song_cycle",
+ "year_written": 1840,
+ "duration_min": 24,
+ "language": "de",
+ "source_id": "schumann-frauenliebe",
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. 彼に会ってから（Seit ich ihn gesehen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. 彼はだれよりも素晴らしい（Er, der Herrlichste von allen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. わからない、信じられない（Ich kann's nicht fassen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. わたしの指の指輪よ（Du Ring an meinem Finger）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. 手伝ってちょうだい（Helft mir, ihr Schwestern）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. やさしい人、あなたは見つめる（Süßer Freund）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. わたしの心に、わたしの胸に（An meinem Herzen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. いま、あなたは初めてわたしを悲します（Nun hast du mir）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand"
+}

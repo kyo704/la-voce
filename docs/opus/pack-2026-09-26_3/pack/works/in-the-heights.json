@@ -1,0 +1,270 @@
+{
+  "title": "イン・ザ・ハイツ",
+  "title_original": "In the Heights",
+  "composer": "リン＝マニュエル・ミランダ",
+  "kind": "musical",
+  "year_written": 2008,
+  "duration_min": 145,
+  "edition": "2008 ブロードウェイ初演版（★2021 映画版は曲が入れ替わり『Sunrise』が削られる）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "in-the-heights",
+  "note": "★作詞 リン＝マニュエル・ミランダ ／ 脚本 キアラ・アレグリア・ウデス ／ ★★★サルサ・メレンゲ・ヒップホップが中心。★スペイン語と英語が混じる",
+  "roles": [
+    {
+      "label": "ウスナビ"
+    },
+    {
+      "label": "ニーナ・ロサリオ"
+    },
+    {
+      "label": "ベニー"
+    },
+    {
+      "label": "ヴァネッサ"
+    },
+    {
+      "label": "クラウディア（アブエラ）"
+    },
+    {
+      "label": "ケヴィン・ロサリオ"
+    },
+    {
+      "label": "カミラ・ロサリオ"
+    },
+    {
+      "label": "ソニー"
+    },
+    {
+      "label": "ダニエラ"
+    },
+    {
+      "label": "カルラ"
+    },
+    {
+      "label": "ピラグア売り"
+    },
+    {
+      "label": "グラフィティ・ピート"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★イン・ザ・ハイツ",
+      "group_label": "第1幕",
+      "roles": [
+        "ウスナビ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ブレスド（ニーナの帰郷）",
+      "group_label": "第1幕",
+      "roles": [
+        "ニーナ・ロサリオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★イッツ・オールライト（Benny's Dispatch）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベニー",
+        "ニーナ・ロサリオ"
+      ]
+    },
+    {
+      "label": "M4 ★★★ノー・メ・ディガ（美容室の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ダニエラ",
+        "カルラ",
+        "ヴァネッサ",
+        "ニーナ・ロサリオ"
+      ]
+    },
+    {
+      "label": "M5 ★★★96,000（宝くじ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ウスナビ",
+        "ベニー",
+        "ソニー",
+        "ヴァネッサ",
+        "ダニエラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★パシエンシア・イ・フェ（アブエラの物語）",
+      "group_label": "第1幕",
+      "roles": [
+        "クラウディア（アブエラ）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ホエン・ユーアー・ホーム",
+      "group_label": "第1幕",
+      "roles": [
+        "ニーナ・ロサリオ",
+        "ベニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★ザ・クラブ／ブラックアウト（第1幕終曲・停電）",
+      "group_label": "第1幕",
+      "roles": [
+        "ウスナビ",
+        "ヴァネッサ",
+        "ベニー",
+        "ニーナ・ロサリオ",
+        "ソニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★サンライズ",
+      "group_label": "第2幕",
+      "roles": [
+        "ニーナ・ロサリオ",
+        "ベニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★アブエラ・クラウディアの死",
+      "group_label": "第2幕",
+      "roles": [
+        "ウスナビ",
+        "ニーナ・ロサリオ",
+        "クラウディア（アブエラ）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★カーニバル・デル・バリオ",
+      "group_label": "第2幕",
+      "roles": [
+        "ダニエラ",
+        "カルラ",
+        "ヴァネッサ",
+        "ソニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★エヴリシング・アイ・ノウ",
+      "group_label": "第2幕",
+      "roles": [
+        "ニーナ・ロサリオ"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（ウスナビが街に残る決意）",
+      "group_label": "第2幕",
+      "roles": [
+        "ウスナビ",
+        "ヴァネッサ",
+        "ニーナ・ロサリオ",
+        "ベニー",
+        "ソニー",
+        "ピラグア売り",
+        "グラフィティ・ピート",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

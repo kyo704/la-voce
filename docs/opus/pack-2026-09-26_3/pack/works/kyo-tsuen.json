@@ -1,0 +1,64 @@
+{
+  "title": "通円",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 30,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-tsuen",
+  "note": "★雑狂言 ／ ★★★能の形をそのまま真似た『替(かえ)狂言』── 能のパロディ ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（通円の霊）"
+    },
+    {
+      "label": "アド（旅僧）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "旅僧が宇治の茶店の跡を訪ねる",
+      "group_label": "段",
+      "roles": [
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "★通円の霊が現れる",
+      "group_label": "段",
+      "roles": [
+        "シテ（通円の霊）",
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "★茶を点てすぎて死んだ最期を語る（★能『頼政』の replica）",
+      "group_label": "段",
+      "roles": [
+        "シテ（通円の霊）",
+        "アド（旅僧）"
+      ]
+    },
+    {
+      "label": "★成仏を願って消える",
+      "group_label": "段",
+      "roles": [
+        "シテ（通円の霊）",
+        "アド（旅僧）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

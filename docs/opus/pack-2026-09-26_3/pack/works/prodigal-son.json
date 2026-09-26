@@ -1,0 +1,139 @@
+{
+  "title": "放蕩息子",
+  "title_original": "The Prodigal Son",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "opera",
+  "year_written": 1968,
+  "duration_min": 70,
+  "language": "en",
+  "source": "hand",
+  "source_id": "prodigal-son",
+  "roles": [
+    {
+      "label": "誘惑者（修道院長）"
+    },
+    {
+      "label": "父"
+    },
+    {
+      "label": "兄"
+    },
+    {
+      "label": "弟"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（誘惑者の呼びかけ・わたしは誘惑者）",
+      "group_label": "序",
+      "roles": [
+        "誘惑者（修道院長）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★農場の平和（父と2人の息子）",
+      "group_label": "本編",
+      "roles": [
+        "父",
+        "兄",
+        "弟",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★誘惑者が弟にささやく（財産を分けてもらえ）",
+      "group_label": "本編",
+      "roles": [
+        "誘惑者（修道院長）",
+        "弟"
+      ]
+    },
+    {
+      "label": "★弟の旅立ち",
+      "group_label": "本編",
+      "roles": [
+        "弟",
+        "父",
+        "兄"
+      ]
+    },
+    {
+      "label": "★★都の場（酒・博打・女）",
+      "group_label": "本編",
+      "roles": [
+        "弟",
+        "誘惑者（修道院長）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★飢饉と豚の世話",
+      "group_label": "本編",
+      "roles": [
+        "弟",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★帰郷（父の抱擁と兄の不満）",
+      "group_label": "本編",
+      "roles": [
+        "弟",
+        "父",
+        "兄"
+      ]
+    },
+    {
+      "label": "★終曲（祝いと修道僧の退場）",
+      "group_label": "終",
+      "roles": [
+        "父",
+        "誘惑者（修道院長）",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート（ピッコロ持ち替え）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "コントラバス",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "打楽器（小太鼓・ドラム・鐘）",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

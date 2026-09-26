@@ -1,0 +1,62 @@
+{
+  "title": "三番叟",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 20,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-sanbaso",
+  "note": "★翁付き ／ ★★★『翁』の中で狂言方が演じる部分。★式三番の一部で、演能の最初に置かれる ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（三番叟）"
+    },
+    {
+      "label": "アド（千歳）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★『翁』に続く祝いの舞",
+      "group_label": "段",
+      "roles": [
+        "アド（千歳）"
+      ]
+    },
+    {
+      "label": "★揉ノ段（面をつけずに舞う）",
+      "group_label": "段",
+      "roles": [
+        "シテ（三番叟）"
+      ]
+    },
+    {
+      "label": "★鈴ノ段（黒式尉の面と鈴）",
+      "group_label": "段",
+      "roles": [
+        "シテ（三番叟）"
+      ]
+    },
+    {
+      "label": "★終曲",
+      "group_label": "段",
+      "roles": [
+        "シテ（三番叟）",
+        "アド（千歳）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

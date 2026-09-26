@@ -1,0 +1,80 @@
+{
+  "title": "讃歌 作品52（交響曲第2番）",
+  "title_original": "Lobgesang op.52",
+  "aliases": [
+    "交響曲第2番（メンデルスゾーン）"
+  ],
+  "composer": "メンデルスゾーン",
+  "composer_sort": "Mendelssohn, Felix",
+  "kind": "chorus",
+  "year_written": 1840,
+  "duration_min": 65,
+  "language": "de",
+  "source": "hand",
+  "source_id": "ch-mendelssohn-lobgesang",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "ソプラノ独唱（二）"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★管弦楽の序（3つの部分）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★すべて息あるものは主をほめよ",
+      "group_label": "第2部",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★見張りの人よ、夜は明けたか",
+      "group_label": "第2部",
+      "roles": [
+        "テノール独唱",
+        "ソプラノ独唱（二）"
+      ]
+    },
+    {
+      "label": "★★コラール『今こそみな神に感謝せよ』",
+      "group_label": "第2部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲",
+      "group_label": "第2部",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

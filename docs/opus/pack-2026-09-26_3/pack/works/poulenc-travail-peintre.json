@@ -1,0 +1,86 @@
+{
+  "title": "画家の仕事",
+  "title_original": "Le travail du peintre",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "song_cycle",
+  "year_written": 1956,
+  "duration_min": 18,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "poulenc-peintre",
+  "note": "★作詩 エリュアール ／  ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. パブロ・ピカソ（Pablo Picasso）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. マルク・シャガール（Marc Chagall）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. ポール・クレー（Paul Klee）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. ホアン・ミロ（Joan Miró）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. ジャック・ヴィヨン（Jacques Villon）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. ジョルジュ・ブラック（Georges Braque）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "7. ジュアン・グリス（Juan Gris）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

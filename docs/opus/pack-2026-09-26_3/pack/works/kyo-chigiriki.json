@@ -1,0 +1,70 @@
+{
+  "title": "千切木",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-chigiriki",
+  "note": "★雑狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "立衆",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★連歌の席から追い出される",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）",
+        "立衆"
+      ]
+    },
+    {
+      "label": "★妻に叱られ仕返しに行く",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★留守の家ばかり打って歩く",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "★最後の家で本人に出会い逃げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎）",
+        "アド（妻）",
+        "立衆"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

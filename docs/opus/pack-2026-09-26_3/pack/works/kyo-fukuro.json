@@ -1,0 +1,72 @@
+{
+  "title": "梟",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-fukuro",
+  "note": "★山伏狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（山伏）"
+    },
+    {
+      "label": "アド（兄）"
+    },
+    {
+      "label": "小アド（弟）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "弟の様子がおかしいと兄が山伏を頼む",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（兄）",
+        "小アド（弟）"
+      ]
+    },
+    {
+      "label": "★山伏が祈る",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（兄）",
+        "小アド（弟）"
+      ]
+    },
+    {
+      "label": "★祈るほど梟の鳴き真似が増える",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（兄）",
+        "小アド（弟）"
+      ]
+    },
+    {
+      "label": "★★山伏自身も梟になる",
+      "group_label": "段",
+      "roles": [
+        "シテ（山伏）",
+        "アド（兄）",
+        "小アド（弟）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

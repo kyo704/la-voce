@@ -1,0 +1,65 @@
+{
+  "title": "箕被",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-mikazuki",
+  "note": "★女狂言 ／ ★★連歌で仲直りする ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（夫）"
+    },
+    {
+      "label": "アド（妻）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "夫が連歌に凝って家を顧みない",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "妻が離縁を申し出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "箕を被って出て行こうとする",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    },
+    {
+      "label": "夫が句を付け、妻も付けて和解する",
+      "group_label": "段",
+      "roles": [
+        "シテ（夫）",
+        "アド（妻）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

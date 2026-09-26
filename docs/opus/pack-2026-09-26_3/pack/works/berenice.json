@@ -1,0 +1,167 @@
+{
+  "title": "ベレニーチェ",
+  "title_original": "Berenice",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1737,
+  "duration_min": 160,
+  "language": "it",
+  "source": "hand",
+  "source_id": "berenice",
+  "roles": [
+    {
+      "label": "ベレニーチェ"
+    },
+    {
+      "label": "セレーネ"
+    },
+    {
+      "label": "デメトリオ"
+    },
+    {
+      "label": "アレッサンドロ"
+    },
+    {
+      "label": "アルサーチェ"
+    },
+    {
+      "label": "ファビオ"
+    },
+    {
+      "label": "アリスボ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲（★メヌエットが名高い）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 エジプトの宮廷（ローマの使節ファビオ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベレニーチェ",
+        "ファビオ",
+        "アレッサンドロ"
+      ]
+    },
+    {
+      "label": "★第1幕 ベレニーチェとデメトリオ",
+      "group_label": "第1幕",
+      "roles": [
+        "ベレニーチェ",
+        "デメトリオ"
+      ]
+    },
+    {
+      "label": "第1幕 セレーネの秘めた恋",
+      "group_label": "第1幕",
+      "roles": [
+        "セレーネ",
+        "アルサーチェ"
+      ]
+    },
+    {
+      "label": "★第2幕 デメトリオの二心（セレーネを愛している）",
+      "group_label": "第2幕",
+      "roles": [
+        "デメトリオ",
+        "セレーネ",
+        "ベレニーチェ"
+      ]
+    },
+    {
+      "label": "★第2幕 ベレニーチェの怒りのアリア",
+      "group_label": "第2幕",
+      "roles": [
+        "ベレニーチェ",
+        "アリスボ"
+      ]
+    },
+    {
+      "label": "第3幕 デメトリオの投獄",
+      "group_label": "第3幕",
+      "roles": [
+        "デメトリオ",
+        "ベレニーチェ",
+        "アレッサンドロ"
+      ]
+    },
+    {
+      "label": "★終曲（ベレニーチェはアレッサンドロを、セレーネはデメトリオを）",
+      "group_label": "第3幕",
+      "roles": [
+        "ベレニーチェ",
+        "セレーネ",
+        "デメトリオ",
+        "アレッサンドロ",
+        "アルサーチェ",
+        "ファビオ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

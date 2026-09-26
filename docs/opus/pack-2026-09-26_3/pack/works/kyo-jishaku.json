@@ -1,0 +1,65 @@
+{
+  "title": "磁石",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-jishaku",
+  "note": "★すっぱ狂言（詐欺物） ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（すっぱ）"
+    },
+    {
+      "label": "アド（旅の男）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "すっぱが旅の男を宿へ誘う",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（旅の男）"
+      ]
+    },
+    {
+      "label": "★人買いだと知れる",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（旅の男）"
+      ]
+    },
+    {
+      "label": "★★『自分は磁石だ』と言って刀を吸い寄せる",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（旅の男）"
+      ]
+    },
+    {
+      "label": "★すっぱが逃げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（すっぱ）",
+        "アド（旅の男）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

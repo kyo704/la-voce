@@ -1,0 +1,78 @@
+{
+  "title": "6つの歌 作品68（ブレンターノ歌曲集）",
+  "title_original": "Sechs Lieder op.68",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "song_cycle",
+  "year_written": 1918,
+  "duration_min": 30,
+  "language": "de",
+  "source": "hand",
+  "source_id": "strauss-op68",
+  "note": "★作詩 ブレンターノ ／ ★★高い声の 技（アジリタ）を 要します。★『アモール』は ことに 難しい ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. あなたの歌が響くとき（An die Nacht）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. わたしは漂う（Ich wollt ein Sträußlein binden）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. ささやけ、愛らしいミルテよ（Säusle, liebe Myrthe）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 夜にひとり（Als mir dein Lied erklang）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. アモール（Amor）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. 女たちの歌（Lied der Frauen）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

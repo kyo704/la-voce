@@ -1,0 +1,230 @@
+{
+  "title": "ファウスト博士",
+  "title_original": "Doktor Faust",
+  "composer": "ブゾーニ",
+  "composer_sort": "Busoni, Ferruccio",
+  "kind": "opera",
+  "year_written": 1925,
+  "duration_min": 180,
+  "edition": "ヤルナッハ版（1925）／ボーモント版（1985）",
+  "language": "de",
+  "source": "hand",
+  "source_id": "doktor-faust",
+  "note": "★未完の遺作。★ヤルナッハ補筆版と、ボーモント補筆版がある",
+  "roles": [
+    {
+      "label": "ファウスト"
+    },
+    {
+      "label": "メフィストフェレス"
+    },
+    {
+      "label": "ヴァーグナー"
+    },
+    {
+      "label": "パルマ公爵"
+    },
+    {
+      "label": "パルマ公爵夫人"
+    },
+    {
+      "label": "3人の学生"
+    },
+    {
+      "label": "兵士"
+    },
+    {
+      "label": "少女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★交響的前奏曲（復活祭の鐘）",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "★序幕 ヴィッテンベルク（3人の学生が本を届ける）",
+      "group_label": "序幕",
+      "roles": [
+        "ファウスト",
+        "3人の学生",
+        "ヴァーグナー"
+      ]
+    },
+    {
+      "label": "★序幕 6つの霊の呼び出しとメフィストフェレスの登場",
+      "group_label": "序幕",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス"
+      ]
+    },
+    {
+      "label": "序幕 契約（兵士の兄の殺害）",
+      "group_label": "序幕",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス",
+        "兵士",
+        "少女"
+      ]
+    },
+    {
+      "label": "★パルマの婚礼の宴（ファウストの魔術）",
+      "group_label": "第1主要場面",
+      "roles": [
+        "ファウスト",
+        "パルマ公爵",
+        "パルマ公爵夫人",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★公爵夫人との逃亡（間奏曲）",
+      "group_label": "第1主要場面",
+      "roles": [
+        "ファウスト",
+        "パルマ公爵夫人"
+      ]
+    },
+    {
+      "label": "★ヴィッテンベルクの居酒屋（カトリックとルター派の争い）",
+      "group_label": "第2主要場面",
+      "roles": [
+        "ファウスト",
+        "ヴァーグナー",
+        "3人の学生",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ヘレナの幻",
+      "group_label": "第2主要場面",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス"
+      ]
+    },
+    {
+      "label": "★最終場面 雪の路上（死んだ子と乞食の女）",
+      "group_label": "最終場面",
+      "roles": [
+        "ファウスト",
+        "パルマ公爵夫人",
+        "メフィストフェレス"
+      ]
+    },
+    {
+      "label": "★終曲（ファウストの意志を子に移して死ぬ）",
+      "group_label": "最終場面",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 5,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

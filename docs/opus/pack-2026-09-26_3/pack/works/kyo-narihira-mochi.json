@@ -1,0 +1,73 @@
+{
+  "title": "業平餅",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-narihira-mochi",
+  "note": "★雑狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（在原業平）"
+    },
+    {
+      "label": "アド（餅屋）"
+    },
+    {
+      "label": "小アド（従者）"
+    },
+    {
+      "label": "小アド（娘）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★業平が玉津島参詣の途中で腹が減る",
+      "group_label": "段",
+      "roles": [
+        "シテ（在原業平）",
+        "小アド（従者）"
+      ]
+    },
+    {
+      "label": "餅屋で餅を食うが銭がない",
+      "group_label": "段",
+      "roles": [
+        "シテ（在原業平）",
+        "アド（餅屋）"
+      ]
+    },
+    {
+      "label": "★餅屋の娘を見て歌を詠む",
+      "group_label": "段",
+      "roles": [
+        "シテ（在原業平）",
+        "アド（餅屋）",
+        "小アド（娘）"
+      ]
+    },
+    {
+      "label": "娘の醜さに驚いて去る",
+      "group_label": "段",
+      "roles": [
+        "シテ（在原業平）",
+        "アド（餅屋）",
+        "小アド（娘）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

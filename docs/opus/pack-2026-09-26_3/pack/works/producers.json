@@ -1,0 +1,263 @@
+{
+  "title": "プロデューサーズ",
+  "title_original": "The Producers",
+  "composer": "メル・ブルックス",
+  "kind": "musical",
+  "year_written": 2001,
+  "duration_min": 165,
+  "edition": "2001 ブロードウェイ初演版（★1968 映画が原作。★2005 映画版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "producers",
+  "note": "★作詞 メル・ブルックス ／ 脚本 メル・ブルックス／トーマス・ミーハン ／ ★★★トニー賞12部門受賞（最多記録）。★★ナチスを笑いの種にするため、上演地によって配慮が求められる",
+  "roles": [
+    {
+      "label": "マックス・ビアリストック"
+    },
+    {
+      "label": "レオ・ブルーム"
+    },
+    {
+      "label": "ウーラ"
+    },
+    {
+      "label": "フランツ・リープキント"
+    },
+    {
+      "label": "ロジャー・デ・ブリ"
+    },
+    {
+      "label": "カルメン・ジア"
+    },
+    {
+      "label": "ホールド・ミー＝タッチ・ミー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★オープニング・ナイト（Funny Boy の惨敗）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ザ・キング・オブ・ブロードウェイ",
+      "group_label": "第1幕",
+      "roles": [
+        "マックス・ビアリストック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★★ウィー・キャン・ドゥ・イット（大失敗を作る計）",
+      "group_label": "第1幕",
+      "roles": [
+        "マックス・ビアリストック",
+        "レオ・ブルーム"
+      ]
+    },
+    {
+      "label": "M4 ★★★アイ・ワナ・ビー・ア・プロデューサー",
+      "group_label": "第1幕",
+      "roles": [
+        "レオ・ブルーム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★イン・オールド・バヴァリア／デア・ギッツ・ミア・グート（フランツの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "フランツ・リープキント",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★キープ・イット・ゲイ（ロジャーの家）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロジャー・デ・ブリ",
+        "カルメン・ジア",
+        "マックス・ビアリストック",
+        "レオ・ブルーム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★ホエン・ユー・ガット・イット、フラウント・イット（ウーラの登場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ウーラ",
+        "マックス・ビアリストック",
+        "レオ・ブルーム"
+      ]
+    },
+    {
+      "label": "M8 ★★★アロング・ケイム・ビアリー（第1幕終曲・老婦人たちの歩行器のタップ）",
+      "group_label": "第1幕",
+      "roles": [
+        "マックス・ビアリストック",
+        "ホールド・ミー＝タッチ・ミー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ザット・フェイス",
+      "group_label": "第2幕",
+      "roles": [
+        "レオ・ブルーム",
+        "ウーラ"
+      ]
+    },
+    {
+      "label": "M10 ★★ハベン・ジー・ゲヘルト・ダス・ドイチェ・バンド",
+      "group_label": "第2幕",
+      "roles": [
+        "フランツ・リープキント",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★スプリングタイム・フォー・ヒトラー（★劇中劇・大当たりしてしまう）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロジャー・デ・ブリ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★ホエア・ディド・ウィ・ゴー・ライト？",
+      "group_label": "第2幕",
+      "roles": [
+        "マックス・ビアリストック",
+        "レオ・ブルーム"
+      ]
+    },
+    {
+      "label": "M13 ★★★裁判の場（Betrayed ─ マックスの独白）",
+      "group_label": "第2幕",
+      "roles": [
+        "マックス・ビアリストック"
+      ]
+    },
+    {
+      "label": "M14 ★★終曲（プリズナーズ・オブ・ラヴ／2人の再出発）",
+      "group_label": "第2幕",
+      "roles": [
+        "マックス・ビアリストック",
+        "レオ・ブルーム",
+        "ウーラ",
+        "フランツ・リープキント",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "title": "三幕の四聖人",
+  "title_original": "Four Saints in Three Acts",
+  "composer": "トムソン",
+  "composer_sort": "Thomson, Virgil",
+  "kind": "opera",
+  "year_written": 1934,
+  "duration_min": 90,
+  "language": "en",
+  "source": "hand",
+  "source_id": "four-saints",
+  "note": "★台本はガートルード・スタイン（筋を持たない言葉の音楽）。★初演は全員黒人の歌い手による",
+  "roles": [
+    {
+      "label": "聖テレサ1"
+    },
+    {
+      "label": "聖テレサ2"
+    },
+    {
+      "label": "聖イグナチオ"
+    },
+    {
+      "label": "聖セトルマン"
+    },
+    {
+      "label": "聖チャヴェス"
+    },
+    {
+      "label": "解説の合唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序（★合唱の口上：物語を語ろう）",
+      "group_label": "序",
+      "roles": [
+        "解説の合唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 アヴィラの階段（聖テレサの絵解き）",
+      "group_label": "第1幕",
+      "roles": [
+        "聖テレサ1",
+        "聖テレサ2",
+        "解説の合唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 庭の宴（★踊りと行列）",
+      "group_label": "第2幕",
+      "roles": [
+        "聖テレサ1",
+        "聖テレサ2",
+        "聖イグナチオ",
+        "聖セトルマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 バルセロナ（★聖イグナチオの幻視：鳩、鳩、鳩）",
+      "group_label": "第3幕",
+      "roles": [
+        "聖イグナチオ",
+        "聖チャヴェス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕（★「三幕」なのに第4幕がある）",
+      "group_label": "第4幕",
+      "roles": [
+        "聖テレサ1",
+        "聖イグナチオ",
+        "解説の合唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（最後の幕）",
+      "group_label": "終",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

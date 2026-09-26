@@ -1,0 +1,201 @@
+{
+  "title": "青ひげ公の城",
+  "title_original": "A kékszakállú herceg vára",
+  "composer": "バルトーク",
+  "composer_sort": "Bartók, Béla",
+  "kind": "opera",
+  "year_written": 1918,
+  "duration_min": 60,
+  "language": "hu",
+  "source": "hand",
+  "source_id": "bluebeards-castle",
+  "note": "★歌う役は2人だけ。語り手は歌わない",
+  "roles": [
+    {
+      "label": "青ひげ公"
+    },
+    {
+      "label": "ユディット"
+    },
+    {
+      "label": "語り手"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★語り手の口上（幕は上がったか）",
+      "group_label": "序",
+      "roles": [
+        "語り手"
+      ]
+    },
+    {
+      "label": "★城に入る（7つの扉）",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★第1の扉 拷問部屋（血）",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★第2の扉 武器庫",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★第3の扉 宝物庫",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★第4の扉 秘密の庭",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★第5の扉 広大な領土（★オルガンと全管の和音）",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★第6の扉 涙の湖",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★第7の扉 3人の妻（朝・昼・夕）とユディットは夜になる",
+      "group_label": "本編",
+      "roles": [
+        "青ひげ公",
+        "ユディット"
+      ]
+    },
+    {
+      "label": "★終曲（そしてすべては闇となる）",
+      "group_label": "終",
+      "roles": [
+        "青ひげ公"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

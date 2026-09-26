@@ -11,7 +11,7 @@
 "use client";
 
 import { C } from "@/lib/tokens";
-import { ScreenHead, Back, Box } from "@/components/UiV2";
+import { ScreenHead, Back, Box, H3, Li } from "@/components/UiV2";
 import {
   TITLE, HEAD_LINES, pairHead, ROW_ACTION, LAG_HEAD, lagPills,
   BTN_ADD, FREE_LINE, mayAddPair, NOTE_LINES,
@@ -43,9 +43,11 @@ export default function Shirabeteiru({
       {/* ★★組は ご本人が 作った 順の まま です。★並べ替えません。 */}
       {組.map((p, n) => (
         <div key={n}>
-          <p style={{ fontSize: "0.8125rem", color: C.ink, margin: "0 0 6px", fontWeight: 600 }}>
-            {pairHead(n + 1)}
-          </p>
+          {/* ★★★小見出し です（★見本は `.sh3`）。★`p` に して いました。
+              ★★`p` だと 骨組みの 道具が 註 として 数え、★見本の 題と 合いません
+                （★2026-09-26 ── ★①に「題｜組 #」が 出て いました）。
+              ★★見た目の 話では なく、★何の 字 かの 話 です。 */}
+          <H3>{pairHead(n + 1)}</H3>
           <Box style={{ marginBottom: 11 }}>
             {/* ★★くらしの 側は 選べます。★声の 側は 1つ だけ です。
                 ★★★だから 声の 行に「かえる ›」を 出しません ──
@@ -61,21 +63,17 @@ export default function Shirabeteiru({
                 {ROW_ACTION}
               </span>
             </button>
-            <div style={{
-              display: "flex", alignItems: "center", gap: 12,
-              padding: "12px 14px", borderTop: `1px solid ${C.line}`
-            }}>
-              <span style={{ fontSize: "0.875rem", color: C.ink }}>
-                {VOICE_SIDE_FIXED ? VOICE_SIDE_LABEL : (p.voice || "")}
-              </span>
-            </div>
+            {/* ★★★行は `UiV2` の `Li` です（★2026-09-26）。
+                ★★前は ここで 自分で 組んで いました ── ★class を 持たず、
+                  ★骨組みの 道具が 1行も 拾えません でした。
+                ★★見本の 声の 行は `div.li.plain` です。★押せません。★同じ です。 */}
+            <Li last>{VOICE_SIDE_FIXED ? VOICE_SIDE_LABEL : (p.voice || "")}</Li>
           </Box>
         </div>
       ))}
 
-      <p style={{ fontSize: "0.8125rem", color: C.ink, margin: "0 0 6px", fontWeight: 600 }}>
-        {LAG_HEAD}
-      </p>
+      {/* ★★これも 小見出し です（★見本 `.sh3`）。★`。` を 付けません。 */}
+      <H3>{LAG_HEAD}</H3>
       <Box>
         {札.map((l, i) => (
           <button key={l.key} type="button" onClick={() => onPickLag && onPickLag(l.key)}

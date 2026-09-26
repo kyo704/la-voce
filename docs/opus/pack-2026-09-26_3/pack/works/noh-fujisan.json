@@ -1,0 +1,124 @@
+{
+  "title": "富士山",
+  "composer": "能（初番目物（脇能・神））",
+  "composer_sort": "Noh",
+  "kind": "noh",
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "noh-fujisan",
+  "note": "★初番目物（脇能・神） ／ ★かぐや姫が 富士の 神と なる 話 ／ ★謡（うたい）の文は 入れていません",
+  "roles": [
+    {
+      "label": "前シテ（里女）"
+    },
+    {
+      "label": "後シテ（浅間の神（かぐや姫））"
+    },
+    {
+      "label": "ワキ（勅使）"
+    },
+    {
+      "label": "アイ（間狂言）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "次第・ワキの道行（駿河・富士山）",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（勅使）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "一声・前シテの登場（里女）",
+      "group_label": "前段",
+      "roles": [
+        "前シテ（里女）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "ワキとの問答・クセ（いわれを語る）",
+      "group_label": "前段",
+      "roles": [
+        "前シテ（里女）",
+        "ワキ（勅使）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "中入・アイの語り（間狂言）",
+      "group_label": "中入",
+      "roles": [
+        "アイ（間狂言）",
+        "ワキ（勅使）"
+      ]
+    },
+    {
+      "label": "出端・後シテの出（浅間の神（かぐや姫））",
+      "group_label": "後段",
+      "roles": [
+        "後シテ（浅間の神（かぐや姫））",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "天女ノ舞",
+      "group_label": "後段",
+      "roles": [
+        "後シテ（浅間の神（かぐや姫））",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "キリ（終曲）",
+      "group_label": "後段",
+      "roles": [
+        "後シテ（浅間の神（かぐや姫））",
+        "ワキ（勅使）",
+        "地謡",
+        "囃子方"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛（能管）",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "percussion"
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "title": "ソローチンツィの市",
+  "title_original": "Сорочинская ярмарка",
+  "composer": "ムソルグスキー",
+  "composer_sort": "Mussorgsky, Modest",
+  "kind": "opera",
+  "year_written": 1880,
+  "duration_min": 120,
+  "edition": "チェレプニン補筆版が広く用いられる",
+  "language": "ru",
+  "source": "hand",
+  "source_id": "sorochintsy-fair",
+  "note": "★未完。★リムスキー＝コルサコフ版・チェレプニン版などで上演される",
+  "roles": [
+    {
+      "label": "パラーシャ"
+    },
+    {
+      "label": "グリツコ"
+    },
+    {
+      "label": "チェレヴィク"
+    },
+    {
+      "label": "ヒヴリャ"
+    },
+    {
+      "label": "アファナーシー・イワノヴィチ"
+    },
+    {
+      "label": "クーム"
+    },
+    {
+      "label": "ジプシー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲（暑い日のウクライナ）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ★市の場（人々の合唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "チェレヴィク",
+        "パラーシャ",
+        "ヒヴリャ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 グリツコとパラーシャの出会い",
+      "group_label": "第1幕",
+      "roles": [
+        "グリツコ",
+        "パラーシャ",
+        "チェレヴィク"
+      ]
+    },
+    {
+      "label": "第1幕 ジプシーと赤い上着の話",
+      "group_label": "第1幕",
+      "roles": [
+        "ジプシー",
+        "グリツコ",
+        "クーム",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 チェレヴィクの家（ヒヴリャと神学生）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヒヴリャ",
+        "アファナーシー・イワノヴィチ"
+      ]
+    },
+    {
+      "label": "第2幕 赤い上着の怪（酔った男たち）",
+      "group_label": "第2幕",
+      "roles": [
+        "チェレヴィク",
+        "クーム",
+        "ヒヴリャ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★禿山の一夜（グリツコの夢）",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★パラーシャのドゥムカとホパーク（終曲）",
+      "group_label": "第3幕",
+      "roles": [
+        "パラーシャ",
+        "グリツコ",
+        "チェレヴィク",
+        "ヒヴリャ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

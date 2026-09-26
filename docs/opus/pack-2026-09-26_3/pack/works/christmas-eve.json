@@ -1,0 +1,213 @@
+{
+  "title": "クリスマス・イヴ",
+  "title_original": "Ночь перед Рождеством",
+  "composer": "リムスキー＝コルサコフ",
+  "composer_sort": "Rimsky-Korsakov, Nikolai",
+  "kind": "opera",
+  "year_written": 1895,
+  "duration_min": 165,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "christmas-eve",
+  "roles": [
+    {
+      "label": "オクサーナ"
+    },
+    {
+      "label": "ヴァクーラ"
+    },
+    {
+      "label": "ソローハ"
+    },
+    {
+      "label": "チューブ"
+    },
+    {
+      "label": "悪魔"
+    },
+    {
+      "label": "パナス"
+    },
+    {
+      "label": "村長"
+    },
+    {
+      "label": "学校の先生"
+    },
+    {
+      "label": "女帝"
+    },
+    {
+      "label": "オヴセン"
+    },
+    {
+      "label": "コリャダー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ★ソローハと悪魔（星と月の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ソローハ",
+        "悪魔"
+      ]
+    },
+    {
+      "label": "第1幕 オクサーナの鏡の歌",
+      "group_label": "第1幕",
+      "roles": [
+        "オクサーナ",
+        "ヴァクーラ"
+      ]
+    },
+    {
+      "label": "第2幕 袋に隠れる客たち",
+      "group_label": "第2幕",
+      "roles": [
+        "ソローハ",
+        "悪魔",
+        "村長",
+        "学校の先生",
+        "チューブ"
+      ]
+    },
+    {
+      "label": "第2幕 ★コリャドカの合唱（クリスマスの歌）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴァクーラ",
+        "オクサーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 星の道（ヴァクーラの空の旅・オヴセンとコリャダー）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァクーラ",
+        "悪魔",
+        "オヴセン",
+        "コリャダー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 ★宮廷（ポロネーズと女帝の靴）",
+      "group_label": "第3幕",
+      "roles": [
+        "女帝",
+        "ヴァクーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（ディカーニカの朝・婚礼）",
+      "group_label": "第4幕",
+      "roles": [
+        "ヴァクーラ",
+        "オクサーナ",
+        "チューブ",
+        "ソローハ",
+        "パナス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

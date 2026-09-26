@@ -1,0 +1,200 @@
+{
+  "title": "オプリーチニク",
+  "title_original": "Опричник",
+  "composer": "チャイコフスキー",
+  "composer_sort": "Tchaikovsky, Pyotr Ilyich",
+  "kind": "opera",
+  "year_written": 1872,
+  "duration_min": 170,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "oprichnik",
+  "roles": [
+    {
+      "label": "アンドレイ・モロゾフ"
+    },
+    {
+      "label": "ナターリヤ"
+    },
+    {
+      "label": "ボヤリーニャ・モロゾヴァ"
+    },
+    {
+      "label": "ジェムチュージヌイ"
+    },
+    {
+      "label": "ヴャジミンスキー"
+    },
+    {
+      "label": "バスマノフ"
+    },
+    {
+      "label": "ザハーリエヴナ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ジェムチュージヌイの庭（娘たちの歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ナターリヤ",
+        "ザハーリエヴナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 アンドレイとナターリヤ",
+      "group_label": "第1幕",
+      "roles": [
+        "アンドレイ・モロゾフ",
+        "ナターリヤ"
+      ]
+    },
+    {
+      "label": "第2幕 母の家（貧しさと誇り）",
+      "group_label": "第2幕",
+      "roles": [
+        "ボヤリーニャ・モロゾヴァ",
+        "アンドレイ・モロゾフ"
+      ]
+    },
+    {
+      "label": "第2幕 ★オプリーチニクの誓い（母を捨てる誓い）",
+      "group_label": "第2幕",
+      "roles": [
+        "アンドレイ・モロゾフ",
+        "バスマノフ",
+        "ヴャジミンスキー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 広場（母と子の出会い）",
+      "group_label": "第3幕",
+      "roles": [
+        "ボヤリーニャ・モロゾヴァ",
+        "アンドレイ・モロゾフ",
+        "ナターリヤ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 婚礼の宴（皇帝の召し）",
+      "group_label": "第4幕",
+      "roles": [
+        "アンドレイ・モロゾフ",
+        "ナターリヤ",
+        "バスマノフ",
+        "ヴャジミンスキー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 終曲（誓いを破った罰・処刑と母の死）",
+      "group_label": "第4幕",
+      "roles": [
+        "アンドレイ・モロゾフ",
+        "ナターリヤ",
+        "ボヤリーニャ・モロゾヴァ",
+        "ヴャジミンスキー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

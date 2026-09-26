@@ -1,0 +1,237 @@
+{
+  "title": "ヴェルサイユの幽霊",
+  "title_original": "The Ghosts of Versailles",
+  "composer": "コリリャーノ",
+  "composer_sort": "Corigliano, John",
+  "kind": "opera",
+  "year_written": 1991,
+  "duration_min": 175,
+  "edition": "1991 メトロポリタン版（大編成）／1996 室内楽版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "ghosts-of-versailles",
+  "note": "★★ボーマルシェの『フィガロ』3部作の第3作『罪ある母』を劇中劇とする。★★ボーマルシェ自身が登場する",
+  "roles": [
+    {
+      "label": "ボーマルシェ"
+    },
+    {
+      "label": "マリー・アントワネット"
+    },
+    {
+      "label": "ルイ16世"
+    },
+    {
+      "label": "フィガロ"
+    },
+    {
+      "label": "スザンナ"
+    },
+    {
+      "label": "ロジーナ"
+    },
+    {
+      "label": "アルマヴィーヴァ伯爵"
+    },
+    {
+      "label": "ケルビーノ"
+    },
+    {
+      "label": "レオン"
+    },
+    {
+      "label": "フロレスティーヌ"
+    },
+    {
+      "label": "ベジャール"
+    },
+    {
+      "label": "ウィルヘルム"
+    },
+    {
+      "label": "サモス・パシャ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ★ヴェルサイユの幽霊たち（ギロチンの後の宮廷）",
+      "group_label": "第1幕",
+      "roles": [
+        "マリー・アントワネット",
+        "ルイ16世",
+        "ボーマルシェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ボーマルシェが劇を上演する（幽霊たちのための芝居）",
+      "group_label": "第1幕",
+      "roles": [
+        "ボーマルシェ",
+        "マリー・アントワネット",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★劇中劇『罪ある母』（フィガロとスザンナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "フィガロ",
+        "スザンナ",
+        "ロジーナ",
+        "アルマヴィーヴァ伯爵",
+        "レオン",
+        "フロレスティーヌ"
+      ]
+    },
+    {
+      "label": "★第1幕 ★ベジャールの陰謀（首飾りを売る）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベジャール",
+        "ウィルヘルム",
+        "アルマヴィーヴァ伯爵"
+      ]
+    },
+    {
+      "label": "★第1幕 ★フィガロの反乱（台本どおりに動かない）",
+      "group_label": "第1幕",
+      "roles": [
+        "フィガロ",
+        "ボーマルシェ",
+        "マリー・アントワネット"
+      ]
+    },
+    {
+      "label": "★第2幕 ★トルコ大使館の宴（★サモス・パシャの場・グロテスクな酒宴）",
+      "group_label": "第2幕",
+      "roles": [
+        "サモス・パシャ",
+        "ケルビーノ",
+        "フィガロ",
+        "スザンナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ボーマルシェが劇の中へ入る",
+      "group_label": "第2幕",
+      "roles": [
+        "ボーマルシェ",
+        "マリー・アントワネット",
+        "フィガロ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★革命法廷（マリー・アントワネットの裁判）",
+      "group_label": "第2幕",
+      "roles": [
+        "マリー・アントワネット",
+        "ベジャール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（★マリー・アントワネットの赦しと安らぎ）",
+      "group_label": "第2幕",
+      "roles": [
+        "マリー・アントワネット",
+        "ボーマルシェ",
+        "フィガロ",
+        "スザンナ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

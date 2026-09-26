@@ -1,0 +1,82 @@
+{
+  "title": "箏曲「六段の調」",
+  "composer": "八橋検校",
+  "composer_sort": "Yatsuhashi, Kengyo",
+  "kind": "chamber",
+  "duration_min": 12,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-sawai-koto",
+  "note": "★★★箏曲の 最も 基本の 曲。★『春の海』と 並んで よく 演奏されます",
+  "roles": [
+    {
+      "label": "箏"
+    },
+    {
+      "label": "三味線（入る場合）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "初段",
+      "group_label": "楽章",
+      "roles": [
+        "箏",
+        "三味線（入る場合）"
+      ]
+    },
+    {
+      "label": "二段",
+      "group_label": "楽章",
+      "roles": [
+        "箏",
+        "三味線（入る場合）"
+      ]
+    },
+    {
+      "label": "三段",
+      "group_label": "楽章",
+      "roles": [
+        "箏",
+        "三味線（入る場合）"
+      ]
+    },
+    {
+      "label": "四段",
+      "group_label": "楽章",
+      "roles": [
+        "箏",
+        "三味線（入る場合）"
+      ]
+    },
+    {
+      "label": "五段",
+      "group_label": "楽章",
+      "roles": [
+        "箏",
+        "三味線（入る場合）"
+      ]
+    },
+    {
+      "label": "六段",
+      "group_label": "楽章",
+      "roles": [
+        "箏",
+        "三味線（入る場合）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "箏",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "三味線（入る場合）",
+      "count": 0,
+      "section": "strings",
+      "note": "合奏の形もあります"
+    }
+  ]
+}

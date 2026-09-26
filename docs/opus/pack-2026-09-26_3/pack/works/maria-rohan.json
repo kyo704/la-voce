@@ -1,0 +1,189 @@
+{
+  "title": "マリア・ディ・ロアン",
+  "title_original": "Maria di Rohan",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1843,
+  "duration_min": 115,
+  "language": "it",
+  "source": "hand",
+  "source_id": "maria-rohan",
+  "roles": [
+    {
+      "label": "マリア"
+    },
+    {
+      "label": "シャレー伯爵"
+    },
+    {
+      "label": "シェヴルーズ公爵"
+    },
+    {
+      "label": "アルマン・ド・ゴンディ"
+    },
+    {
+      "label": "ヴィスコンテ・ド・スリー"
+    },
+    {
+      "label": "オービニー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "前奏曲",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 ルーヴル宮（マリアの願い）",
+      "group_label": "第1幕",
+      "roles": [
+        "マリア",
+        "アルマン・ド・ゴンディ",
+        "オービニー"
+      ]
+    },
+    {
+      "label": "第1幕 シェヴルーズ公爵の赦免",
+      "group_label": "第1幕",
+      "roles": [
+        "シェヴルーズ公爵",
+        "マリア",
+        "シャレー伯爵"
+      ]
+    },
+    {
+      "label": "第1幕 シャレーとマリアの二重唱（決闘の約束）",
+      "group_label": "第1幕",
+      "roles": [
+        "シャレー伯爵",
+        "マリア"
+      ]
+    },
+    {
+      "label": "第2幕 シャレーの家（遺書）",
+      "group_label": "第2幕",
+      "roles": [
+        "シャレー伯爵",
+        "マリア",
+        "ヴィスコンテ・ド・スリー"
+      ]
+    },
+    {
+      "label": "第2幕 決闘とシェヴルーズの登場",
+      "group_label": "第2幕",
+      "roles": [
+        "シャレー伯爵",
+        "シェヴルーズ公爵",
+        "マリア",
+        "アルマン・ド・ゴンディ"
+      ]
+    },
+    {
+      "label": "第3幕 手紙の発見とシェヴルーズの怒り",
+      "group_label": "第3幕",
+      "roles": [
+        "シェヴルーズ公爵",
+        "マリア",
+        "シャレー伯爵"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（シャレーの自害・マリアの呪い）",
+      "group_label": "第3幕",
+      "roles": [
+        "マリア",
+        "シェヴルーズ公爵",
+        "シャレー伯爵",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

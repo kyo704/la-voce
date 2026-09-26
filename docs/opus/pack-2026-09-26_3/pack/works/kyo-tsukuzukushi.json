@@ -1,0 +1,57 @@
+{
+  "title": "土筆",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-tsukuzukushi",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（何某）"
+    },
+    {
+      "label": "アド（何某二）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "野で土筆を摘む",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（何某二）"
+      ]
+    },
+    {
+      "label": "歌の付け合いになる",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（何某二）"
+      ]
+    },
+    {
+      "label": "負けた方が罰を受ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（何某）",
+        "アド（何某二）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

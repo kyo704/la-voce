@@ -1,0 +1,67 @@
+{
+  "title": "二人袴",
+  "title_original": "二人袴",
+  "aliases": [],
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "year_written": 1500,
+  "source": "hand",
+  "source_id": "kyogen-ninin-bakama-okura",
+  "duration_min": 30,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "親"
+    },
+    {
+      "label": "聟"
+    },
+    {
+      "label": "舅"
+    },
+    {
+      "label": "太郎冠者"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "聟入りの支度（袴が一つ）",
+      "group_label": "全",
+      "roles": [
+        "親",
+        "聟"
+      ]
+    },
+    {
+      "label": "半分ずつ着る",
+      "group_label": "全",
+      "roles": [
+        "親",
+        "聟",
+        "舅",
+        "太郎冠者"
+      ]
+    },
+    {
+      "label": "露見と笑い",
+      "group_label": "全",
+      "roles": [
+        "親",
+        "聟",
+        "舅"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による（笛・小鼓・大鼓・太鼓）"
+    }
+  ],
+  "school": "大蔵流",
+  "note": "★大蔵流で書いた。和泉流では 曲名や科白の運びが違うことがある"
+}

@@ -1,0 +1,166 @@
+{
+  "title": "交響曲第1番 作品26",
+  "composer": "スクリャービン",
+  "composer_sort": "Scriabin, Alexander",
+  "kind": "orchestra",
+  "year_written": 1900,
+  "duration_min": 50,
+  "language": "—",
+  "source": "hand",
+  "source_id": "or-scriabin-sym1",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2楽章",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3楽章",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4楽章",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5楽章",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第6楽章（★ソプラノ・テノール独唱と 合唱）",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

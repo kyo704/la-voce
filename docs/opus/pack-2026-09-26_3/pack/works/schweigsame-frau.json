@@ -1,0 +1,239 @@
+{
+  "title": "無口な女",
+  "title_original": "Die schweigsame Frau",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1935,
+  "duration_min": 165,
+  "language": "de",
+  "source": "hand",
+  "source_id": "schweigsame-frau",
+  "roles": [
+    {
+      "label": "モロズス卿"
+    },
+    {
+      "label": "家政婦"
+    },
+    {
+      "label": "理髪師"
+    },
+    {
+      "label": "ヘンリー・モロズス"
+    },
+    {
+      "label": "アミンタ"
+    },
+    {
+      "label": "イゾッタ"
+    },
+    {
+      "label": "カルロッタ"
+    },
+    {
+      "label": "モルビオ"
+    },
+    {
+      "label": "ヴァヌッツィ"
+    },
+    {
+      "label": "ファルファッロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "ポプリ（序曲）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 家政婦と理髪師（耳の遠い老人の嘆き）",
+      "group_label": "第1幕",
+      "roles": [
+        "家政婦",
+        "理髪師",
+        "モロズス卿"
+      ]
+    },
+    {
+      "label": "第1幕 甥ヘンリーの到来（一座の仲間）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヘンリー・モロズス",
+        "アミンタ",
+        "モロズス卿",
+        "イゾッタ",
+        "カルロッタ",
+        "ヴァヌッツィ",
+        "ファルファッロ",
+        "モルビオ"
+      ]
+    },
+    {
+      "label": "第1幕 理髪師の計（無口な娘を紹介する）",
+      "group_label": "第1幕",
+      "roles": [
+        "理髪師",
+        "ヘンリー・モロズス",
+        "アミンタ"
+      ]
+    },
+    {
+      "label": "第2幕 3人の花嫁候補",
+      "group_label": "第2幕",
+      "roles": [
+        "モロズス卿",
+        "イゾッタ",
+        "カルロッタ",
+        "アミンタ",
+        "理髪師"
+      ]
+    },
+    {
+      "label": "第2幕 偽りの婚礼",
+      "group_label": "第2幕",
+      "roles": [
+        "モロズス卿",
+        "アミンタ",
+        "ヴァヌッツィ",
+        "ファルファッロ",
+        "モルビオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アミンタの騒がしさ（家を壊す）",
+      "group_label": "第2幕",
+      "roles": [
+        "アミンタ",
+        "モロズス卿",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 歌の稽古と大工の騒ぎ",
+      "group_label": "第3幕",
+      "roles": [
+        "アミンタ",
+        "モロズス卿",
+        "ファルファッロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 偽りの裁判（離縁）",
+      "group_label": "第3幕",
+      "roles": [
+        "ヴァヌッツィ",
+        "モルビオ",
+        "モロズス卿",
+        "アミンタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 種明かしと終曲（静けさの美しさ）",
+      "group_label": "第3幕",
+      "roles": [
+        "モロズス卿",
+        "ヘンリー・モロズス",
+        "アミンタ",
+        "理髪師",
+        "家政婦",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "title": "エニシング・ゴーズ",
+  "title_original": "Anything Goes",
+  "composer": "コール・ポーター",
+  "kind": "musical",
+  "year_written": 1934,
+  "duration_min": 145,
+  "edition": "★★1987 リンカーン・センター版（★いま上演されるのはほぼこれ。1934 原典版とは曲が大きく違う）／1962 オフ版／2011 リバイバル版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "anything-goes",
+  "note": "★作詞 コール・ポーター ／ 脚本 ガイ・ボルトン／P.G.ウッドハウス（原案） ／ ★★『エニシング・ゴーズ』は版によって曲が入れ替わる代表例。★どの版かを先に決めないと香盤表が立ちません",
+  "roles": [
+    {
+      "label": "リノ・スウィーニー"
+    },
+    {
+      "label": "ビリー・クロッカー"
+    },
+    {
+      "label": "ホープ・ハーコート"
+    },
+    {
+      "label": "ムーンフェイス・マーティン"
+    },
+    {
+      "label": "イヴリン・オークリー卿"
+    },
+    {
+      "label": "エルシャ・ホイットニー"
+    },
+    {
+      "label": "ハーコート夫人"
+    },
+    {
+      "label": "アージー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★アイ・ゲット・ア・キック・アウト・オブ・ユー",
+      "group_label": "第1幕",
+      "roles": [
+        "リノ・スウィーニー",
+        "ビリー・クロッカー"
+      ]
+    },
+    {
+      "label": "M2 ★船出（Bon Voyage）",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★ユー・アー・ザ・トップ",
+      "group_label": "第1幕",
+      "roles": [
+        "リノ・スウィーニー",
+        "ビリー・クロッカー"
+      ]
+    },
+    {
+      "label": "M4 ★牧師に化けるビリー",
+      "group_label": "第1幕",
+      "roles": [
+        "ビリー・クロッカー",
+        "ムーンフェイス・マーティン"
+      ]
+    },
+    {
+      "label": "M5 ★イージー・トゥ・ラヴ",
+      "group_label": "第1幕",
+      "roles": [
+        "ビリー・クロッカー",
+        "ホープ・ハーコート"
+      ]
+    },
+    {
+      "label": "M6 ★ブロウ、ガブリエル、ブロウ",
+      "group_label": "第1幕",
+      "roles": [
+        "リノ・スウィーニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★エニシング・ゴーズ（第1幕終曲・タップ）",
+      "group_label": "第1幕",
+      "roles": [
+        "リノ・スウィーニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★パブリック・エネミー・ナンバー1",
+      "group_label": "第2幕",
+      "roles": [
+        "ムーンフェイス・マーティン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★フレンドシップ",
+      "group_label": "第2幕",
+      "roles": [
+        "リノ・スウィーニー",
+        "ムーンフェイス・マーティン"
+      ]
+    },
+    {
+      "label": "M10 ★イッツ・ディライトフル",
+      "group_label": "第2幕",
+      "roles": [
+        "ホープ・ハーコート",
+        "ビリー・クロッカー"
+      ]
+    },
+    {
+      "label": "M11 ★ザ・ジプシー・イン・ミー",
+      "group_label": "第2幕",
+      "roles": [
+        "イヴリン・オークリー卿",
+        "リノ・スウィーニー"
+      ]
+    },
+    {
+      "label": "M12 ★終曲（3組の婚礼）",
+      "group_label": "第2幕",
+      "roles": [
+        "リノ・スウィーニー",
+        "ビリー・クロッカー",
+        "ホープ・ハーコート",
+        "イヴリン・オークリー卿",
+        "ハーコート夫人",
+        "エルシャ・ホイットニー",
+        "アージー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

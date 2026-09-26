@@ -1,0 +1,318 @@
+{
+  "title": "ラグタイム",
+  "title_original": "Ragtime",
+  "composer": "スティーヴン・フラハティ",
+  "kind": "musical",
+  "year_written": 1998,
+  "duration_min": 160,
+  "edition": "1998 ブロードウェイ初演版（★2009 リバイバル版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "ragtime",
+  "note": "★作詞 リン・アーレンス ／ 脚本 テレンス・マクナリー ／ ★E.L.ドクトロウの小説による。★★20世紀初頭のアメリカを★白人中産階級・黒人・移民の3つの家族で描く",
+  "roles": [
+    {
+      "label": "コールハウス・ウォーカー・ジュニア"
+    },
+    {
+      "label": "サラ"
+    },
+    {
+      "label": "マザー"
+    },
+    {
+      "label": "ファザー"
+    },
+    {
+      "label": "マザーの弟"
+    },
+    {
+      "label": "ターテ"
+    },
+    {
+      "label": "ターテの娘"
+    },
+    {
+      "label": "エマ・ゴールドマン"
+    },
+    {
+      "label": "エヴリン・ネスビット"
+    },
+    {
+      "label": "ハリー・フーディーニ"
+    },
+    {
+      "label": "ブッカー・T・ワシントン"
+    },
+    {
+      "label": "リトル・ボーイ"
+    },
+    {
+      "label": "リトル・ガール"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★プロローグ（ラグタイム ─ 3つの世界が並ぶ）",
+      "group_label": "第1幕",
+      "roles": [
+        "リトル・ボーイ",
+        "マザー",
+        "ファザー",
+        "コールハウス・ウォーカー・ジュニア",
+        "サラ",
+        "ターテ",
+        "エマ・ゴールドマン",
+        "エヴリン・ネスビット",
+        "ハリー・フーディーニ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★グッバイ、マイ・ラヴ（ファザーの北極探検）",
+      "group_label": "第1幕",
+      "roles": [
+        "マザー",
+        "ファザー"
+      ]
+    },
+    {
+      "label": "M3 ★★ジャーニー・オン",
+      "group_label": "第1幕",
+      "roles": [
+        "ファザー",
+        "マザー",
+        "ターテ"
+      ]
+    },
+    {
+      "label": "M4 ★★★ヘンリー・フォード",
+      "group_label": "第1幕",
+      "roles": [
+        "コールハウス・ウォーカー・ジュニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★ニュー・ミュージック",
+      "group_label": "第1幕",
+      "roles": [
+        "コールハウス・ウォーカー・ジュニア",
+        "サラ",
+        "マザー",
+        "ファザー",
+        "マザーの弟",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★★ユア・ダディーズ・サン",
+      "group_label": "第1幕",
+      "roles": [
+        "サラ"
+      ]
+    },
+    {
+      "label": "M7 ★★★ザ・クライム・オブ・ザ・センチュリー（エヴリン・ネスビット）",
+      "group_label": "第1幕",
+      "roles": [
+        "エヴリン・ネスビット",
+        "マザーの弟",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★★サクセス（ターテの成功）",
+      "group_label": "第1幕",
+      "roles": [
+        "ターテ",
+        "エマ・ゴールドマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★★ホイールズ・オブ・ア・ドリーム（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "コールハウス・ウォーカー・ジュニア",
+        "サラ"
+      ]
+    },
+    {
+      "label": "M10 ★★★ザ・ナイト・ザット・ゴールドマン・スポーク・アット・ユニオン・スクエア",
+      "group_label": "第2幕",
+      "roles": [
+        "マザーの弟",
+        "エマ・ゴールドマン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★サラの死と葬送（Til We Reach That Day の再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "コールハウス・ウォーカー・ジュニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★コールハウス・デマンズ（消防署の破壊）",
+      "group_label": "第2幕",
+      "roles": [
+        "コールハウス・ウォーカー・ジュニア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★★バック・トゥ・ビフォア",
+      "group_label": "第2幕",
+      "roles": [
+        "マザー"
+      ]
+    },
+    {
+      "label": "M14 ★★★ミュージアムの占拠とブッカー・T・ワシントンの説得",
+      "group_label": "第2幕",
+      "roles": [
+        "コールハウス・ウォーカー・ジュニア",
+        "ブッカー・T・ワシントン",
+        "マザーの弟",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M15 ★★★メイク・ゼム・ヒア・ユー",
+      "group_label": "第2幕",
+      "roles": [
+        "コールハウス・ウォーカー・ジュニア"
+      ]
+    },
+    {
+      "label": "M16 ★★★終曲（コールハウスの死・3つの家族が1つになる）",
+      "group_label": "第2幕",
+      "roles": [
+        "マザー",
+        "ターテ",
+        "リトル・ボーイ",
+        "リトル・ガール",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

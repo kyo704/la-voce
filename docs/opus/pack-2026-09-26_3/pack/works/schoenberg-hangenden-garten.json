@@ -1,0 +1,38 @@
+{
+  "title": "架空庭園の書 作品15",
+  "title_original": "Das Buch der hängenden Gärten op.15",
+  "composer": "シェーンベルク",
+  "composer_sort": "Schoenberg, Arnold",
+  "kind": "song_cycle",
+  "year_written": 1909,
+  "duration_min": 30,
+  "language": "de",
+  "source": "hand",
+  "source_id": "schoenberg-op15",
+  "note": "★作詩 ゲオルゲ ／ ★★調性を 離れた 最初の 歌曲集の 1つ ／ ★★曲名を 全部 確かめられなかったので ★曲数（15曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全15曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

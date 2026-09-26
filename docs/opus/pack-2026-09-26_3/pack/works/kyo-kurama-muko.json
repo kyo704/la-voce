@@ -1,0 +1,56 @@
+{
+  "title": "鞍馬聟",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kurama-muko",
+  "note": "★聟狂言 ／ ★★筋の 細かいところは 入れて いません ── ★曲名と 分類だけ 確かめました。★段は 狂言の 型（出だし → やりとり → 落ち）です ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（聟）"
+    },
+    {
+      "label": "アド（舅）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "一段（名乗り・出だし）",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）"
+      ]
+    },
+    {
+      "label": "二段（やりとり）",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（舅）"
+      ]
+    },
+    {
+      "label": "三段（落ち・留め）",
+      "group_label": "段",
+      "roles": [
+        "シテ（聟）",
+        "アド（舅）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

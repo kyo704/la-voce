@@ -1,0 +1,175 @@
+{
+  "title": "風と共に去りぬ（宝塚版）",
+  "composer": "寺田瀧雄",
+  "composer_sort": "Takarazuka",
+  "kind": "musical",
+  "year_written": 1977,
+  "duration_min": 160,
+  "edition": "★★宝塚版 ── ★★スカーレットを 複数の 人が 演じ分ける 版（『スカーレットⅠ・Ⅱ』）も あります",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "mu-takarazuka-phoenix",
+  "note": "★作詞 ― ／ 脚本 菊田一夫・植田紳爾（脚本・演出）",
+  "roles": [
+    {
+      "label": "スカーレット・オハラ"
+    },
+    {
+      "label": "レット・バトラー"
+    },
+    {
+      "label": "アシュレ"
+    },
+    {
+      "label": "メラニー"
+    },
+    {
+      "label": "ベル・ワトリング"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "タラの丘",
+      "group_label": "第1幕",
+      "roles": [
+        "スカーレット・オハラ",
+        "アシュレ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★戦争とアトランタ",
+      "group_label": "第1幕",
+      "roles": [
+        "スカーレット・オハラ",
+        "メラニー",
+        "レット・バトラー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "再建と結婚",
+      "group_label": "第2幕",
+      "roles": [
+        "スカーレット・オハラ",
+        "レット・バトラー",
+        "ベル・ワトリング"
+      ]
+    },
+    {
+      "label": "★別れと『明日』",
+      "group_label": "第2幕",
+      "roles": [
+        "スカーレット・オハラ",
+        "レット・バトラー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

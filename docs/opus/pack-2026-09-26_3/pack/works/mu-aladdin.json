@@ -1,0 +1,194 @@
+{
+  "title": "アラジン",
+  "title_original": "Aladdin",
+  "composer": "アラン・メンケン",
+  "kind": "musical",
+  "year_written": 2014,
+  "duration_min": 140,
+  "edition": "★ブロードウェイ版（2014）。★日本語版・各国版で曲数が少し違います",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-aladdin",
+  "note": "★作詞 ハワード・アシュマン／ティム・ライス／チャド・ベグリン ／ 脚本 チャド・ベグリン",
+  "roles": [
+    {
+      "label": "アラジン"
+    },
+    {
+      "label": "ジャスミン"
+    },
+    {
+      "label": "ジーニー"
+    },
+    {
+      "label": "ジャファー"
+    },
+    {
+      "label": "イアーゴ"
+    },
+    {
+      "label": "サルタン"
+    },
+    {
+      "label": "カシーム"
+    },
+    {
+      "label": "オマール"
+    },
+    {
+      "label": "バブカック"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "アグラバーの市場",
+      "group_label": "第1幕",
+      "roles": [
+        "アラジン",
+        "カシーム",
+        "オマール",
+        "バブカック",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ジャスミンの願い",
+      "group_label": "第1幕",
+      "roles": [
+        "ジャスミン",
+        "サルタン"
+      ]
+    },
+    {
+      "label": "洞窟に入る",
+      "group_label": "第1幕",
+      "roles": [
+        "アラジン",
+        "ジャファー",
+        "イアーゴ"
+      ]
+    },
+    {
+      "label": "★★ジーニーの登場（★大きな見せ場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジーニー",
+        "アラジン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★魔法の絨毯（★宙を飛ぶ仕掛け）",
+      "group_label": "第2幕",
+      "roles": [
+        "アラジン",
+        "ジャスミン"
+      ]
+    },
+    {
+      "label": "ジャファーの企み",
+      "group_label": "第2幕",
+      "roles": [
+        "ジャファー",
+        "イアーゴ",
+        "ジーニー"
+      ]
+    },
+    {
+      "label": "結末とジーニーの自由",
+      "group_label": "第2幕",
+      "roles": [
+        "アラジン",
+        "ジャスミン",
+        "ジーニー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

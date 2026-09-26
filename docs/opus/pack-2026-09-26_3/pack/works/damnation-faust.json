@@ -1,0 +1,220 @@
+{
+  "title": "ファウストの劫罰",
+  "title_original": "La damnation de Faust",
+  "composer": "ベルリオーズ",
+  "composer_sort": "Berlioz, Hector",
+  "kind": "opera",
+  "year_written": 1846,
+  "duration_min": 125,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "damnation-faust",
+  "note": "★『劇的物語』。演奏会形式でも舞台形式でも上演される",
+  "roles": [
+    {
+      "label": "ファウスト"
+    },
+    {
+      "label": "メフィストフェレス"
+    },
+    {
+      "label": "マルグリート"
+    },
+    {
+      "label": "ブランデル"
+    },
+    {
+      "label": "天上の声"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1部 ハンガリーの平原（ファウストの独白）",
+      "group_label": "第1部",
+      "roles": [
+        "ファウスト"
+      ]
+    },
+    {
+      "label": "第1部 農民の踊りと★ラコッツィ行進曲",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 書斎（復活祭の讃歌とメフィストの登場）",
+      "group_label": "第2部",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 アウエルバッハの酒場（ねずみの歌・のみの歌）",
+      "group_label": "第2部",
+      "roles": [
+        "ブランデル",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 エルベ河畔の夢（★妖精の踊り）",
+      "group_label": "第2部",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2部 ★鬼火のメヌエット",
+      "group_label": "第2部",
+      "roles": [
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3部 ★マルグリートのトゥーレの王の歌",
+      "group_label": "第3部",
+      "roles": [
+        "マルグリート"
+      ]
+    },
+    {
+      "label": "第3部 メフィストのセレナードと三重唱",
+      "group_label": "第3部",
+      "roles": [
+        "ファウスト",
+        "マルグリート",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4部 ★マルグリートのロマンス（燃ゆる思い）",
+      "group_label": "第4部",
+      "roles": [
+        "マルグリート"
+      ]
+    },
+    {
+      "label": "第4部 自然への呼びかけ（ファウストのアリア）",
+      "group_label": "第4部",
+      "roles": [
+        "ファウスト"
+      ]
+    },
+    {
+      "label": "第4部 ★深淵への騎行",
+      "group_label": "第4部",
+      "roles": [
+        "ファウスト",
+        "メフィストフェレス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "パンデモニウムと★天上（マルグリートの救い）",
+      "group_label": "終曲",
+      "roles": [
+        "天上の声",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "title": "火刑台上のジャンヌ・ダルク",
+  "title_original": "Jeanne d'Arc au bûcher",
+  "composer": "オネゲル",
+  "composer_sort": "Honegger, Arthur",
+  "kind": "opera",
+  "year_written": 1938,
+  "duration_min": 80,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "jeanne-bucher",
+  "note": "★劇的オラトリオ。★ジャンヌと修道士は語り役（歌わない） ／ ★2026-09-26: honegger-jeanne.json（同じ作の簡略版）と重複していたため、こちらに一本化しました",
+  "roles": [
+    {
+      "label": "ジャンヌ・ダルク"
+    },
+    {
+      "label": "ドミニク修道士"
+    },
+    {
+      "label": "聖母"
+    },
+    {
+      "label": "聖マルグリット"
+    },
+    {
+      "label": "聖カトリーヌ"
+    },
+    {
+      "label": "ポルキュス"
+    },
+    {
+      "label": "語り手"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    },
+    {
+      "label": "ソプラノ独唱",
+      "is_group": false
+    },
+    {
+      "label": "児童合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序（★合唱のみ・フランスの闇）",
+      "group_label": "序",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "天からの声",
+      "group_label": "第1場",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★本（ドミニク修道士が読む）",
+      "group_label": "第2場",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "ドミニク修道士"
+      ]
+    },
+    {
+      "label": "★大地の声と裁判（動物たちの法廷）",
+      "group_label": "第3場",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "ドミニク修道士",
+        "ポルキュス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★王たち、あるいはトランプの発明",
+      "group_label": "第4場",
+      "roles": [
+        "ドミニク修道士",
+        "ポルキュス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "カトリーヌとマルグリット（剣と声）",
+      "group_label": "第5場",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "聖マルグリット",
+        "聖カトリーヌ"
+      ]
+    },
+    {
+      "label": "★ランスの王（希望の歌）",
+      "group_label": "第6場",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "ドミニク修道士",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★トリマゾーの歌（5月の歌）",
+      "group_label": "第7場",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★ジャンヌの炎（愛には鎖はない）",
+      "group_label": "終場",
+      "roles": [
+        "ジャンヌ・ダルク",
+        "聖母",
+        "ドミニク修道士",
+        "合唱",
+        "児童合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オンド・マルトノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

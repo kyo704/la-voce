@@ -1,0 +1,216 @@
+{
+  "title": "馬子ヒュー",
+  "title_original": "Hugh the Drover",
+  "composer": "ヴォーン・ウィリアムズ",
+  "composer_sort": "Vaughan Williams, Ralph",
+  "kind": "opera",
+  "year_written": 1924,
+  "duration_min": 125,
+  "language": "en",
+  "source": "hand",
+  "source_id": "hugh-the-drover",
+  "note": "★英国民謡を多く用いた『ロマンティック・バラッド・オペラ』",
+  "roles": [
+    {
+      "label": "メアリー"
+    },
+    {
+      "label": "ヒュー"
+    },
+    {
+      "label": "ジョン"
+    },
+    {
+      "label": "コンスタブル"
+    },
+    {
+      "label": "ターキー"
+    },
+    {
+      "label": "アンクル"
+    },
+    {
+      "label": "アント"
+    },
+    {
+      "label": "鍛冶屋"
+    },
+    {
+      "label": "羊飼い"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 コッツウォルズの町の市（★呼び売りの合唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "ターキー",
+        "鍛冶屋",
+        "羊飼い",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 メアリーとジョンの婚約（望まぬ縁）",
+      "group_label": "第1幕",
+      "roles": [
+        "メアリー",
+        "ジョン",
+        "コンスタブル",
+        "アント"
+      ]
+    },
+    {
+      "label": "★第1幕 馬子ヒューの登場（★旅の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒュー",
+        "メアリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★拳闘試合（ヒューとジョン）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒュー",
+        "ジョン",
+        "コンスタブル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 フィナーレ（ヒューをスパイと訴える）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヒュー",
+        "ジョン",
+        "コンスタブル",
+        "メアリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★夜の晒し台（ヒューとメアリーの愛の二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヒュー",
+        "メアリー"
+      ]
+    },
+    {
+      "label": "★第2幕 朝（メアリーも晒し台に立つ）",
+      "group_label": "第2幕",
+      "roles": [
+        "メアリー",
+        "ヒュー",
+        "コンスタブル",
+        "ジョン",
+        "アンクル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（軍曹がヒューを認め、2人は町を出る）",
+      "group_label": "第2幕",
+      "roles": [
+        "ヒュー",
+        "メアリー",
+        "ジョン",
+        "コンスタブル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

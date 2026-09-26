@@ -1,0 +1,142 @@
+{
+ "title": "白鳥の歌",
+ "title_original": "Schwanengesang",
+ "composer": "シューベルト",
+ "composer_sort": "Schubert, Franz",
+ "kind": "song_cycle",
+ "year_written": 1828,
+ "duration_min": 50,
+ "language": "de",
+ "source_id": "schubert-schwanengesang",
+ "note": "★出版社が まとめた もの。★作曲家が「歌曲集」として 書いた ものでは ありません",
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "ピアノ"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "ピアノ",
+   "count": 1,
+   "section": "keyboard"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. 愛の使い（Liebesbotschaft）",
+   "group_label": "レルシュタープ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "2. 戦士の予感（Kriegers Ahnung）",
+   "group_label": "レルシュタープ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "3. 春の憧れ（Frühlingssehnsucht）",
+   "group_label": "レルシュタープ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "4. セレナーデ（Ständchen）",
+   "group_label": "レルシュタープ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "5. わが宿（Aufenthalt）",
+   "group_label": "レルシュタープ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "6. 遠い国で（In der Ferne）",
+   "group_label": "レルシュタープ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "7. 別れ（Abschied）",
+   "group_label": "レルシュタープ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "8. アトラス（Der Atlas）",
+   "group_label": "ハイネ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "9. 彼女の絵姿（Ihr Bild）",
+   "group_label": "ハイネ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "10. 漁師の娘（Das Fischermädchen）",
+   "group_label": "ハイネ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "11. 町（Die Stadt）",
+   "group_label": "ハイネ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "12. 海辺にて（Am Meer）",
+   "group_label": "ハイネ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "13. 影法師（Der Doppelgänger）",
+   "group_label": "ハイネ",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  },
+  {
+   "label": "14. 鳩の便り（Die Taubenpost）",
+   "group_label": "ザイドル",
+   "roles": [
+    "独唱",
+    "ピアノ"
+   ]
+  }
+ ],
+ "source": "hand"
+}

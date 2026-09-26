@@ -1,0 +1,79 @@
+{
+  "title": "オーボエ四重奏曲 ヘ長調 K.370",
+  "composer": "モーツァルト",
+  "composer_sort": "Mozart, Wolfgang Amadeus",
+  "kind": "chamber",
+  "year_written": 1781,
+  "duration_min": 15,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-mozart-clarinet-quintet-nashi",
+  "roles": [
+    {
+      "label": "オーボエ"
+    },
+    {
+      "label": "ヴァイオリン"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "チェロ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 アレグロ",
+      "group_label": "楽章",
+      "roles": [
+        "オーボエ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第2楽章 アダージョ",
+      "group_label": "楽章",
+      "roles": [
+        "オーボエ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    },
+    {
+      "label": "第3楽章 ロンド",
+      "group_label": "楽章",
+      "roles": [
+        "オーボエ",
+        "ヴァイオリン",
+        "ヴィオラ",
+        "チェロ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ヴァイオリン",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "チェロ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

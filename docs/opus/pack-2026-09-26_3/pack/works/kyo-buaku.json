@@ -1,0 +1,69 @@
+{
+  "title": "武悪",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 40,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-buaku",
+  "note": "★小名狂言 ／ ★★★長い曲。★情と 笑いが 入れ替わります ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "小アド（武悪）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主が武悪を討てと命じる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "★武悪と向き合い、討てずに逃がす",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "小アド（武悪）"
+      ]
+    },
+    {
+      "label": "★★討ったと偽って報せる",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "★★幽霊に化けた武悪と出会う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）",
+        "小アド（武悪）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

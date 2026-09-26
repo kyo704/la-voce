@@ -1,0 +1,70 @@
+{
+  "title": "木六駄",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 45,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kirokuda",
+  "note": "★小名狂言 ／ ★★大曲。★雪の峠を越える語りが見せ場 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "小アド（茶屋）"
+    },
+    {
+      "label": "小アド（伯父）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★雪の峠を牛12頭で越える",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "茶屋で酒を飲む",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "小アド（茶屋）"
+      ]
+    },
+    {
+      "label": "★酔って伯父への届け物の酒を飲んでしまう",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）"
+      ]
+    },
+    {
+      "label": "伯父の家で言い訳する",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "小アド（伯父）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

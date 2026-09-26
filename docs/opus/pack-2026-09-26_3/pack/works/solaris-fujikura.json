@@ -1,0 +1,183 @@
+{
+  "title": "ソラリス",
+  "title_original": "Solaris",
+  "composer": "藤倉大",
+  "composer_sort": "Fujikura, Dai",
+  "kind": "opera",
+  "year_written": 2015,
+  "duration_min": 100,
+  "language": "en",
+  "source": "hand",
+  "source_id": "solaris-fujikura",
+  "note": "★レムの小説による。★シャンゼリゼ劇場・ローザンヌ歌劇場・リール歌劇場の共同委嘱。★台本は英語",
+  "roles": [
+    {
+      "label": "ハリー"
+    },
+    {
+      "label": "クリス・ケルヴィン"
+    },
+    {
+      "label": "スナウト"
+    },
+    {
+      "label": "サルトリウス"
+    },
+    {
+      "label": "ギバリャン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ソラリスの観測基地への到着",
+      "group_label": "第1幕",
+      "roles": [
+        "クリス・ケルヴィン",
+        "スナウト"
+      ]
+    },
+    {
+      "label": "★★第1幕 ★死んだ妻ハリーの出現",
+      "group_label": "第1幕",
+      "roles": [
+        "クリス・ケルヴィン",
+        "ハリー"
+      ]
+    },
+    {
+      "label": "★第1幕 サルトリウスの拒み（あれは人間ではない）",
+      "group_label": "第1幕",
+      "roles": [
+        "サルトリウス",
+        "クリス・ケルヴィン",
+        "スナウト"
+      ]
+    },
+    {
+      "label": "★★第2幕 ハリーが自分の正体を知る",
+      "group_label": "第2幕",
+      "roles": [
+        "ハリー",
+        "クリス・ケルヴィン"
+      ]
+    },
+    {
+      "label": "★★第2幕 ギバリャンの遺した記録",
+      "group_label": "第2幕",
+      "roles": [
+        "ギバリャン",
+        "スナウト",
+        "クリス・ケルヴィン"
+      ]
+    },
+    {
+      "label": "★★第2幕 ハリーの自壊の試み",
+      "group_label": "第2幕",
+      "roles": [
+        "ハリー",
+        "クリス・ケルヴィン",
+        "サルトリウス"
+      ]
+    },
+    {
+      "label": "★★終曲（★ハリーの消滅と海の沈黙）",
+      "group_label": "終幕",
+      "roles": [
+        "クリス・ケルヴィン",
+        "スナウト",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

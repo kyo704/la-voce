@@ -1,0 +1,69 @@
+{
+  "title": "ル・シッド",
+  "composer": "コルネイユ",
+  "composer_sort": "Corneille, Pierre",
+  "kind": "drama",
+  "year_written": 1637,
+  "duration_min": 130,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "dr-cid",
+  "note": "★★台詞の 文は 入れて いません",
+  "roles": [
+    {
+      "label": "ロドリーグ（シッド）"
+    },
+    {
+      "label": "シメーヌ"
+    },
+    {
+      "label": "ドン・ディエーグ"
+    },
+    {
+      "label": "ドン・ゴメス"
+    },
+    {
+      "label": "王"
+    },
+    {
+      "label": "王女"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "父の辱めと決闘の決意",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドリーグ（シッド）",
+        "ドン・ディエーグ",
+        "ドン・ゴメス"
+      ]
+    },
+    {
+      "label": "★★シメーヌとの対面（愛と義理）",
+      "group_label": "第3幕",
+      "roles": [
+        "ロドリーグ（シッド）",
+        "シメーヌ"
+      ]
+    },
+    {
+      "label": "★決着",
+      "group_label": "第5幕",
+      "roles": [
+        "ロドリーグ（シッド）",
+        "シメーヌ",
+        "王",
+        "王女"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（劇音楽がつく上演もあります）",
+      "count": 0,
+      "section": "other",
+      "note": "上演ごと"
+    }
+  ]
+}

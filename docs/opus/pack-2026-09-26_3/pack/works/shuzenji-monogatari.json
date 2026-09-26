@@ -1,0 +1,182 @@
+{
+  "title": "修禅寺物語",
+  "title_original": "修禅寺物語",
+  "composer": "清水脩",
+  "composer_sort": "Shimizu, Osamu",
+  "kind": "opera",
+  "year_written": 1954,
+  "duration_min": 95,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "shuzenji-monogatari",
+  "note": "★岡本綺堂の戯曲による。★日本の代表的な一幕物オペラ",
+  "roles": [
+    {
+      "label": "夜叉王"
+    },
+    {
+      "label": "桂"
+    },
+    {
+      "label": "楓"
+    },
+    {
+      "label": "春彦"
+    },
+    {
+      "label": "源頼家"
+    },
+    {
+      "label": "金窪行親"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 夜叉王の工房（面が打てない）",
+      "group_label": "第1幕",
+      "roles": [
+        "夜叉王",
+        "桂",
+        "楓",
+        "春彦"
+      ]
+    },
+    {
+      "label": "★★第1幕 ★頼家の来訪（面を見せよ）",
+      "group_label": "第1幕",
+      "roles": [
+        "源頼家",
+        "夜叉王",
+        "桂"
+      ]
+    },
+    {
+      "label": "★★第1幕 ★死相の面（夜叉王の苦しみ）",
+      "group_label": "第1幕",
+      "roles": [
+        "夜叉王",
+        "源頼家"
+      ]
+    },
+    {
+      "label": "★第2幕 桂の出仕（面を持って頼家のもとへ）",
+      "group_label": "第2幕",
+      "roles": [
+        "桂",
+        "楓",
+        "夜叉王"
+      ]
+    },
+    {
+      "label": "★★第2幕 夜討ち（金窪行親の襲撃）",
+      "group_label": "第2幕",
+      "roles": [
+        "源頼家",
+        "桂",
+        "金窪行親",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（★面のとおりに桂が死ぬ・夜叉王が写し取る）",
+      "group_label": "第2幕",
+      "roles": [
+        "夜叉王",
+        "桂",
+        "楓",
+        "春彦"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

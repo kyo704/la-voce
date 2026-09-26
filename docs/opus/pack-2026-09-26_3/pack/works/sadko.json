@@ -1,0 +1,211 @@
+{
+  "title": "サトコ",
+  "title_original": "Садко",
+  "composer": "リムスキー＝コルサコフ",
+  "composer_sort": "Rimsky-Korsakov, Nikolai",
+  "kind": "opera",
+  "year_written": 1896,
+  "duration_min": 185,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "sadko",
+  "roles": [
+    {
+      "label": "サトコ"
+    },
+    {
+      "label": "ヴォルホーヴァ"
+    },
+    {
+      "label": "リュバーヴァ"
+    },
+    {
+      "label": "海の王"
+    },
+    {
+      "label": "ネジャータ"
+    },
+    {
+      "label": "ヴァリャーグの商人"
+    },
+    {
+      "label": "インドの商人"
+    },
+    {
+      "label": "ヴェネツィアの商人"
+    },
+    {
+      "label": "老者"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1場 ノヴゴロドの宴（サトコの嘲られ）",
+      "group_label": "第1場",
+      "roles": [
+        "サトコ",
+        "ネジャータ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2場 イリメニ湖（白鳥と海の王の娘）",
+      "group_label": "第2場",
+      "roles": [
+        "サトコ",
+        "ヴォルホーヴァ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3場 リュバーヴァの嘆き",
+      "group_label": "第3場",
+      "roles": [
+        "リュバーヴァ",
+        "サトコ"
+      ]
+    },
+    {
+      "label": "第4場 ★港（3人の商人の歌：ヴァリャーグ・インド・ヴェネツィア）",
+      "group_label": "第4場",
+      "roles": [
+        "ヴァリャーグの商人",
+        "インドの商人",
+        "ヴェネツィアの商人",
+        "サトコ",
+        "ネジャータ",
+        "老者",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5場 船の上（海への生け贄）",
+      "group_label": "第5場",
+      "roles": [
+        "サトコ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第6場 海の底（婚礼と踊り）",
+      "group_label": "第6場",
+      "roles": [
+        "サトコ",
+        "ヴォルホーヴァ",
+        "海の王",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第7場 終曲（ヴォルホーヴァは川となる・帰還）",
+      "group_label": "第7場",
+      "roles": [
+        "サトコ",
+        "ヴォルホーヴァ",
+        "リュバーヴァ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 5,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "チェレスタ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

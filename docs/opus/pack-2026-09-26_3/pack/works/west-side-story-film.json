@@ -1,0 +1,303 @@
+{
+  "title": "ウエスト・サイド物語（映画版の曲順）",
+  "title_original": "West Side Story",
+  "composer": "レナード・バーンスタイン",
+  "kind": "musical",
+  "year_written": 1961,
+  "duration_min": 150,
+  "edition": "★★1961 映画版の曲順（★『アメリカ』が男女の対立に書き替えられ、『クール』と『ジー、オフィサー・クラプキ』が入れ替わる）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "west-side-story-film",
+  "note": "★作詞 スティーヴン・ソンドハイム ／ 脚本 アーネスト・レーマン（脚色） ／ ★★2021 スピルバーグ版はさらに別（『アイ・フィール・プリティ』の位置が違い、『サムホエア』をヴァレンティナが歌う）",
+  "roles": [
+    {
+      "label": "マリア"
+    },
+    {
+      "label": "トニー"
+    },
+    {
+      "label": "アニタ"
+    },
+    {
+      "label": "リフ"
+    },
+    {
+      "label": "ベルナルド"
+    },
+    {
+      "label": "チノ"
+    },
+    {
+      "label": "ドク"
+    },
+    {
+      "label": "シュランク警部"
+    },
+    {
+      "label": "クラプキ巡査"
+    },
+    {
+      "label": "エニボディーズ"
+    },
+    {
+      "label": "ロザリア"
+    },
+    {
+      "label": "コンスエロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★プロローグ",
+      "group_label": "第1部",
+      "roles": [
+        "リフ",
+        "ベルナルド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★ジェット・ソング",
+      "group_label": "第1部",
+      "roles": [
+        "リフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★サムシングズ・カミング",
+      "group_label": "第1部",
+      "roles": [
+        "トニー"
+      ]
+    },
+    {
+      "label": "M4 ★体育館のダンス",
+      "group_label": "第1部",
+      "roles": [
+        "マリア",
+        "トニー",
+        "ベルナルド",
+        "アニタ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★マリア",
+      "group_label": "第1部",
+      "roles": [
+        "トニー"
+      ]
+    },
+    {
+      "label": "M6 ★トゥナイト（バルコニー）",
+      "group_label": "第1部",
+      "roles": [
+        "マリア",
+        "トニー"
+      ]
+    },
+    {
+      "label": "M7 ★★アメリカ（★男女の対立に書き替え。屋上で歌う）",
+      "group_label": "第1部",
+      "roles": [
+        "アニタ",
+        "ベルナルド",
+        "ロザリア",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★ジー、オフィサー・クラプキ（★第1部に移動）",
+      "group_label": "第1部",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★ワン・ハンド、ワン・ハート",
+      "group_label": "第1部",
+      "roles": [
+        "マリア",
+        "トニー"
+      ]
+    },
+    {
+      "label": "M10 ★トゥナイト（五重唱）",
+      "group_label": "第1部",
+      "roles": [
+        "マリア",
+        "トニー",
+        "アニタ",
+        "リフ",
+        "ベルナルド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★決闘",
+      "group_label": "第1部",
+      "roles": [
+        "リフ",
+        "ベルナルド",
+        "トニー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★アイ・フィール・プリティ（★決闘の前に移動）",
+      "group_label": "第2部",
+      "roles": [
+        "マリア",
+        "ロザリア",
+        "コンスエロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★クール（★第2部に移動。チノたちが歌う）",
+      "group_label": "第2部",
+      "roles": [
+        "チノ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★ア・ボーイ・ライク・ザット／アイ・ハヴ・ア・ラヴ",
+      "group_label": "第2部",
+      "roles": [
+        "マリア",
+        "アニタ"
+      ]
+    },
+    {
+      "label": "M15 ★薬局の場",
+      "group_label": "第2部",
+      "roles": [
+        "アニタ",
+        "ドク",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M16 ★終曲（トニーの死）",
+      "group_label": "第2部",
+      "roles": [
+        "マリア",
+        "トニー",
+        "チノ",
+        "シュランク警部",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "title": "トスティ 歌曲集",
+  "title_original": "Canzoni di Tosti",
+  "composer": "トスティ",
+  "composer_sort": "Tosti, Francesco Paolo",
+  "kind": "song_cycle",
+  "language": "it",
+  "source": "hand",
+  "source_id": "tosti-songs",
+  "note": "★★★曲集ではなく ★歌曲を まとめた もの。★『最後の歌』『マレキアーレ』『かわいい口もと』『理想の女』『わたしは死にたい』などを 選んで 組みます ／ ★★1つの 曲集では ないので ★曲の 数と 並びは 公演ごとに 決めます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★選んで 組みます（★曲は 公演ごと）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

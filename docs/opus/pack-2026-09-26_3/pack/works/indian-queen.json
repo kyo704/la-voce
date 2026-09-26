@@ -1,0 +1,192 @@
+{
+  "title": "インドの女王",
+  "title_original": "The Indian Queen",
+  "composer": "パーセル",
+  "composer_sort": "Purcell, Henry",
+  "kind": "opera",
+  "year_written": 1695,
+  "duration_min": 110,
+  "language": "en",
+  "source": "hand",
+  "source_id": "indian-queen",
+  "note": "★★セミ・オペラ（台詞の劇に音楽の場を挟む形）。★第5幕はダニエル・パーセル（弟）の作",
+  "roles": [
+    {
+      "label": "ゾンポアラ"
+    },
+    {
+      "label": "オラジア"
+    },
+    {
+      "label": "モンテズマ"
+    },
+    {
+      "label": "アカシス"
+    },
+    {
+      "label": "イスメロン"
+    },
+    {
+      "label": "愛の神"
+    },
+    {
+      "label": "羨望"
+    },
+    {
+      "label": "眠りの神"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★序幕（★少年と少女 ─ インドの地の予言）",
+      "group_label": "序幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 メキシコの陣営（モンテズマの勝利）",
+      "group_label": "第1幕",
+      "roles": [
+        "モンテズマ",
+        "アカシス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★『I attempt from love's sickness to fly』（オラジア）",
+      "group_label": "第2幕",
+      "roles": [
+        "オラジア"
+      ]
+    },
+    {
+      "label": "★第2幕 ゾンポアラのモンテズマへの恋",
+      "group_label": "第2幕",
+      "roles": [
+        "ゾンポアラ",
+        "モンテズマ"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★イスメロンの魔術（★眠りの神を呼ぶ）",
+      "group_label": "第3幕",
+      "roles": [
+        "イスメロン",
+        "ゾンポアラ",
+        "眠りの神",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★『Ah! how happy are we』と羨望の場",
+      "group_label": "第3幕",
+      "roles": [
+        "羨望",
+        "愛の神",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第4幕 ゾンポアラの絶望",
+      "group_label": "第4幕",
+      "roles": [
+        "ゾンポアラ",
+        "アカシス",
+        "オラジア"
+      ]
+    },
+    {
+      "label": "★終曲（ゾンポアラの自害・モンテズマとオラジアの結ばれ）",
+      "group_label": "第5幕",
+      "roles": [
+        "ゾンポアラ",
+        "モンテズマ",
+        "オラジア",
+        "アカシス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

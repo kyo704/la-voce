@@ -1,0 +1,173 @@
+{
+  "title": "ロドリーゴ",
+  "title_original": "Rodrigo",
+  "composer": "ヘンデル",
+  "composer_sort": "Handel, George Frideric",
+  "kind": "opera",
+  "year_written": 1707,
+  "duration_min": 170,
+  "language": "it",
+  "source": "hand",
+  "source_id": "rodrigo",
+  "note": "★イタリア時代（フィレンツェ）の作。★序曲の舞曲集が名高い",
+  "roles": [
+    {
+      "label": "ロドリーゴ"
+    },
+    {
+      "label": "エジルダ"
+    },
+    {
+      "label": "エズィレーナ"
+    },
+    {
+      "label": "ジュリアーノ"
+    },
+    {
+      "label": "フェルナンド"
+    },
+    {
+      "label": "エヴァンコ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序曲と舞曲集",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 スペインの宮廷（ロドリーゴの不義）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロドリーゴ",
+        "エジルダ",
+        "エズィレーナ"
+      ]
+    },
+    {
+      "label": "第1幕 ジュリアーノの離反",
+      "group_label": "第1幕",
+      "roles": [
+        "ジュリアーノ",
+        "エヴァンコ",
+        "フェルナンド"
+      ]
+    },
+    {
+      "label": "★第2幕 エズィレーナの嘆きと復讐",
+      "group_label": "第2幕",
+      "roles": [
+        "エズィレーナ",
+        "ロドリーゴ"
+      ]
+    },
+    {
+      "label": "第2幕 戦いと敗走",
+      "group_label": "第2幕",
+      "roles": [
+        "ロドリーゴ",
+        "ジュリアーノ",
+        "エヴァンコ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ロドリーゴの退位と悔い",
+      "group_label": "第3幕",
+      "roles": [
+        "ロドリーゴ",
+        "エジルダ",
+        "エズィレーナ"
+      ]
+    },
+    {
+      "label": "★終曲（エヴァンコの即位）",
+      "group_label": "第3幕",
+      "roles": [
+        "エヴァンコ",
+        "エズィレーナ",
+        "ロドリーゴ",
+        "エジルダ",
+        "ジュリアーノ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

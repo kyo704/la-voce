@@ -1,0 +1,77 @@
+{
+  "title": "伊達娘恋緋鹿子",
+  "aliases": [
+    "櫓のお七"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1773,
+  "duration_min": 60,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-date-musume",
+  "note": "★文楽（人形浄瑠璃） ／ ★★雪の中 櫓に 登って 太鼓を 打つ ── 人形の 見せ場 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "八百屋お七"
+    },
+    {
+      "label": "小笠原政之助"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★火の見櫓（★お七の櫓のぼり）",
+      "group_label": "中",
+      "roles": [
+        "八百屋お七",
+        "小笠原政之助",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

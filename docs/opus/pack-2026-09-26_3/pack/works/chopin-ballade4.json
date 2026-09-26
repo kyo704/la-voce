@@ -1,0 +1,33 @@
+{
+  "title": "バラード第4番 ヘ短調 作品52",
+  "title_original": "Ballade No. 4",
+  "aliases": [],
+  "composer": "ショパン",
+  "composer_sort": "Chopin, Frederic",
+  "kind": "chamber",
+  "year_written": 1842,
+  "source": "hand",
+  "source_id": "chopin-ballade4",
+  "duration_min": 12,
+  "roles": [
+    {
+      "label": "ピアノ独奏"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "全1曲",
+      "group_label": "全曲",
+      "roles": [
+        "ピアノ独奏"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

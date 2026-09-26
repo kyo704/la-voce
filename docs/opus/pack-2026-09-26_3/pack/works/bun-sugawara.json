@@ -1,0 +1,120 @@
+{
+  "title": "菅原伝授手習鑑",
+  "title_original": "菅原伝授手習鑑",
+  "aliases": [
+    "寺子屋"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1746,
+  "source": "hand",
+  "source_id": "bunraku-sugawara",
+  "duration_min": 240,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "松王丸"
+    },
+    {
+      "label": "梅王丸"
+    },
+    {
+      "label": "桜丸"
+    },
+    {
+      "label": "菅丞相"
+    },
+    {
+      "label": "源蔵"
+    },
+    {
+      "label": "戸浪"
+    },
+    {
+      "label": "千代"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "加茂堤の段",
+      "group_label": "二段目",
+      "roles": [
+        "桜丸",
+        "菅丞相",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "車曳の段",
+      "group_label": "三段目",
+      "roles": [
+        "松王丸",
+        "梅王丸",
+        "桜丸",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "賀の祝の段",
+      "group_label": "三段目",
+      "roles": [
+        "松王丸",
+        "梅王丸",
+        "桜丸",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★寺子屋の段",
+      "group_label": "四段目",
+      "roles": [
+        "松王丸",
+        "源蔵",
+        "戸浪",
+        "千代",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 0,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い",
+      "count": 0,
+      "section": "other",
+      "note": "三人遣い（主遣い・左遣い・足遣い）"
+    }
+  ],
+  "school": "義太夫節"
+}

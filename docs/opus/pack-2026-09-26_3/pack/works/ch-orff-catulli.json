@@ -1,0 +1,72 @@
+{
+  "title": "カトゥーリ・カルミナ",
+  "title_original": "Catulli Carmina",
+  "composer": "オルフ",
+  "composer_sort": "Orff, Carl",
+  "kind": "chorus",
+  "year_written": 1943,
+  "duration_min": 40,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-orff-catulli",
+  "note": "★★★4台の ピアノと 打楽器だけ。★弦も 管も ありません。★『カルミナ・ブラーナ』と 三部作を なします ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "テノール独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★若者と娘の戯れ（★老人たちの警告）",
+      "group_label": "前戯",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "カトゥルスとレスビア",
+      "group_label": "第1幕",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★裏切り",
+      "group_label": "第2幕",
+      "roles": [
+        "ソプラノ独唱",
+        "テノール独唱",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲",
+      "group_label": "第3幕",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 4,
+      "section": "keyboard"
+    },
+    {
+      "part": "打楽器",
+      "count": 0,
+      "section": "percussion",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

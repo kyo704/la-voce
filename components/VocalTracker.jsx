@@ -175,6 +175,7 @@ import {
   COLS_KOEN as KOEN_LIST_COLS, COLS_MY_MEMBER as KOEN_LIST_MY_COLS, rowOf as koenRowOf
 } from "@/lib/koenList";
 import Shirabeteiru from "@/components/Shirabeteiru";
+import { FREE_PAIRS } from "@/lib/shirabeteiru";
 import Totonoeru from "@/components/Totonoeru";
 import PortfolioLook from "@/components/PortfolioLook";
 import { readOrder as readCompareOrder, writeOrder as writeCompareOrder }
@@ -14624,6 +14625,13 @@ export default function VocalTracker({
   //       ★★1日で 3度目の 同じ 形 です。★見張りを 広げました
   //         （★`components/tests/tdz-order.test.js` ── ★頼りの 一覧も 見ます）。
   // ==========================================================================
+  // ★★★しらべている ことの「いつの くらしと くらべますか」（★2026-09-26）。
+  //   ★★台帳に 残しません ── ★しまう 列が ありません（★`lib/shirabeteiru.js` の 註）。
+  //     ★★だから この 画面を 出て いる あいだ だけ の ものです。
+  //   ★★★前は `lag={null}` の まま で、★押しても 印が つきません でした。
+  //     ★★押せるのに 何も 起きない 札 でした。
+  const [shirabeLag, setShirabeLag] = useState(null);
+
   const [opsCounts, setOpsCounts] = useState({});
   useEffect(() => {
     if (!layoutV2 || moreSection !== "教室の運営") return;
@@ -28579,12 +28587,26 @@ export default function VocalTracker({
                 {/* ★★★しらべている こと（★2026-09-26 に つなぎました）。
                     ★★組は 順番の 1番目 です。★好きに 選べません（★くらべると 同じ 決め）。
                     ★★順番の 出どころは `lib/compareOrder.js` 1つ です。 */}
+                {/* ★★★組の 渡し方を 直しました（★2026-09-26）。
+                    ★★★前は `{ key, item }` を 渡して いました ──
+                      ★画面が 読むのは `p.life` です。★1つも 当たらず、
+                      ★★くらしの 側の 字が **1つも 出て いません** でした
+                        （★「かえる ›」だけ が 5つ 並んで いました）。
+                    ★★★数も 違って いました ── ★5つ 渡して いました。
+                      ★無料は 1組 です（★`lib/shirabeteiru.js` の `FREE_PAIRS`）。
+                      ★★上限の 数を ここに 書きません。★あちらから もらいます。
+                    ★★声の 側は 1つ だけ です（★`VOICE_SIDE_FIXED`）。★渡しません。 */}
                 {layoutV2 && moreSection === "しらべていること" ? (
                   <Shirabeteiru
-                    pairs={readCompareOrder(COMPARE_ITEMS.map((x) => x.key)).slice(0, 5)
-                      .map((k) => ({ key: k, item: k }))}
-                    lag={null}
+                    pairs={readCompareOrder(COMPARE_ITEMS.map((x) => x.key))
+                      .slice(0, subscribed === true ? COMPARE_ITEMS.length : FREE_PAIRS)
+                      .map((k) => ({
+                        key: k,
+                        life: (COMPARE_ITEMS.find((x) => x.key === k) || {}).label || ""
+                      }))}
+                    lag={shirabeLag}
                     paid={subscribed === true}
+                    onPickLag={setShirabeLag}
                     onChangeItem={(from, to) => {
                       const 次 = readCompareOrder(COMPARE_ITEMS.map((x) => x.key))
                         .map((k) => (k === from ? to : k));

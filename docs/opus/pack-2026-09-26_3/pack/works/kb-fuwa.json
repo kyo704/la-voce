@@ -1,0 +1,71 @@
+{
+  "title": "不破",
+  "title_original": "不破",
+  "aliases": [],
+  "composer": "歌舞伎（市川宗家 歌舞伎十八番）",
+  "composer_sort": "Kabuki Juhachiban",
+  "kind": "kabuki",
+  "year_written": 1680,
+  "source": "hand",
+  "source_id": "kabuki-fuwa",
+  "duration_min": 40,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "不破伴左衛門"
+    },
+    {
+      "label": "名古屋山三"
+    },
+    {
+      "label": "傾城葛城"
+    },
+    {
+      "label": "長唄囃子連中",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "鞘当ての場",
+      "group_label": "全",
+      "roles": [
+        "不破伴左衛門",
+        "名古屋山三",
+        "長唄囃子連中"
+      ]
+    },
+    {
+      "label": "傾城の仲裁",
+      "group_label": "全",
+      "roles": [
+        "傾城葛城",
+        "不破伴左衛門",
+        "名古屋山三",
+        "長唄囃子連中"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "note": "唄・三味線（舞台上の雛壇）"
+    },
+    {
+      "part": "囃子",
+      "count": 0,
+      "section": "other",
+      "note": "笛・小鼓・大鼓・太鼓"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽（舞台袖）"
+    }
+  ],
+  "note": "★復活上演の演目。「鞘当」として上演されることが多い／★型（音羽屋型・成田屋型など）により 演出が変わる",
+  "school": "成田屋（市川宗家）"
+}

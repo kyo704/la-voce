@@ -1,0 +1,70 @@
+{
+  "title": "墨塗",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-suminuri",
+  "note": "★女狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（大名）"
+    },
+    {
+      "label": "アド（女）"
+    },
+    {
+      "label": "小アド（太郎冠者）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "国へ帰る大名が女に別れを告げる",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（女）"
+      ]
+    },
+    {
+      "label": "女が泣くふりをする",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（女）"
+      ]
+    },
+    {
+      "label": "★太郎冠者が水を墨に替える",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（女）",
+        "小アド（太郎冠者）"
+      ]
+    },
+    {
+      "label": "顔が黒くなり偽りが露見する",
+      "group_label": "段",
+      "roles": [
+        "シテ（大名）",
+        "アド（女）",
+        "小アド（太郎冠者）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

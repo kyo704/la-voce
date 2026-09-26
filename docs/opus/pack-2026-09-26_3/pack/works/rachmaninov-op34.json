@@ -1,0 +1,38 @@
+{
+  "title": "14の歌 作品34",
+  "title_original": "14 романсов op.34",
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninov, Sergei",
+  "kind": "song_cycle",
+  "year_written": 1912,
+  "duration_min": 45,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "rachmaninov-op34",
+  "note": "★★★第14曲が『ヴォカリーズ』── ★歌詞の ない 歌。★単独で よく 歌われます ／ ★★曲名を 全部 確かめられなかったので ★曲数（14曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全14曲（★曲名は 入れて いません）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

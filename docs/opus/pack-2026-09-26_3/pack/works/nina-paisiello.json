@@ -1,0 +1,176 @@
+{
+  "title": "ニーナ（恋のために狂った娘）",
+  "title_original": "Nina, o sia La pazza per amore",
+  "composer": "パイジエッロ",
+  "composer_sort": "Paisiello, Giovanni",
+  "kind": "opera",
+  "year_written": 1789,
+  "duration_min": 110,
+  "language": "it",
+  "source": "hand",
+  "source_id": "nina-paisiello",
+  "note": "★『狂乱の場』の型を確立した作",
+  "roles": [
+    {
+      "label": "ニーナ"
+    },
+    {
+      "label": "リンドーロ"
+    },
+    {
+      "label": "伯爵"
+    },
+    {
+      "label": "スザンナ"
+    },
+    {
+      "label": "ジョルジョ"
+    },
+    {
+      "label": "羊飼い"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 城の庭（正気を失ったニーナ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ニーナ",
+        "スザンナ",
+        "伯爵"
+      ]
+    },
+    {
+      "label": "★第1幕 ニーナのアリア（かの人が来るのを待つ）",
+      "group_label": "第1幕",
+      "roles": [
+        "ニーナ",
+        "羊飼い"
+      ]
+    },
+    {
+      "label": "第1幕 伯爵の悔い（娘を追いつめた）",
+      "group_label": "第1幕",
+      "roles": [
+        "伯爵",
+        "ジョルジョ"
+      ]
+    },
+    {
+      "label": "★第2幕 リンドーロの帰還（生きていた）",
+      "group_label": "第2幕",
+      "roles": [
+        "リンドーロ",
+        "伯爵",
+        "スザンナ"
+      ]
+    },
+    {
+      "label": "★第2幕 再会（ニーナが少しずつ気づく）",
+      "group_label": "第2幕",
+      "roles": [
+        "ニーナ",
+        "リンドーロ",
+        "スザンナ"
+      ]
+    },
+    {
+      "label": "★終曲（正気が戻り、皆の喜び）",
+      "group_label": "第2幕",
+      "roles": [
+        "ニーナ",
+        "リンドーロ",
+        "伯爵",
+        "スザンナ",
+        "ジョルジョ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

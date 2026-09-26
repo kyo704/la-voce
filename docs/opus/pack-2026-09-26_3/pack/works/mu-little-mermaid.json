@@ -1,0 +1,173 @@
+{
+  "title": "リトル・マーメイド",
+  "title_original": "The Little Mermaid",
+  "composer": "アラン・メンケン",
+  "kind": "musical",
+  "year_written": 2008,
+  "duration_min": 135,
+  "edition": "★ブロードウェイ版（2008）。★2019 以降の改訂版は運びが変わります",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-little-mermaid",
+  "note": "★作詞 ハワード・アシュマン／グレン・スレイター ／ 脚本 ダグ・ライト",
+  "roles": [
+    {
+      "label": "アリエル"
+    },
+    {
+      "label": "エリック王子"
+    },
+    {
+      "label": "アースラ"
+    },
+    {
+      "label": "セバスチャン"
+    },
+    {
+      "label": "トリトン王"
+    },
+    {
+      "label": "スカットル"
+    },
+    {
+      "label": "フランダー"
+    },
+    {
+      "label": "グリムズビー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "海の中",
+      "group_label": "第1幕",
+      "roles": [
+        "アリエル",
+        "フランダー",
+        "セバスチャン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "難破と王子",
+      "group_label": "第1幕",
+      "roles": [
+        "アリエル",
+        "エリック王子"
+      ]
+    },
+    {
+      "label": "★アースラとの取引（★声を渡す）",
+      "group_label": "第1幕",
+      "roles": [
+        "アリエル",
+        "アースラ"
+      ]
+    },
+    {
+      "label": "陸での暮らし",
+      "group_label": "第2幕",
+      "roles": [
+        "アリエル",
+        "エリック王子",
+        "グリムズビー"
+      ]
+    },
+    {
+      "label": "★結末",
+      "group_label": "第2幕",
+      "roles": [
+        "アリエル",
+        "エリック王子",
+        "トリトン王",
+        "アースラ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

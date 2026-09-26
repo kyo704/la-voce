@@ -1,0 +1,272 @@
+{
+  "title": "トロイアの人々",
+  "title_original": "Les Troyens",
+  "composer": "ベルリオーズ",
+  "composer_sort": "Berlioz, Hector",
+  "kind": "opera",
+  "year_written": 1858,
+  "duration_min": 265,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "troyens",
+  "note": "★全曲初演は1969年（作曲者の生前は第3〜5幕のみ）",
+  "roles": [
+    {
+      "label": "カサンドル"
+    },
+    {
+      "label": "ディドン"
+    },
+    {
+      "label": "エネ"
+    },
+    {
+      "label": "コレーブ"
+    },
+    {
+      "label": "アンナ"
+    },
+    {
+      "label": "ナルバル"
+    },
+    {
+      "label": "イオパス"
+    },
+    {
+      "label": "イロンブ"
+    },
+    {
+      "label": "パンテ"
+    },
+    {
+      "label": "アスカーニュ"
+    },
+    {
+      "label": "プリアム"
+    },
+    {
+      "label": "エクトルの亡霊"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 トロイアの城外（木馬の喜び）",
+      "group_label": "第1幕",
+      "roles": [
+        "カサンドル",
+        "コレーブ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 カサンドルの予言と二重唱",
+      "group_label": "第1幕",
+      "roles": [
+        "カサンドル",
+        "コレーブ"
+      ]
+    },
+    {
+      "label": "第1幕 行進と木馬の入城（フィナーレ）",
+      "group_label": "第1幕",
+      "roles": [
+        "プリアム",
+        "カサンドル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 エクトルの亡霊とエネ",
+      "group_label": "第2幕",
+      "roles": [
+        "エネ",
+        "エクトルの亡霊",
+        "パンテ",
+        "アスカーニュ"
+      ]
+    },
+    {
+      "label": "第2幕 ウェスタ神殿（トロイア女たちの死）",
+      "group_label": "第2幕",
+      "roles": [
+        "カサンドル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 カルタゴ（ディドンの登場と民の祝い）",
+      "group_label": "第3幕",
+      "roles": [
+        "ディドン",
+        "アンナ",
+        "イオパス",
+        "ナルバル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 エネの正体と出兵の申し出",
+      "group_label": "第3幕",
+      "roles": [
+        "エネ",
+        "ディドン",
+        "アスカーニュ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★王の狩りと嵐（間奏曲・パントマイム）",
+      "group_label": "第4幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 ★おお、尽きせぬ夜（愛の二重唱）",
+      "group_label": "第4幕",
+      "roles": [
+        "ディドン",
+        "エネ"
+      ]
+    },
+    {
+      "label": "第4幕 イロンブの警告（イタリアへ）",
+      "group_label": "第4幕",
+      "roles": [
+        "イロンブ",
+        "エネ"
+      ]
+    },
+    {
+      "label": "第5幕 イロンブの歌と亡霊たちの催促",
+      "group_label": "第5幕",
+      "roles": [
+        "イロンブ",
+        "エネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5幕 出航とディドンの怒り",
+      "group_label": "第5幕",
+      "roles": [
+        "ディドン",
+        "エネ",
+        "アンナ",
+        "ナルバル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第5幕 ★ディドンの死と終曲（ローマの幻）",
+      "group_label": "第5幕",
+      "roles": [
+        "ディドン",
+        "アンナ",
+        "ナルバル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 12,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 5,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 6,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 6,
+      "section": "harp"
+    },
+    {
+      "part": "サクソルン（舞台上）",
+      "count": 6,
+      "section": "brass"
+    },
+    {
+      "part": "オフィクレイド",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

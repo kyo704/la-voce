@@ -1,0 +1,86 @@
+{
+ "title": "さすらう若人の歌",
+ "title_original": "Lieder eines fahrenden Gesellen",
+ "composer": "マーラー",
+ "composer_sort": "Mahler, Gustav",
+ "kind": "song_cycle",
+ "year_written": 1885,
+ "duration_min": 18,
+ "language": "de",
+ "source_id": "mahler-gesellen",
+ "roles": [
+  {
+   "label": "独唱"
+  },
+  {
+   "label": "管弦楽"
+  }
+ ],
+ "instruments": [
+  {
+   "part": "フルート",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "オーボエ",
+   "count": 2,
+   "section": "woodwind"
+  },
+  {
+   "part": "クラリネット",
+   "count": 3,
+   "section": "woodwind"
+  },
+  {
+   "part": "ホルン",
+   "count": 4,
+   "section": "brass"
+  },
+  {
+   "part": "ハープ",
+   "count": 1,
+   "section": "keyboard"
+  },
+  {
+   "part": "弦五部",
+   "count": 1,
+   "section": "strings"
+  }
+ ],
+ "scenes": [
+  {
+   "label": "1. 恋人の婚礼の時（Wenn mein Schatz Hochzeit macht）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "2. 朝の野を歩けば（Ging heut Morgen übers Feld）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "3. ぼくは燃える剣を（Ich hab′ ein glühend Messer）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  },
+  {
+   "label": "4. 恋人の青い目（Die zwei blauen Augen）",
+   "group_label": "",
+   "roles": [
+    "独唱",
+    "管弦楽"
+   ]
+  }
+ ],
+ "source": "hand"
+}

@@ -1,0 +1,81 @@
+{
+  "title": "壇浦兜軍記（文楽）",
+  "aliases": [
+    "阿古屋"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1732,
+  "duration_min": 90,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-dannoura-bu",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 文耕堂・長谷川千四 ／ ★★三味線が 琴・三味線・胡弓を 弾き分けます ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "阿古屋"
+    },
+    {
+      "label": "秩父庄司重忠"
+    },
+    {
+      "label": "岩永左衛門"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★阿古屋琴責（★三曲を弾く）",
+      "group_label": "三段目",
+      "roles": [
+        "阿古屋",
+        "秩父庄司重忠",
+        "岩永左衛門",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

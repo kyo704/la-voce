@@ -1,0 +1,208 @@
+{
+  "title": "ユダヤの女",
+  "title_original": "La Juive",
+  "composer": "アレヴィ",
+  "composer_sort": "Halévy, Fromental",
+  "kind": "opera",
+  "year_written": 1835,
+  "duration_min": 195,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "juive",
+  "roles": [
+    {
+      "label": "レイチェル"
+    },
+    {
+      "label": "エレアザール"
+    },
+    {
+      "label": "ド・ブロニ枢機卿"
+    },
+    {
+      "label": "レオポルド"
+    },
+    {
+      "label": "ユードクシー"
+    },
+    {
+      "label": "ルジェロ"
+    },
+    {
+      "label": "アルベール"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 コンスタンツの広場（祝勝と金細工師の仕事）",
+      "group_label": "第1幕",
+      "roles": [
+        "エレアザール",
+        "レイチェル",
+        "ルジェロ",
+        "ド・ブロニ枢機卿",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 レイチェルとレオポルド（サミュエルと偽る）",
+      "group_label": "第1幕",
+      "roles": [
+        "レイチェル",
+        "レオポルド"
+      ]
+    },
+    {
+      "label": "第2幕 ★過越の祭り（家の中の儀式）",
+      "group_label": "第2幕",
+      "roles": [
+        "エレアザール",
+        "レイチェル",
+        "レオポルド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 レオポルドの告白（キリスト教徒だった）",
+      "group_label": "第2幕",
+      "roles": [
+        "レイチェル",
+        "レオポルド",
+        "エレアザール"
+      ]
+    },
+    {
+      "label": "第3幕 宮廷の祝宴（レイチェルの告発）",
+      "group_label": "第3幕",
+      "roles": [
+        "レイチェル",
+        "レオポルド",
+        "ユードクシー",
+        "ド・ブロニ枢機卿",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 ユードクシーの願いとエレアザールの拒み",
+      "group_label": "第4幕",
+      "roles": [
+        "ユードクシー",
+        "レイチェル",
+        "エレアザール"
+      ]
+    },
+    {
+      "label": "第4幕 ★ラシェル、主のお恵みで（エレアザールのアリア）",
+      "group_label": "第4幕",
+      "roles": [
+        "エレアザール"
+      ]
+    },
+    {
+      "label": "第5幕 終曲（処刑と枢機卿への言葉）",
+      "group_label": "第5幕",
+      "roles": [
+        "エレアザール",
+        "レイチェル",
+        "ド・ブロニ枢機卿",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 4,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

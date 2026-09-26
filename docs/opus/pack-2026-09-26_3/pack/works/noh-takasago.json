@@ -1,0 +1,108 @@
+{
+  "title": "高砂",
+  "title_original": "高砂",
+  "aliases": [
+    "たかさご"
+  ],
+  "composer": "能（初番目物（脇能・神））",
+  "composer_sort": "Noh 脇能（神）",
+  "kind": "noh",
+  "year_written": 1400,
+  "source": "hand",
+  "source_id": "noh-takasago-kanze",
+  "duration_min": 80,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（老翁・住吉明神）"
+    },
+    {
+      "label": "ツレ（老女）"
+    },
+    {
+      "label": "ワキ（神主友成）"
+    },
+    {
+      "label": "ワキツレ（従者）",
+      "is_group": true
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "次第・名ノリ",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（神主友成）",
+        "ワキツレ（従者）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "老夫婦の登場（相生の松）",
+      "group_label": "前段",
+      "roles": [
+        "シテ（老翁・住吉明神）",
+        "ツレ（老女）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "中入",
+      "group_label": "中入",
+      "roles": [
+        "地謡"
+      ]
+    },
+    {
+      "label": "住吉明神の登場と神舞",
+      "group_label": "後段",
+      "roles": [
+        "シテ（老翁・住吉明神）",
+        "囃子方",
+        "地謡"
+      ]
+    },
+    {
+      "label": "祝言の留め",
+      "group_label": "後段",
+      "roles": [
+        "シテ（老翁・住吉明神）",
+        "地謡"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "笛",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "小鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "大鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "曲による"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う"
+}

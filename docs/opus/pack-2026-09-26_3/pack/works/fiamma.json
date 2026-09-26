@@ -1,0 +1,198 @@
+{
+  "title": "炎",
+  "title_original": "La fiamma",
+  "composer": "レスピーギ",
+  "composer_sort": "Respighi, Ottorino",
+  "kind": "opera",
+  "year_written": 1934,
+  "duration_min": 135,
+  "language": "it",
+  "source": "hand",
+  "source_id": "fiamma",
+  "roles": [
+    {
+      "label": "シルヴァーナ"
+    },
+    {
+      "label": "ドナテッロ"
+    },
+    {
+      "label": "バジリオ"
+    },
+    {
+      "label": "エウドッシア"
+    },
+    {
+      "label": "アグネス・ディ・チェルヴィア"
+    },
+    {
+      "label": "モニカ"
+    },
+    {
+      "label": "ザエ"
+    },
+    {
+      "label": "ルチーラ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ラヴェンナの総督の館（エウドッシアの厳しさ）",
+      "group_label": "第1幕",
+      "roles": [
+        "エウドッシア",
+        "シルヴァーナ",
+        "モニカ",
+        "ルチーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 魔女アグネスが追われて逃げ込む",
+      "group_label": "第1幕",
+      "roles": [
+        "アグネス・ディ・チェルヴィア",
+        "シルヴァーナ",
+        "バジリオ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 アグネスの呪いと『炎』の力の告知",
+      "group_label": "第1幕",
+      "roles": [
+        "アグネス・ディ・チェルヴィア",
+        "シルヴァーナ"
+      ]
+    },
+    {
+      "label": "第2幕 ドナテッロの帰還",
+      "group_label": "第2幕",
+      "roles": [
+        "ドナテッロ",
+        "シルヴァーナ",
+        "エウドッシア",
+        "ザエ"
+      ]
+    },
+    {
+      "label": "★第2幕 シルヴァーナがドナテッロを『炎』で引き寄せる",
+      "group_label": "第2幕",
+      "roles": [
+        "シルヴァーナ",
+        "ドナテッロ"
+      ]
+    },
+    {
+      "label": "★第3幕 バジリオの死とエウドッシアの告発",
+      "group_label": "第3幕",
+      "roles": [
+        "エウドッシア",
+        "シルヴァーナ",
+        "ドナテッロ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（教会での裁き・ドナテッロが母の側につく）",
+      "group_label": "第3幕",
+      "roles": [
+        "シルヴァーナ",
+        "ドナテッロ",
+        "エウドッシア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

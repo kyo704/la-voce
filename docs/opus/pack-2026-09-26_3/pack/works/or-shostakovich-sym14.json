@@ -1,0 +1,44 @@
+{
+  "title": "交響曲第14番 作品135",
+  "composer": "ショスタコーヴィチ",
+  "composer_sort": "Shostakovich, Dmitri",
+  "kind": "orchestra",
+  "year_written": 1969,
+  "duration_min": 50,
+  "language": "—",
+  "source": "hand",
+  "source_id": "or-shostakovich-sym14",
+  "note": "★★★『死』を 主題に した 歌曲集のような 交響曲。★弦楽と 打楽器だけ",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "バス独唱"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全11楽章（★ソプラノと バスが 歌います）",
+      "group_label": "楽章",
+      "roles": [
+        "ソプラノ独唱",
+        "バス独唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "弦楽合奏",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "打楽器",
+      "count": 0,
+      "section": "percussion",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

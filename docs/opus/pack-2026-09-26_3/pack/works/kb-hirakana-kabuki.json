@@ -1,0 +1,81 @@
+{
+  "title": "ひらかな盛衰記（歌舞伎）",
+  "aliases": [
+    "逆櫓"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1739,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-hirakana-kabuki",
+  "note": "★歌舞伎 ／ 作者 文耕堂・三好松洛 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "船頭松右衛門（樋口次郎兼光）"
+    },
+    {
+      "label": "およし"
+    },
+    {
+      "label": "権四郎"
+    },
+    {
+      "label": "槌松／駒若丸"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "お筆"
+    },
+    {
+      "label": "腰元"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★逆櫓（★樋口の松之丞）",
+      "group_label": "三段目",
+      "roles": [
+        "船頭松右衛門（樋口次郎兼光）",
+        "およし",
+        "権四郎",
+        "槌松／駒若丸",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★二段目 笹引・先陣問答",
+      "group_label": "二段目",
+      "roles": [
+        "お筆",
+        "腰元",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

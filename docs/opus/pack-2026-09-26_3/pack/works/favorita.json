@@ -1,0 +1,199 @@
+{
+  "title": "ラ・ファヴォリータ（愛妾）",
+  "title_original": "La favorite",
+  "composer": "ドニゼッティ",
+  "composer_sort": "Donizetti, Gaetano",
+  "kind": "opera",
+  "year_written": 1840,
+  "duration_min": 155,
+  "edition": "1840 パリ（仏語 La favorite）／伊語訳 La favorita が広く上演される",
+  "language": "it",
+  "source": "hand",
+  "source_id": "favorita",
+  "roles": [
+    {
+      "label": "レオノーラ"
+    },
+    {
+      "label": "フェルナンド"
+    },
+    {
+      "label": "アルフォンソ11世"
+    },
+    {
+      "label": "バルダッサーレ"
+    },
+    {
+      "label": "イネス"
+    },
+    {
+      "label": "ドン・ガスパーロ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 サン・ジャコモ修道院（フェルナンドの告白）",
+      "group_label": "第1幕",
+      "roles": [
+        "フェルナンド",
+        "バルダッサーレ"
+      ]
+    },
+    {
+      "label": "第1幕 レオン島（レオノーラとイネス）",
+      "group_label": "第1幕",
+      "roles": [
+        "レオノーラ",
+        "イネス",
+        "フェルナンド",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 アルカサルの庭（アルフォンソとレオノーラ）",
+      "group_label": "第2幕",
+      "roles": [
+        "アルフォンソ11世",
+        "レオノーラ",
+        "ドン・ガスパーロ"
+      ]
+    },
+    {
+      "label": "第2幕 バルダッサーレの破門宣告（フィナーレ）",
+      "group_label": "第2幕",
+      "roles": [
+        "バルダッサーレ",
+        "アルフォンソ11世",
+        "レオノーラ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第3幕 フェルナンドの願いと婚礼の許し",
+      "group_label": "第3幕",
+      "roles": [
+        "フェルナンド",
+        "アルフォンソ11世",
+        "レオノーラ"
+      ]
+    },
+    {
+      "label": "第3幕 レオノーラのアリア（おお、わがフェルナンド）",
+      "group_label": "第3幕",
+      "roles": [
+        "レオノーラ"
+      ]
+    },
+    {
+      "label": "第3幕 剣を折る（フィナーレ）",
+      "group_label": "第3幕",
+      "roles": [
+        "フェルナンド",
+        "アルフォンソ11世",
+        "バルダッサーレ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第4幕 修道院（精霊よ）と終曲",
+      "group_label": "第4幕",
+      "roles": [
+        "フェルナンド",
+        "レオノーラ",
+        "バルダッサーレ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

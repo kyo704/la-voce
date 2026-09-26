@@ -1,0 +1,33 @@
+{
+  "title": "ウィテカー 合唱曲集",
+  "composer": "エリック・ウィテカー",
+  "composer_sort": "Whitacre, Eric",
+  "kind": "chorus",
+  "language": "en",
+  "source": "hand",
+  "source_id": "ch-whitacre-choral",
+  "note": "★★★1つの 曲集では ありません。★『Lux Aurumque』『Sleep』『Water Night』などを 選んで 組みます。★★上演には 権利の 確認が 要ります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★選んで 組みます（★曲は 公演ごと）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（無伴奏）",
+      "count": 0,
+      "section": "other",
+      "note": "★アカペラ（伴奏なし）"
+    }
+  ]
+}

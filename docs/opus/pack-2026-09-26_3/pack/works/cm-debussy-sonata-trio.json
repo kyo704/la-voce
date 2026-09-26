@@ -1,0 +1,68 @@
+{
+  "title": "フルート、ヴィオラとハープのためのソナタ",
+  "composer": "ドビュッシー",
+  "composer_sort": "Debussy, Claude",
+  "kind": "chamber",
+  "year_written": 1915,
+  "duration_min": 18,
+  "language": "—",
+  "source": "hand",
+  "source_id": "cm-debussy-sonata-trio",
+  "roles": [
+    {
+      "label": "フルート"
+    },
+    {
+      "label": "ヴィオラ"
+    },
+    {
+      "label": "ハープ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1楽章 パストラール",
+      "group_label": "楽章",
+      "roles": [
+        "フルート",
+        "ヴィオラ",
+        "ハープ"
+      ]
+    },
+    {
+      "label": "第2楽章 間奏曲",
+      "group_label": "楽章",
+      "roles": [
+        "フルート",
+        "ヴィオラ",
+        "ハープ"
+      ]
+    },
+    {
+      "label": "第3楽章 フィナーレ",
+      "group_label": "楽章",
+      "roles": [
+        "フルート",
+        "ヴィオラ",
+        "ハープ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "strings"
+    }
+  ]
+}

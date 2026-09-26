@@ -1,0 +1,182 @@
+{
+  "title": "サティヤグラハ",
+  "title_original": "Satyagraha",
+  "composer": "グラス",
+  "composer_sort": "Glass, Philip",
+  "kind": "opera",
+  "year_written": 1980,
+  "duration_min": 210,
+  "language": "sa",
+  "source": "hand",
+  "source_id": "satyagraha",
+  "note": "★★歌詞はすべてサンスクリット（バガヴァッド・ギーター）。字幕も訳詞も付けない上演が多い。★管楽器と弦と電子オルガンのみ（打楽器なし）",
+  "roles": [
+    {
+      "label": "ガンディー"
+    },
+    {
+      "label": "カストゥルバイ"
+    },
+    {
+      "label": "ミス・シュレジン"
+    },
+    {
+      "label": "カレンバッハ"
+    },
+    {
+      "label": "ナイドゥ夫人"
+    },
+    {
+      "label": "パルシー・ルスタムジー"
+    },
+    {
+      "label": "トルストイ"
+    },
+    {
+      "label": "タゴール"
+    },
+    {
+      "label": "キング牧師"
+    },
+    {
+      "label": "アルジュナ"
+    },
+    {
+      "label": "クリシュナ"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ★トルストイ：クル野の戦場（バガヴァッド・ギーター）",
+      "group_label": "第1幕",
+      "roles": [
+        "ガンディー",
+        "アルジュナ",
+        "クリシュナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★トルストイ農園（共同生活）",
+      "group_label": "第1幕",
+      "roles": [
+        "ガンディー",
+        "カストゥルバイ",
+        "カレンバッハ",
+        "ミス・シュレジン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ★誓い（1906年の集会）",
+      "group_label": "第1幕",
+      "roles": [
+        "ガンディー",
+        "ナイドゥ夫人",
+        "パルシー・ルスタムジー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★タゴール：対決（ダーバンの群衆）",
+      "group_label": "第2幕",
+      "roles": [
+        "ガンディー",
+        "ナイドゥ夫人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★インディアン・オピニオン（新聞の発行）",
+      "group_label": "第2幕",
+      "roles": [
+        "ガンディー",
+        "ミス・シュレジン",
+        "カレンバッハ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★通行証を焼く",
+      "group_label": "第2幕",
+      "roles": [
+        "ガンディー",
+        "カストゥルバイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ★キング牧師：ニューカッスル行進",
+      "group_label": "第3幕",
+      "roles": [
+        "ガンディー",
+        "ナイドゥ夫人",
+        "カストゥルバイ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（★ガンディーの独唱：ギーターの一節を繰り返す）",
+      "group_label": "第3幕",
+      "roles": [
+        "ガンディー"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "電子オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

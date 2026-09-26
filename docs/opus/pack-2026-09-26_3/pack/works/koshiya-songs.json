@@ -1,0 +1,68 @@
+{
+  "title": "越谷達之助・團伊玖磨 ほか 日本歌曲選（第2集）",
+  "composer": "越谷達之助・團伊玖磨・大中恩 ほか",
+  "composer_sort": "Nihon kakyoku 2",
+  "kind": "song_cycle",
+  "duration_min": 15,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "nihon-kakyoku-2",
+  "note": "★★★作曲家を まとめた 選集です（★1つの 曲集では ありません） ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 初恋（越谷達之助）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 花の街（團伊玖磨）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. わたしと小鳥とすずと（大中恩）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. 中国地方の子守歌（山田耕筰 編）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 早春賦（中田章）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

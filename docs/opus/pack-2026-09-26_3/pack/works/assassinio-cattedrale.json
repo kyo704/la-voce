@@ -1,0 +1,205 @@
+{
+  "title": "大聖堂の殺人",
+  "title_original": "Assassinio nella cattedrale",
+  "composer": "ピッツェッティ",
+  "composer_sort": "Pizzetti, Ildebrando",
+  "kind": "opera",
+  "year_written": 1958,
+  "duration_min": 100,
+  "language": "it",
+  "source": "hand",
+  "source_id": "assassinio-cattedrale",
+  "note": "★T.S.エリオットの『寺院の殺人』による",
+  "roles": [
+    {
+      "label": "トマス・ベケット"
+    },
+    {
+      "label": "第1の司祭"
+    },
+    {
+      "label": "第2の司祭"
+    },
+    {
+      "label": "第3の司祭"
+    },
+    {
+      "label": "第1の誘惑者"
+    },
+    {
+      "label": "第2の誘惑者"
+    },
+    {
+      "label": "第3の誘惑者"
+    },
+    {
+      "label": "第4の誘惑者"
+    },
+    {
+      "label": "使者"
+    },
+    {
+      "label": "4人の騎士"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★前奏曲（カンタベリーの女たちの合唱）",
+      "group_label": "前奏曲",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ベケットの帰還（7年の亡命の後）",
+      "group_label": "第1幕",
+      "roles": [
+        "トマス・ベケット",
+        "第1の司祭",
+        "第2の司祭",
+        "第3の司祭",
+        "使者",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 4人の誘惑者",
+      "group_label": "第1幕",
+      "roles": [
+        "トマス・ベケット",
+        "第1の誘惑者",
+        "第2の誘惑者",
+        "第3の誘惑者",
+        "第4の誘惑者"
+      ]
+    },
+    {
+      "label": "★間奏曲 ベケットの説教（クリスマスの朝）",
+      "group_label": "間奏曲",
+      "roles": [
+        "トマス・ベケット"
+      ]
+    },
+    {
+      "label": "★第2幕 4人の騎士の到来",
+      "group_label": "第2幕",
+      "roles": [
+        "トマス・ベケット",
+        "4人の騎士",
+        "第1の司祭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 大聖堂の中（扉を開けさせる）",
+      "group_label": "第2幕",
+      "roles": [
+        "トマス・ベケット",
+        "第1の司祭",
+        "第2の司祭",
+        "第3の司祭",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（殺害と女たちのテ・デウム）",
+      "group_label": "第2幕",
+      "roles": [
+        "トマス・ベケット",
+        "4人の騎士",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "title": "越天楽",
+  "title_original": "越天楽",
+  "aliases": [
+    "えてんらく"
+  ],
+  "composer": "雅楽",
+  "composer_sort": "Gagaku",
+  "kind": "gagaku",
+  "year_written": 900,
+  "source": "hand",
+  "source_id": "gagaku-etenraku",
+  "duration_min": 10,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "舞人",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "管絃（舞なし）",
+      "group_label": "全",
+      "roles": [
+        "舞人"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "篳篥",
+      "count": 3,
+      "section": "other",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "龍笛",
+      "count": 3,
+      "section": "other",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "笙",
+      "count": 3,
+      "section": "other",
+      "note": "管方。人数は公演ごと"
+    },
+    {
+      "part": "琵琶",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "箏",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "鞨鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "太鼓",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "鉦鼓",
+      "count": 1,
+      "section": "other"
+    }
+  ],
+  "note": "★管絃のみで演奏されることが多い（舞は付かない）"
+}

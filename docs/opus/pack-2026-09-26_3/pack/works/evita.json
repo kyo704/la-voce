@@ -1,0 +1,259 @@
+{
+  "title": "エビータ",
+  "title_original": "Evita",
+  "composer": "ロイド・ウェッバー",
+  "composer_sort": "Lloyd Webber, Andrew",
+  "kind": "musical",
+  "year_written": 1978,
+  "duration_min": 135,
+  "edition": "★★1976 レコード版／1978 ロンドン初演／1979 ブロードウェイ／★1996 映画版で『You Must Love Me』が加わる／★2006 ロンドン版・2012 ブロードウェイ版",
+  "language": "en",
+  "source": "hand",
+  "source_id": "evita",
+  "note": "★作詞 ティム・ライス ／ 脚本 （通し歌の作） ／ ★★全曲通し歌。★『You Must Love Me』を入れるかは版と演出の判断",
+  "roles": [
+    {
+      "label": "エバ・ペロン"
+    },
+    {
+      "label": "チェ"
+    },
+    {
+      "label": "フアン・ペロン"
+    },
+    {
+      "label": "マガルディ"
+    },
+    {
+      "label": "ペロンの愛人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★レクイエム・フォー・エビータ（映画館の場・死の報せ）",
+      "group_label": "第1幕",
+      "roles": [
+        "チェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★オー・ホワット・ア・サーカス",
+      "group_label": "第1幕",
+      "roles": [
+        "チェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★オン・ジス・ナイト・オブ・ア・サウザンド・スターズ",
+      "group_label": "第1幕",
+      "roles": [
+        "マガルディ",
+        "エバ・ペロン"
+      ]
+    },
+    {
+      "label": "M4 ★★ブエノスアイレス",
+      "group_label": "第1幕",
+      "roles": [
+        "エバ・ペロン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★グッドナイト・アンド・サンキュー",
+      "group_label": "第1幕",
+      "roles": [
+        "チェ",
+        "エバ・ペロン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ザ・アート・オブ・ザ・ポシブル（★椅子取りゲームの場）",
+      "group_label": "第1幕",
+      "roles": [
+        "フアン・ペロン",
+        "チェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M7 ★★アナザー・スートケース・イン・アナザー・ホール",
+      "group_label": "第1幕",
+      "roles": [
+        "ペロンの愛人",
+        "チェ"
+      ]
+    },
+    {
+      "label": "M8 ★★ペロンズ・ラテスト・フレイム",
+      "group_label": "第1幕",
+      "roles": [
+        "チェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★ア・ニュー・アルゼンチン（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "エバ・ペロン",
+        "フアン・ペロン",
+        "チェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M10 ★★★ドント・クライ・フォー・ミー・アルゼンティーナ（バルコニーの場）",
+      "group_label": "第2幕",
+      "roles": [
+        "エバ・ペロン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★ハイ・フライング・アダード",
+      "group_label": "第2幕",
+      "roles": [
+        "エバ・ペロン",
+        "チェ"
+      ]
+    },
+    {
+      "label": "M12 ★★レインボー・ハイ／レインボー・ツアー",
+      "group_label": "第2幕",
+      "roles": [
+        "エバ・ペロン",
+        "チェ",
+        "フアン・ペロン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M13 ★★ザ・アクトレス・ハズント・ラーント・ザ・ラインズ",
+      "group_label": "第2幕",
+      "roles": [
+        "エバ・ペロン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★★ウォルツ・フォー・エバ・アンド・チェ",
+      "group_label": "第2幕",
+      "roles": [
+        "エバ・ペロン",
+        "チェ"
+      ]
+    },
+    {
+      "label": "M15 ★★ユー・マスト・ラヴ・ミー（★1996 映画版のために書かれた曲。舞台でも歌われる）",
+      "group_label": "第2幕",
+      "roles": [
+        "エバ・ペロン"
+      ]
+    },
+    {
+      "label": "M16 ★★★エバの最後の放送とレクイエム（終曲）",
+      "group_label": "第2幕",
+      "roles": [
+        "エバ・ペロン",
+        "チェ",
+        "フアン・ペロン",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード3",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

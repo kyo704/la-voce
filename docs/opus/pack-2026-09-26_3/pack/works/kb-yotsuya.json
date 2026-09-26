@@ -1,0 +1,107 @@
+{
+  "title": "東海道四谷怪談",
+  "title_original": "東海道四谷怪談",
+  "aliases": [
+    "四谷怪談"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1825,
+  "source": "hand",
+  "source_id": "kabuki-yotsuya",
+  "duration_min": 210,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "民谷伊右衛門"
+    },
+    {
+      "label": "お岩"
+    },
+    {
+      "label": "直助権兵衛"
+    },
+    {
+      "label": "お袖"
+    },
+    {
+      "label": "佐藤与茂七"
+    },
+    {
+      "label": "小仏小平"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "黒御簾",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "浅草境内の場",
+      "group_label": "序",
+      "roles": [
+        "民谷伊右衛門",
+        "お岩",
+        "直助権兵衛",
+        "お袖"
+      ]
+    },
+    {
+      "label": "伊右衛門浪宅の場（毒薬・髪梳き）",
+      "group_label": "中",
+      "roles": [
+        "お岩",
+        "民谷伊右衛門",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "戸板返し（隠亡堀の場）",
+      "group_label": "中",
+      "roles": [
+        "民谷伊右衛門",
+        "お岩",
+        "小仏小平",
+        "黒御簾"
+      ]
+    },
+    {
+      "label": "蛇山庵室の場",
+      "group_label": "終",
+      "roles": [
+        "民谷伊右衛門",
+        "お岩",
+        "佐藤与茂七",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "黒御簾",
+      "count": 0,
+      "section": "other",
+      "note": "下座音楽"
+    },
+    {
+      "part": "長唄",
+      "count": 0,
+      "section": "other",
+      "is_optional": true,
+      "note": "長唄囃子連中。人数は公演ごと"
+    }
+  ],
+  "school": "歌舞伎（上演の家により型が違う）",
+  "note": "★型（音羽屋型・成田屋型など）により 演出が変わる"
+}

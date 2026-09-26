@@ -1,0 +1,64 @@
+{
+  "title": "永遠の光",
+  "title_original": "Lux Aeterna",
+  "composer": "モーテン・ラウリゼン",
+  "composer_sort": "Lauridsen, Morten",
+  "kind": "chorus",
+  "year_written": 1997,
+  "duration_min": 38,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-lauridsen-lux",
+  "note": "★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. イントロイトゥス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "2. イン・テ・ドミネ・スペラーヴィ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★3. オー・ノータ・ルクス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★4. ヴェニ・サンクテ・スピリトゥス",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "5. アニュス・デイ〜ルクス・エテルナ",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

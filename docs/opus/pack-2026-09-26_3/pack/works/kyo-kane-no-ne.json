@@ -1,0 +1,63 @@
+{
+  "title": "鐘の音",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 35,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-kane-no-ne",
+  "note": "★小名狂言 ／ ★★★鐘の音を 声で 打ち分ける ── 見せ場 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（太郎冠者）"
+    },
+    {
+      "label": "アド（主）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "主が『かねのね（金の値）』を尋ねて来いと言う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    },
+    {
+      "label": "鐘の音と取り違えて寺々を回る",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）"
+      ]
+    },
+    {
+      "label": "四つの寺の鐘の音を謡い分ける",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）"
+      ]
+    },
+    {
+      "label": "主に叱られ、詫びに鐘の音を語って舞う",
+      "group_label": "段",
+      "roles": [
+        "シテ（太郎冠者）",
+        "アド（主）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "囃子（笛・小鼓・大鼓）",
+      "count": 3,
+      "section": "percussion",
+      "note": "入る曲のみ（舞狂言）"
+    }
+  ]
+}

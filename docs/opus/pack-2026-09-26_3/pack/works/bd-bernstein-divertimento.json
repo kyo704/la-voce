@@ -1,0 +1,102 @@
+{
+  "title": "ディヴェルティメント（吹奏楽版）",
+  "composer": "バーンスタイン",
+  "composer_sort": "Bernstein, Leonard",
+  "kind": "band",
+  "year_written": 1980,
+  "duration_min": 16,
+  "language": "—",
+  "source": "hand",
+  "source_id": "bd-bernstein-divertimento",
+  "note": "★★吹奏楽。★人数は 団体ごとに 変わります",
+  "roles": [
+    {
+      "label": "吹奏楽（合奏）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. セネッツとタケッツ",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "2. ワルツ",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "3. マズルカ",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "4. サンバ",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "5. ターキー・トロット",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "6. スフィンクス",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "7. ブルース",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "8. In memoriam〜行進曲",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "木管（フルート・オーボエ・クラリネット・サクソフォン・ファゴット）",
+      "count": 0,
+      "section": "woodwind",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "金管（ホルン・トランペット・トロンボーン・ユーフォニアム・チューバ）",
+      "count": 0,
+      "section": "brass",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "打楽器",
+      "count": 0,
+      "section": "percussion",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "入る団体のみ"
+    }
+  ]
+}

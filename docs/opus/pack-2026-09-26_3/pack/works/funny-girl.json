@@ -1,0 +1,248 @@
+{
+  "title": "ファニー・ガール",
+  "title_original": "Funny Girl",
+  "composer": "ジュール・スタイン",
+  "kind": "musical",
+  "year_written": 1964,
+  "duration_min": 155,
+  "edition": "1964 ブロードウェイ初演版（★1968 映画版・★2022 リバイバル版で台本と曲に手が入る）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "funny-girl",
+  "note": "★作詞 ボブ・メリル ／ 脚本 アイソベル・レナート ／ ★ファニー・ブライスの生涯による",
+  "roles": [
+    {
+      "label": "ファニー・ブライス"
+    },
+    {
+      "label": "ニック・アーンスタイン"
+    },
+    {
+      "label": "ローズ・ブライス"
+    },
+    {
+      "label": "エディ・ライアン"
+    },
+    {
+      "label": "ミセス・ストラコッシュ"
+    },
+    {
+      "label": "フローレンツ・ジーグフェルド"
+    },
+    {
+      "label": "ミセス・メーカー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★アイム・ザ・グレイテスト・スター",
+      "group_label": "第1幕",
+      "roles": [
+        "ファニー・ブライス"
+      ]
+    },
+    {
+      "label": "M2 ★★イフ・ア・ガール・イズント・プリティ",
+      "group_label": "第1幕",
+      "roles": [
+        "ローズ・ブライス",
+        "ミセス・ストラコッシュ",
+        "ミセス・メーカー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★エディの稽古（I'm the Greatest Star の続き）",
+      "group_label": "第1幕",
+      "roles": [
+        "エディ・ライアン",
+        "ファニー・ブライス"
+      ]
+    },
+    {
+      "label": "M4 ★★ヘンリー・ストリート",
+      "group_label": "第1幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "M5 ★★★ピープル",
+      "group_label": "第1幕",
+      "roles": [
+        "ファニー・ブライス"
+      ]
+    },
+    {
+      "label": "M6 ★★ユー・アー・ウーマン、アイ・アム・マン",
+      "group_label": "第1幕",
+      "roles": [
+        "ニック・アーンスタイン",
+        "ファニー・ブライス"
+      ]
+    },
+    {
+      "label": "M7 ★★★ドント・レイン・オン・マイ・パレード（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ファニー・ブライス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★サディ、サディ",
+      "group_label": "第2幕",
+      "roles": [
+        "ファニー・ブライス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★フィンド・ユアセルフ・ア・マン",
+      "group_label": "第2幕",
+      "roles": [
+        "ローズ・ブライス",
+        "エディ・ライアン",
+        "ミセス・ストラコッシュ"
+      ]
+    },
+    {
+      "label": "M10 ★★★ラット・タット・タット・タット（ジーグフェルド・フォリーズの場）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファニー・ブライス",
+        "エディ・ライアン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★ニックの破産",
+      "group_label": "第2幕",
+      "roles": [
+        "ニック・アーンスタイン",
+        "ファニー・ブライス"
+      ]
+    },
+    {
+      "label": "M12 ★★ザ・ミュージック・ザット・メイクス・ミー・ダンス",
+      "group_label": "第2幕",
+      "roles": [
+        "ファニー・ブライス"
+      ]
+    },
+    {
+      "label": "M13 ★★★終曲（ドント・レイン・オン・マイ・パレードの再現）",
+      "group_label": "第2幕",
+      "roles": [
+        "ファニー・ブライス"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "title": "平和の日",
+  "title_original": "Friedenstag",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1938,
+  "duration_min": 80,
+  "language": "de",
+  "source": "hand",
+  "source_id": "friedenstag",
+  "roles": [
+    {
+      "label": "司令官"
+    },
+    {
+      "label": "マリア"
+    },
+    {
+      "label": "軍曹"
+    },
+    {
+      "label": "ホルシュタイン人"
+    },
+    {
+      "label": "市長"
+    },
+    {
+      "label": "高位聖職者"
+    },
+    {
+      "label": "ピエモンテ人"
+    },
+    {
+      "label": "銃士"
+    },
+    {
+      "label": "ラッパ手"
+    },
+    {
+      "label": "士官"
+    },
+    {
+      "label": "前線の士官"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "砦の中（弾も糧もない）",
+      "group_label": "第1場",
+      "roles": [
+        "軍曹",
+        "銃士",
+        "ラッパ手",
+        "合唱"
+      ]
+    },
+    {
+      "label": "市民の訴え（降伏を願う）",
+      "group_label": "第1場",
+      "roles": [
+        "市長",
+        "高位聖職者",
+        "司令官",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ピエモンテ人の知らせ",
+      "group_label": "第1場",
+      "roles": [
+        "ピエモンテ人",
+        "司令官"
+      ]
+    },
+    {
+      "label": "司令官の決意（火薬庫に火を）",
+      "group_label": "第1場",
+      "roles": [
+        "司令官",
+        "士官",
+        "前線の士官"
+      ]
+    },
+    {
+      "label": "マリアの登場と愛の二重唱",
+      "group_label": "第1場",
+      "roles": [
+        "マリア",
+        "司令官"
+      ]
+    },
+    {
+      "label": "★平和の鐘（大砲ではなかった）",
+      "group_label": "第1場",
+      "roles": [
+        "司令官",
+        "マリア",
+        "軍曹",
+        "合唱"
+      ]
+    },
+    {
+      "label": "ホルシュタイン人との対面と終曲（和解の合唱）",
+      "group_label": "第1場",
+      "roles": [
+        "司令官",
+        "ホルシュタイン人",
+        "マリア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

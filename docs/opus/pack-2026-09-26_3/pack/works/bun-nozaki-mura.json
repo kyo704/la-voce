@@ -1,0 +1,110 @@
+{
+  "title": "新版歌祭文（野崎村）",
+  "aliases": [
+    "野崎村"
+  ],
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1780,
+  "duration_min": 100,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bun-nozaki-mura",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松半二 ／ ★★★幕切れで舟と駕籠が両方向に去る。★娘方（むすめがた）の代表役 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "お光"
+    },
+    {
+      "label": "久松"
+    },
+    {
+      "label": "お染"
+    },
+    {
+      "label": "久作"
+    },
+    {
+      "label": "お常"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★上の巻 座摩社前",
+      "group_label": "上",
+      "roles": [
+        "お染",
+        "久松",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★下の巻 野崎村（★お光の髪を切る）",
+      "group_label": "下",
+      "roles": [
+        "お光",
+        "久松",
+        "お染",
+        "久作",
+        "お常",
+        "太夫",
+        "三味線"
+      ]
+    },
+    {
+      "label": "★★★舟と駕籠の別れ（★2つに分かれて去る幕切れ）",
+      "group_label": "下",
+      "roles": [
+        "お光",
+        "久松",
+        "お染",
+        "久作",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

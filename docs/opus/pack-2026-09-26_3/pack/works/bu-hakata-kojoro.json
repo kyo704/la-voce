@@ -1,0 +1,88 @@
+{
+  "title": "博多小女郎波枕",
+  "composer": "文楽（人形浄瑠璃）",
+  "composer_sort": "Bunraku",
+  "kind": "bunraku",
+  "year_written": 1718,
+  "duration_min": 150,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "bu-hakata-kojoro",
+  "note": "★文楽（人形浄瑠璃） ／ 作者 近松門左衛門 ／ ★浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "毛剃九右衛門"
+    },
+    {
+      "label": "小松屋宗七"
+    },
+    {
+      "label": "太夫",
+      "is_group": true
+    },
+    {
+      "label": "三味線",
+      "is_group": true
+    },
+    {
+      "label": "人形遣い",
+      "is_group": true
+    },
+    {
+      "label": "小女郎"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★船中（★毛剃九右衛門の出）",
+      "group_label": "上",
+      "roles": [
+        "毛剃九右衛門",
+        "小松屋宗七",
+        "太夫",
+        "三味線",
+        "人形遣い"
+      ]
+    },
+    {
+      "label": "★博多の廓",
+      "group_label": "下",
+      "roles": [
+        "小女郎",
+        "小松屋宗七",
+        "毛剃九右衛門",
+        "太夫",
+        "三味線"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "太夫",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "三味線",
+      "count": 1,
+      "section": "other",
+      "note": "段ごとに替わる"
+    },
+    {
+      "part": "人形遣い（主遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（左遣い）",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "人形遣い（足遣い）",
+      "count": 1,
+      "section": "other"
+    }
+  ]
+}

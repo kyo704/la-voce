@@ -1,0 +1,168 @@
+{
+  "title": "アンティゴナ",
+  "title_original": "Antigona",
+  "composer": "トラエッタ",
+  "composer_sort": "Traetta, Tommaso",
+  "kind": "opera",
+  "year_written": 1772,
+  "duration_min": 150,
+  "language": "it",
+  "source": "hand",
+  "source_id": "antigona-traetta",
+  "note": "★★グルックと並ぶ『改革オペラ』。合唱と場面の連続を重んじる",
+  "roles": [
+    {
+      "label": "アンティゴナ"
+    },
+    {
+      "label": "クレオンテ"
+    },
+    {
+      "label": "イスメーネ"
+    },
+    {
+      "label": "エモーネ"
+    },
+    {
+      "label": "アドラスト"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★★第1幕 ★ポリュネイケスの埋葬（アンティゴナの祈り）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンティゴナ",
+        "イスメーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 クレオンテの禁令とアンティゴナの捕縛",
+      "group_label": "第1幕",
+      "roles": [
+        "クレオンテ",
+        "アンティゴナ",
+        "アドラスト",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 エモーネの嘆願（父への訴え）",
+      "group_label": "第2幕",
+      "roles": [
+        "エモーネ",
+        "クレオンテ"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★アンティゴナとエモーネの二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "アンティゴナ",
+        "エモーネ"
+      ]
+    },
+    {
+      "label": "★★第3幕 洞窟（生き埋めの場・★合唱つきの大場面）",
+      "group_label": "第3幕",
+      "roles": [
+        "アンティゴナ",
+        "エモーネ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（クレオンテの悔いと赦し）",
+      "group_label": "第3幕",
+      "roles": [
+        "アンティゴナ",
+        "エモーネ",
+        "クレオンテ",
+        "イスメーネ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

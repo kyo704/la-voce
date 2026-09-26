@@ -1,0 +1,183 @@
+{
+  "title": "楊貴妃",
+  "title_original": "楊貴妃",
+  "composer": "團伊玖磨",
+  "composer_sort": "Dan, Ikuma",
+  "kind": "opera",
+  "year_written": 1985,
+  "duration_min": 140,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "youkihi",
+  "roles": [
+    {
+      "label": "楊貴妃"
+    },
+    {
+      "label": "玄宗皇帝"
+    },
+    {
+      "label": "高力士"
+    },
+    {
+      "label": "安禄山"
+    },
+    {
+      "label": "梅妃"
+    },
+    {
+      "label": "李亀年"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 華清池（楊貴妃の入内）",
+      "group_label": "第1幕",
+      "roles": [
+        "楊貴妃",
+        "玄宗皇帝",
+        "高力士",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 梅妃の妬み",
+      "group_label": "第1幕",
+      "roles": [
+        "梅妃",
+        "高力士"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★霓裳羽衣の曲（李亀年と舞）",
+      "group_label": "第2幕",
+      "roles": [
+        "楊貴妃",
+        "玄宗皇帝",
+        "李亀年",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 安禄山の乱の知らせ",
+      "group_label": "第2幕",
+      "roles": [
+        "安禄山",
+        "高力士",
+        "玄宗皇帝",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 馬嵬坡（兵の要求と別れ）",
+      "group_label": "第3幕",
+      "roles": [
+        "楊貴妃",
+        "玄宗皇帝",
+        "高力士",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（楊貴妃の死と皇帝の嘆き）",
+      "group_label": "第3幕",
+      "roles": [
+        "玄宗皇帝",
+        "高力士",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "邦楽器（尺八・箏・三味線など）",
+      "count": 3,
+      "section": "other",
+      "note": "編成は作品ごと"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

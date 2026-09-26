@@ -1,0 +1,39 @@
+{
+  "title": "スターバト・マーテル（プーランク）",
+  "composer": "プーランク",
+  "composer_sort": "Poulenc, Francis",
+  "kind": "chorus",
+  "year_written": 1950,
+  "duration_min": 32,
+  "language": "la",
+  "source": "hand",
+  "source_id": "ch-poulenc-gloria-nashi",
+  "note": "★★曲名を 全部 確かめられなかったので ★曲数（12曲）だけ 持ちます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "ソプラノ独唱"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★全12曲（★曲名は 入れて いません）",
+      "group_label": "―",
+      "roles": [
+        "ソプラノ独唱",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

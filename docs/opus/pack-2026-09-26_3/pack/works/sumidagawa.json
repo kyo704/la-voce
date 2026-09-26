@@ -1,0 +1,93 @@
+{
+  "title": "隅田川（能）",
+  "title_original": "隅田川",
+  "aliases": [],
+  "composer": "能（四番目物（雑））",
+  "composer_sort": "Kanze, Motomasa",
+  "kind": "noh",
+  "year_written": 1430,
+  "source": "hand",
+  "source_id": "noh-sumidagawa-kanze",
+  "duration_min": 70,
+  "language": "ja",
+  "roles": [
+    {
+      "label": "シテ（狂女）"
+    },
+    {
+      "label": "ワキ（渡守）"
+    },
+    {
+      "label": "ワキツレ（旅人）"
+    },
+    {
+      "label": "子方（梅若丸の霊）"
+    },
+    {
+      "label": "地謡",
+      "is_group": true
+    },
+    {
+      "label": "囃子方",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "次第・名ノリ",
+      "group_label": "前段",
+      "roles": [
+        "ワキ（渡守）",
+        "ワキツレ（旅人）",
+        "囃子方"
+      ]
+    },
+    {
+      "label": "狂女の登場",
+      "group_label": "前段",
+      "roles": [
+        "シテ（狂女）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "渡し舟の問答",
+      "group_label": "中段",
+      "roles": [
+        "シテ（狂女）",
+        "ワキ（渡守）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "子の死を知る",
+      "group_label": "後段",
+      "roles": [
+        "シテ（狂女）",
+        "ワキ（渡守）",
+        "地謡"
+      ]
+    },
+    {
+      "label": "念仏と子方の声・留め",
+      "group_label": "後段",
+      "roles": [
+        "シテ（狂女）",
+        "子方（梅若丸の霊）",
+        "地謡",
+        "囃子方"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "効果音・音楽",
+      "count": 1,
+      "section": "other",
+      "is_optional": true,
+      "note": "演出により"
+    }
+  ],
+  "school": "観世流",
+  "note": "★観世流の曲名・構成で書いた。流派により 曲名の表記・場面の切り方・小書が違う ／ 作者 観世元雅"
+}

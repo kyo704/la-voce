@@ -1,0 +1,285 @@
+{
+  "title": "リトル・ナイト・ミュージック",
+  "title_original": "A Little Night Music",
+  "composer": "ソンドハイム",
+  "composer_sort": "Sondheim, Stephen",
+  "kind": "musical",
+  "year_written": 1973,
+  "duration_min": 165,
+  "edition": "1973 ブロードウェイ初演版（★2009 リバイバル版・2010 ロンドン版）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "little-night-music",
+  "note": "★作詞 ソンドハイム ／ 脚本 ヒュー・ウィーラー ／ ★★ベルイマン『夏の夜は三たび微笑む』による。★★全曲が3拍子系（ワルツ）で書かれている",
+  "roles": [
+    {
+      "label": "デジレ・アームフェルト"
+    },
+    {
+      "label": "フレドリック・エーゲルマン"
+    },
+    {
+      "label": "アンネ・エーゲルマン"
+    },
+    {
+      "label": "ヘンリック・エーゲルマン"
+    },
+    {
+      "label": "シャルロッテ伯爵夫人"
+    },
+    {
+      "label": "カール＝マグヌス伯爵"
+    },
+    {
+      "label": "アームフェルト夫人"
+    },
+    {
+      "label": "フレドリカ・アームフェルト"
+    },
+    {
+      "label": "ペトラ"
+    },
+    {
+      "label": "五重唱（リーブスリート）"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★序曲と五重唱（Night Waltz）",
+      "group_label": "第1幕",
+      "roles": [
+        "五重唱（リーブスリート）"
+      ]
+    },
+    {
+      "label": "M2 ★★ナウ／レイター／スーン（三重の対位法）",
+      "group_label": "第1幕",
+      "roles": [
+        "フレドリック・エーゲルマン",
+        "ヘンリック・エーゲルマン",
+        "アンネ・エーゲルマン"
+      ]
+    },
+    {
+      "label": "M3 ★ザ・グラマラス・ライフ",
+      "group_label": "第1幕",
+      "roles": [
+        "フレドリカ・アームフェルト",
+        "デジレ・アームフェルト",
+        "アームフェルト夫人",
+        "五重唱（リーブスリート）"
+      ]
+    },
+    {
+      "label": "M4 ★★リメンバー？",
+      "group_label": "第1幕",
+      "roles": [
+        "五重唱（リーブスリート）"
+      ]
+    },
+    {
+      "label": "M5 ★ユー・マスト・ミート・マイ・ワイフ",
+      "group_label": "第1幕",
+      "roles": [
+        "デジレ・アームフェルト",
+        "フレドリック・エーゲルマン"
+      ]
+    },
+    {
+      "label": "M6 ★★リエゾンズ",
+      "group_label": "第1幕",
+      "roles": [
+        "アームフェルト夫人"
+      ]
+    },
+    {
+      "label": "M7 ★★イン・プレイズ・オブ・ウィメン",
+      "group_label": "第1幕",
+      "roles": [
+        "カール＝マグヌス伯爵"
+      ]
+    },
+    {
+      "label": "M8 ★★エヴリ・デイ・ア・リトル・デス",
+      "group_label": "第1幕",
+      "roles": [
+        "シャルロッテ伯爵夫人",
+        "アンネ・エーゲルマン"
+      ]
+    },
+    {
+      "label": "M9 ★★ア・ウィークエンド・イン・ザ・カントリー（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "アンネ・エーゲルマン",
+        "シャルロッテ伯爵夫人",
+        "デジレ・アームフェルト",
+        "フレドリック・エーゲルマン",
+        "カール＝マグヌス伯爵",
+        "ペトラ",
+        "五重唱（リーブスリート）"
+      ]
+    },
+    {
+      "label": "M10 ★★ナイト・ワルツ II（The Sun Sits Low）",
+      "group_label": "第2幕",
+      "roles": [
+        "五重唱（リーブスリート）"
+      ]
+    },
+    {
+      "label": "M11 ★★イット・ウッド・ハヴ・ビーン・ワンダフル",
+      "group_label": "第2幕",
+      "roles": [
+        "フレドリック・エーゲルマン",
+        "カール＝マグヌス伯爵"
+      ]
+    },
+    {
+      "label": "M12 ★★ペルペチュアル・アンティシペイション",
+      "group_label": "第2幕",
+      "roles": [
+        "五重唱（リーブスリート）"
+      ]
+    },
+    {
+      "label": "M13 ★★★センド・イン・ザ・クラウンズ",
+      "group_label": "第2幕",
+      "roles": [
+        "デジレ・アームフェルト"
+      ]
+    },
+    {
+      "label": "M14 ★★ミラー（ペトラのアリア ─ The Miller's Son）",
+      "group_label": "第2幕",
+      "roles": [
+        "ペトラ"
+      ]
+    },
+    {
+      "label": "M15 ★★決闘（ロシアン・ルーレット）とヘンリックとアンネの駆け落ち",
+      "group_label": "第2幕",
+      "roles": [
+        "カール＝マグヌス伯爵",
+        "フレドリック・エーゲルマン",
+        "ヘンリック・エーゲルマン",
+        "アンネ・エーゲルマン",
+        "シャルロッテ伯爵夫人"
+      ]
+    },
+    {
+      "label": "M16 ★★センド・イン・ザ・クラウンズ（再現）と終曲",
+      "group_label": "第2幕",
+      "roles": [
+        "デジレ・アームフェルト",
+        "フレドリック・エーゲルマン",
+        "アームフェルト夫人",
+        "フレドリカ・アームフェルト",
+        "五重唱（リーブスリート）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

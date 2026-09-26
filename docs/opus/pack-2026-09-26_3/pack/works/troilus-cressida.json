@@ -1,0 +1,209 @@
+{
+  "title": "トロイラスとクレシダ",
+  "title_original": "Troilus and Cressida",
+  "composer": "ウォルトン",
+  "composer_sort": "Walton, William",
+  "kind": "opera",
+  "year_written": 1954,
+  "duration_min": 140,
+  "edition": "1954 原典版／1976 改訂版（クレシダをメゾに移す）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "troilus-cressida",
+  "roles": [
+    {
+      "label": "クレシダ"
+    },
+    {
+      "label": "トロイラス"
+    },
+    {
+      "label": "パンダラス"
+    },
+    {
+      "label": "ディオメーデ"
+    },
+    {
+      "label": "カルカス"
+    },
+    {
+      "label": "エヴァドネ"
+    },
+    {
+      "label": "アンテノール"
+    },
+    {
+      "label": "ホレンティア"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 トロイアの神殿（カルカスのギリシャへの離脱）",
+      "group_label": "第1幕",
+      "roles": [
+        "カルカス",
+        "トロイラス",
+        "アンテノール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 トロイラスのクレシダへの愛の告白",
+      "group_label": "第1幕",
+      "roles": [
+        "トロイラス",
+        "クレシダ"
+      ]
+    },
+    {
+      "label": "★第1幕 パンダラスの取りなし",
+      "group_label": "第1幕",
+      "roles": [
+        "パンダラス",
+        "クレシダ",
+        "エヴァドネ"
+      ]
+    },
+    {
+      "label": "★第2幕 ★パンダラスの家の夜（愛の二重唱）",
+      "group_label": "第2幕",
+      "roles": [
+        "トロイラス",
+        "クレシダ",
+        "パンダラス"
+      ]
+    },
+    {
+      "label": "★第2幕 ディオメーデの到来（人質交換でクレシダはギリシャへ）",
+      "group_label": "第2幕",
+      "roles": [
+        "ディオメーデ",
+        "クレシダ",
+        "トロイラス",
+        "アンテノール",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 ギリシャの陣営（手紙が届かない）",
+      "group_label": "第3幕",
+      "roles": [
+        "クレシダ",
+        "エヴァドネ",
+        "ディオメーデ"
+      ]
+    },
+    {
+      "label": "★第3幕 トロイラスの到着とディオメーデとの決闘",
+      "group_label": "第3幕",
+      "roles": [
+        "トロイラス",
+        "ディオメーデ",
+        "クレシダ",
+        "カルカス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★終曲（トロイラスの死とクレシダの自害）",
+      "group_label": "第3幕",
+      "roles": [
+        "クレシダ",
+        "ディオメーデ",
+        "ホレンティア",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,281 @@
+{
+  "title": "シカゴ",
+  "title_original": "Chicago",
+  "composer": "ジョン・カンダー",
+  "kind": "musical",
+  "year_written": 1975,
+  "duration_min": 145,
+  "edition": "★★1996 リバイバル版（★いま上演されるのはほぼこれ。楽団が舞台上に乗り、装置がない）／1975 初演版／★2002 映画版は曲順が違い『クラス』が削られる",
+  "language": "en",
+  "source": "hand",
+  "source_id": "chicago",
+  "note": "★作詞 フレッド・エッブ ／ 脚本 フレッド・エッブ／ボブ・フォッシー ／ ★★『ヴォードヴィル』の型を借りる。★曲ごとに実在の芸人の芸を写している",
+  "roles": [
+    {
+      "label": "ロキシー・ハート"
+    },
+    {
+      "label": "ヴェルマ・ケリー"
+    },
+    {
+      "label": "ビリー・フリン"
+    },
+    {
+      "label": "ママ・モートン"
+    },
+    {
+      "label": "エイモス・ハート"
+    },
+    {
+      "label": "メアリー・サンシャイン"
+    },
+    {
+      "label": "フレッド・ケイスリー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★★オール・ザット・ジャズ",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴェルマ・ケリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★ファニー・ハニー",
+      "group_label": "第1幕",
+      "roles": [
+        "ロキシー・ハート",
+        "エイモス・ハート"
+      ]
+    },
+    {
+      "label": "M3 ★★★セル・ブロック・タンゴ（6人の女の殺しの告白）",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴェルマ・ケリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M4 ★★ホエン・ユーアー・グッド・トゥ・ママ",
+      "group_label": "第1幕",
+      "roles": [
+        "ママ・モートン"
+      ]
+    },
+    {
+      "label": "M5 ★★オール・アイ・ケア・アバウト",
+      "group_label": "第1幕",
+      "roles": [
+        "ビリー・フリン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M6 ★★ア・リトル・ビット・オブ・グッド",
+      "group_label": "第1幕",
+      "roles": [
+        "メアリー・サンシャイン"
+      ]
+    },
+    {
+      "label": "M7 ★★★ウィ・ボース・リーチト・フォー・ザ・ガン（★腹話術の場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ビリー・フリン",
+        "ロキシー・ハート",
+        "メアリー・サンシャイン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★ロキシー",
+      "group_label": "第1幕",
+      "roles": [
+        "ロキシー・ハート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M9 ★★アイ・キャント・ドゥ・イット・アローン",
+      "group_label": "第1幕",
+      "roles": [
+        "ヴェルマ・ケリー"
+      ]
+    },
+    {
+      "label": "M10 ★★マイ・オウン・ベスト・フレンド（第1幕終曲）",
+      "group_label": "第1幕",
+      "roles": [
+        "ロキシー・ハート",
+        "ヴェルマ・ケリー"
+      ]
+    },
+    {
+      "label": "M11 ★★ミー・アンド・マイ・ベイビー",
+      "group_label": "第2幕",
+      "roles": [
+        "ロキシー・ハート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M12 ★★★ミスター・セロファン",
+      "group_label": "第2幕",
+      "roles": [
+        "エイモス・ハート"
+      ]
+    },
+    {
+      "label": "M13 ★★ホエン・ヴェルマ・テイクス・ザ・スタンド",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴェルマ・ケリー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M14 ★★★レイザル・ダズル（法廷はサーカス）",
+      "group_label": "第2幕",
+      "roles": [
+        "ビリー・フリン",
+        "ロキシー・ハート",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M15 ★★クラス",
+      "group_label": "第2幕",
+      "roles": [
+        "ヴェルマ・ケリー",
+        "ママ・モートン"
+      ]
+    },
+    {
+      "label": "M16 ★★ノーウェイデイズ",
+      "group_label": "第2幕",
+      "roles": [
+        "ロキシー・ハート",
+        "ヴェルマ・ケリー"
+      ]
+    },
+    {
+      "label": "M17 ★★★終曲（ホット・ハニー・ラグ／2人の舞台）",
+      "group_label": "第2幕",
+      "roles": [
+        "ロキシー・ハート",
+        "ヴェルマ・ケリー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "ピアノ／指揮者用鍵盤",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "サクソフォン（持ち替え多数）",
+      "count": 3,
+      "section": "woodwind",
+      "doubling": "クラリネット・フルート"
+    },
+    {
+      "part": "ギター／バンジョー",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース／ウッドベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

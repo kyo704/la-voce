@@ -1,0 +1,210 @@
+{
+  "title": "領事",
+  "title_original": "The Consul",
+  "composer": "メノッティ",
+  "composer_sort": "Menotti, Gian Carlo",
+  "kind": "opera",
+  "year_written": 1950,
+  "duration_min": 110,
+  "language": "en",
+  "source": "hand",
+  "source_id": "consul",
+  "roles": [
+    {
+      "label": "マグダ・ソレル"
+    },
+    {
+      "label": "ジョン・ソレル"
+    },
+    {
+      "label": "ソレルの母"
+    },
+    {
+      "label": "秘書"
+    },
+    {
+      "label": "魔術師ニカ・マグダフ"
+    },
+    {
+      "label": "警察の役人"
+    },
+    {
+      "label": "アッサン"
+    },
+    {
+      "label": "ヴェラ・ボロネル"
+    },
+    {
+      "label": "外国の女"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★第1幕 ソレルの家（追われる夫の逃亡）",
+      "group_label": "第1幕",
+      "roles": [
+        "マグダ・ソレル",
+        "ジョン・ソレル",
+        "ソレルの母",
+        "警察の役人"
+      ]
+    },
+    {
+      "label": "★第1幕 領事館の待合室（秘書と申請者たち）",
+      "group_label": "第1幕",
+      "roles": [
+        "マグダ・ソレル",
+        "秘書",
+        "ヴェラ・ボロネル",
+        "外国の女",
+        "魔術師ニカ・マグダフ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★子の死とマグダの絶望",
+      "group_label": "第2幕",
+      "roles": [
+        "マグダ・ソレル",
+        "ソレルの母"
+      ]
+    },
+    {
+      "label": "★第2幕 ★魔術師の場（申請者たちを眠らせて踊らせる）",
+      "group_label": "第2幕",
+      "roles": [
+        "魔術師ニカ・マグダフ",
+        "マグダ・ソレル",
+        "秘書",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 ★マグダのアリア（この書類を、この紙切れを）",
+      "group_label": "第2幕",
+      "roles": [
+        "マグダ・ソレル",
+        "秘書"
+      ]
+    },
+    {
+      "label": "★第3幕 領事館（アッサンの知らせ）",
+      "group_label": "第3幕",
+      "roles": [
+        "マグダ・ソレル",
+        "アッサン",
+        "秘書"
+      ]
+    },
+    {
+      "label": "★第3幕 マグダのガス自殺",
+      "group_label": "第3幕",
+      "roles": [
+        "マグダ・ソレル"
+      ]
+    },
+    {
+      "label": "★終曲（幻の場・死者たちの行列）",
+      "group_label": "第3幕",
+      "roles": [
+        "マグダ・ソレル",
+        "ジョン・ソレル",
+        "ソレルの母",
+        "秘書",
+        "魔術師ニカ・マグダフ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

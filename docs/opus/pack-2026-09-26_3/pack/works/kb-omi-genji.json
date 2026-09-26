@@ -1,0 +1,97 @@
+{
+  "title": "近江源氏先陣館",
+  "aliases": [
+    "盛綱陣屋"
+  ],
+  "composer": "歌舞伎",
+  "composer_sort": "Kabuki",
+  "kind": "kabuki",
+  "year_written": 1769,
+  "duration_min": 120,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kb-omi-genji",
+  "note": "★歌舞伎 ／ 作者 近松半二 ／ ★★立役の大役。★偽首と知って 頷く 心が 見せ場 ／ ★台詞・浄瑠璃の文は 入れていません",
+  "roles": [
+    {
+      "label": "佐々木盛綱"
+    },
+    {
+      "label": "微妙"
+    },
+    {
+      "label": "篝火"
+    },
+    {
+      "label": "早瀬"
+    },
+    {
+      "label": "小四郎"
+    },
+    {
+      "label": "和田兵衛秀盛"
+    },
+    {
+      "label": "竹本（義太夫）",
+      "is_group": true
+    },
+    {
+      "label": "北条時政"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★八段目 盛綱陣屋（★偽首の首実検）",
+      "group_label": "八段目",
+      "roles": [
+        "佐々木盛綱",
+        "微妙",
+        "篝火",
+        "早瀬",
+        "小四郎",
+        "和田兵衛秀盛",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★盛綱陣屋 小四郎の腹切り",
+      "group_label": "八段目",
+      "roles": [
+        "小四郎",
+        "篝火",
+        "佐々木盛綱",
+        "竹本（義太夫）"
+      ]
+    },
+    {
+      "label": "★盛綱陣屋 幕切れ（★偽首に頷く）",
+      "group_label": "八段目",
+      "roles": [
+        "佐々木盛綱",
+        "北条時政",
+        "和田兵衛秀盛",
+        "竹本（義太夫）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "竹本（義太夫）",
+      "count": 2,
+      "section": "other",
+      "note": "太夫と三味線。人数は公演ごと"
+    },
+    {
+      "part": "長唄囃子連中",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "黒御簾（下座音楽）",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

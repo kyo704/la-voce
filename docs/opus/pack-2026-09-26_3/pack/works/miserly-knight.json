@@ -1,0 +1,167 @@
+{
+  "title": "けちな騎士",
+  "title_original": "Скупой рыцарь",
+  "composer": "ラフマニノフ",
+  "composer_sort": "Rachmaninoff, Sergei",
+  "kind": "opera",
+  "year_written": 1904,
+  "duration_min": 60,
+  "language": "ru",
+  "source": "hand",
+  "source_id": "miserly-knight",
+  "roles": [
+    {
+      "label": "男爵"
+    },
+    {
+      "label": "アルベール"
+    },
+    {
+      "label": "従僕イワン"
+    },
+    {
+      "label": "ユダヤ人（高利貸し）"
+    },
+    {
+      "label": "公爵"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1場 塔（アルベールの貧しさと鎧）",
+      "group_label": "第1場",
+      "roles": [
+        "アルベール",
+        "従僕イワン"
+      ]
+    },
+    {
+      "label": "第1場 ユダヤ人との交渉（毒の話）",
+      "group_label": "第1場",
+      "roles": [
+        "アルベール",
+        "ユダヤ人（高利貸し）"
+      ]
+    },
+    {
+      "label": "★第2場 地下室（男爵の独白・6つ目の箱）",
+      "group_label": "第2場",
+      "roles": [
+        "男爵"
+      ]
+    },
+    {
+      "label": "第3場 宮廷（アルベールの訴え）",
+      "group_label": "第3場",
+      "roles": [
+        "アルベール",
+        "公爵"
+      ]
+    },
+    {
+      "label": "第3場 父と子の対面（手袋を投げる）",
+      "group_label": "第3場",
+      "roles": [
+        "男爵",
+        "アルベール",
+        "公爵"
+      ]
+    },
+    {
+      "label": "★終曲（男爵の死「鍵を、鍵を」）",
+      "group_label": "第3場",
+      "roles": [
+        "男爵",
+        "アルベール",
+        "公爵"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "title": "セレナード 作品31",
+  "title_original": "Serenade for Tenor, Horn and Strings op.31",
+  "composer": "ブリテン",
+  "composer_sort": "Britten, Benjamin",
+  "kind": "song_cycle",
+  "year_written": 1943,
+  "duration_min": 25,
+  "language": "en",
+  "source": "hand",
+  "source_id": "britten-op31",
+  "note": "★★★テノール・ホルン・弦楽。★プロローグと エピローグは ホルンの 自然倍音だけで 吹きます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. プロローグ（Prologue・ホルン独奏）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. パストラル（Pastoral）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. ノクターン（Nocturne）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. エレジー（Elegy）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 挽歌（Dirge）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. 讃歌（Hymn）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "7. ソネット（Sonnet）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "8. エピローグ（Epilogue・舞台裏のホルン）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "弦楽合奏",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

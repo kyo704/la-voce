@@ -1,0 +1,225 @@
+{
+  "title": "カプリッチョ",
+  "title_original": "Capriccio",
+  "composer": "R.シュトラウス",
+  "composer_sort": "Strauss, Richard",
+  "kind": "opera",
+  "year_written": 1942,
+  "duration_min": 140,
+  "language": "de",
+  "source": "hand",
+  "source_id": "capriccio",
+  "note": "★前奏曲は弦楽六重奏。★台本はクレメンス・クラウスとの共作",
+  "roles": [
+    {
+      "label": "伯爵夫人"
+    },
+    {
+      "label": "伯爵"
+    },
+    {
+      "label": "フラマン"
+    },
+    {
+      "label": "オリヴィエ"
+    },
+    {
+      "label": "ラ・ロシュ"
+    },
+    {
+      "label": "クレロン"
+    },
+    {
+      "label": "ムッシュー・トープ"
+    },
+    {
+      "label": "イタリアの女歌手"
+    },
+    {
+      "label": "イタリアのテノール"
+    },
+    {
+      "label": "執事"
+    },
+    {
+      "label": "8人の召使い"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "弦楽六重奏（前奏曲）",
+      "group_label": "前奏曲",
+      "roles": []
+    },
+    {
+      "label": "フラマンとオリヴィエの言い争い（音楽か言葉か）",
+      "group_label": "第1場",
+      "roles": [
+        "フラマン",
+        "オリヴィエ",
+        "ラ・ロシュ"
+      ]
+    },
+    {
+      "label": "伯爵とクレロンの朗読",
+      "group_label": "第2場",
+      "roles": [
+        "伯爵",
+        "クレロン",
+        "オリヴィエ"
+      ]
+    },
+    {
+      "label": "オリヴィエのソネットとフラマンの作曲",
+      "group_label": "第3場",
+      "roles": [
+        "オリヴィエ",
+        "フラマン",
+        "伯爵夫人"
+      ]
+    },
+    {
+      "label": "フラマンの告白（図書室の場）",
+      "group_label": "第4場",
+      "roles": [
+        "フラマン",
+        "伯爵夫人"
+      ]
+    },
+    {
+      "label": "チョコレートの席（イタリアの2人の歌）",
+      "group_label": "第5場",
+      "roles": [
+        "イタリアの女歌手",
+        "イタリアのテノール",
+        "伯爵夫人",
+        "伯爵",
+        "ラ・ロシュ",
+        "クレロン"
+      ]
+    },
+    {
+      "label": "ラ・ロシュの大演説（劇場人の信条）",
+      "group_label": "第6場",
+      "roles": [
+        "ラ・ロシュ",
+        "伯爵夫人",
+        "伯爵",
+        "フラマン",
+        "オリヴィエ",
+        "クレロン"
+      ]
+    },
+    {
+      "label": "皆の去ったあと（8人の召使いの噂話）",
+      "group_label": "第7場",
+      "roles": [
+        "8人の召使い",
+        "執事"
+      ]
+    },
+    {
+      "label": "ムッシュー・トープ（プロンプター）",
+      "group_label": "第8場",
+      "roles": [
+        "ムッシュー・トープ",
+        "執事"
+      ]
+    },
+    {
+      "label": "月光の音楽と伯爵夫人の終曲（鏡の前）",
+      "group_label": "終場",
+      "roles": [
+        "伯爵夫人",
+        "執事"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

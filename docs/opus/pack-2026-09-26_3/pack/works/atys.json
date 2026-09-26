@@ -1,0 +1,200 @@
+{
+  "title": "アティス",
+  "title_original": "Atys",
+  "composer": "リュリ",
+  "composer_sort": "Lully, Jean-Baptiste",
+  "kind": "opera",
+  "year_written": 1676,
+  "duration_min": 180,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "atys",
+  "note": "★★『王のオペラ』と呼ばれ、ルイ14世が最も愛した作",
+  "roles": [
+    {
+      "label": "アティス"
+    },
+    {
+      "label": "サンガリード"
+    },
+    {
+      "label": "シベル"
+    },
+    {
+      "label": "セレニュス"
+    },
+    {
+      "label": "イダス"
+    },
+    {
+      "label": "ドリス"
+    },
+    {
+      "label": "メリッス"
+    },
+    {
+      "label": "モルフェ"
+    },
+    {
+      "label": "眠り（ル・ソメイユ）"
+    },
+    {
+      "label": "アルセスト"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★序幕（時の神とメロディーの女神）",
+      "group_label": "序幕",
+      "roles": [
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 シベルの祭りの支度（アティスの務め）",
+      "group_label": "第1幕",
+      "roles": [
+        "アティス",
+        "イダス",
+        "サンガリード",
+        "ドリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第2幕 シベルがアティスを大祭司に選ぶ",
+      "group_label": "第2幕",
+      "roles": [
+        "シベル",
+        "アティス",
+        "セレニュス",
+        "メリッス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3幕 ★眠りの場（★Sommeil ─ 有名な眠りの音楽）",
+      "group_label": "第3幕",
+      "roles": [
+        "アティス",
+        "眠り（ル・ソメイユ）",
+        "モルフェ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第3幕 目覚めとサンガリードへの告白",
+      "group_label": "第3幕",
+      "roles": [
+        "アティス",
+        "サンガリード"
+      ]
+    },
+    {
+      "label": "★第4幕 サンガリードの婚礼の支度（セレニュスとの）",
+      "group_label": "第4幕",
+      "roles": [
+        "サンガリード",
+        "セレニュス",
+        "ドリス",
+        "イダス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第5幕 ★シベルの嫉妬（アティスを狂わせる）",
+      "group_label": "第5幕",
+      "roles": [
+        "シベル",
+        "アティス"
+      ]
+    },
+    {
+      "label": "★★終曲（★アティスがサンガリードを刺し、松の木に変えられる）",
+      "group_label": "第5幕",
+      "roles": [
+        "アティス",
+        "サンガリード",
+        "シベル",
+        "セレニュス",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

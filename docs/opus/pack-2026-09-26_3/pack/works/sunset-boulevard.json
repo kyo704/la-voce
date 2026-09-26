@@ -1,0 +1,280 @@
+{
+  "title": "サンセット大通り",
+  "title_original": "Sunset Boulevard",
+  "composer": "ロイド・ウェッバー",
+  "composer_sort": "Lloyd Webber, Andrew",
+  "kind": "musical",
+  "year_written": 1993,
+  "duration_min": 150,
+  "edition": "★★1993 ロンドン初演版／★1994 ロサンゼルス・ブロードウェイ版（曲に手が入る）／★2017 リバイバル版／★2024 ジェイミー・ロイド版（大幅な演出替え）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "sunset-boulevard",
+  "note": "★作詞 ドン・ブラック／クリストファー・ハンプトン ／ 脚本 ドン・ブラック／クリストファー・ハンプトン ／ ★★ビリー・ワイルダーの映画による",
+  "roles": [
+    {
+      "label": "ノーマ・デズモンド"
+    },
+    {
+      "label": "ジョー・ギリス"
+    },
+    {
+      "label": "マックス・フォン・マイヤーリンク"
+    },
+    {
+      "label": "ベティ・シェイファー"
+    },
+    {
+      "label": "アーティ・グリーン"
+    },
+    {
+      "label": "セシル・B・デミル"
+    },
+    {
+      "label": "シェルドレイク"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "M1 ★★プロローグ（プールに浮かぶ死体・ジョーの語り）",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョー・ギリス",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M2 ★★レット・ズ・ハヴ・ランチ",
+      "group_label": "第1幕",
+      "roles": [
+        "ジョー・ギリス",
+        "シェルドレイク",
+        "ベティ・シェイファー",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M3 ★★サレー（Surrender ─ ノーマの最初の歌）",
+      "group_label": "第1幕",
+      "roles": [
+        "ノーマ・デズモンド"
+      ]
+    },
+    {
+      "label": "M4 ★★ウィズ・ワン・ルック",
+      "group_label": "第1幕",
+      "roles": [
+        "ノーマ・デズモンド"
+      ]
+    },
+    {
+      "label": "M5 ★★サロメの脚本（猿の葬式）",
+      "group_label": "第1幕",
+      "roles": [
+        "ノーマ・デズモンド",
+        "ジョー・ギリス",
+        "マックス・フォン・マイヤーリンク"
+      ]
+    },
+    {
+      "label": "M6 ★★ザ・パーフェクト・イヤー（大晦日）",
+      "group_label": "第1幕",
+      "roles": [
+        "ノーマ・デズモンド",
+        "ジョー・ギリス"
+      ]
+    },
+    {
+      "label": "M7 ★★ディス・タイム・ネクスト・イヤー（アーティの家の宴）",
+      "group_label": "第1幕",
+      "roles": [
+        "ベティ・シェイファー",
+        "アーティ・グリーン",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M8 ★★ノーマの自殺の企てと第1幕終曲",
+      "group_label": "第1幕",
+      "roles": [
+        "ノーマ・デズモンド",
+        "ジョー・ギリス",
+        "マックス・フォン・マイヤーリンク"
+      ]
+    },
+    {
+      "label": "M9 ★★サンセット大通り（Sunset Boulevard）",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョー・ギリス"
+      ]
+    },
+    {
+      "label": "M10 ★★パラマウント撮影所（デミルとの再会）",
+      "group_label": "第2幕",
+      "roles": [
+        "ノーマ・デズモンド",
+        "セシル・B・デミル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "M11 ★★★アズ・イフ・ウィー・ネヴァー・セッド・グッドバイ",
+      "group_label": "第2幕",
+      "roles": [
+        "ノーマ・デズモンド"
+      ]
+    },
+    {
+      "label": "M12 ★★ガール・ミーツ・ボーイ",
+      "group_label": "第2幕",
+      "roles": [
+        "ベティ・シェイファー",
+        "ジョー・ギリス"
+      ]
+    },
+    {
+      "label": "M13 ★★マックスの告白（最初の夫であり最初の監督だった）",
+      "group_label": "第2幕",
+      "roles": [
+        "マックス・フォン・マイヤーリンク",
+        "ジョー・ギリス"
+      ]
+    },
+    {
+      "label": "M14 ★★ベティの来訪とジョーの突き放し",
+      "group_label": "第2幕",
+      "roles": [
+        "ジョー・ギリス",
+        "ベティ・シェイファー",
+        "ノーマ・デズモンド"
+      ]
+    },
+    {
+      "label": "M15 ★★★終曲（ジョーの射殺とノーマの階段降り「さあ、寄りのカットを」）",
+      "group_label": "第2幕",
+      "roles": [
+        "ノーマ・デズモンド",
+        "ジョー・ギリス",
+        "マックス・フォン・マイヤーリンク",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "キーボード",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "オルガン",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 1,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

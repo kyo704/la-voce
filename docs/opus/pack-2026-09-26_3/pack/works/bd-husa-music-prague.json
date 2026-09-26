@@ -1,0 +1,75 @@
+{
+  "title": "プラハのための音楽1968",
+  "title_original": "Music for Prague 1968",
+  "composer": "カレル・フサ",
+  "composer_sort": "Husa, Karel",
+  "kind": "band",
+  "year_written": 1968,
+  "duration_min": 22,
+  "language": "—",
+  "source": "hand",
+  "source_id": "bd-husa-music-prague",
+  "note": "★★★ソ連の 侵攻に 抗した 曲。★★チェコでは 長く 演奏できませんでした ／ ★★吹奏楽。★人数は 団体ごとに 変わります",
+  "roles": [
+    {
+      "label": "吹奏楽（合奏）",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 序奏とファンファーレ",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "2. アリア",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "3. インテルメッツォ",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    },
+    {
+      "label": "4. トッカータとコラール",
+      "group_label": "楽章・部分",
+      "roles": [
+        "吹奏楽（合奏）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "木管（フルート・オーボエ・クラリネット・サクソフォン・ファゴット）",
+      "count": 0,
+      "section": "woodwind",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "金管（ホルン・トランペット・トロンボーン・ユーフォニアム・チューバ）",
+      "count": 0,
+      "section": "brass",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "打楽器",
+      "count": 0,
+      "section": "percussion",
+      "note": "人数は団体ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "入る団体のみ"
+    }
+  ]
+}

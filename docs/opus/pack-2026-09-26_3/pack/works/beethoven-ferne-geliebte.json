@@ -1,0 +1,78 @@
+{
+  "title": "遥かな恋人に寄せて",
+  "title_original": "An die ferne Geliebte",
+  "composer": "ベートーヴェン",
+  "composer_sort": "Beethoven, Ludwig van",
+  "kind": "song_cycle",
+  "year_written": 1816,
+  "duration_min": 15,
+  "language": "de",
+  "source": "hand",
+  "source_id": "beethoven-op98",
+  "note": "★作詩 ヤイテレス ／ ★★★史上 最初の『連作歌曲集』と される 作品。★6曲が 切れ目なく 続きます ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "独唱"
+    },
+    {
+      "label": "ピアノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "1. 丘の上に座り（Auf dem Hügel sitz ich spähend）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "2. 山々の青いところ（Wo die Berge so blau）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "3. 空高く舞う軽やかな帆船（Leichte Segler in den Höhen）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "4. この雲が流れゆく（Diese Wolken in den Höhen）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "5. 五月は帰り（Es kehret der Maien）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    },
+    {
+      "label": "6. この歌を受け取ってほしい（Nimm sie hin denn, diese Lieder）",
+      "group_label": null,
+      "roles": [
+        "独唱",
+        "ピアノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ピアノ",
+      "count": 1,
+      "section": "keyboard"
+    }
+  ]
+}

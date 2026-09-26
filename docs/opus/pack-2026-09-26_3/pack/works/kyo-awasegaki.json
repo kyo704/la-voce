@@ -1,0 +1,56 @@
+{
+  "title": "合柿",
+  "composer": "狂言",
+  "composer_sort": "Kyogen",
+  "kind": "kyogen",
+  "duration_min": 25,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "kyo-awasegaki",
+  "note": "★小名狂言 ／ ★台詞（せりふ）の文は 入れていません",
+  "roles": [
+    {
+      "label": "シテ（柿売り）"
+    },
+    {
+      "label": "アド（何某）"
+    },
+    {
+      "label": "後見",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "柿を売りに出る",
+      "group_label": "段",
+      "roles": [
+        "シテ（柿売り）"
+      ]
+    },
+    {
+      "label": "★渋柿と甘柿を混ぜて売る",
+      "group_label": "段",
+      "roles": [
+        "シテ（柿売り）",
+        "アド（何某）"
+      ]
+    },
+    {
+      "label": "★★食べられて露見する",
+      "group_label": "段",
+      "roles": [
+        "シテ（柿売り）",
+        "アド（何某）"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "なし（素狂言）",
+      "count": 0,
+      "section": "other",
+      "note": "★器楽を用いない。★謡と語りのみ"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "title": "ダヴィデとヨナタン",
+  "title_original": "David et Jonathas",
+  "composer": "シャルパンティエ",
+  "composer_sort": "Charpentier, Marc-Antoine",
+  "kind": "opera",
+  "year_written": 1688,
+  "duration_min": 140,
+  "language": "la",
+  "source": "hand",
+  "source_id": "david-jonathas",
+  "note": "★★イエズス会の学院のために書かれたラテン語の『聖書劇』。★序幕が時間的には最後にあたる",
+  "roles": [
+    {
+      "label": "ダヴィデ"
+    },
+    {
+      "label": "ヨナタン"
+    },
+    {
+      "label": "サウル"
+    },
+    {
+      "label": "ピトニッサ（魔女）"
+    },
+    {
+      "label": "サムエルの霊"
+    },
+    {
+      "label": "ヨアベル"
+    },
+    {
+      "label": "アキス"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★序幕 ★エンドルの魔女（サムエルの霊を呼ぶ）",
+      "group_label": "序幕",
+      "roles": [
+        "サウル",
+        "ピトニッサ（魔女）",
+        "サムエルの霊",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★第1幕 ペリシテ人の陣営（ダヴィデの苦しい立場）",
+      "group_label": "第1幕",
+      "roles": [
+        "ダヴィデ",
+        "アキス",
+        "ヨアベル",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2幕 ★ダヴィデとヨナタンの友情の二重唱",
+      "group_label": "第2幕",
+      "roles": [
+        "ダヴィデ",
+        "ヨナタン"
+      ]
+    },
+    {
+      "label": "★第3幕 サウルの疑いと怒り",
+      "group_label": "第3幕",
+      "roles": [
+        "サウル",
+        "ヨナタン",
+        "ヨアベル"
+      ]
+    },
+    {
+      "label": "★第4幕 ヨナタンの取りなしの失敗",
+      "group_label": "第4幕",
+      "roles": [
+        "ヨナタン",
+        "サウル",
+        "ダヴィデ"
+      ]
+    },
+    {
+      "label": "★★終曲（★ギルボア山の戦い・ヨナタンの死とダヴィデの嘆き）",
+      "group_label": "第5幕",
+      "roles": [
+        "ダヴィデ",
+        "ヨナタン",
+        "サウル",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ミュゼット／リコーダー",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

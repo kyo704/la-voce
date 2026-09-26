@@ -1,0 +1,174 @@
+{
+  "title": "松風（細川俊夫）",
+  "title_original": "Matsukaze",
+  "composer": "細川俊夫",
+  "composer_sort": "Hosokawa, Toshio",
+  "kind": "opera",
+  "year_written": 2011,
+  "duration_min": 75,
+  "language": "ja",
+  "source": "hand",
+  "source_id": "matsukaze-hosokawa",
+  "note": "★★能『松風』による。ブリュッセルのモネ劇場ほかの委嘱。★サシャ・ヴァルツの振付による初演",
+  "roles": [
+    {
+      "label": "松風"
+    },
+    {
+      "label": "村雨"
+    },
+    {
+      "label": "旅の僧"
+    },
+    {
+      "label": "須磨の浦人"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★★第1場 ★旅の僧と松の木（行平の旧跡）",
+      "group_label": "第1場",
+      "roles": [
+        "旅の僧",
+        "須磨の浦人",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第2場 塩汲車の2人（松風と村雨）",
+      "group_label": "第2場",
+      "roles": [
+        "松風",
+        "村雨",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第3場 ★僧との問答（われらは海人の娘の亡霊）",
+      "group_label": "第3場",
+      "roles": [
+        "松風",
+        "村雨",
+        "旅の僧"
+      ]
+    },
+    {
+      "label": "★★第4場 ★行平の形見の狩衣と烏帽子（松風の狂い）",
+      "group_label": "第4場",
+      "roles": [
+        "松風",
+        "村雨",
+        "旅の僧",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★第5場 ★松風の舞",
+      "group_label": "第5場",
+      "roles": [
+        "松風",
+        "村雨",
+        "合唱"
+      ]
+    },
+    {
+      "label": "★★終曲（夜明け・松に吹く風の音だけが残る）",
+      "group_label": "終場",
+      "roles": [
+        "旅の僧",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 4,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

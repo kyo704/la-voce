@@ -1,0 +1,197 @@
+{
+  "title": "新聞",
+  "title_original": "La gazzetta",
+  "composer": "ロッシーニ",
+  "composer_sort": "Rossini, Gioachino",
+  "kind": "opera",
+  "year_written": 1816,
+  "duration_min": 140,
+  "language": "it",
+  "source": "hand",
+  "source_id": "gazzetta",
+  "roles": [
+    {
+      "label": "リゼッタ"
+    },
+    {
+      "label": "ドン・ポンポニオ・ストリッラ"
+    },
+    {
+      "label": "アルベルト"
+    },
+    {
+      "label": "ドラリーチェ"
+    },
+    {
+      "label": "フィリッポ"
+    },
+    {
+      "label": "アナスタージオ"
+    },
+    {
+      "label": "マダマ・ラ・ローズ"
+    },
+    {
+      "label": "モンス・トラヴェルセン"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲（★『チェネレントラ』と共通）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "第1幕 パリの宿（新聞広告で娘の婿を探す）",
+      "group_label": "第1幕",
+      "roles": [
+        "ドン・ポンポニオ・ストリッラ",
+        "フィリッポ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 リゼッタとフィリッポの恋",
+      "group_label": "第1幕",
+      "roles": [
+        "リゼッタ",
+        "フィリッポ"
+      ]
+    },
+    {
+      "label": "第1幕 アルベルトとドラリーチェ",
+      "group_label": "第1幕",
+      "roles": [
+        "アルベルト",
+        "ドラリーチェ",
+        "アナスタージオ"
+      ]
+    },
+    {
+      "label": "第1幕 フィナーレ（取り違えの重唱）",
+      "group_label": "第1幕",
+      "roles": [
+        "リゼッタ",
+        "ドン・ポンポニオ・ストリッラ",
+        "アルベルト",
+        "ドラリーチェ",
+        "フィリッポ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 偽のトルコ人（変装の場）",
+      "group_label": "第2幕",
+      "roles": [
+        "フィリッポ",
+        "ドン・ポンポニオ・ストリッラ",
+        "マダマ・ラ・ローズ",
+        "モンス・トラヴェルセン"
+      ]
+    },
+    {
+      "label": "第2幕 仮面舞踏会（四つ組の取り違え）",
+      "group_label": "第2幕",
+      "roles": [
+        "リゼッタ",
+        "アルベルト",
+        "ドラリーチェ",
+        "フィリッポ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 終曲（2組の婚礼）",
+      "group_label": "第2幕",
+      "roles": [
+        "リゼッタ",
+        "フィリッポ",
+        "アルベルト",
+        "ドラリーチェ",
+        "ドン・ポンポニオ・ストリッラ",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 2,
+      "section": "percussion"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

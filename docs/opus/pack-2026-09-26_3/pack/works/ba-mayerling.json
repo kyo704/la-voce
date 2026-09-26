@@ -1,0 +1,150 @@
+{
+  "title": "マイヤリング",
+  "aliases": [
+    "うたかたの恋（バレエ）"
+  ],
+  "composer": "リスト（ランチベリー編）",
+  "composer_sort": "Liszt, Franz",
+  "kind": "dance",
+  "year_written": 1978,
+  "duration_min": 150,
+  "language": "—",
+  "source": "hand",
+  "source_id": "ba-mayerling",
+  "note": "★振付 マクミラン ／ ★★★男性の 主役に 最も 重い 負担が かかる 作品と 言われます ／ ★★踊りの 振りは 入れて いません（★版ごとに 変わります）",
+  "roles": [
+    {
+      "label": "ルドルフ皇太子"
+    },
+    {
+      "label": "マリー・ヴェッツェラ"
+    },
+    {
+      "label": "ステファニー"
+    },
+    {
+      "label": "ラリッシュ夫人"
+    },
+    {
+      "label": "ミッツィ・カスパール"
+    },
+    {
+      "label": "群舞",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "婚礼と新床のパ・ド・ドゥ",
+      "group_label": "第1幕",
+      "roles": [
+        "ルドルフ皇太子",
+        "ステファニー"
+      ]
+    },
+    {
+      "label": "★酒場とミッツィ",
+      "group_label": "第2幕",
+      "roles": [
+        "ルドルフ皇太子",
+        "ミッツィ・カスパール",
+        "群舞"
+      ]
+    },
+    {
+      "label": "★★マイヤリングの結末",
+      "group_label": "第3幕",
+      "roles": [
+        "ルドルフ皇太子",
+        "マリー・ヴェッツェラ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 1,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

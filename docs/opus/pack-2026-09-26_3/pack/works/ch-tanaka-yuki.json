@@ -1,0 +1,33 @@
+{
+  "title": "季節へのまなざし",
+  "composer": "鈴木輝昭",
+  "composer_sort": "Suzuki, Teruaki",
+  "kind": "chorus",
+  "language": "ja",
+  "source": "hand",
+  "source_id": "ch-tanaka-yuki",
+  "note": "★★★いま 書かれている 作曲家。★★上演には 権利の 確認が 要ります ／ ★★歌詞・対訳は 入れて いません",
+  "roles": [
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "★選んで 組みます（★曲は 公演ごと）",
+      "group_label": "―",
+      "roles": [
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "管弦楽",
+      "count": 0,
+      "section": "other",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

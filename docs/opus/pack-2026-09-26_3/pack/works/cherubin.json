@@ -1,0 +1,188 @@
+{
+  "title": "ケルビーノ",
+  "title_original": "Chérubin",
+  "composer": "マスネ",
+  "composer_sort": "Massenet, Jules",
+  "kind": "opera",
+  "year_written": 1905,
+  "duration_min": 105,
+  "language": "fr",
+  "source": "hand",
+  "source_id": "cherubin",
+  "roles": [
+    {
+      "label": "ケルビーノ"
+    },
+    {
+      "label": "リコレッタ（踊り子）"
+    },
+    {
+      "label": "ニーナ"
+    },
+    {
+      "label": "伯爵夫人"
+    },
+    {
+      "label": "哲学者"
+    },
+    {
+      "label": "男爵"
+    },
+    {
+      "label": "男爵夫人"
+    },
+    {
+      "label": "伯爵"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "第1幕 17歳の誕生日（剣の授与）",
+      "group_label": "第1幕",
+      "roles": [
+        "ケルビーノ",
+        "哲学者",
+        "ニーナ",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第1幕 ケルビーノと3人の女",
+      "group_label": "第1幕",
+      "roles": [
+        "ケルビーノ",
+        "伯爵夫人",
+        "男爵夫人",
+        "リコレッタ（踊り子）"
+      ]
+    },
+    {
+      "label": "第2幕 宿屋（夜の混乱と決闘）",
+      "group_label": "第2幕",
+      "roles": [
+        "ケルビーノ",
+        "男爵",
+        "伯爵",
+        "リコレッタ（踊り子）",
+        "合唱"
+      ]
+    },
+    {
+      "label": "第2幕 哲学者の取りなし",
+      "group_label": "第2幕",
+      "roles": [
+        "哲学者",
+        "ケルビーノ"
+      ]
+    },
+    {
+      "label": "第3幕 朝の庭（リコレッタの別れ）",
+      "group_label": "第3幕",
+      "roles": [
+        "ケルビーノ",
+        "リコレッタ（踊り子）"
+      ]
+    },
+    {
+      "label": "第3幕 終曲（ニーナへの心）",
+      "group_label": "第3幕",
+      "roles": [
+        "ケルビーノ",
+        "ニーナ",
+        "哲学者",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "クラリネット",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 3,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 4,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 3,
+      "section": "brass"
+    },
+    {
+      "part": "チューバ",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "打楽器",
+      "count": 3,
+      "section": "percussion"
+    },
+    {
+      "part": "ハープ",
+      "count": 2,
+      "section": "harp"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

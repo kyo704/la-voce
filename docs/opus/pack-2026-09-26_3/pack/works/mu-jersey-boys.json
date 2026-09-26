@@ -1,0 +1,153 @@
+{
+  "title": "ジャージー・ボーイズ",
+  "title_original": "Jersey Boys",
+  "composer": "ボブ・ゴーディオ",
+  "kind": "musical",
+  "year_written": 2005,
+  "duration_min": 150,
+  "edition": "★ブロードウェイ版（2005）",
+  "language": "en",
+  "source": "hand",
+  "source_id": "mu-jersey-boys",
+  "note": "★作詞 ボブ・クルー ／ 脚本 マーシャル・ブリックマン／リック・エリス ／ ★★四季（春夏秋冬）を 四人の 語りで 分けます",
+  "roles": [
+    {
+      "label": "フランキー・ヴァリ"
+    },
+    {
+      "label": "トミー・デヴィート"
+    },
+    {
+      "label": "ボブ・ゴーディオ"
+    },
+    {
+      "label": "ニック・マッシ"
+    },
+    {
+      "label": "メアリー"
+    },
+    {
+      "label": "合唱",
+      "is_group": true
+    }
+  ],
+  "scenes": [
+    {
+      "label": "春（トミーの語り）",
+      "group_label": "第1幕",
+      "roles": [
+        "トミー・デヴィート",
+        "フランキー・ヴァリ"
+      ]
+    },
+    {
+      "label": "夏（ボブの語り・売れ始める）",
+      "group_label": "第1幕",
+      "roles": [
+        "ボブ・ゴーディオ",
+        "フランキー・ヴァリ",
+        "トミー・デヴィート",
+        "ニック・マッシ"
+      ]
+    },
+    {
+      "label": "秋（ニックの語り・ほころび）",
+      "group_label": "第2幕",
+      "roles": [
+        "ニック・マッシ",
+        "トミー・デヴィート"
+      ]
+    },
+    {
+      "label": "★冬（フランキーの語り）",
+      "group_label": "第2幕",
+      "roles": [
+        "フランキー・ヴァリ",
+        "メアリー",
+        "合唱"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "ホルン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トロンボーン",
+      "count": 1,
+      "section": "brass"
+    },
+    {
+      "part": "打楽器",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "キーボード1",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "キーボード2",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "ギター",
+      "count": 2,
+      "section": "other"
+    },
+    {
+      "part": "エレキベース",
+      "count": 1,
+      "section": "strings"
+    },
+    {
+      "part": "ドラムス",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "リード（サックス持ち替え）",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}

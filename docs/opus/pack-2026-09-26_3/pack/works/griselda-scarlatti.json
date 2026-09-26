@@ -1,0 +1,168 @@
+{
+  "title": "グリゼルダ（A.スカルラッティ）",
+  "title_original": "La Griselda",
+  "composer": "A.スカルラッティ",
+  "composer_sort": "Scarlatti, Alessandro",
+  "kind": "opera",
+  "year_written": 1721,
+  "duration_min": 170,
+  "language": "it",
+  "source": "hand",
+  "source_id": "griselda-scarlatti",
+  "roles": [
+    {
+      "label": "グリゼルダ"
+    },
+    {
+      "label": "ゴッティフレード"
+    },
+    {
+      "label": "コスタンツァ"
+    },
+    {
+      "label": "ロベルト"
+    },
+    {
+      "label": "オットーネ"
+    },
+    {
+      "label": "エルマンノ"
+    }
+  ],
+  "scenes": [
+    {
+      "label": "序曲（シンフォニア）",
+      "group_label": "序曲",
+      "roles": []
+    },
+    {
+      "label": "★第1幕 王が妻を追い出す（民の要求に従うふり）",
+      "group_label": "第1幕",
+      "roles": [
+        "ゴッティフレード",
+        "グリゼルダ",
+        "オットーネ"
+      ]
+    },
+    {
+      "label": "★第1幕 コスタンツァとロベルト",
+      "group_label": "第1幕",
+      "roles": [
+        "コスタンツァ",
+        "ロベルト",
+        "エルマンノ"
+      ]
+    },
+    {
+      "label": "★★第2幕 森のグリゼルダ（★Figlio! Tiranno!）",
+      "group_label": "第2幕",
+      "roles": [
+        "グリゼルダ",
+        "オットーネ",
+        "ゴッティフレード"
+      ]
+    },
+    {
+      "label": "★第2幕 コスタンツァとグリゼルダの出会い",
+      "group_label": "第2幕",
+      "roles": [
+        "コスタンツァ",
+        "グリゼルダ"
+      ]
+    },
+    {
+      "label": "★第3幕 最後の試み（婚礼の場の召使い）",
+      "group_label": "第3幕",
+      "roles": [
+        "ゴッティフレード",
+        "グリゼルダ",
+        "コスタンツァ",
+        "ロベルト"
+      ]
+    },
+    {
+      "label": "★終曲（真相の明かしと母娘の再会）",
+      "group_label": "第3幕",
+      "roles": [
+        "グリゼルダ",
+        "ゴッティフレード",
+        "コスタンツァ",
+        "ロベルト",
+        "オットーネ",
+        "エルマンノ"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "part": "フルート",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "オーボエ",
+      "count": 2,
+      "section": "woodwind"
+    },
+    {
+      "part": "ファゴット",
+      "count": 1,
+      "section": "woodwind"
+    },
+    {
+      "part": "ホルン",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "トランペット",
+      "count": 2,
+      "section": "brass"
+    },
+    {
+      "part": "ティンパニ",
+      "count": 1,
+      "section": "percussion"
+    },
+    {
+      "part": "チェンバロ",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "通奏低音（オルガン）",
+      "count": 1,
+      "section": "keyboard"
+    },
+    {
+      "part": "第1ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "第2ヴァイオリン",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "ヴィオラ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "チェロ",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    },
+    {
+      "part": "コントラバス",
+      "count": 0,
+      "section": "strings",
+      "note": "人数は公演ごと"
+    }
+  ]
+}
