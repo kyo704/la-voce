@@ -6,10 +6,19 @@
 --   ★★見本に 書いてあるのに ★台帳が 守って いません
 -- ★104 のあと
 
--- ★① ★経歴（bio）── ★400字
+-- ★① ★経歴（bio）── ★★800字（★2026-09-26・★坂本さんの お決め）
+--   ★★★もとは 400字 でした。★当てる 前に 本番を 数えて、★変えました ──
+--     ★400字を 超える 行が **1つ** ありました（★坂本さん ご自身・★676字）。
+--     ★★`check` を 足すと、★その 行が 違反して `23514` で 止まります。
+--     ★★★書いた ものを 切る ことは しません（★この 家の 決まり）。
+--   ★★坂本さんの お決め（2026-09-26）── ★上限を **800字** に する。
+--     ★★676 < 800 なので、★いま 入って いる 行は そのまま 通ります。
+--   ★★★見本の「経歴 400字まで」も 直る ことに なります ── ★Opus へ 差し戻し 済み。
+--   ★★実装の `BIO_MAX` も 同じ 日に 800 に しました（★`lib/portfolio.js`）。
+--     ★★台帳と 画面で ちがう 数を 持たない ため です。
 alter table public.portfolios drop constraint if exists portfolios_bio_len;
 alter table public.portfolios add constraint portfolios_bio_len
-  check (bio is null or char_length(bio) <= 400);
+  check (bio is null or char_length(bio) <= 800);
 -- ★★char_length（★文字の 数）。★★octet_length では ありません
 --   ★理由: ★日本語は ★1文字 3バイト。★byte で 数えると ★133字で 止まります
 

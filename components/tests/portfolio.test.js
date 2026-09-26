@@ -101,8 +101,17 @@ const 素 = fs.readFileSync(SQL, "utf8")
   見る("★字は lib が 持つ", () => {
     assert.ok(P.NOTES.length === 4, "★但し書きが 4行 で ありません");
     assert.ok(P.SCOPE_NOTES.some((x) => x.includes("18歳未満")), "★18歳未満の 1行が ありません");
-    assert.ok(P.BIO_MAX === 400, "★400字 で ありません");
-    assert.ok(P.bioTooLong("あ".repeat(401)) && !P.bioTooLong("あ".repeat(400)),
+    // ★★★2026-09-26 ── ★400 を **覚えて** いました。★台帳から 読み直します。
+    //   ★★坂本さんの お決めで 400 → 800 に なった 日、★この 行だけが 落ちました。
+    //     ★★「見張りは 測る。★覚えない」── ★この 蔵の 決まり です。
+    //   ★★出どころは `sql/105` の `portfolios_bio_len` です。★同じ 数 かを 見ます。
+    const sql105 = fs.readFileSync(path.join(__dirname, "..", "..",
+      "supabase", "opus", "20260926_105_text_limits.sql"), "utf-8");
+    const 台 = /char_length\(bio\)\s*<=\s*(\d+)/.exec(sql105);
+    assert.ok(台, "★台帳の 側の 上限を 読めません");
+    assert.strictEqual(P.BIO_MAX, Number(台[1]),
+      `★画面 ${P.BIO_MAX} ／ 台帳 ${台 && 台[1]} ── ★数が ちがいます`);
+    assert.ok(P.bioTooLong("あ".repeat(P.BIO_MAX + 1)) && !P.bioTooLong("あ".repeat(P.BIO_MAX)),
       "★長さの 見かたが ちがいます");
   });
 
