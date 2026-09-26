@@ -39,12 +39,20 @@ const 宣言 = [...頭.matchAll(/^  const ([぀-ヿ一-鿿][぀-ヿ一-鿿A-Za-z
   .map((m) => ({ 名: m[1], at: m.index }));
 t(宣言.length > 0, `★日本語の 名の const が ある（${宣言.length} 個）`);
 
-// ★★★見る ところを 絞ります ── ★`const <名> = {` で 始まる **物の 形**（object literal）。
-//   ★★★あそこの 中の 名は、★その 行を 読む ときに **すぐ** 引かれます。
-//     ★★関数の 中（`() => {` や `function`）とは ちがいます ── ★あちらは 呼ばれる とき です。
-//   ★★2026-09-26 に 本番を 止めたのは、★まさに この 形 でした
-//     （`const 束の行き先 = { … 運営できる教室.length … }`）。
-//   ★★★だから 深さでは なく、★**物の 形の 中か どうか** で 見ます。
+// ★★★見る ところ ── ★「その 行で 走る もの」の 中 です（★2026-09-26 に 広げました）。
+//   ★★★1度目の 直しでは 足りませんでした ── ★2度 本番を 止めました。
+//     ★1つ目 …… `const 束の行き先 = { … 運営できる教室 … }`（★物の 形）
+//     ★2つ目 …… `myOrgs.filter((mm) => mayEnterOpsHere(mm))`
+//       ★★`mayEnterOpsHere` は 巻き上がる `function` です が、
+//         ★★中で `myOrgPosts`（★後ろの `useState`）を 読みます。
+//       ★★★つまり **呼んだ ところ** で 落ちます。★呼ぶ 先の 中身まで 見る 必要が あります。
+//
+//   ★★★だから 見方を 変えました ── ★並びを 数えるのを やめ、
+//     ★**その 行で 走らせて いない こと** を 見ます ──
+//     ★①`const X = { … }`（物の 形）の 中に **呼び出し** が 無い こと
+//     ★②`const X = 何か.filter/map/find/some/every/reduce(…)` の 形で、
+//       ★★その 中から **同じ 紙の `function`** を 呼んで いない こと
+//     ★★どちらも「呼べる もの に する」（`() => …`）で 直ります。★並びに 頼りません。
 function monoNoKatachi(本) {
   const 出 = [];
   const re = /^  const ([぀-ヿ一-鿿A-Za-z0-9_]+) = \{$/gm;
@@ -60,18 +68,39 @@ function monoNoKatachi(本) {
 }
 
 const 悪 = [];
+
+// ── ★① 物の 形の 中で、★後ろの const を 見て いない ───────────────
 const 物 = monoNoKatachi(頭);
 t(物.length > 0, `★物の 形の const が ある（${物.length} 個）`);
 物.forEach((o) => {
   const 中 = 頭.slice(o.from, o.to);
-  // ★★その 中で 使って いる 日本語の 名を 拾い、★宣言が 後ろ なら 悪 です。
   宣言.forEach(({ 名, at }) => {
-    if (at <= o.at) return;                       // ★先に 宣言して あれば よい
+    if (at <= o.at) return;
     const 使 = new RegExp(`(?<![぀-ヿ一-鿿A-Za-z0-9_])${名}(?![぀-ヿ一-鿿A-Za-z0-9_])`);
     if (使.test(中)) 悪.push(`${o.名} の 中で ${名} を 使い、${名} の 宣言は その 後ろ`);
   });
 });
-t(悪.length === 0, `★物の 形の 中で 先に 使って いる const が ない（いま ${悪.length}）`);
+
+// ── ★② その 行で 数えて いない（★`filter`／`map` などを その場で 走らせない）──
+//   ★★同じ 紙の `function` を 呼んで いたら 悪 です ── ★その 中で 後ろの 名を 読み得ます。
+const 同じ紙の関数 = new Set([...src.matchAll(/^  function ([A-Za-z_][A-Za-z0-9_]*)/gm)]
+  .map((m) => m[1]));
+// ★★★`() => …` や `function` で 始まる ものは **その場で 走りません**。★数えません。
+//   ★★2026-09-26 に ここで 自分の 直しを 叱られました（★直した 形が 落ちた）。
+const 走る = /^  const ([぀-ヿ一-鿿A-Za-z0-9_]+) = ([^\n]*)$/gm;
+for (const m of 頭.matchAll(走る)) {
+  const 右 = m[2];
+  if (/^\s*(\(\s*\)|\([^)]*\))\s*=>/.test(右) || /^\s*function\b/.test(右)) continue;
+  if (!/\.(filter|map|find|some|every|reduce|sort|forEach)\(/.test(右)) continue;
+  const 呼 = [...右.matchAll(/([A-Za-z_][A-Za-z0-9_]*)\s*\(/g)].map((x) => x[1])
+    .filter((n) => 同じ紙の関数.has(n));
+  if (呼.length) {
+    悪.push(`${m[1]} が その場で 数え、★中で ${呼.join("・")} を 呼んで いる`
+      + "（★呼べる もの に して ください）");
+  }
+}
+
+t(悪.length === 0, `★その 行で 走らせて いる ものが ない（いま ${悪.length}）`);
 悪.forEach((x) => console.log("     " + x));
 
 // ★★較正 ── ★この 見張りが 本当に 見て いるか。

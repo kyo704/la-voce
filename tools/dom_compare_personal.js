@@ -37,6 +37,10 @@ const 終 = 元.findIndex((l, n) => n > 始 && l.trim() === "}`;");
 if (始 < 0 || 終 < 0) { console.log("★骨組みの 式を 読めません"); process.exit(2); }
 const HONE = 元[始].slice("const HONE = `".length) + "\n"
   + 元.slice(始 + 1, 終).join("\n") + "\n}";
+// ★★★字の まま 渡すと Playwright は `undefined` を 返します
+//   （★`tools/dom_compare.js` の 註・2026-09-20）。★本当の 関数に して から 渡します。
+//   ★★2026-09-26 に ここで つまずきました ── ★あちらの 註を 読んで いれば 1度で 済みました。
+const HONE_FN = new Function("return " + HONE)();
 
 const env = {};
 fs.readFileSync(path.join(ROOT, ".env.e2e"), "utf8").split("\n").forEach((l) => {
@@ -44,11 +48,12 @@ fs.readFileSync(path.join(ROOT, ".env.e2e"), "utf8").split("\n").forEach((l) => 
   if (m) env[m[1]] = m[2].trim().replace(/^["']|["']$/g, "");
 });
 
+// ★★★`HONE` が 返すのは **字の 並び** です（★「題｜…」「約｜…」の 形）。
+//   ★★はじめ `{kind, text}` の 物だと 思い込み、★`undefined` を 並べて いました
+//     （★2026-09-26）。★あちらの 中身を 読んで から 直しました。
 function 差(a, b) {
-  const き = (x) => `${x.kind}|${x.text}`;
-  const A = a.map(き), B = b.map(き);
-  const 無 = a.filter((x) => !B.includes(き(x)));
-  const 余 = b.filter((x) => !A.includes(き(x)));
+  const 無 = a.filter((x) => !b.includes(x));
+  const 余 = b.filter((x) => !a.includes(x));
   return { 無, 余 };
 }
 
@@ -85,7 +90,7 @@ function 差(a, b) {
   // ★★★`fullPage` に しません ── ★見本の HTML は 枠の **下にも** 長い 説明を 持って います
   //   （★`tools/mihon_shot.js` の 註・2026-09-15）。★`#bd`／`#sh` だけ を 切り取ります。
   const 枠 = 種 === "SH" ? "#sh" : "#bd";
-  const 見本 = await p1.$eval(枠, HONE).catch(() => null);
+  const 見本 = await p1.$eval(枠, HONE_FN).catch(() => null);
   if (!見本) { console.log("★見本の 骨組みを 取れません ──", 枠); await b.close(); process.exit(4); }
   const 箱 = await p1.$(枠);
   await 箱.screenshot({ path: path.join(OUT, `${名}-見本.png`) });
@@ -130,7 +135,7 @@ function 差(a, b) {
   if (道.bundle) { await 押す(道.bundle); await p2.waitForTimeout(900); }
   await 押す(道.row);
   await p2.waitForTimeout(1500);
-  const 実機 = await p2.$eval("main", HONE).catch(() => null);
+  const 実機 = await p2.$eval("main", HONE_FN).catch(() => null);
   if (!実機) {
     await p2.screenshot({ path: path.join(OUT, `${名}-取れません.png`), fullPage: true });
     console.log("★実機の 骨組みを 取れません（★`main` が ありません）");
@@ -139,13 +144,17 @@ function 差(a, b) {
   await p2.screenshot({ path: path.join(OUT, `${名}-実機.png`), fullPage: true });
   await b.close();
 
+  if (process.env.DUMP) {
+    console.log("--- 見本 ---"); 見本.forEach((x) => console.log("   ", x));
+    console.log("--- 実機 ---"); 実機.forEach((x) => console.log("   ", x));
+  }
   const d = 差(見本, 実機);
   console.log(`DOM_PERSONAL  ${名}`);
   console.log(`  見本 …… ${見本.length} 塊 ／ 実機 …… ${実機.length} 塊`);
   console.log(`\n■ ① 見本に あって 実機に 無い（${d.無.length}）`);
-  d.無.forEach((x) => console.log(`    ${x.kind}  ${x.text}`));
+  d.無.forEach((x) => console.log(`    ${x}`));
   console.log(`\n■ ② 実機に あって 見本に 無い（${d.余.length}）`);
-  d.余.forEach((x) => console.log(`    ${x.kind}  ${x.text}`));
+  d.余.forEach((x) => console.log(`    ${x}`));
   console.log(`\n★絵 …… ${path.relative(ROOT, OUT)}/${名}-{見本,実機}.png`);
   console.log(`RESULT: ${d.無.length === 0 ? "OK" : `DIFF（${d.無.length}件）`}`);
 })();

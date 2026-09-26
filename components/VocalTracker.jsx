@@ -13330,9 +13330,24 @@ export default function VocalTracker({
   //       ★`ReferenceError: Cannot access '運営できる教室' before initialization`。
   //     ★★★`next build` も 見張り 503本も 通りました。★動かして 初めて 出ました。
   //       ★★2026-09-13 の「日程」の 一件と 同じ 形 です（★時間的な 死角・TDZ）。
-  const 運営できる教室 = myOrgs.filter((mm) => mayEnterOpsHere(mm));
+  //   ★★★2026-09-26（2度目）── ★**その場で 数えるのを やめました**。
+  //     ★前の 直しで 宣言を 上へ 移しました が、★まだ 落ちて いました ──
+  //       ★`mayEnterOpsHere` は 巻き上がる `function` です が、★あれは 中で
+  //       ★`myOrgPosts`（★:14462 の `useState`）を 読みます。
+  //       ★★つまり ここで **呼ぶ** と、★その `const` より 先に 触ります（★TDZ）。
+  //     ★★★だから 値では なく **呼べる もの** に しました。
+  //       ★★呼ぶのは 描く ときと 押した とき です ── ★どちらも 宣言の 後 です。
+  //       ★★これで 並び に 頼らなく なります。★移し替えでは 直りません でした。
+  const 運営できる教室 = () => myOrgs.filter((mm) => mayEnterOpsHere(mm));
 
-  const 束の行き先 = {
+  // ★★★2026-09-26（3度目）── ★表 そのものを **呼べる もの** に しました。
+  //   ★★★わけ ── ★物の 形は その 行で 中身を 組み立てます。
+  //     ★★中に `運営できる教室()` の ような **呼び出し** が あると、★そこで 走ります。
+  //     ★★その 先が 後ろの `useState` を 読むと、★また 同じ ところで 落ちます。
+  //   ★★★だから 表を 作るのを **後ろに ずらします**。★呼ぶのは ──
+  //     ★描く とき（`束へ行ける`）と、★押した とき（`束を開く`）です。
+  //     ★★どちらも 宣言が ぜんぶ 済んだ 後 です。★並びに 頼りません。
+  const 束の行き先 = () => ({
     // ★── しらべる
     "書き出す": () => setMoreSection("じぶんの記録"),
     "区切り": () => setMoreSection("区切り"),
@@ -13358,7 +13373,7 @@ export default function VocalTracker({
     // ★★★この 教室の 運営 …… ★運営に 入れる 教室が **1つ** の 方だけ 出します。
     //   ★★2つ 以上の 方は、★もっとの「○○ の 運営」から 入ります。
     //     ★★どれか を こちらで 勝手に 選びません。
-    "教室の運営": 運営できる教室.length === 1 ? () => setMoreSection("教室の運営") : null,
+    "教室の運営": 運営できる教室().length === 1 ? () => setMoreSection("教室の運営") : null,
     "担当の先生を選ぶ": studentCanChoose(monkaSetting)
       ? () => setMoreSection("担当の先生") : null,
     "授業の時間を出す": isEnrolledInOrg ? () => setMoreSection("授業の時間") : null,
@@ -13386,7 +13401,7 @@ export default function VocalTracker({
     // ★★同意の とりけしは 別の タブ です（★2026-09-15）。★法で 求められる 道 です。
     "同意": () => setActiveTab("withdrawConsent"),
     "退会": () => setMoreSection("じぶんの記録")
-  };
+  });
   // ==========================================================================
   // ★★★つないだ 画面の 読み込み（★2026-09-26）
   //   ★★開いた ときだけ 引きます。★もっとを 出すだけで 引きません。
@@ -13478,7 +13493,8 @@ export default function VocalTracker({
     return () => { 生 = false; };
   }, [layoutV2, moreSection, userId, featureClient]);
 
-  const 束へ行ける = (to) => typeof 束の行き先[to] === "function";
+  // ★★呼ぶ たびに 組み立てます。★軽い 表 です（★26行）。
+  const 束へ行ける = (to) => typeof 束の行き先()[to] === "function";
 
   // ==========================================================================
   // ★★★「この 教室の 運営」の 行き先（★2026-09-25・design-v76）
@@ -13489,7 +13505,10 @@ export default function VocalTracker({
   //   ★★中の 門は そのまま です ── ★`OpsShell` も `OpsSettingsHub` も
   //     ★できことで 判じ直します。★ここで 渡すのは 望み だけ です。
   // ==========================================================================
-  const 教室の運営の行き先 = {
+  // ★★★これも 呼べる もの に します（★2026-09-26）。
+  //   ★★中で `canSeeBetaFeatures(profile)` を 呼んで います。★同じ 形の 危なさ です。
+  //   ★★★「いま は 通って いる」は 理由に なりません ── ★並びが 変わった 日に 落ちます。
+  const 教室の運営の行き先 = () => ({
     "名簿": { tab: "roster" },
     "役職の一覧": { tab: "settings", section: "post" },
     "組織": { tab: "settings", section: "org" },
@@ -13499,10 +13518,10 @@ export default function VocalTracker({
     //   ★★2つの 入口・1つの 画面 です（★Opus・2026-09-25）。
     //   ★★持って いない 方には 出しません（★`canSeeBetaFeatures`）。
     "招く": canSeeBetaFeatures(profile) ? { lesson: true } : null
-  };
-  const 教室の運営へ行ける = (to) => !!教室の運営の行き先[to];
+  });
+  const 教室の運営へ行ける = (to) => !!教室の運営の行き先()[to];
   function 教室の運営を開く(to, orgId) {
-    const 先 = 教室の運営の行き先[to];
+    const 先 = 教室の運営の行き先()[to];
     if (!先) return;
     if (先.lesson) {
       setLessonRoleChoice("teach");
@@ -13513,7 +13532,7 @@ export default function VocalTracker({
     setOpsOrgId(orgId);
   }
   function 束を開く(to) {
-    const f = 束の行き先[to];
+    const f = 束の行き先()[to];
     if (typeof f === "function") f();
   }
 
@@ -28202,18 +28221,21 @@ export default function VocalTracker({
                       ★運営に 入れる 教室が 1つの 方は その 教室。
                       ★★2つ 以上の 方は、★いままでどおり もっとの「○○ の 運営」から 入ります
                         （★どれか を ここで 勝手に 選びません）。 */}
-                {layoutV2 && moreSection === "教室の運営" && 運営できる教室.length === 1 ? (
-                  <KyoshitsuOps
-                    orgName={運営できる教室[0].org ? 運営できる教室[0].org.name : "教室"}
-                    postName={運営できる教室[0].post_id && myOrgPosts[運営できる教室[0].post_id]
-                      ? myOrgPosts[運営できる教室[0].post_id].name : null}
-                    myName={profile.display_name || null}
-                    perms={運営できる教室[0].post_id && myOrgPosts[運営できる教室[0].post_id]
-                      ? permSet(myOrgPosts[運営できる教室[0].post_id].perms) : null}
-                    canGo={教室の運営へ行ける}
-                    onGo={(to) => 教室の運営を開く(to, 運営できる教室[0].org_id)}
-                    onBack={() => setMoreSection(null)} />
-                ) : null}
+                {layoutV2 && moreSection === "教室の運営" && 運営できる教室().length === 1 ? (() => {
+                  // ★★1度 数えて 使います。★同じ ものを 何度も 数えません。
+                  const 教室 = 運営できる教室()[0];
+                  const 役 = 教室.post_id ? myOrgPosts[教室.post_id] : null;
+                  return (
+                    <KyoshitsuOps
+                      orgName={教室.org ? 教室.org.name : "教室"}
+                      postName={役 ? 役.name : null}
+                      myName={profile.display_name || null}
+                      perms={役 ? permSet(役.perms) : null}
+                      canGo={教室の運営へ行ける}
+                      onGo={(to) => 教室の運営を開く(to, 教室.org_id)}
+                      onBack={() => setMoreSection(null)} />
+                  );
+                })() : null}
                 {/* ★★★お仕事を選ぶ（★2026-09-25・裁定202・sql/90）。
                     ★★記録は 1行も 触りません。★送るのは `field` 1列 だけ です。
                     ★★選び直すと「さがす」の 出し分けが 変わります（★約束の 3行目）。 */}
